@@ -76,7 +76,6 @@ class OAIParser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(16), nullable=False, unique=True)
     description = db.Column(db.String(2048), nullable=True)
-    entry_point = db.Column(db.String(256))
 
 
 class OAIRule(db.Model):
@@ -84,7 +83,6 @@ class OAIRule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(16), nullable=False, unique=True)
     description = db.Column(db.String(2048), nullable=True)
-    entry_point = db.Column(db.String(256))
 
 
 class OAIProvider(db.Model):
