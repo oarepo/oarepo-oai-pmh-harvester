@@ -6,9 +6,9 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Initial models"""
+import sqlalchemy as sa
 import sqlalchemy_utils
 from alembic import op
-import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '58b215455f1e'

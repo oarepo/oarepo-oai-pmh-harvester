@@ -1,21 +1,21 @@
 import logging
+import sys
 
 import click
 from flask import cli
-import sys
+from invenio_records.models import RecordMetadata
+from sickle import Sickle
 from sqlalchemy.orm.exc import NoResultFound
 
 from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
 from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
-
-from invenio_records.models import RecordMetadata
-from sickle import Sickle
 
 ############################################################################
 #                                   CLI                                    #
 ############################################################################
 
 logging.basicConfig(level=logging.DEBUG)
+
 
 @click.group()
 def oai():

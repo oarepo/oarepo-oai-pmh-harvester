@@ -3,18 +3,18 @@ import uuid
 import pkg_resources
 from invenio_db import db
 from sqlalchemy import Table
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType
 from werkzeug.utils import cached_property
 
 PARSER_ENTRYPOINT_GROUP = "invenio_oarepo_oai_pmh_harvester.parsers"
 
-oarepo_oai_provider_rules = Table('oarepo_oai_provider_rules', db.metadata,
-                                  db.Column('provider_id', db.Integer,
-                                            ForeignKey('oarepo_oai_provider.id')),
-                                  db.Column('rule_id', db.Integer, ForeignKey('oarepo_oai_rule.id'))
-                                  )
+oarepo_oai_provider_rules = Table(
+    'oarepo_oai_provider_rules', db.metadata,
+    db.Column('provider_id', db.Integer, ForeignKey('oarepo_oai_provider.id')),
+    db.Column('rule_id', db.Integer, ForeignKey('oarepo_oai_rule.id'))
+)
 
 
 class OAIRecord(db.Model):
@@ -61,7 +61,7 @@ class OAISync(db.Model):
     status = db.Column(db.String(32))
     logs = db.Column(db.String(2048))
 
-    # number of created, modified a deleted records for statistics
+    # number of created, modified and deleted records for statistics
     rec_created = db.Column(db.Integer)
     rec_modified = db.Column(db.Integer)
     rec_deleted = db.Column(db.Integer)

@@ -4,6 +4,7 @@
 """oarepo OAI-PMH converter."""
 
 from setuptools import find_packages, setup
+
 extras_require = {
     "devel": ["oarepo[deploy]==3.2.0.2a9"]
 }

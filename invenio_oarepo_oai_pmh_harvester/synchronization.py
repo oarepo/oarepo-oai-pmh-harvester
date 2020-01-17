@@ -1,11 +1,12 @@
+import logging
 import traceback
 from datetime import datetime
 
+from invenio_db import db
 from sickle import Sickle
 
-from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAISync, OAIRecord
-from invenio_db import db
-import logging
+from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord,
+                                                     OAISync)
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
@@ -75,3 +76,4 @@ class OAISynchronizer:
         db.session.add(oai_rec)
 
     def create_record(self, ):
+        pass
