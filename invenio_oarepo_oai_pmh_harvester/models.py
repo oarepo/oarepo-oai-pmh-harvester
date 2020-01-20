@@ -105,3 +105,7 @@ class OAIProvider(db.Model):
             if entry_point.name == self.oai_parser.entry_point:
                 return entry_point.load()
         raise KeyError(f"Parser with entry_point {self.oai_parser.entry_point} is not available")
+
+    @cached_property
+    def rule_instance(self):
+        pass
