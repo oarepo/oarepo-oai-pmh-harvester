@@ -45,6 +45,11 @@ class OAISynchronizer:
             raise
 
     def synchronize(self):
+        """
+
+        :return:
+        :rtype:
+        """
         oai_logger.info(f"OAI harvester on endpoint: {self.provider.oai_endpoint} has started!")
         sickle = Sickle(self.provider.oai_endpoint)
         sickle.class_mapping['ListRecords'] = self.provider.parser_instance
@@ -62,6 +67,15 @@ class OAISynchronizer:
                     self.update(oai_identifier, datestamp)
 
     def update(self, oai_identifier, datestamp):
+        """
+
+        :param oai_identifier:
+        :type oai_identifier:
+        :param datestamp:
+        :type datestamp:
+        :return:
+        :rtype:
+        """
         oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
         # sem přijdou metadata
         if oai_rec is None:
@@ -75,5 +89,34 @@ class OAISynchronizer:
         oai_rec.timestamp = datestamp
         db.session.add(oai_rec)
 
-    def create_record(self, ):
+    def create_record(self, oai_identifier):
+        """
+
+        :param oai_identifier:
+        :type oai_identifier:
+        :return:
+        :rtype:
+        """
+        pass
+
+    def update_record(self, oai_identifier):
+        """
+
+        :param oai_identifier:
+        :type oai_identifier:
+        :return:
+        :rtype:
+        """
+        pass
+
+    def delete(self, oai_identifier, datestamp):
+        """
+
+        :param oai_identifier:
+        :type oai_identifier:
+        :param datestamp:
+        :type datestamp:
+        :return:
+        :rtype:
+        """
         pass
