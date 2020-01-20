@@ -8,6 +8,9 @@ from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType
 from werkzeug.utils import cached_property
 
+from oarepo_nusl_rules.exceptions import NotFoundError
+from oarepo_oai_parsers import parser_registry
+
 PARSER_ENTRYPOINT_GROUP = "invenio_oarepo_oai_pmh_harvester.parsers"
 
 oarepo_oai_provider_rules = Table(
@@ -101,10 +104,18 @@ class OAIProvider(db.Model):
 
     @cached_property
     def parser_instance(self):
-        for entry_point in pkg_resources.iter_entry_points(PARSER_ENTRYPOINT_GROUP):
-            if entry_point.name == self.oai_parser.entry_point:
-                return entry_point.load()
-        raise KeyError(f"Parser with entry_point {self.oai_parser.entry_point} is not available")
+        if self.oai_parser is None:
+            raise NotFoundError(
+                "Parser has not been found. Please check your providers if contain parser id and "
+                "check parsers.")
+        parser_code = self.oai_parser.code
+        parser_registry.load()
+        parser = parser_registry.parsers.get(parser_code)
+        if parser is not None:
+            return parser
+        raise NotFoundError(
+            "Parser has not been found. Please check your providers if contain parser id and "
+            "check parsers.")
 
     @cached_property
     def rule_instance(self):
