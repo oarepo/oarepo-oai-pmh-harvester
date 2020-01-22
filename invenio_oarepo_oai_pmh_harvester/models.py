@@ -8,6 +8,7 @@ from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType
 from werkzeug.utils import cached_property
 
+from oarepo_nusl_rules import rule_registry
 from oarepo_nusl_rules.exceptions import NotFoundError
 from oarepo_oai_parsers import parser_registry
 
@@ -119,4 +120,8 @@ class OAIProvider(db.Model):
 
     @cached_property
     def rule_instance(self):
-        pass
+        if self.rules is None:
+            raise NotFoundError(
+                "Rules has not been found. Please check your providers if contain rules.")
+        rule_registry.load()
+        return rule_registry
