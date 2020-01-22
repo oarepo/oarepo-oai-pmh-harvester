@@ -20,6 +20,9 @@ class OAISynchronizer:
     def __init__(self, provider: OAIProvider):
         self.provider = provider
         self.oai_sync = None
+        self.sickle = Sickle(self.provider.oai_endpoint)
+        self.sickle.class_mapping['ListRecords'] = self.provider.parser_instance
+        self.sickle.class_mapping['GetRecord'] = self.provider.parser_instance
 
     def run(self):
         """
@@ -51,11 +54,8 @@ class OAISynchronizer:
         :rtype:
         """
         oai_logger.info(f"OAI harvester on endpoint: {self.provider.oai_endpoint} has started!")
-        sickle = Sickle(self.provider.oai_endpoint)
-        sickle.class_mapping['ListRecords'] = self.provider.parser_instance
-        sickle.class_mapping['GetRecord'] = self.provider.parser_instance
 
-        identifiers = sickle.ListIdentifiers(metadataPrefix=self.provider.metadata_prefix)
+        identifiers = self.sickle.ListIdentifiers(metadataPrefix=self.provider.metadata_prefix)
         for identifier in identifiers:
             datestamp = identifier.datestamp
             oai_identifier = identifier.identifier
@@ -77,6 +77,9 @@ class OAISynchronizer:
         :rtype:
         """
         oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
+        original_record = self.sickle.GetRecord(identifier=oai_identifier,
+                                                metadataPrefix=self.provider.metadata_prefix)
+        print(original_record)
         # sem přijdou metadata
         if oai_rec is None:
             record_id = self.create_record(oai_identifier)
