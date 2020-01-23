@@ -125,3 +125,19 @@ class OAIProvider(db.Model):
                 "Rules has not been found. Please check your providers if contain rules.")
         rule_registry.load()
         return rule_registry
+
+
+class OAIMapper(db.Model):
+    __tablename__ = "oarepo_oai_mapper"
+    id = db.Column(db.Integer, primary_key=True)
+    address = db.Column(db.String(2048), unique=True)
+    rule_id = db.Column(db.Integer, ForeignKey('oarepo_oai_rule.id'))
+    parser_id = db.Column(db.Integer, ForeignKey('oarepo_oai_parser.id'))
+    rule = relationship(
+        "OAIRule",
+        backref=backref("oarepo_oai_mapper", uselist=False)
+    )
+    parser = relationship(
+        "OAIParser",
+        backref=backref("oarepo_oai_mapper")
+    )
