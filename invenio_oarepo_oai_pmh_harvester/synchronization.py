@@ -31,7 +31,8 @@ class OAISynchronizer:
         :rtype:
         """
         with db.session.begin_nested():
-            self.oai_sync = OAISync(provider=self.provider, sync_start=datetime.utcnow())
+            self.oai_sync = OAISync(provider=self.provider, sync_start=datetime.utcnow(),
+                                    status="active")
             db.session.add(self.oai_sync)
         try:
             self.synchronize()
@@ -79,7 +80,7 @@ class OAISynchronizer:
         oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
         original_record = self.sickle.GetRecord(identifier=oai_identifier,
                                                 metadataPrefix=self.provider.metadata_prefix)
-        print(original_record)
+        print(original_record.xml_dict)
         # sem přijdou metadata
         if oai_rec is None:
             record_id = self.create_record(oai_identifier)

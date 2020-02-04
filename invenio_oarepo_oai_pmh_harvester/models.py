@@ -132,12 +132,12 @@ class OAIMapper(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(2048), unique=True)
     rule_id = db.Column(db.Integer, ForeignKey('oarepo_oai_rule.id'))
-    parser_id = db.Column(db.Integer, ForeignKey('oarepo_oai_parser.id'))
+    provider_id = db.Column(db.Integer, ForeignKey('oarepo_oai_provider.id'))
     rule = relationship(
         "OAIRule",
         backref=backref("oarepo_oai_mapper", uselist=False)
     )
-    parser = relationship(
-        "OAIParser",
+    provider = relationship(
+        "OAIProvider",
         backref=backref("oarepo_oai_mapper")
     )

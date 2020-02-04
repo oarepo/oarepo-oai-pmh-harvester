@@ -54,7 +54,7 @@ def register():
 @click.option('-i', '--parser_id', type=int)
 @cli.with_appcontext
 def register_provider(provider_code: str, description: str, endpoint: str, prefix: str,
-                      parser_id: str):
+                      parser_id: int):
     """
 
     :param provider_code:
@@ -88,17 +88,15 @@ def register_provider(provider_code: str, description: str, endpoint: str, prefi
         provider = OAIProvider(code=provider_code, oai_endpoint=endpoint,
                                metadata_prefix=prefix)
         db.session.add(provider)
-        db.session.commit()
-    else:
-        if description:
-            provider.description = description
-        if endpoint:
-            provider.oai_endpoint = endpoint
-        if prefix:
-            provider.metadata_prefix = prefix
-        if parser_id:
-            provider.parser_id = parser_id
-        db.session.commit()
+    if description:
+        provider.description = description
+    if endpoint:
+        provider.oai_endpoint = endpoint
+    if prefix:
+        provider.metadata_prefix = prefix
+    if parser_id:
+        provider.oai_parser_id = parser_id
+    db.session.commit()
 
 
 @register.command('parsers')
