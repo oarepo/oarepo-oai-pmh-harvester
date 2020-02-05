@@ -6,7 +6,8 @@ from invenio_db import db
 from sickle import Sickle
 
 from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord,
-                                                     OAISync)
+                                                     OAISync, OAIMapper)
+from oarepo_nusl_rules import rule_registry
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
@@ -80,7 +81,11 @@ class OAISynchronizer:
         oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
         original_record = self.sickle.GetRecord(identifier=oai_identifier,
                                                 metadataPrefix=self.provider.metadata_prefix)
-        print(original_record.xml_dict)
+
+        rule_registry.load()
+        rules = rule_registry.rules
+        mapper = OAIMapper.query.all()
+        print(original_record.xml_dict, rules)
         # sem přijdou metadata
         if oai_rec is None:
             record_id = self.create_record(oai_identifier)

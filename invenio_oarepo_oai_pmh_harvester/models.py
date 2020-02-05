@@ -3,9 +3,10 @@ import uuid
 import pkg_resources
 from invenio_db import db
 from sqlalchemy import Table
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy_utils import UUIDType
+from sqlalchemy_utils import UUIDType, JSONType
 from werkzeug.utils import cached_property
 
 from oarepo_nusl_rules import rule_registry
@@ -96,6 +97,20 @@ class OAIProvider(db.Model):
     description = db.Column(db.String(2048), nullable=True)
     oai_endpoint = db.Column(db.String(2048), nullable=False)
     metadata_prefix = db.Column(db.String(32), default="oai_dc")
+    constant_fields = db.Column(
+        db.JSON().with_variant(
+            postgresql.JSONB(none_as_null=True),
+            'postgresql',
+        ).with_variant(
+            JSONType(),
+            'sqlite',
+        ).with_variant(
+            JSONType(),
+            'mysql',
+        ),
+        default=lambda: dict(),
+        nullable=True
+    )
     oai_parser_id = db.Column(db.Integer, ForeignKey('oarepo_oai_parser.id'))
     rules = relationship("OAIRule", secondary=oarepo_oai_provider_rules,
                          backref="providers")
@@ -141,3 +156,6 @@ class OAIMapper(db.Model):
         "OAIProvider",
         backref=backref("oarepo_oai_mapper")
     )
+
+    def parse_rules(self):
+        pass
