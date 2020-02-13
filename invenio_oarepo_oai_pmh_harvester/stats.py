@@ -47,35 +47,36 @@ class OAIStats:
 
     # TODO: catch errors and save it into log file.
     def run(self, stat_dir="/tmp/OAI/"):
-        records = self.sickle.ListRecords(metadataPrefix=self.provider.metadata_prefix)
-        for num, record in enumerate(records):
-            try:
-                logger.info(f"{num}. Record: {record.header.identifier}")
-                for address in record.record_map.keys():
-                    address_list = address.split(".")
-                    address_queue = deque(address_list)
-                    source = jmespath.search(sanitize_address(address), self.statistics)
-                    if source is None:
-                        self.insert_value(address_queue, {}, self.statistics)
-                    else:
-                        if address in record.field_map:
-                            fields = record.get_field(address)
-                            address = add_node(address, "field")
-                            address_list = address.split(".")
-                            source = jmespath.search(sanitize_address(address),
-                                                     self.statistics)
-                            if source is None:
-                                self.insert_value(deque(address_list), set(), self.statistics)
-                            else:
-                                self.statistics = update_node(address, self.statistics, fields)
-            except Exception as e:
-                logger.error(str(e))
-            finally:
-                if not os.path.exists(stat_dir):
-                    os.makedirs(stat_dir)
-                stat_path = os.path.join(log_dir, "stats.json")
-                with open(stat_path, "w") as fp:
-                    json.dump(self.statistics, fp, ensure_ascii=False, indent=4, cls=SetEncoder)
+        try:
+            records = self.sickle.ListRecords(metadataPrefix=self.provider.metadata_prefix)
+            for num, record in enumerate(records):
+                try:
+                    logger.info(f"{num}. Record: {record.header.identifier}")
+                    for address in record.record_map.keys():
+                        address_list = address.split(".")
+                        address_queue = deque(address_list)
+                        source = jmespath.search(sanitize_address(address), self.statistics)
+                        if source is None:
+                            self.insert_value(address_queue, {}, self.statistics)
+                        else:
+                            if address in record.field_map:
+                                fields = record.get_field(address)
+                                address = add_node(address, "field")
+                                address_list = address.split(".")
+                                source = jmespath.search(sanitize_address(address),
+                                                         self.statistics)
+                                if source is None:
+                                    self.insert_value(deque(address_list), set(), self.statistics)
+                                else:
+                                    self.statistics = update_node(address, self.statistics, fields)
+                except Exception as e:
+                    logger.error(str(e))
+        finally:
+            if not os.path.exists(stat_dir):
+                os.makedirs(stat_dir)
+            stat_path = os.path.join(log_dir, "stats.json")
+            with open(stat_path, "w") as fp:
+                json.dump(self.statistics, fp, ensure_ascii=False, indent=4, cls=SetEncoder)
 
     def insert_value(self, addres_queue, value, node):
         """
