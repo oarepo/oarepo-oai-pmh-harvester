@@ -39,12 +39,19 @@ class OAIStats:
 
     """
 
-    def __init__(self, provider: OAIProvider):
+    def __init__(self, provider: OAIProvider, result_path=None):
         self.provider = provider
         self.sickle = Sickle(self.provider.oai_endpoint)
         self.sickle.class_mapping['ListRecords'] = self.provider.parser_instance
         self.sickle.class_mapping['GetRecord'] = self.provider.parser_instance
-        self.statistics = {}
+        if result_path is not None:
+            if os.path.exists(result_path):
+                with open(result_path) as f:
+                    self.statistics = json.load(f)
+            else:
+                raise FileNotFoundError(f"File: \"{result_path}\" has not been found.")
+        else:
+            self.statistics = {}
 
     def collect_all_unique(self, stat_dir="/tmp/OAI/"):
         try:
