@@ -52,7 +52,7 @@ def get_stats(provider: str):
         print(f"Provider \"{provider}\" is not defined in the database")
         sys.exit(1)
     stat = OAIStats(provider_instance)
-    stat.run()
+    stat.collect_all_unique()
 
 
 @oai.group()

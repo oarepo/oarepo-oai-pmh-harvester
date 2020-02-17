@@ -45,8 +45,7 @@ class OAIStats:
         self.sickle.class_mapping['GetRecord'] = self.provider.parser_instance
         self.statistics = {}
 
-    # TODO: catch errors and save it into log file.
-    def run(self, stat_dir="/tmp/OAI/"):
+    def collect_all_unique(self, stat_dir="/tmp/OAI/"):
         try:
             records = self.sickle.ListRecords(metadataPrefix=self.provider.metadata_prefix)
             for num, record in enumerate(records):
