@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from collections import deque
+from functools import lru_cache
 
 import jmespath
 from sickle import Sickle
@@ -54,7 +55,7 @@ class OAIStats:
                     for address in record.record_map.keys():
                         address_list = address.split(".")
                         address_queue = deque(address_list)
-                        source = jmespath.search(sanitize_address(address), self.statistics)
+                        source = self.search_address(address)
                         if source is None:
                             self.insert_value(address_queue, {}, self.statistics)
                         else:
@@ -62,8 +63,7 @@ class OAIStats:
                                 fields = record.get_field(address)
                                 address = add_node(address, "field")
                                 address_list = address.split(".")
-                                source = jmespath.search(sanitize_address(address),
-                                                         self.statistics)
+                                source = self.search_address(address)
                                 if source is None:
                                     self.insert_value(deque(address_list), set(), self.statistics)
                                 else:
@@ -77,7 +77,18 @@ class OAIStats:
             with open(stat_path, "w") as fp:
                 json.dump(self.statistics, fp, ensure_ascii=False, indent=4, cls=SetEncoder)
 
-    def insert_value(self, addres_queue, value, node):
+    @lru_cache(100)
+    def search_address(self, address):
+        """
+
+        :param address:
+        :type address:
+        :return:
+        :rtype:
+        """
+        source = jmespath.search(sanitize_address(address), self.statistics)
+        return source
+
     def insert_value(self, address_queue, value, node):
         """
 
