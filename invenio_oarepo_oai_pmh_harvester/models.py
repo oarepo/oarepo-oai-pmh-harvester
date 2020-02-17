@@ -1,4 +1,5 @@
 import uuid
+from functools import lru_cache
 
 import pkg_resources
 from invenio_db import db
@@ -157,5 +158,36 @@ class OAIMapper(db.Model):
         backref=backref("oarepo_oai_mapper")
     )
 
-    def parse_rules(self):
-        pass
+    @staticmethod
+    def parse_rules():
+        rule_map = OAIMapper.query.all()
+        for _ in rule_map:
+            print(_)
+
+
+class OAIStats(db.Model):
+    __tablename__ = "oarepo_oai_stats"
+    id = db.Column(db.Integer, primary_key=True)
+    provider_id = db.Column(db.Integer, ForeignKey('oarepo_oai_provider.id'))
+    sync_start = db.Column(db.TIMESTAMP)
+    sync_end = db.Column(db.TIMESTAMP)
+    status = db.Column(db.String(32))
+    logs = db.Column(db.String(2048))
+    result_json = db.Column(
+        db.JSON().with_variant(
+            postgresql.JSONB(none_as_null=True),
+            'postgresql',
+        ).with_variant(
+            JSONType(),
+            'sqlite',
+        ).with_variant(
+            JSONType(),
+            'mysql',
+        ),
+        default=lambda: dict(),
+        nullable=True
+    )
+    provider = relationship(
+        "OAIProvider",
+        backref=backref("statistics")
+    )
