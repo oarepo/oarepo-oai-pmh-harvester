@@ -78,18 +78,19 @@ class OAIStats:
                 json.dump(self.statistics, fp, ensure_ascii=False, indent=4, cls=SetEncoder)
 
     def insert_value(self, addres_queue, value, node):
+    def insert_value(self, address_queue, value, node):
         """
 
         :param node:
         :type node:
-        :param addres_queue:
-        :type addres_queue:
+        :param address_queue:
+        :type address_queue:
         :param value:
         :type value:
         :return:
         :rtype:
         """
-        while len(addres_queue) > 0:
-            k = addres_queue.popleft()
+        while len(address_queue) > 0:
+            k = address_queue.popleft()
             node = node.setdefault(k, value)
         return node
