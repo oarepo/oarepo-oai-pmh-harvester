@@ -7,7 +7,7 @@ from functools import lru_cache
 import jmespath
 from sickle import Sickle
 
-from invenio_oarepo_oai_pmh_harvester.json import SetEncoder
+from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAIStats
 from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
 from invenio_oarepo_oai_pmh_harvester.utils import sanitize_address, add_node, update_node
 
@@ -34,7 +34,7 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 
-class OAIStats:
+class OAIStatsRunner:
     """
 
     """

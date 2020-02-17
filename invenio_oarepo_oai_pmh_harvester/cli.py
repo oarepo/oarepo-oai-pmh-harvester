@@ -12,7 +12,7 @@ from invenio_oarepo_oai_pmh_harvester.exceptions import EndPointNotFoundError, \
     PrefixNotFoundError, \
     ProviderNotFoundError, RuleRequiredError
 from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAIRule, OAIParser
-from invenio_oarepo_oai_pmh_harvester.stats import OAIStats
+from invenio_oarepo_oai_pmh_harvester.stats import OAIStatsRunner
 from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 from oarepo_nusl_rules import rule_registry
 
@@ -51,7 +51,7 @@ def get_stats(provider: str):
     except NoResultFound:
         print(f"Provider \"{provider}\" is not defined in the database")
         sys.exit(1)
-    stat = OAIStats(provider_instance)
+    stat = OAIStatsRunner(provider_instance)
     stat.collect_all_unique()
 
 
