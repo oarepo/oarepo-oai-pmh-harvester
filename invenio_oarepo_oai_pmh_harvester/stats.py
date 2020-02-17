@@ -93,12 +93,3 @@ class OAIStats:
             k = addres_queue.popleft()
             node = node.setdefault(k, value)
         return node
-
-
-class Element:
-    """
-
-    """
-
-    def __init__(self, name):
-        self.name = name
