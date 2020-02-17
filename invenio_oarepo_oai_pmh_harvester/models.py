@@ -22,6 +22,12 @@ oarepo_oai_provider_rules = Table(
     db.Column('rule_id', db.Integer, ForeignKey('oarepo_oai_rule.id'))
 )
 
+oarepo_oai_provider_stat_rules = Table(
+    'oarepo_oai_provider_stat_rules', db.metadata,
+    db.Column('provider_id', db.Integer, ForeignKey('oarepo_oai_provider.id')),
+    db.Column('stat_id', db.Integer, ForeignKey('oarepo_oai_stat_rule.id'))
+)
+
 
 class OAIRecord(db.Model):
     __tablename__ = "oarepo_oai_record"
@@ -115,6 +121,8 @@ class OAIProvider(db.Model):
     oai_parser_id = db.Column(db.Integer, ForeignKey('oarepo_oai_parser.id'))
     rules = relationship("OAIRule", secondary=oarepo_oai_provider_rules,
                          backref="providers")
+    stats = relationship("OAIStatRules", secondary=oarepo_oai_provider_stat_rules,
+                         backref="providers")
     oai_parser = relationship(
         "OAIParser",
         backref=backref("providers"))
@@ -191,3 +199,11 @@ class OAIStats(db.Model):
         "OAIProvider",
         backref=backref("statistics")
     )
+
+
+class OAIStatRules(db.Model):
+    __tablename__ = "oarepo_oai_stat_rule"
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(16), nullable=False, unique=True)
+    description = db.Column(db.String(2048), nullable=True)
+    result = db.Column(db.Text)
