@@ -20,6 +20,7 @@ setup_requires = [
 install_requires = [
     'sickle',
     'click',
+    'jmespath'
 ]
 
 packages = find_packages()
