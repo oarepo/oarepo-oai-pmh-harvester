@@ -82,10 +82,17 @@ class OAISynchronizer:
         original_record = self.sickle.GetRecord(identifier=oai_identifier,
                                                 metadataPrefix=self.provider.metadata_prefix)
 
-        rule_registry.load()
-        rules = rule_registry.rules
+        rules_dict = self.provider.rule_instance.rules
         mapper = OAIMapper.query.all()
-        print(original_record.xml_dict, rules)
+        print(original_record.xml_dict, rules_dict)
+        for _ in mapper:
+            rule_function = rules_dict.get(_.rule.code)
+            xml_address = original_record.record_map.get(_.address)
+            source = original_record.get_dotted_data(xml_address)
+            rule_function(source)
+            print(rule_function, xml_address, source)
+
+
         # sem přijdou metadata
         if oai_rec is None:
             record_id = self.create_record(oai_identifier)

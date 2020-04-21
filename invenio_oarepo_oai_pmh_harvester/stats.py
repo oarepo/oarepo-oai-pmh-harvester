@@ -12,6 +12,7 @@ from sickle import Sickle
 
 from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAIStats
 from invenio_oarepo_oai_pmh_harvester.utils import sanitize_address, add_node, update_node
+from oarepo_nusl_rules import rule_registry
 
 log_dir = "/tmp/OAI/"
 
@@ -41,18 +42,14 @@ class OAIStatsRunner:
 
     """
 
-    def __init__(self, provider: OAIProvider, result_path=None):
+    def __init__(self, provider: OAIProvider, result=None):
         self.provider = provider
         self.sickle = Sickle(self.provider.oai_endpoint)
         self.sickle.class_mapping['ListRecords'] = self.provider.parser_instance
         self.sickle.class_mapping['GetRecord'] = self.provider.parser_instance
         self.oai_stats = None
-        if result_path is not None:
-            if os.path.exists(result_path):
-                with open(result_path) as f:
-                    self.statistics = json.load(f)
-            else:
-                raise FileNotFoundError(f"File: \"{result_path}\" has not been found.")
+        if result is not None:
+            self.statistics = result
         else:
             self.statistics = {}
 
@@ -144,6 +141,23 @@ class OAIStatsRunner:
             node = node.setdefault(k, value)
         return node
 
+
+class OAIStatsProcessor:
+    """
+
+    """
+
+    def __init__(self, provider: OAIProvider):
+        self.provider = provider
+        self.data = json.loads(self.provider.statistics[-1].result_json)
+        self.cwd = "/tmp"
+
     # TODO: dopsat metodu na zpracování hrubých dat
     def process_data(self):
-        pass
+        stat_rules = self.provider.rule_instance.stats
+        for rule in self.provider.stats:
+            func = stat_rules[rule.code]
+            func(self.data, cwd=self.cwd)
+            print(rule)
+
+        print("process_data")
