@@ -1,0 +1,1 @@
+from invenio_oarepo_oai_pmh_harvester.register import registry

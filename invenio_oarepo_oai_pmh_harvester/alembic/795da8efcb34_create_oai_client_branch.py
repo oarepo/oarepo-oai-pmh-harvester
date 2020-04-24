@@ -5,13 +5,14 @@
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Create invenio-oarepo-oai-pmh-harvester"""
+"""Create oai client branch"""
 
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision = '9968e56e476f'
+revision = '795da8efcb34'
 down_revision = None
 branch_labels = ('invenio_oarepo_oai_pmh_harvester',)
 depends_on = None

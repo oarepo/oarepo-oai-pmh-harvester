@@ -97,3 +97,7 @@ ENV/
 .idea/
 /loggin_example.py
 /logging_example_2.py
+
+oai-venv/
+
+old_venv/

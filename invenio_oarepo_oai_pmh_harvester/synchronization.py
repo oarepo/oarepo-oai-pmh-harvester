@@ -1,13 +1,14 @@
 import logging
 import traceback
 from datetime import datetime
+from pprint import pprint
 
 from invenio_db import db
 from sickle import Sickle
 
+from invenio_oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord,
-                                                     OAISync, OAIMapper)
-from oarepo_nusl_rules import rule_registry
+                                                     OAISync)
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
@@ -18,12 +19,13 @@ class OAISynchronizer:
 
     """
 
-    def __init__(self, provider: OAIProvider):
+    def __init__(self, provider: OAIProvider, parser_name: str = None):
         self.provider = provider
         self.oai_sync = None
         self.sickle = Sickle(self.provider.oai_endpoint)
-        self.sickle.class_mapping['ListRecords'] = self.provider.parser_instance
-        self.sickle.class_mapping['GetRecord'] = self.provider.parser_instance
+        self.parser_name = parser_name
+        # self.sickle.class_mapping['ListRecords'] = self.provider.parser_instance
+        # self.sickle.class_mapping['GetRecord'] = self.provider.parser_instance
 
     def run(self):
         """
@@ -57,7 +59,8 @@ class OAISynchronizer:
         """
         oai_logger.info(f"OAI harvester on endpoint: {self.provider.oai_endpoint} has started!")
 
-        identifiers = self.sickle.ListIdentifiers(metadataPrefix=self.provider.metadata_prefix)
+        identifiers = self.sickle.ListIdentifiers(metadataPrefix=self.provider.metadata_prefix,
+                                                  set=self.provider.set_)
         for identifier in identifiers:
             datestamp = identifier.datestamp
             oai_identifier = identifier.identifier
@@ -82,16 +85,8 @@ class OAISynchronizer:
         original_record = self.sickle.GetRecord(identifier=oai_identifier,
                                                 metadataPrefix=self.provider.metadata_prefix)
 
-        rules_dict = self.provider.rule_instance.rules
-        mapper = OAIMapper.query.all()
-        print(original_record.xml_dict, rules_dict)
-        for _ in mapper:
-            rule_function = rules_dict.get(_.rule.code)
-            xml_address = original_record.record_map.get(_.address)
-            source = original_record.get_dotted_data(xml_address)
-            rule_function(source)
-            print(rule_function, xml_address, source)
-
+        parsed = self.parse(original_record.xml)
+        transformed = ""
 
         # sem přijdou metadata
         if oai_rec is None:
@@ -104,6 +99,16 @@ class OAISynchronizer:
         oai_rec.last_sync_id = self.oai_sync.id
         oai_rec.timestamp = datestamp
         db.session.add(oai_rec)
+
+    def parse(self, xml_etree, parser=None):
+        if not parser or not callable(parser):
+            if self.provider.parsers.get(self.provider.code):
+                parser = self.provider.parsers.get(self.provider.code).get(self.parser_name)
+            if parser is None:
+                raise ParserNotFoundError(
+                    "No parser specified, please check entry points and parser designation by "
+                    "decorator @Decorators.parser or specify parser as function parameter.")
+        return parser(xml_etree)
 
     def create_record(self, oai_identifier):
         """

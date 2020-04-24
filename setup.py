@@ -6,7 +6,8 @@
 from setuptools import find_packages, setup
 
 extras_require = {
-    "devel": ["oarepo[deploy]==3.2.0.2a9"],
+    "devel": ['oarepo[deploy-es7,taxonomies,draft]>=3.2.1.2'],
+    "docs": ["sphinx"]
 }
 tests_require = [
     'pytest',
@@ -20,7 +21,10 @@ setup_requires = [
 install_requires = [
     'sickle',
     'click',
-    'jmespath'
+    'jmespath',
+    'prettytable',
+    'flask',
+    'sqlalchemy'
 ]
 
 packages = find_packages()

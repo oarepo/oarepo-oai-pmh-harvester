@@ -1,7 +1,4 @@
-import json
 import logging
-import os
-
 import sys
 
 import click
@@ -12,18 +9,13 @@ from sickle import Sickle
 from sqlalchemy.orm.exc import NoResultFound
 
 from invenio_oarepo_oai_pmh_harvester.exceptions import EndPointNotFoundError, \
-    PrefixNotFoundError, \
-    ProviderNotFoundError, RuleRequiredError
-from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAIRule, OAIParser, OAIStatRules, \
-    OAIStats
-from invenio_oarepo_oai_pmh_harvester.stats import OAIStatsRunner, OAIStatsProcessor
+    PrefixNotFoundError
+from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
 from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
-from oarepo_nusl_rules import rule_registry
 
 ############################################################################
 #                                   CLI                                    #
 ############################################################################
-from oarepo_oai_parsers import parser_registry
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -46,54 +38,54 @@ def synchronize(provider: str):
     sync.run()
 
 
-@oai.group()
-def stat():
-    pass
+# @oai.group()
+# def stat():
+#     pass
 
 
-@stat.command('fetch')
-@click.argument('provider', type=str)
-@cli.with_appcontext
-def get_stats(provider: str):
-    try:
-        provider_instance = OAIProvider.query.filter_by(code=provider).one()
-    except NoResultFound:
-        print(f"Provider \"{provider}\" is not defined in the database")
-        sys.exit(1)
-    stat_ = OAIStatsRunner(provider_instance)
-    stat_.run()
+# @stat.command('fetch')
+# @click.argument('provider', type=str)
+# @cli.with_appcontext
+# def get_stats(provider: str):
+#     try:
+#         provider_instance = OAIProvider.query.filter_by(code=provider).one()
+#     except NoResultFound:
+#         print(f"Provider \"{provider}\" is not defined in the database")
+#         sys.exit(1)
+#     stat_ = OAIStatsRunner(provider_instance)
+#     stat_.run()
 
 
-@stat.command('process')
-@click.argument('data_set_id', type=int)
-@click.argument('provider', type=str)
-@cli.with_appcontext
-def process_data(data_set_id: int, provider: str):
-    # stat_instance = OAIStats.query.get(data_set_id)
-    # if stat_instance is None:
-    #     raise NoResultFound("The dataset is not exist")
-    try:
-        provider_instance = OAIProvider.query.filter_by(code=provider).one()
-    except NoResultFound:
-        print(f"Provider \"{provider}\" is not defined in the database")
-        sys.exit(1)
-    stat_processor = OAIStatsProcessor(provider_instance)
-    stat_processor.cwd = os.getcwd()
-    stat_processor.process_data()
+# @stat.command('process')
+# @click.argument('data_set_id', type=int)
+# @click.argument('provider', type=str)
+# @cli.with_appcontext
+# def process_data(data_set_id: int, provider: str):
+#     # stat_instance = OAIStats.query.get(data_set_id)
+#     # if stat_instance is None:
+#     #     raise NoResultFound("The dataset is not exist")
+#     try:
+#         provider_instance = OAIProvider.query.filter_by(code=provider).one()
+#     except NoResultFound:
+#         print(f"Provider \"{provider}\" is not defined in the database")
+#         sys.exit(1)
+#     stat_processor = OAIStatsProcessor(provider_instance)
+#     stat_processor.cwd = os.getcwd()
+#     stat_processor.process_data()
 
 
-@stat.command('json')
-@click.argument('path')
-@cli.with_appcontext
-def upload_json(path: str):
-    if not os.path.exists(path):
-        raise FileNotFoundError
-    with open(path) as fp:
-        data = json.load(fp)
-    jsons = json.dumps(data, ensure_ascii=False)
-    stat_inst = OAIStats(provider_id=1, status="ok", result_json=jsons)
-    db.session.add(stat_inst)
-    db.session.commit()
+# @stat.command('json')
+# @click.argument('path')
+# @cli.with_appcontext
+# def upload_json(path: str):
+#     if not os.path.exists(path):
+#         raise FileNotFoundError
+#     with open(path) as fp:
+#         data = json.load(fp)
+#     jsons = json.dumps(data, ensure_ascii=False)
+#     stat_inst = OAIStats(provider_id=1, status="ok", result_json=jsons)
+#     db.session.add(stat_inst)
+#     db.session.commit()
 
 
 @oai.group()
@@ -154,54 +146,54 @@ def register_provider(provider_code: str, description: str, endpoint: str, prefi
     db.session.commit()
 
 
-@register.command('parsers')
-@cli.with_appcontext
-def parsers():
-    parser_registry.load()
-    parsers_ = parser_registry.parsers
-    for k, v in parsers_.items():
-        code = k.strip()
-        description = v.__doc__.strip()
-        existed_parser = OAIParser.query.filter_by(code=code).one_or_none()
-        if existed_parser is None:
-            rule = OAIParser(code=code, description=description)
-            print("Rule", rule, db.engine)
-            db.session.add(rule)
-            db.session.commit()
+# @register.command('parsers')
+# @cli.with_appcontext
+# def parsers():
+#     parser_registry.load()
+#     parsers_ = parser_registry.parsers
+#     for k, v in parsers_.items():
+#         code = k.strip()
+#         description = v.__doc__.strip()
+#         existed_parser = OAIParser.query.filter_by(code=code).one_or_none()
+#         if existed_parser is None:
+#             rule = OAIParser(code=code, description=description)
+#             print("Rule", rule, db.engine)
+#             db.session.add(rule)
+#             db.session.commit()
 
 
-@register.command('rules')
-@cli.with_appcontext
-def rules():
-    rule_registry.load()
-    rules_ = rule_registry.rules
-    for k, v in rules_.items():
-        code = k.strip()
-        description = v.__doc__
-        if description is not None:
-            description = description.strip()
-        existed_rule = OAIRule.query.filter_by(code=code).one_or_none()
-        if existed_rule is None:
-            rule = OAIRule(code=code, description=description)
-            db.session.add(rule)
-            db.session.commit()
+# @register.command('rules')
+# @cli.with_appcontext
+# def rules():
+#     rule_registry.load()
+#     rules_ = rule_registry.rules
+#     for k, v in rules_.items():
+#         code = k.strip()
+#         description = v.__doc__
+#         if description is not None:
+#             description = description.strip()
+#         existed_rule = OAIRule.query.filter_by(code=code).one_or_none()
+#         if existed_rule is None:
+#             rule = OAIRule(code=code, description=description)
+#             db.session.add(rule)
+#             db.session.commit()
 
 
-@register.command('stats')
-@cli.with_appcontext
-def stats():
-    rule_registry.load()
-    stats_ = rule_registry.stats
-    for k, v in stats_.items():
-        code = k.strip()
-        description = v.__doc__
-        if description is not None:
-            description = description.strip()
-        existed_rule = OAIStatRules.query.filter_by(code=code).one_or_none()
-        if existed_rule is None:
-            rule = OAIStatRules(code=code, description=description)
-            db.session.add(rule)
-            db.session.commit()
+# @register.command('stats')
+# @cli.with_appcontext
+# def stats():
+#     rule_registry.load()
+#     stats_ = rule_registry.stats
+#     for k, v in stats_.items():
+#         code = k.strip()
+#         description = v.__doc__
+#         if description is not None:
+#             description = description.strip()
+#         existed_rule = OAIStatRules.query.filter_by(code=code).one_or_none()
+#         if existed_rule is None:
+#             rule = OAIStatRules(code=code, description=description)
+#             db.session.add(rule)
+#             db.session.commit()
 
 
 @oai.group("provider")
@@ -228,68 +220,68 @@ def list_provider():
     print(tb)
 
 
-@provider_group.command('rule')
-@click.argument("code")
-@click.option("-i", "--rule_id", default=None, type=int)
-@click.option("-c", "--rule_code", default=None)
-@cli.with_appcontext
-def add_rule(code: str, rule_id: int, rule_code: str) -> None:
-    """
-    Assign rule to provider. 
-    :param code: Provider code
-    :type code: str
-    :param rule_id:
-    :type rule_id: int
-    :param rule_code:
-    :type rule_code: str
-    :return: None
-    :rtype: None
-    """
-    provider = OAIProvider.query.filter_by(code=code).one_or_none()
-    if provider is None:
-        raise ProviderNotFoundError("Required provider has not been found. Please try again.")
-    if rule_id:
-        rule = OAIRule.query.get(rule_id)
-        provider.rules.append(rule)
-        db.session.commit()
-        return
-    if rule_code:
-        rule = OAIRule.query.filter_by(code=rule_code).one()
-        provider.rules.apped(rule)
-        db.session.commit()
-    raise RuleRequiredError("rule_id or rule_code is required")
+# @provider_group.command('rule')
+# @click.argument("code")
+# @click.option("-i", "--rule_id", default=None, type=int)
+# @click.option("-c", "--rule_code", default=None)
+# @cli.with_appcontext
+# def add_rule(code: str, rule_id: int, rule_code: str) -> None:
+#     """
+#     Assign rule to provider.
+#     :param code: Provider code
+#     :type code: str
+#     :param rule_id:
+#     :type rule_id: int
+#     :param rule_code:
+#     :type rule_code: str
+#     :return: None
+#     :rtype: None
+#     """
+#     provider = OAIProvider.query.filter_by(code=code).one_or_none()
+#     if provider is None:
+#         raise ProviderNotFoundError("Required provider has not been found. Please try again.")
+#     if rule_id:
+#         rule = OAIRule.query.get(rule_id)
+#         provider.rules.append(rule)
+#         db.session.commit()
+#         return
+#     if rule_code:
+#         rule = OAIRule.query.filter_by(code=rule_code).one()
+#         provider.rules.apped(rule)
+#         db.session.commit()
+#     raise RuleRequiredError("rule_id or rule_code is required")
 
 
-@provider_group.command('stat')
-@click.argument("code")
-@click.option("-i", "--stat_id", default=None, type=int)
-@click.option("-c", "--stat_code", default=None)
-@cli.with_appcontext
-def add_stat(code: str, stat_id: int, stat_code: str) -> None:
-    """
-    Assign stat script to the provider. 
-    :param code: Provider code
-    :type code: str
-    :param stat_id:
-    :type stat_id: int
-    :param stat_code:
-    :type stat_code: str
-    :return: None
-    :rtype: None
-    """
-    provider = OAIProvider.query.filter_by(code=code).one_or_none()
-    if provider is None:
-        raise ProviderNotFoundError("Required provider has not been found. Please try again.")
-    if stat_id:
-        stat = OAIStatRules.query.get(stat_id)
-        provider.stats.append(stat)
-        db.session.commit()
-        return
-    if stat_code:
-        stat = OAIStatRules.query.filter_by(code=stat_code).one()
-        provider.stats.apped(stat)
-        db.session.commit()
-    raise RuleRequiredError("stat_id or stat_code is required")
+# @provider_group.command('stat')
+# @click.argument("code")
+# @click.option("-i", "--stat_id", default=None, type=int)
+# @click.option("-c", "--stat_code", default=None)
+# @cli.with_appcontext
+# def add_stat(code: str, stat_id: int, stat_code: str) -> None:
+#     """
+#     Assign stat script to the provider.
+#     :param code: Provider code
+#     :type code: str
+#     :param stat_id:
+#     :type stat_id: int
+#     :param stat_code:
+#     :type stat_code: str
+#     :return: None
+#     :rtype: None
+#     """
+#     provider = OAIProvider.query.filter_by(code=code).one_or_none()
+#     if provider is None:
+#         raise ProviderNotFoundError("Required provider has not been found. Please try again.")
+#     if stat_id:
+#         stat = OAIStatRules.query.get(stat_id)
+#         provider.stats.append(stat)
+#         db.session.commit()
+#         return
+#     if stat_code:
+#         stat = OAIStatRules.query.filter_by(code=stat_code).one()
+#         provider.stats.apped(stat)
+#         db.session.commit()
+#     raise RuleRequiredError("stat_id or stat_code is required")
 
 
 @oai.group('rules')
@@ -297,38 +289,37 @@ def rules_group():
     pass
 
 
-@rules_group.command('list')
-@cli.with_appcontext
-def list_rules():
-    """
-
-    :return:
-    :rtype:
-    """
-    rules_ = OAIRule.query.all()
-    tb = PrettyTable()
-    tb.field_names = ["id", "code", "description"]
-    for rule in rules_:
-        tb.add_row([rule.id, rule.code, rule.description])
-    print(tb)
+# @rules_group.command('list')
+# @cli.with_appcontext
+# def list_rules():
+#     """
+#
+#     :return:
+#     :rtype:
+#     """
+#     rules_ = OAIRule.query.all()
+#     tb = PrettyTable()
+#     tb.field_names = ["id", "code", "description"]
+#     for rule in rules_:
+#         tb.add_row([rule.id, rule.code, rule.description])
+#     print(tb)
 
 
 @oai.group('parsers')
 def parsers_group():
     pass
 
-
-@parsers_group.command('list')
-@cli.with_appcontext
-def list_parsers():
-    """
-
-    :return:
-    :rtype:
-    """
-    parsers_ = OAIParser.query.all()
-    tb = PrettyTable()
-    tb.field_names = ["id", "code", "description"]
-    for parser in parsers_:
-        tb.add_row([parser.id, parser.code, parser.description])
-    print(tb)
+# @parsers_group.command('list')
+# @cli.with_appcontext
+# def list_parsers():
+#     """
+#
+#     :return:
+#     :rtype:
+#     """
+#     parsers_ = OAIParser.query.all()
+#     tb = PrettyTable()
+#     tb.field_names = ["id", "code", "description"]
+#     for parser in parsers_:
+#         tb.add_row([parser.id, parser.code, parser.description])
+#     print(tb)
