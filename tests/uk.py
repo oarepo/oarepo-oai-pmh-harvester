@@ -6,7 +6,7 @@ from flask_taxonomies_es.proxies import current_flask_taxonomies_es
 from invenio_initial_theses_conversion.rules.marc21.bd656 import studyfield_ref
 from invenio_initial_theses_conversion.rules.utils import get_ref_es
 from invenio_initial_theses_conversion.scripts.link import link_self
-from invenio_oarepo_oai_pmh_harvester.rules import Rules, pre_rule, array_value
+from invenio_oarepo_oai_pmh_harvester.rules_ import Rules, pre_rule, array_value
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 
@@ -264,7 +264,6 @@ class UK(Rules):
                 "type": "originalOAI"
             }
         ]
-        print(results)
         return OAITransformer.PROCESSED
 
     @pre_rule("/others/lastModifyDate")

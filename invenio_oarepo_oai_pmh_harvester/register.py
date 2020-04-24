@@ -69,8 +69,8 @@ class Decorators:
     @staticmethod
     def array_value(func):
         @functools.wraps(func)
-        def wrapped(self, **kwargs):
-            ret = func(self, **kwargs)
+        def wrapped(**kwargs):
+            ret = func(**kwargs)
             if isinstance(ret, list):
                 kwargs["results"][-1].extend(ret)
             else:
