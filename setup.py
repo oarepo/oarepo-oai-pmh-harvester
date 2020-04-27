@@ -61,7 +61,17 @@ setup(
             'xoai = tests.parser'
         ],
         'invenio_oarepo_oai_pmh_harvester.rules': [
-            'abstract = invenio_oarepo_oai_pmh_harvester.rules.uk.abstract'
+            'abstract = invenio_oarepo_oai_pmh_harvester.rules.uk.abstract',
+            'contributor = invenio_oarepo_oai_pmh_harvester.rules.uk.contributor',
+            'creator = invenio_oarepo_oai_pmh_harvester.rules.uk.creator',
+            'date_accepted = invenio_oarepo_oai_pmh_harvester.rules.uk.date_accepted',
+            'defended = invenio_oarepo_oai_pmh_harvester.rules.uk.defended',
+            'degree_grantor = invenio_oarepo_oai_pmh_harvester.rules.uk.degree_grantor',
+            'doctype = invenio_oarepo_oai_pmh_harvester.rules.uk.doctype',
+            'identifier = invenio_oarepo_oai_pmh_harvester.rules.uk.identifier',
+            'language = invenio_oarepo_oai_pmh_harvester.rules.uk.language',
+            'study_field = invenio_oarepo_oai_pmh_harvester.rules.uk.study_field',
+            'title = invenio_oarepo_oai_pmh_harvester.rules.uk.title',
         ]
     },
     extras_require=extras_require,

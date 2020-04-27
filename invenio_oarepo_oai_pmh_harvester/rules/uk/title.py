@@ -2,16 +2,18 @@ from invenio_oarepo_oai_pmh_harvester.register import Decorators
 from invenio_oarepo_oai_pmh_harvester.rules.utils import get_iso_lang_code
 
 
+@Decorators.rule('xoai')
 @Decorators.pre_rule("/dc/title")
-def transform_title(self, paths, el, results, phase, **kwargs):
+def transform_title(paths, el, results, phase, **kwargs):
     title = []
     results[-1]["title"] = title
     return title
 
 
+@Decorators.rule('xoai')
 @Decorators.pre_rule("/dc/title/cs_CZ")
 @Decorators.array_value
-def transform_title_cz(self, paths, el, results, phase, **kwargs):
+def transform_title_cz(paths, el, results, phase, **kwargs):
     value = el["value"]
     assert len(value) == 1
     return {
@@ -20,9 +22,10 @@ def transform_title_cz(self, paths, el, results, phase, **kwargs):
     }
 
 
+@Decorators.rule('xoai')
 @Decorators.pre_rule("/dc/title/translated")
 @Decorators.array_value
-def transform_title_translated(self, paths, el, results, phase, **kwargs):
+def transform_title_translated(paths, el, results, phase, **kwargs):
     result = []
     for k, v in el.items():
         value_array = v[0]["value"]

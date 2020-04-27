@@ -2,8 +2,9 @@ from invenio_oarepo_oai_pmh_harvester.register import Decorators
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 
+@Decorators.rule('xoai')
 @Decorators.pre_rule("/thesis/grade")
-def transform_grade(self, paths, el, results, phase, **kwargs):
+def transform_grade(paths, el, results, phase, **kwargs):
     value = el["cs"][0]["cs_CZ"][0]["value"]
     assert len(value) == 1
     results[-1]["defended"] = get_defended(value[0])

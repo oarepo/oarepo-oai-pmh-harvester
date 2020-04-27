@@ -4,10 +4,12 @@ class OAITransformer:
     PROCESSED = "ok"
     NO_HANDLER_CALLED = "no_handler_called"
 
-    def __init__(self, handlers, unhandled_paths: set = None, **options):
+    def __init__(self, rules: dict = None, unhandled_paths: set = None, **options):
+        if rules is None:
+            rules = {}
         if unhandled_paths is None:
             unhandled_paths = set()
-        self.handlers = handlers.rules
+        self.rules = rules
         self.options = options
         self.unhandled_paths = unhandled_paths
 
@@ -69,9 +71,9 @@ class OAITransformer:
         if intersec:
             return OAITransformer.PROCESSED
         for path in paths:
-            if path not in self.handlers:
+            if path not in self.rules:
                 continue
-            handler = self.handlers[path]
+            handler = self.rules[path]
             if phase not in handler:
                 continue
             ret = handler[phase](paths=paths, el=el, results=results, phase=phase,

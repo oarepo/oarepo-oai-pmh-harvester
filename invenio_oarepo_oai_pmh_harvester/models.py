@@ -6,8 +6,6 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType, JSONType
 
-
-# PARSER_ENTRYPOINT_GROUP = "invenio_oarepo_oai_pmh_harvester.parsers"
 from invenio_oarepo_oai_pmh_harvester import registry
 
 
@@ -87,5 +85,9 @@ class OAIProvider(db.Model):
         default=lambda: dict(),
         nullable=True
     )
-    parsers = registry.parsers.get(code) or {}
-    rules = registry.rules.get(code) or {}
+
+    def get_parsers(self):
+        return registry.parsers.get(self.code) or {}
+
+    def get_rules(self, parser_name):
+        return registry.rules.get(parser_name)

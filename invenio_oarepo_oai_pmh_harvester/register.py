@@ -22,6 +22,10 @@ class Registry(Singleton):
         self.parsers = infinite_dd()
         self.rules = infinite_dd()
 
+    def load(self):
+        self.get_parsers()
+        self.get_rules()
+
     def get_parsers(self):
         for ep in iter_entry_points(group=self.parsers_ep):
             ep.load()

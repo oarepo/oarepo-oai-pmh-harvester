@@ -4,8 +4,9 @@ from invenio_oarepo_oai_pmh_harvester.register import Decorators
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 
+@Decorators.rule('xoai')
 @Decorators.pre_rule("/uk/grantor")
-def transform_uk_grantor(self, paths, el, results, phase, **kwargs):
+def transform_uk_grantor(paths, el, results, phase, **kwargs):
     value_array = el["cs_CZ"][0]["value"]
     assert len(value_array) == 1
     grantor_array = value_array[0].split(",", 3)

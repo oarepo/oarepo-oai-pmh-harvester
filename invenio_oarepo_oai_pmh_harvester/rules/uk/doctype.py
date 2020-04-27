@@ -3,8 +3,9 @@ from invenio_oarepo_oai_pmh_harvester.rules.utils import get_ref
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 
+@Decorators.rule("xoai")
 @Decorators.pre_rule("/dc/type/cs_CZ")
-def transform_type(self, paths, el, results, phase, **kwargs):
+def transform_type(paths, el, results, phase, **kwargs):
     value_ = el["value"]
     assert len(value_) == 1
     results[-1]["doctype"] = get_doc_type(value_[0])

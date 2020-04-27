@@ -1,7 +1,9 @@
+from invenio_oarepo_oai_pmh_harvester.register import Decorators
 from invenio_oarepo_oai_pmh_harvester.rules.utils import get_ref
 from invenio_oarepo_oai_pmh_harvester.rules_ import pre_rule, array_value
 
 
+@Decorators.rule("xoai")
 @pre_rule("/dc/contributor")
 def transform_contributor(paths, el, results, phase, **kwargs):
     contributors = []
@@ -9,6 +11,7 @@ def transform_contributor(paths, el, results, phase, **kwargs):
     return contributors
 
 
+@Decorators.rule("xoai")
 @pre_rule("advisor")
 @array_value
 def transform_advisor(el=None, results=None, **kwargs):
@@ -20,6 +23,7 @@ def transform_advisor(el=None, results=None, **kwargs):
     }
 
 
+@Decorators.rule("xoai")
 @pre_rule("referee")
 @array_value
 def transform_referee(el=None, results=None, **kwargs):

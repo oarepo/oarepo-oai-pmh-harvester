@@ -1,14 +1,15 @@
 import logging
 import traceback
 from datetime import datetime
-from pprint import pprint
 
 from invenio_db import db
 from sickle import Sickle
 
+from invenio_oarepo_oai_pmh_harvester import registry
 from invenio_oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord,
                                                      OAISync)
+from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
@@ -19,11 +20,15 @@ class OAISynchronizer:
 
     """
 
-    def __init__(self, provider: OAIProvider, parser_name: str = None):
+    def __init__(self, provider: OAIProvider, parser_name: str = None, unhandled_paths: set = None):
         self.provider = provider
         self.oai_sync = None
         self.sickle = Sickle(self.provider.oai_endpoint)
-        self.parser_name = parser_name
+        registry.load()
+        self.parsers = provider.get_parsers()
+        self.rules = provider.get_rules(parser_name) or {}
+        self.parser = self.parsers.get(parser_name) or {}
+        self.transformer = OAITransformer(self.rules, unhandled_paths=unhandled_paths)
         # self.sickle.class_mapping['ListRecords'] = self.provider.parser_instance
         # self.sickle.class_mapping['GetRecord'] = self.provider.parser_instance
 
@@ -86,7 +91,8 @@ class OAISynchronizer:
                                                 metadataPrefix=self.provider.metadata_prefix)
 
         parsed = self.parse(original_record.xml)
-        transformed = ""
+        transformed = self.transformer.transform(parsed)
+        print(transformed)
 
         # sem přijdou metadata
         if oai_rec is None:
@@ -102,8 +108,8 @@ class OAISynchronizer:
 
     def parse(self, xml_etree, parser=None):
         if not parser or not callable(parser):
-            if self.provider.parsers.get(self.provider.code):
-                parser = self.provider.parsers.get(self.provider.code).get(self.parser_name)
+            if self.parser:
+                parser = self.parser
             if parser is None:
                 raise ParserNotFoundError(
                     "No parser specified, please check entry points and parser designation by "
