@@ -33,8 +33,8 @@ class Registry(Singleton):
     def add_parser(self, func, name, provider):
         self.parsers[provider][name] = func
 
-    def add_rule(self, func, target_field_name, provider):
-        self.rules[provider][target_field_name] = func
+    def add_rule(self, func, parser_name, path, phase):
+        self.rules[parser_name][path][phase] = func
 
 
 registry = Registry()
@@ -45,6 +45,15 @@ class Decorators:
     def parser(name, provider):
         def real_decorator(func):
             registry.add_parser(func, name, provider)
+
+        return real_decorator
+
+    @staticmethod
+    def rule(parser_name):
+        def real_decorator(func):
+            path = getattr(func, "_transform_path")
+            phase = getattr(func, "_transform_phase")
+            registry.add_rule(func, parser_name, path, phase)
 
         return real_decorator
 

@@ -3,7 +3,6 @@ from collections import defaultdict
 from invenio_oarepo_oai_pmh_harvester.register import Decorators
 
 
-# @Decorators.parser("xoai", "uk")
 def xml_to_dict_xoai(tree):
     tree_dict = defaultdict(list)
     children = list(tree)
@@ -21,6 +20,7 @@ def xml_to_dict_xoai(tree):
     return tree_dict
 
 
+@Decorators.parser("xoai", "uk")
 def parser_refine(etree):
     return xml_to_dict_xoai(list(list(etree)[1])[0])
 

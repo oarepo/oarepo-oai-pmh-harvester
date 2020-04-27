@@ -1,8 +1,8 @@
 from invenio_oarepo_oai_pmh_harvester.register import Decorators
-from invenio_oarepo_oai_pmh_harvester.rules.utils import get_iso_lang_code
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 
+@Decorators.rule("xoai")
 @Decorators.pre_rule("/dc/description/abstract")
 def transform_uk_abstract(self, paths, el, results, phase, **kwargs):
     results[-1]["abstract"] = [

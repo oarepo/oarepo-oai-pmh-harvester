@@ -57,7 +57,12 @@ setup(
         'flask.commands': [
             'oai = invenio_oarepo_oai_pmh_harvester.cli:oai',
         ],
-
+        'invenio_oarepo_oai_pmh_harvester.parsers': [
+            'xoai = tests.parser'
+        ],
+        'invenio_oarepo_oai_pmh_harvester.rules': [
+            'abstract = invenio_oarepo_oai_pmh_harvester.rules.uk.abstract'
+        ]
     },
     extras_require=extras_require,
     install_requires=install_requires,
