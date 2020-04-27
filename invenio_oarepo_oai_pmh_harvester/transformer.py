@@ -4,9 +4,12 @@ class OAITransformer:
     PROCESSED = "ok"
     NO_HANDLER_CALLED = "no_handler_called"
 
-    def __init__(self, handlers, **options):
+    def __init__(self, handlers, unhandled_paths: set = None, **options):
+        if unhandled_paths is None:
+            unhandled_paths = set()
         self.handlers = handlers.rules
         self.options = options
+        self.unhandled_paths = unhandled_paths
 
     def transform(self, record):
         result = {}
@@ -61,6 +64,10 @@ class OAITransformer:
                 f"Path with simple value {paths} has not been processed by any handler {el}")
 
     def call_handlers(self, paths, el, results, phase, **kwargs):
+        paths = set(paths)
+        intersec = paths.intersection(self.unhandled_paths)
+        if intersec:
+            return OAITransformer.PROCESSED
         for path in paths:
             if path not in self.handlers:
                 continue

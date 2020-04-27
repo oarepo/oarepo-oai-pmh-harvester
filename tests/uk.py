@@ -47,18 +47,6 @@ class UK(Rules):
 
         return OAITransformer.PROCESSED
 
-    @pre_rule("/dc/date/accessioned")
-    def transform_accessioned(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/dc/date/available")
-    def transform_available(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/dc/date/issued")
-    def transform_issued(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
     @pre_rule("/dc/identifier")
     def transform_identifier(self, paths, el, results, phase, **kwargs):
         ids = []
@@ -75,14 +63,6 @@ class UK(Rules):
             } for x in iter_array(el["value"])
         ]
 
-    @pre_rule("/dc/identifier/repId")
-    def transform_repId(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/dc/identifier/aleph")
-    def transform_aleph(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
     @pre_rule("/dc/description/abstract")
     def trasform_abstract(self, paths, el, results, phase, **kwargs):
         results[-1]["abstract"] = [
@@ -94,29 +74,9 @@ class UK(Rules):
             value_dict["value"]]
         return OAITransformer.PROCESSED
 
-    @pre_rule("/dc/description/provenance")
-    def transform_provenance(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/dc/description/department")
-    def transform_department(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/dc/description/faculty")
-    def transform_faculty(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/dc/language/cs_CZ")
-    def transform_language_cs_CZ(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
     @pre_rule("/dc/language/iso")
     def transform_language_iso(self, paths, el, results, phase, **kwargs):
         results[-1]["language"] = [get_ref(get_iso_lang_code(el["value"][0][0][:2]), "languages")]
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/dc/publisher")
-    def transform_publisher(self, paths, el, results, phase, **kwargs):
         return OAITransformer.PROCESSED
 
     @pre_rule("/dc/title")
@@ -157,23 +117,11 @@ class UK(Rules):
         results[-1]["doctype"] = get_doc_type(value_[0])
         return OAITransformer.PROCESSED
 
-    @pre_rule("/dcterms/created")
-    def transform_created(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
     @pre_rule("/dcterms/dateAccepted")
     def transform_date_accepted(self, paths, el, results, phase, **kwargs):
         value = el["value"][0]
         assert len(value) == 1
         results[-1]["dateAccepted"] = value[0]
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/thesis/degree/name")
-    def transform_degree_name(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/thesis/degree/level")
-    def transform_degree_level(self, paths, el, results, phase, **kwargs):
         return OAITransformer.PROCESSED
 
     @pre_rule("/thesis/degree/discipline")
@@ -184,39 +132,11 @@ class UK(Rules):
         results[-1]["studyField"] = studyfield_ref(value_array[0].strip(), tax)["studyField"]
         return OAITransformer.PROCESSED
 
-    @pre_rule("/thesis/degree/program")
-    def transform_degree_program(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
     @pre_rule("/thesis/grade")
     def transform_grade(self, paths, el, results, phase, **kwargs):
         value = el["cs"][0]["cs_CZ"][0]["value"]
         assert len(value) == 1
         results[-1]["defended"] = get_defended(value[0])
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/uk/thesis")
-    def transform_uk_thesis(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/uk/taxonomy")
-    def transform_uk_taxonomy(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/uk/faculty-name")
-    def transform_uk_faculty_name(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/uk/faculty-abbr")
-    def transform_uk_faculty_abbr(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/uk/degree-discipline")
-    def transform_uk_degree_discipline(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/uk/degree-program")
-    def transform_uk_degree_program(self, paths, el, results, phase, **kwargs):
         return OAITransformer.PROCESSED
 
     @pre_rule("/uk/abstract")
@@ -233,10 +153,6 @@ class UK(Rules):
         ]
         return OAITransformer.PROCESSED
 
-    @pre_rule("/uk/publication-place")
-    def transform_uk_publication_place(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
     @pre_rule("/uk/grantor")
     def transform_uk_grantor(self, paths, el, results, phase, **kwargs):
         value_array = el["cs_CZ"][0]["value"]
@@ -248,14 +164,6 @@ class UK(Rules):
                                                           department_name=grantor_array[2])
         return OAITransformer.PROCESSED
 
-    @pre_rule("/bundles")
-    def transform_bundles(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/others/handle")
-    def transform_others_handle(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
     @pre_rule("/others/identifier")
     def transform_others_identifier(self, paths, el, results, phase, **kwargs):
         results[-1]["identifier"] = [
@@ -264,14 +172,6 @@ class UK(Rules):
                 "type": "originalOAI"
             }
         ]
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/others/lastModifyDate")
-    def transform_others_lastmodifydate(self, paths, el, results, phase, **kwargs):
-        return OAITransformer.PROCESSED
-
-    @pre_rule("/repository")
-    def transform_repositry(self, paths, el, results, phase, **kwargs):
         return OAITransformer.PROCESSED
 
 

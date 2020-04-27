@@ -7,7 +7,34 @@ from tests.uk import UK
 
 
 def test_simple(app, db):
-    transformer = OAITransformer(UK())
+    unhandled_paths = {
+        "/dc/date/accessioned",
+        "/dc/date/available",
+        "/dc/date/issued",
+        "/dc/identifier/repId",
+        "/dc/identifier/aleph",
+        "/dc/description/provenance",
+        "/dc/description/department",
+        "/dc/description/faculty",
+        "/dc/language/cs_CZ",
+        "/dc/publisher",
+        "/dcterms/created",
+        "/thesis/degree/name",
+        "/thesis/degree/program",
+        "/thesis/degree/level",
+        "/uk/thesis",
+        "/uk/taxonomy",
+        "/uk/faculty-name",
+        "/uk/faculty-abbr",
+        "/uk/degree-discipline",
+        "/uk/degree-program",
+        "/uk/publication-place",
+        "/bundles",
+        "/others/handle",
+        "/others/lastModifyDate",
+        "/repository"
+    }
+    transformer = OAITransformer(UK(), unhandled_paths=unhandled_paths)
 
     with open(Path(__file__).parent / "data/sample.json") as f:
         json_sample = json.load(f)
