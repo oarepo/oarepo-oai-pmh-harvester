@@ -16,3 +16,11 @@ class RuleRequiredError(Exception):
 
 class ParserNotFoundError(Exception):
     pass
+
+
+class HandlerNotFoundError(Exception):
+    pass
+
+
+class NoMigrationError(Exception):
+    pass

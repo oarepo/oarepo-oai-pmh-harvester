@@ -1,8 +1,6 @@
 import pytest
 
 from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
-from invenio_db import db
-
 from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 
 
@@ -13,7 +11,25 @@ def test_synchronization_instance(app, db, unhandled_paths):
             code="uk",
             oai_endpoint="https://dspace.cuni.cz/oai/nusl",
             set_="nusl_set",
-            metadata_prefix="xoai"
+            metadata_prefix="xoai",
+            constant_fields={
+                "provider": {
+                    "$ref": "https://localhost:5000/api/taxonomies/institutions/00216208"
+                },
+                "accessRights": {
+                    "$ref": "https://localhost:5000/api/taxonomies/accessRights/c_abf2"
+                },
+                "accessibility": [
+                    {
+                        "value": "Dostupné v digitálním repozitáři UK.",
+                        "lang": "cze"
+                    },
+                    {
+                        "value": "Available in the Charles University Digital Repository.",
+                        "lang": "eng"
+                    }
+                ]
+            }
         )
         db.session.add(provider)
         db.session.commit()
