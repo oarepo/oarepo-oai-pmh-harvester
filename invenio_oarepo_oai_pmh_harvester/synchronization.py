@@ -1,6 +1,4 @@
 import logging
-import traceback
-from datetime import datetime
 from typing import Callable
 
 from invenio_db import db
@@ -10,15 +8,15 @@ from sickle import Sickle
 from invenio_oarepo_oai_pmh_harvester import registry
 from invenio_oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError, HandlerNotFoundError, \
     NoMigrationError
-from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord,
-                                                     OAISync)
+from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord)
+from invenio_oarepo_oai_pmh_harvester.oai_base import OAIDBBase
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
 
 
-class OAISynchronizer:
+class OAISynchronizer(OAIDBBase):
     """
 
     """
@@ -31,8 +29,8 @@ class OAISynchronizer:
             validation: Callable = None,
             create_record: Callable = None,
             delete_record: Callable = None,
-            update_record: Callable = None,
-    ):
+            update_record: Callable = None):
+        super().__init__(provider)
         self.provider = provider
         self.oai_sync = None
         self.sickle = Sickle(self.provider.oai_endpoint)
@@ -45,8 +43,6 @@ class OAISynchronizer:
         self.create_record_handler = create_record
         self.update_record_handler = update_record
         self.delete_record_handler = delete_record
-        # self.sickle.class_mapping['ListRecords'] = self.provider.parser_instance
-        # self.sickle.class_mapping['GetRecord'] = self.provider.parser_instance
 
     def run(self):
         """
@@ -55,25 +51,9 @@ class OAISynchronizer:
         :rtype:
         """
         self.ensure_migration()
-        with db.session.begin_nested():
-            self.oai_sync = OAISync(provider=self.provider, sync_start=datetime.utcnow(),
-                                    status="active")
-            db.session.add(self.oai_sync)
-        try:
-            self.synchronize()
-            with db.session.begin_nested():
-                self.oai_sync = db.session.merge(self.oai_sync)
-                self.oai_sync.status = "ok"
-                db.session.add(self.oai_sync)
-        except:
-            with db.session.begin_nested():
-                self.oai_sync = db.session.merge(self.oai_sync)
-                self.oai_sync.status = "failed"
-                self.oai_sync.log = traceback.format_exc()
-                db.session.add(self.oai_sync)
-            raise
+        super().run()
 
-    def synchronize(self):
+    def synchronize(self, identifiers=None):
         """
 
         :return:
@@ -81,8 +61,9 @@ class OAISynchronizer:
         """
         oai_logger.info(f"OAI harvester on endpoint: {self.provider.oai_endpoint} has started!")
 
-        identifiers = self.sickle.ListIdentifiers(metadataPrefix=self.provider.metadata_prefix,
-                                                  set=self.provider.set_)
+        if identifiers is None:
+            identifiers = self._get_oai_identifiers()
+
         for identifier in identifiers:
             datestamp = identifier.datestamp
             oai_identifier = identifier.identifier
@@ -90,8 +71,23 @@ class OAISynchronizer:
             with db.session.begin_nested():
                 if deleted:
                     self.delete(oai_identifier, datestamp)
+                    self.deleted += 1
                 else:
                     self.update(oai_identifier, datestamp)
+
+    def _get_oai_identifiers(
+            self,
+            sickle=None,
+            metadata_prefix=None,
+            set_=None):
+        if not sickle:
+            sickle = self.sickle
+        if not metadata_prefix:
+            metadata_prefix = self.provider.metadata_prefix
+        if not set_:
+            set_ = self.provider.set_
+        return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
+                                      set=set_)
 
     def update(self, oai_identifier, datestamp):
         """
@@ -118,8 +114,10 @@ class OAISynchronizer:
             record_id = self.create_record(transformed, oai_identifier)
             oai_rec = OAIRecord(id=record_id, oai_identifier=oai_identifier,
                                 creation_sync_id=self.oai_sync.id)
+            self.created += 1
         else:
             self.update_record(transformed, oai_identifier)
+            self.modified += 1
             oai_rec.modification_sync_id = self.oai_sync.id
         oai_rec.last_sync_id = self.oai_sync.id
         oai_rec.timestamp = datestamp

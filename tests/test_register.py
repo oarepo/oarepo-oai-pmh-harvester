@@ -14,20 +14,44 @@ def test_parser_decorator():
     assert result["test_provider"]["test_name"]() == "OK"
 
 
-# TODO: Create example app due to entry_points
+def test_pre_rule_decorator():
+    @Decorators.rule("test_parser")
+    @Decorators.pre_rule("/path/to/field")
+    def sample_rule():
+        return "OK"
 
-def test_get_parsers():
-    registry.get_parsers()
-    parsers = registry.parsers
-    assert parsers["uk"]["xoai"].__name__ == "parser_refine"
-    print(parsers)
+    result = registry.rules
+    assert result["test_parser"]["/path/to/field"]["pre"]() == "OK"
 
 
-def test_get_rules():
-    registry.get_rules()
-    rules = registry.rules
-    func = rules["xoai"]["/dc/description/abstract"]["pre"]
-    assert func.__name__ == "transform_uk_abstract"
-    assert getattr(func, "_transform_path") == '/dc/description/abstract'
-    assert getattr(func, "_transform_phase") == 'pre'
-    print(rules)
+def test_post_rule_decorator():
+    @Decorators.rule("test_parser")
+    @Decorators.post_rule("/path/to/field")
+    def sample_rule():
+        return "OK"
+
+    result = registry.rules
+    assert result["test_parser"]["/path/to/field"]["post"]() == "OK"
+
+
+def test_array_value():
+    results = [[]]
+
+    @Decorators.array_value
+    def return_array_1(**kwargs):
+        return ["bla"]
+
+
+    @Decorators.array_value
+    def return_array_2(**kwargs):
+        return "spam"
+
+    return_array_1(results=results)
+    return_array_2(results=results)
+    assert results == [["bla", "spam"]]
+    print(results)
+
+
+
+
+

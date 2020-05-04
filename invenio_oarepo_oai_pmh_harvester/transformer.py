@@ -16,7 +16,7 @@ class OAITransformer:
     def transform(self, record):
         result = {}
         if self.iter_json(el=record, paths=[""], results=[result]) is not OAITransformer.PROCESSED:
-            raise Exception("Top level handler returned unexpected result")
+            raise Exception("Top level handler returned unexpected result")  # pragma: no cover
         return result
 
     def iter_json(self, el, paths, results):
@@ -28,7 +28,8 @@ class OAITransformer:
         if isinstance(el, (list, tuple)):
             for _ in el:
                 if self.iter_json(_, paths, results) is not OAITransformer.PROCESSED:
-                    raise ValueError(f"Path {paths} has not been processed by any handler {_}")
+                    raise ValueError( # pragma: no cover
+                        f"Path {paths} has not been processed by any handler {_}")
             return OAITransformer.PROCESSED
 
         # Dict

@@ -13,7 +13,7 @@ from flask_taxonomies.views import blueprint as taxonomies_blueprint
 from invenio_db import InvenioDB
 from invenio_db import db as db_
 from invenio_jsonschemas import InvenioJSONSchemas
-from invenio_records import InvenioRecords
+from invenio_records import InvenioRecords, Record
 from invenio_search import InvenioSearch
 from sqlalchemy_utils import create_database, database_exists
 
@@ -97,6 +97,35 @@ def record_xml():
     with open(str(path), "r") as f:
         tree = etree.parse(f)
         return tree.getroot()
+
+
+@pytest.fixture()
+def sample_record(app, test_db):
+    record = Record.create(
+        {
+            "id": "1",
+            "identifier": [
+                {
+                    "value": "oai:server:id",
+                    "type": "originalOAI"
+                }
+            ]
+        }
+    )
+    db_.session.commit()
+    return record
+
+
+@pytest.fixture()
+def migrate_provider(app, test_db):
+    provider = OAIProvider(
+        code="nusl",
+        description="Migration from old NUSL",
+        oai_endpoint="https://invenio.nusl.cz/oai2d/"
+    )
+    db_.session.add(provider)
+    db_.session.commit()
+    return provider
 
 # @pytest.fixture
 # def root_taxonomy(db):
