@@ -22,6 +22,11 @@ class OAIRecord(db.Model):
         unique=True,
         nullable=False
     )
+    nusl_id = db.Column(
+        db.String(),
+        unique=True,
+        nullable=False
+    )
     last_sync_id = db.Column(
         db.INTEGER(),
         ForeignKey('oarepo_oai_sync.id'),
@@ -51,7 +56,7 @@ class OAISync(db.Model):
     sync_start = db.Column(db.TIMESTAMP)
     sync_end = db.Column(db.TIMESTAMP)
     status = db.Column(db.String(32))
-    logs = db.Column(db.String(2048))
+    logs = db.Column(db.Text())
 
     # number of created, modified and deleted records for statistics
     rec_created = db.Column(db.Integer)

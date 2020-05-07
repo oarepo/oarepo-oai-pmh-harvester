@@ -30,6 +30,8 @@ class OAIDBBase:
         except:
             self.update_oai_sync("failed")
             raise
+        finally:
+            db.session.commit()
 
     def update_oai_sync(self, status):
         with db.session.begin_nested():

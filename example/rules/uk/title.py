@@ -17,7 +17,7 @@ def transform_title_cz(paths, el, results, phase, **kwargs):
     value = el["value"]
     assert len(value) == 1
     return {
-        "name": value[0],
+        "value": value[0],
         "lang": "cze"
     }
 

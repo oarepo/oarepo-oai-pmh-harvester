@@ -1,10 +1,9 @@
 from invenio_oarepo_oai_pmh_harvester.register import Decorators
 from invenio_oarepo_oai_pmh_harvester.rules.utils import get_ref
-from invenio_oarepo_oai_pmh_harvester.rules_ import pre_rule, array_value
 
 
 @Decorators.rule("xoai")
-@pre_rule("/dc/contributor")
+@Decorators.pre_rule("/dc/contributor")
 def transform_contributor(paths, el, results, phase, **kwargs):
     contributors = []
     results[-1]["contributor"] = contributors
@@ -12,24 +11,24 @@ def transform_contributor(paths, el, results, phase, **kwargs):
 
 
 @Decorators.rule("xoai")
-@pre_rule("advisor")
-@array_value
+@Decorators.pre_rule("advisor")
+@Decorators.array_value
 def transform_advisor(el=None, results=None, **kwargs):
     value = el["value"]
     assert len(value) == 1
     return {
-        "name": value[0],
+        "name": value[0][0],
         "role": get_ref("advisor", "contributor-type")
     }
 
 
 @Decorators.rule("xoai")
-@pre_rule("referee")
-@array_value
+@Decorators.pre_rule("referee")
+@Decorators.array_value
 def transform_referee(el=None, results=None, **kwargs):
     value = el["value"]
     assert len(value) == 1
     return {
-        "name": value[0],
+        "name": value[0][0],
         "role": get_ref("referee", "contributor-type")
     }

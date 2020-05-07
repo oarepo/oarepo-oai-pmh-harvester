@@ -1,12 +1,25 @@
+from flask import cli
+from invenio_nusl.cli import nusl
+from invenio_db import db
 from invenio_nusl_theses.proxies import nusl_theses
 
 from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
-from invenio_db import db
-
 from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 
 
-def test_uk_one_record(app, test_uk_db):
+@nusl.group()
+def oai():
+    pass
+
+
+@oai.group()
+def synchronize():
+    pass
+
+
+@synchronize.command("uk")
+@cli.with_appcontext
+def import_uk():
     uk_provider = OAIProvider.query.filter_by(code="uk").one_or_none()
     constant_fields = {
         "provider": {"$ref": "http://127.0.0.1:5000/api/taxonomies/institutions/00216208/"},
@@ -49,7 +62,6 @@ def test_uk_one_record(app, test_uk_db):
         "/uk/degree-discipline",
         "/uk/degree-program",
         "/uk/publication-place",
-        "uk/file-availability",
         "/bundles",
         "/others/handle",
         "/others/lastModifyDate",
@@ -63,7 +75,6 @@ def test_uk_one_record(app, test_uk_db):
         update_record=nusl_theses.update_draft_record,
         delete_record=nusl_theses.delete_draft_record,
         pid_type="dnusl",
-        validation=nusl_theses.validate,
-        oai_identifiers=["oai:dspace.cuni.cz:20.500.11956/111006"]
+        validation=nusl_theses.validate
     )
     sync.run()

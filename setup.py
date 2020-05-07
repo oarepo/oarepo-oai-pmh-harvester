@@ -55,7 +55,7 @@ setup(
             'invenio_oarepo_oai_pmh_harvester = invenio_oarepo_oai_pmh_harvester:alembic',
         ],
         'flask.commands': [
-            'oai = invenio_oarepo_oai_pmh_harvester.cli:oai',
+            'nusl = example.cli:nusl',
         ],
         'invenio_oarepo_oai_pmh_harvester.parsers': [
             'xoai = example.parser'
@@ -71,6 +71,7 @@ setup(
             'identifier = example.rules.uk.identifier',
             'language = example.rules.uk.language',
             'study_field = example.rules.uk.study_field',
+            'subject = example.rules.uk.subject',
             'title = example.rules.uk.title',
         ]
     },

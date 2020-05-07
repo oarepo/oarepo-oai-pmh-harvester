@@ -4,6 +4,13 @@ import os
 import pathlib
 import shutil
 import tempfile
+
+from invenio_indexer import InvenioIndexer
+from invenio_records_draft.ext import InvenioRecordsDraft
+
+from invenio_nusl_theses import InvenioNUSLTheses
+from invenio_pidstore.models import PersistentIdentifier
+from invenio_records.models import RecordMetadata
 from lxml import etree
 
 import pytest
@@ -18,7 +25,7 @@ from invenio_search import InvenioSearch
 from sqlalchemy_utils import create_database, database_exists
 
 from flask_taxonomies_es import FlaskTaxonomiesES
-from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
+from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAIRecord
 from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 
 
@@ -35,14 +42,17 @@ def app():
             'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user="oarepo", pw="oarepo",
                                                                   url="127.0.0.1",
                                                                   db="oarepo")),
-        SERVER_NAME='localhost',
+        SERVER_NAME='127.0.0.1:5000',
     )
     InvenioJSONSchemas(app)
     InvenioRecords(app)
+    InvenioRecordsDraft(app)
     InvenioSearch(app)
+    InvenioIndexer(app)
     InvenioDB(app)
     FlaskTaxonomies(app)
     FlaskTaxonomiesES(app)
+    InvenioNUSLTheses(app)
     with app.app_context():
         app.register_blueprint(taxonomies_blueprint)
         yield app
@@ -55,6 +65,23 @@ def db(app):
     """Database fixture."""
     if not database_exists(str(db_.engine.url)):
         create_database(str(db_.engine.url))
+    yield db_
+
+    # Explicitly close DB connection
+    db_.session.close()
+
+
+@pytest.yield_fixture()
+def test_uk_db(app):
+    """Database fixture."""
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
+        user="oarepo", pw="oarepo", url="127.0.0.1", db="test_uk")
+    if not database_exists(str(db_.engine.url)):
+        create_database(str(db_.engine.url))
+    db_.create_all()
+    OAIRecord.query.delete()
+    PersistentIdentifier.query.delete()
+    RecordMetadata.query.delete()
     yield db_
 
     # Explicitly close DB connection
