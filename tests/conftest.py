@@ -3,15 +3,8 @@ from __future__ import absolute_import, print_function
 import os
 import pathlib
 import shutil
+import sys
 import tempfile
-
-from invenio_indexer import InvenioIndexer
-from invenio_records_draft.ext import InvenioRecordsDraft
-
-from invenio_nusl_theses import InvenioNUSLTheses
-from invenio_pidstore.models import PersistentIdentifier
-from invenio_records.models import RecordMetadata
-from lxml import etree
 
 import pytest
 from flask import Flask
@@ -19,13 +12,20 @@ from flask_taxonomies import FlaskTaxonomies
 from flask_taxonomies.views import blueprint as taxonomies_blueprint
 from invenio_db import InvenioDB
 from invenio_db import db as db_
+from invenio_indexer import InvenioIndexer
 from invenio_jsonschemas import InvenioJSONSchemas
+from invenio_pidstore.models import PersistentIdentifier, Redirect
 from invenio_records import InvenioRecords, Record
+from invenio_records.models import RecordMetadata
+from invenio_records_draft.cli import make_schemas
+from invenio_records_draft.ext import InvenioRecordsDraft
 from invenio_search import InvenioSearch
+from lxml import etree
 from sqlalchemy_utils import create_database, database_exists
 
 from flask_taxonomies_es import FlaskTaxonomiesES
-from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAIRecord
+from invenio_nusl_theses import InvenioNUSLTheses
+from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAIRecord, OAISync
 from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 
 
@@ -44,9 +44,9 @@ def app():
                                                                   db="oarepo")),
         SERVER_NAME='127.0.0.1:5000',
     )
+    InvenioRecordsDraft(app)
     InvenioJSONSchemas(app)
     InvenioRecords(app)
-    InvenioRecordsDraft(app)
     InvenioSearch(app)
     InvenioIndexer(app)
     InvenioDB(app)
@@ -72,16 +72,18 @@ def db(app):
 
 
 @pytest.yield_fixture()
-def test_uk_db(app):
+def uk_db(app):
     """Database fixture."""
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
         user="oarepo", pw="oarepo", url="127.0.0.1", db="test_uk")
     if not database_exists(str(db_.engine.url)):
         create_database(str(db_.engine.url))
+    Redirect.__table__.drop(db_.engine)
+    PersistentIdentifier.__table__.drop(db_.engine)
+    OAIRecord.__table__.drop(db_.engine)
+    RecordMetadata.__table__.drop(db_.engine)
+    OAISync.__table__.drop(db_.engine)
     db_.create_all()
-    OAIRecord.query.delete()
-    PersistentIdentifier.query.delete()
-    RecordMetadata.query.delete()
     yield db_
 
     # Explicitly close DB connection
@@ -153,6 +155,25 @@ def migrate_provider(app, test_db):
     db_.session.add(provider)
     db_.session.commit()
     return provider
+
+@pytest.fixture
+def schemas(app):
+    runner = app.test_cli_runner()
+    result = runner.invoke(make_schemas)
+    if result.exit_code:
+        print(result.output, file=sys.stderr)
+    assert result.exit_code == 0
+
+    # trigger registration of new schemas, normally performed
+    # via app_loaded signal that is not emitted in tests
+    with app.app_context():
+        app.extensions['invenio-records-draft']._register_draft_schemas(app)
+        app.extensions['invenio-records-draft']._register_draft_mappings(app)
+
+    return {
+        'published': 'https://localhost:5000/schemas/records/record-v1.0.0.json',
+        'draft': 'https://localhost:5000/schemas/draft/records/record-v1.0.0.json',
+    }
 
 # @pytest.fixture
 # def root_taxonomy(db):

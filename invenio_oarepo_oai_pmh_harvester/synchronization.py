@@ -1,4 +1,5 @@
 import logging
+from itertools import islice
 from typing import Callable, List
 
 from invenio_db import db
@@ -12,6 +13,7 @@ from invenio_oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError, Han
 from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord)
 from invenio_oarepo_oai_pmh_harvester.oai_base import OAIDBBase
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
+from sickle.oaiexceptions import IdDoesNotExist
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
@@ -50,16 +52,16 @@ class OAISynchronizer(OAIDBBase):
         self.delete_record_handler = delete_record
         self.oai_identifiers = oai_identifiers
 
-    def run(self):
+    def run(self, start_oai: str = None, start_id: int = None):
         """
 
         :return:
         :rtype:
         """
         self.ensure_migration()
-        super().run()
+        super().run(start_oai=start_oai, start_id=start_id)
 
-    def synchronize(self, identifiers=None):
+    def synchronize(self, identifiers=None, start_oai: str = None, start_id: int = None):
         """
 
         :return:
@@ -73,18 +75,32 @@ class OAISynchronizer(OAIDBBase):
             else:
                 identifiers = self._get_oai_identifiers(identifiers_list=self.oai_identifiers)
 
-        for idx, identifier in enumerate(identifiers):
+        identifiers = islice(identifiers, start_id, None)
+        collect = False
+        for idx, identifier in enumerate(identifiers, start=start_id):
+            oai_logger.info(f"{idx}. Record, OAI ID: '{identifier}'")
             datestamp = identifier.datestamp
             oai_identifier = identifier.identifier
+            if not start_oai or oai_identifier == start_oai:
+                collect = True
+            if not collect:
+                continue
             deleted = identifier.deleted
-            with db.session.begin_nested():
-                if deleted:
-                    self.delete(oai_identifier)
-                    self.deleted += 1
-                else:
+            # with db.session.begin_nested():
+            if deleted:
+                self._delete(identifier, oai_identifier)
+            else:
+                try:
                     self.update(oai_identifier, datestamp)
+                except IdDoesNotExist:
+                    self._delete(identifier, oai_identifier)
             if idx % 100:
                 db.session.commit()
+
+    def _delete(self, identifier, oai_identifier):
+        self.delete(oai_identifier)
+        self.deleted += 1
+        oai_logger.info(f"Identifier '{identifier}' has been marked as deleted")
 
     def _get_oai_identifiers(
             self,
@@ -134,11 +150,15 @@ class OAISynchronizer(OAIDBBase):
             )
             self.created += 1
             db.session.add(oai_rec)
+            oai_logger.info(
+                f"Identifier '{oai_identifier}' has been created and '{record.id}' has been "
+                f"assigned as a UUID")
         else:
             transformed = self.attach_id(transformed, nusl_id=oai_rec.nusl_id)
             record = self.update_record(transformed)
             self.modified += 1
             oai_rec.modification_sync_id = self.oai_sync.id
+            oai_logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
         oai_rec.last_sync_id = self.oai_sync.id
         oai_rec.timestamp = datestamp
         nusl_theses.index_draft_record(record)
@@ -225,7 +245,7 @@ class OAISynchronizer(OAIDBBase):
     @staticmethod
     def attach_id(transformed, nusl_id=None):
         if not nusl_id:
-            nusl_id = nusl_theses.get_new_pid()
+            nusl_id = str(nusl_theses.get_new_pid())
         transformed["id"] = nusl_id
         transformed["identifier"].append({
             "type": "nusl",

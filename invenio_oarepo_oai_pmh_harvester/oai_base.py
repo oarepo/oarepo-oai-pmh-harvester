@@ -13,19 +13,21 @@ class OAIDBBase:
         self.created = 0
         self.modified = 0
 
-    def run(self):
+    def run(self, start_oai: str = None, start_id: int = None):
         """
 
         :return:
         :rtype:
         """
         with db.session.begin_nested():
-            self.oai_sync = OAISync(provider=self.provider, sync_start=datetime.utcnow(),
-                                    status="active")
+            self.oai_sync = OAISync(
+                provider=self.provider,
+                sync_start=datetime.utcnow(),
+                status="active")
             db.session.add(self.oai_sync)
         db.session.commit()
         try:
-            self.synchronize()
+            self.synchronize(start_oai=start_oai, start_id=start_id)
             self.update_oai_sync("ok")
         except:
             self.update_oai_sync("failed")
@@ -35,16 +37,16 @@ class OAIDBBase:
 
     def update_oai_sync(self, status):
         with db.session.begin_nested():
-            self.oai_sync = db.session.merge(self.oai_sync)
+            # self.oai_sync = db.session.merge(self.oai_sync)
             self.oai_sync.status = status
             self.oai_sync.sync_end = datetime.utcnow()
-            self.oai_sync.modified = self.modified
-            self.oai_sync.created = self.created
-            self.oai_sync.deleted = self.deleted
+            self.oai_sync.rec_modified = self.modified
+            self.oai_sync.rec_created = self.created
+            self.oai_sync.rec_deleted = self.deleted
             if status == "failed":
                 self.oai_sync.logs = traceback.format_exc()
             db.session.add(self.oai_sync)
         db.session.commit()
 
-    def synchronize(self):
+    def synchronize(self, start_oai: str = None, start_id: int = None):
         pass

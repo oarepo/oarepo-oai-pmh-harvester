@@ -6,20 +6,29 @@ from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 @Decorators.pre_rule("/dc/subject")
 def transform_subject(paths, el, results, phase, **kwargs):
     # TODO: vyřešit subjects, teď sbíráme jen keywordy
-    cz_list = el["cs_CZ"][0]["value"]
-    en_list = el["en_US"][0]["value"]
-    assert isinstance(cz_list, list)
-    assert isinstance(en_list, list)
     keywords = []
-    for k in cz_list:
-        keywords.append({
-            "value": k,
-            "lang": "cze"
-        })
-    for k in en_list:
-        keywords.append({
-            "value": k,
-            "lang": "eng"
-        })
-    results[-1]["keywords"] = keywords
+    cz_keywords = el.get("cs_CZ")
+    if cz_keywords:
+        cz_list = cz_keywords[0]["value"]
+        for k in cz_list:
+            if k is None:
+                continue
+            keywords.append({
+                "value": k,
+                "lang": "cze"
+            })
+        assert isinstance(cz_list, list)
+    en_keywords = el.get("en_US")
+    if en_keywords:
+        en_list = en_keywords[0]["value"]
+        for k in en_list:
+            if k is None:
+                continue
+            keywords.append({
+                "value": k,
+                "lang": "eng"
+            })
+        assert isinstance(en_list, list)
+    if keywords:
+        results[-1]["keywords"] = keywords
     return OAITransformer.PROCESSED

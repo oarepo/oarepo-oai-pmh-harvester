@@ -1,8 +1,10 @@
-from flask import cli
-from invenio_nusl.cli import nusl
-from invenio_db import db
-from invenio_nusl_theses.proxies import nusl_theses
+import logging
 
+import click
+from flask import cli, current_app
+from invenio_db import db
+from invenio_nusl.cli import nusl
+from invenio_nusl_theses.proxies import nusl_theses
 from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
 from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 
@@ -18,8 +20,12 @@ def synchronize():
 
 
 @synchronize.command("uk")
+@click.option('-s', '--start', default=0)
+@click.option('-o', '--start-oai')
 @cli.with_appcontext
-def import_uk():
+def import_uk(start, start_oai):
+    for _ in ("elasticsearch", "urllib3"):
+        logging.getLogger(_).setLevel(logging.CRITICAL)
     uk_provider = OAIProvider.query.filter_by(code="uk").one_or_none()
     constant_fields = {
         "provider": {"$ref": "http://127.0.0.1:5000/api/taxonomies/institutions/00216208/"},
@@ -77,4 +83,6 @@ def import_uk():
         pid_type="dnusl",
         validation=nusl_theses.validate
     )
-    sync.run()
+    api = current_app.wsgi_app.mounts['/api']
+    with api.app_context():
+        sync.run(start_id=start, start_oai=start_oai)

@@ -23,7 +23,7 @@ class OAITransformer:
         """
 
         """
-        print(" " * 4 * len(paths), f"Iter element {repr(el)[:100]}")
+        # print(" " * 4 * len(paths), f"Iter element {repr(el)[:100]}")
         # List items call themselves
         if isinstance(el, (list, tuple)):
             for _ in el:

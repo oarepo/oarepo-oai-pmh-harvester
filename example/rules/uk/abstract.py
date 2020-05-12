@@ -1,32 +1,36 @@
+from example.rules.utils import get_iso_lang_code
 from invenio_oarepo_oai_pmh_harvester.register import Decorators
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 
+# TODO: vytvořit pravidlo na zparcování multilang a vložit ho do jednoho modulu.
 
 @Decorators.rule("xoai")
 @Decorators.pre_rule("/dc/description/abstract")
 def transform_uk_abstract(paths, el, results, phase, **kwargs):
-    if "cs" in el:
-        results[-1]["abstract"] = [
-            {
-                "value": el["cs"][0]["cs_CZ"][0]["value"][0],
-                "lang": "cze"
-            },
-            {
-                "value": el["en"][0]["en_US"][0]["value"][0],
-                "lang": "eng"
-            }
-        ]
-    elif "cs_CZ" in el:
-        results[-1]["abstract"] = [
-            {
-                "value": el["cs_CZ"][0]["value"][0],
-                "lang": "cze"
-            },
-            {
-                "value": el["en_US"][0]["value"][0],
-                "lang": "eng"
-            }
-        ]
-    else:
-        raise ValueError("There is no handler for this option")
+    abstract = []
+    for k, v in el.items():
+        if k == "translated":
+            abstract.extend(transform_abstract_translated(v))
+        else:
+            abstract.append(
+                {
+                    "value": v[0]["value"][0],
+                    "lang": get_iso_lang_code(k[:2])
+                }
+            )
+    results[-1]["abstract"] = abstract
     return OAITransformer.PROCESSED
+
+
+def transform_abstract_translated(el):
+    translated_titles = []
+    for k, v in el[0].items():
+        value_array = v[0]["value"]
+        assert len(value_array) == 1
+        translated_titles.append(
+            {
+                "value": value_array[0],
+                "lang": get_iso_lang_code(k[:2])
+            }
+        )
+    return translated_titles

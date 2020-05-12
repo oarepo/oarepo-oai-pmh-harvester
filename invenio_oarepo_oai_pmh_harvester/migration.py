@@ -15,7 +15,7 @@ class OAIMigration(OAIDBBase):
         super().__init__(provider)
         self.handler = handler
 
-    def synchronize(self):
+    def synchronize(self, start_oai: str = None, start_id: int = None):
         for _ in ("elasticsearch", "urllib3"):
             logging.getLogger(_).setLevel(logging.CRITICAL)
         state = {

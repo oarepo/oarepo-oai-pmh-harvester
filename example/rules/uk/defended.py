@@ -22,6 +22,7 @@ def get_defended(value):
         "Neprospěl/a": False,
         "Výtečně": True,
         "Uspokojivě": True,
-        "Dostatečně": True
+        "Dostatečně": True,
+        "Nedostatečně": False
     }
     return dictionary.get(value)
