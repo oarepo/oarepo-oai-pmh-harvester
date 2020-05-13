@@ -1,4 +1,5 @@
 import logging
+import traceback
 from itertools import islice
 from typing import Callable, List
 
@@ -10,7 +11,7 @@ from sickle import Sickle
 from invenio_oarepo_oai_pmh_harvester import registry
 from invenio_oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError, HandlerNotFoundError, \
     NoMigrationError
-from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord)
+from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc)
 from invenio_oarepo_oai_pmh_harvester.oai_base import OAIDBBase
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 from sickle.oaiexceptions import IdDoesNotExist
@@ -52,16 +53,20 @@ class OAISynchronizer(OAIDBBase):
         self.delete_record_handler = delete_record
         self.oai_identifiers = oai_identifiers
 
-    def run(self, start_oai: str = None, start_id: int = None):
+    def run(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
         """
 
         :return:
         :rtype:
         """
         self.ensure_migration()
-        super().run(start_oai=start_oai, start_id=start_id)
+        super().run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
 
-    def synchronize(self, identifiers=None, start_oai: str = None, start_id: int = None):
+    def synchronize(self,
+                    identifiers=None,
+                    start_oai: str = None,
+                    start_id: int = None,
+                    break_on_error: bool = True):
         """
 
         :return:
@@ -86,16 +91,31 @@ class OAISynchronizer(OAIDBBase):
             if not collect:
                 continue
             deleted = identifier.deleted
-            # with db.session.begin_nested():
-            if deleted:
-                self._delete(identifier, oai_identifier)
-            else:
-                try:
-                    self.update(oai_identifier, datestamp)
-                except IdDoesNotExist:
+            try:
+                if deleted:
                     self._delete(identifier, oai_identifier)
-            if idx % 100:
+                else:
+                    try:
+                        self.update(oai_identifier, datestamp)
+                    except IdDoesNotExist:
+                        self._delete(identifier, oai_identifier)
+                if idx % 100:
+                    db.session.commit()
+            except Exception:
+                exc = traceback.format_exc()
+                print(exc, "\n\n\n")
+                oai_exc = OAIRecordExc.query.filter_by(oai_identifier=oai_identifier,
+                                                       oai_sync_id=self.oai_sync.id).one_or_none()
+                if not oai_exc:
+                    oai_exc = OAIRecordExc(oai_identifier=oai_identifier, traceback=exc,
+                                              oai_sync_id=self.oai_sync.id)
+                    db.session.add(oai_exc)
+                else:
+                    oai_exc.traceback = exc
                 db.session.commit()
+                if break_on_error:
+                    raise
+                continue
 
     def _delete(self, identifier, oai_identifier):
         self.delete(oai_identifier)

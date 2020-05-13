@@ -13,7 +13,7 @@ class OAIDBBase:
         self.created = 0
         self.modified = 0
 
-    def run(self, start_oai: str = None, start_id: int = None):
+    def run(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
         """
 
         :return:
@@ -27,7 +27,7 @@ class OAIDBBase:
             db.session.add(self.oai_sync)
         db.session.commit()
         try:
-            self.synchronize(start_oai=start_oai, start_id=start_id)
+            self.synchronize(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
             self.update_oai_sync("ok")
         except:
             self.update_oai_sync("failed")
@@ -48,5 +48,5 @@ class OAIDBBase:
             db.session.add(self.oai_sync)
         db.session.commit()
 
-    def synchronize(self, start_oai: str = None, start_id: int = None):
+    def synchronize(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
         pass

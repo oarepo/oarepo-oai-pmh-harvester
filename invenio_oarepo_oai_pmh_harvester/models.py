@@ -1,12 +1,11 @@
 import uuid
 
 from invenio_db import db
+from invenio_oarepo_oai_pmh_harvester import registry
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType, JSONType
-
-from invenio_oarepo_oai_pmh_harvester import registry
 
 
 class OAIRecord(db.Model):
@@ -66,6 +65,7 @@ class OAISync(db.Model):
         "OAIProvider",
         backref=backref("synchronizations")
     )
+    traceback = relationship("OAIRecordExc", backref=backref("synchronizations"))
 
 
 class OAIProvider(db.Model):
@@ -96,3 +96,10 @@ class OAIProvider(db.Model):
 
     def get_rules(self, parser_name):
         return registry.rules.get(parser_name)
+
+
+class OAIRecordExc(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    oai_identifier = db.Column(db.String, unique=True, nullable=False)
+    traceback = db.Column(db.Text(), nullable=True)
+    oai_sync_id = db.Column(db.Integer, ForeignKey('oarepo_oai_sync.id'))

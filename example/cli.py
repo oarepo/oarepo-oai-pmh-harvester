@@ -22,8 +22,9 @@ def synchronize():
 @synchronize.command("uk")
 @click.option('-s', '--start', default=0)
 @click.option('-o', '--start-oai')
+@click.option('--break-on-error/--no-break-on-error', default=True)
 @cli.with_appcontext
-def import_uk(start, start_oai):
+def import_uk(start, start_oai, break_on_error):
     for _ in ("elasticsearch", "urllib3"):
         logging.getLogger(_).setLevel(logging.CRITICAL)
     uk_provider = OAIProvider.query.filter_by(code="uk").one_or_none()
@@ -65,6 +66,7 @@ def import_uk(start, start_oai):
         "/uk/taxonomy",
         "/uk/faculty-name",
         "/uk/faculty-abbr",
+        "/uk/file-availability",
         "/uk/degree-discipline",
         "/uk/degree-program",
         "/uk/publication-place",
@@ -85,4 +87,4 @@ def import_uk(start, start_oai):
     )
     api = current_app.wsgi_app.mounts['/api']
     with api.app_context():
-        sync.run(start_id=start, start_oai=start_oai)
+        sync.run(start_id=start, start_oai=start_oai, break_on_error=break_on_error)
