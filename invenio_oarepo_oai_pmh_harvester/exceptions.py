@@ -12,3 +12,15 @@ class ProviderNotFoundError(Exception):
 
 class RuleRequiredError(Exception):
     pass
+
+
+class ParserNotFoundError(Exception):
+    pass
+
+
+class HandlerNotFoundError(Exception):
+    pass
+
+
+class NoMigrationError(Exception):
+    pass

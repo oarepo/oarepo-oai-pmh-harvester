@@ -2,11 +2,13 @@
 
 
 """oarepo OAI-PMH converter."""
+import os
 
 from setuptools import find_packages, setup
 
 extras_require = {
-    "devel": ["oarepo[deploy]==3.2.0.2a9"],
+    "devel": ['oarepo[deploy-es7,taxonomies,draft]>=3.2.1.2'],
+    "docs": ["sphinx"]
 }
 tests_require = [
     'pytest',
@@ -20,14 +22,19 @@ setup_requires = [
 install_requires = [
     'sickle',
     'click',
-    'jmespath'
+    'jmespath',
+    'prettytable',
+    'flask',
+    'sqlalchemy'
 ]
 
 packages = find_packages()
 
 # Get the version string. Cannot be done with import!
 g = {}
-version = "1.0.0"
+with open(os.path.join('invenio_oarepo_oai_pmh_harvester', 'version.py'), 'rt') as fp:
+    exec(fp.read(), g)
+    version = g['__version__']
 
 setup(
     name='invenio-oarepo-oai-pmh-harvester',
@@ -51,9 +58,25 @@ setup(
             'invenio_oarepo_oai_pmh_harvester = invenio_oarepo_oai_pmh_harvester:alembic',
         ],
         'flask.commands': [
-            'oai = invenio_oarepo_oai_pmh_harvester.cli:oai',
+            'nusl = example.cli:nusl',
         ],
-
+        'invenio_oarepo_oai_pmh_harvester.parsers': [
+            'xoai = example.parser'
+        ],
+        'invenio_oarepo_oai_pmh_harvester.rules': [
+            'abstract = example.rules.uk.abstract',
+            'contributor = example.rules.uk.contributor',
+            'creator = example.rules.uk.creator',
+            'date_accepted = example.rules.uk.date_accepted',
+            'defended = example.rules.uk.defended',
+            'degree_grantor = example.rules.uk.degree_grantor',
+            'doctype = example.rules.uk.doctype',
+            'identifier = example.rules.uk.identifier',
+            'language = example.rules.uk.language',
+            'study_field = example.rules.uk.study_field',
+            'subject = example.rules.uk.subject',
+            'title = example.rules.uk.title',
+        ]
     },
     extras_require=extras_require,
     install_requires=install_requires,

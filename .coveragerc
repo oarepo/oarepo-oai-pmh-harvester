@@ -1,0 +1,4 @@
+[run]
+omit = *rules/*
+    *alembic/*
+    *cli*
