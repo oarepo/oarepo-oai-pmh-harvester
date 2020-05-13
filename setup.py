@@ -2,6 +2,7 @@
 
 
 """oarepo OAI-PMH converter."""
+import os
 
 from setuptools import find_packages, setup
 
@@ -31,7 +32,9 @@ packages = find_packages()
 
 # Get the version string. Cannot be done with import!
 g = {}
-version = "1.0.0"
+with open(os.path.join('invenio_oarepo_oai_pmh_harvester', 'version.py'), 'rt') as fp:
+    exec(fp.read(), g)
+    version = g['__version__']
 
 setup(
     name='invenio-oarepo-oai-pmh-harvester',
