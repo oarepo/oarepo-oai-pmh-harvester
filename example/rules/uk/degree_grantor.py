@@ -7,7 +7,12 @@ from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
 @Decorators.rule('xoai')
 @Decorators.pre_rule("/uk/grantor")
 def transform_uk_grantor(paths, el, results, phase, **kwargs):
-    value_array = el["cs_CZ"][0]["value"]
+    cz = el.get("cs_CZ")
+    if not cz:
+        cz = el.get("cs_CS")
+    if not cz:
+        return OAITransformer.PROCESSED
+    value_array = cz[0]["value"]
     assert len(value_array) == 1
     grantor_array = value_array[0].split(",", 3)
     grantor_array = [member.strip() for member in grantor_array]
