@@ -188,7 +188,7 @@ class OAISynchronizer(OAIDBBase):
             oai_logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
         oai_rec.last_sync_id = self.oai_sync.id
         oai_rec.timestamp = datestamp
-        oai_logger.debug(f"RECORD BEFORE INDEX: {record.json}")
+        oai_logger.debug(f"RECORD BEFORE INDEX: {record}")
         nusl_theses.index_draft_record(record)
 
     def transform(self, parsed, handler=None):
