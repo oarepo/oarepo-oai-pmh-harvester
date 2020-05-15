@@ -3,18 +3,20 @@ import traceback
 from itertools import islice
 from typing import Callable, List
 
+import pytz
+from dateutil.parser import isoparse
 from invenio_db import db
-from invenio_nusl_theses.proxies import nusl_theses
 from invenio_records.models import RecordMetadata
 from sickle import Sickle
+from sickle.oaiexceptions import IdDoesNotExist
 
+from invenio_nusl_theses.proxies import nusl_theses
 from invenio_oarepo_oai_pmh_harvester import registry
 from invenio_oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError, HandlerNotFoundError, \
     NoMigrationError
 from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc)
 from invenio_oarepo_oai_pmh_harvester.oai_base import OAIDBBase
 from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
-from sickle.oaiexceptions import IdDoesNotExist
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
@@ -108,7 +110,7 @@ class OAISynchronizer(OAIDBBase):
                                                        oai_sync_id=self.oai_sync.id).one_or_none()
                 if not oai_exc:
                     oai_exc = OAIRecordExc(oai_identifier=oai_identifier, traceback=exc,
-                                              oai_sync_id=self.oai_sync.id)
+                                           oai_sync_id=self.oai_sync.id)
                     db.session.add(oai_exc)
                 else:
                     oai_exc.traceback = exc
@@ -151,6 +153,12 @@ class OAISynchronizer(OAIDBBase):
         :return:
         :rtype:
         """
+        oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
+        if oai_rec:
+            our_datestamp = pytz.UTC.localize(oai_rec.timestamp)
+            oai_record_datestamp = isoparse(datestamp)
+            if our_datestamp >= oai_record_datestamp:
+                return
         xml = self.get_xml(oai_identifier)
         parsed = self.parse(xml)
         transformed = self.transform(parsed)
@@ -158,7 +166,6 @@ class OAISynchronizer(OAIDBBase):
         if self.validation_handler:
             self.validation_handler(transformed)
 
-        oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
         if oai_rec is None:
             transformed = self.attach_id(transformed)
             record = self.create_record(transformed)
