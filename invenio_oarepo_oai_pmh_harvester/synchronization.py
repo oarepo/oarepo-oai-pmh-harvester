@@ -158,6 +158,7 @@ class OAISynchronizer(OAIDBBase):
             our_datestamp = pytz.UTC.localize(oai_rec.timestamp)
             oai_record_datestamp = isoparse(datestamp)
             if our_datestamp >= oai_record_datestamp:
+                oai_logger.info(f'Record with oai_identifier "{oai_identifier}" already exists')
                 return
         xml = self.get_xml(oai_identifier)
         parsed = self.parse(xml)
@@ -188,7 +189,6 @@ class OAISynchronizer(OAIDBBase):
             oai_logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
         oai_rec.last_sync_id = self.oai_sync.id
         oai_rec.timestamp = datestamp
-        oai_logger.debug(f"RECORD BEFORE INDEX: {record}")
         nusl_theses.index_draft_record(record)
 
     def transform(self, parsed, handler=None):

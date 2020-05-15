@@ -28,9 +28,11 @@ def import_uk(start, start_oai, break_on_error):
     for _ in ("elasticsearch", "urllib3"):
         logging.getLogger(_).setLevel(logging.CRITICAL)
     uk_provider = OAIProvider.query.filter_by(code="uk").one_or_none()
+    SERVER_NAME = current_app.config["SERVER_NAME"]
+    print("SERVER_NAME", SERVER_NAME)
     constant_fields = {
-        "provider": {"$ref": "http://127.0.0.1:5000/api/taxonomies/institutions/00216208/"},
-        "accessRights": {"$ref": "http://127.0.0.1:5000/api/taxonomies/accessRights/c_abf2/"},
+        "provider": {"$ref": f"http://{SERVER_NAME}/api/taxonomies/institutions/00216208/"},
+        "accessRights": {"$ref": f"http://{SERVER_NAME}/api/taxonomies/accessRights/c_abf2/"},
         "accessibility": [{"lang": "cze", "value": "Dostupné v digitálním repozitáři UK."}, {
             "lang": "eng", "value": "Available in the Charles University Digital Repository."
         }]
