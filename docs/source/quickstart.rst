@@ -15,6 +15,9 @@ Migration
 Before synchronizing our resources with the remote server,
 it is necessary to migrate data about records and their persistent identifiers.
 
+Records migration
+------------------
+
 Records are migrated by the **OAIMigration class**. The class needs two parameters. The first parameter is a **handler**
 that extracts its ID from the record, and the second parameter is an instance of the **OAIProvider class**.
 
@@ -62,3 +65,46 @@ The most important part of the code is these two lines:
 
     migrator = OAIMigration(handler=oai_id_handler, provider=provider)
     migrator.run()
+
+Persistent ID migration
+------------------------
+
+We leave the migration of persistent identifiers to the user. Here we give an example of PID migration, where we use RecordIdentifier from Invenio.
+
+.. code-block:: python
+
+    @migration.command('pid')
+    @cli.with_appcontext
+    def migrate_old_pid():
+    records = RecordMetadata.query.paginate()
+    while_condition = True
+    idx = 0
+    try:
+        while while_condition:
+            for record in records.items:
+                idx += 1
+                pid = record.json["id"]
+                recid = RecordIdentifier.query.get(pid)
+                if recid:
+                    continue
+                recid = RecordIdentifier(recid=pid)
+                db.session.add(recid)
+                print(f"{idx}. {pid} has been added")
+                if idx % 100 == 0:  # pragma: no cover
+                    db.session.commit()
+                    print("Session was commited")
+            while_condition = records.has_next
+            records = records.next()
+    except IntegrityError: # pragma: no cover
+        db.session.rollback()
+        raise
+    else:
+        db.session.commit()
+    finally:
+        db.session.commit()
+
+
+OAI Synchronization
+====================
+
+bla
