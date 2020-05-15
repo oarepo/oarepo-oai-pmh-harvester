@@ -1,11 +1,12 @@
 import uuid
 
 from invenio_db import db
-from invenio_oarepo_oai_pmh_harvester import registry
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType, JSONType
+
+from invenio_oarepo_oai_pmh_harvester import registry
 
 
 class OAIRecord(db.Model):
@@ -94,7 +95,8 @@ class OAIProvider(db.Model):
     def get_parsers(self):
         return registry.parsers.get(self.code) or {}
 
-    def get_rules(self, parser_name):
+    @staticmethod
+    def get_rules(parser_name):
         return registry.rules.get(parser_name)
 
 

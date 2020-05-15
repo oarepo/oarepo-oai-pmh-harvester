@@ -25,7 +25,8 @@ install_requires = [
     'jmespath',
     'prettytable',
     'flask',
-    'sqlalchemy'
+    'sqlalchemy',
+    'invenio-records'
 ]
 
 packages = find_packages()

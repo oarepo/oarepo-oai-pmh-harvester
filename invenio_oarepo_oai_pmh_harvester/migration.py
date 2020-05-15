@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 from typing import Callable
 
@@ -15,9 +14,7 @@ class OAIMigration(OAIDBBase):
         super().__init__(provider)
         self.handler = handler
 
-    def synchronize(self, start_oai: str = None, start_id: int = None):
-        for _ in ("elasticsearch", "urllib3"):
-            logging.getLogger(_).setLevel(logging.CRITICAL)
+    def synchronize(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
         state = {
             "added": 0,
             "skipped": 0,
@@ -35,7 +32,8 @@ class OAIMigration(OAIDBBase):
                     oai_identifier = self.handler(record.json)
                     if not oai_identifier:  # pragma: no cover
                         print(
-                            f'{idx}. Record "{record.json["id"]}" does not contain oai_id and has been '
+                            f'{idx}. Record "{record.json["id"]}" does not contain oai_id and has '
+                            f'been '
                             f'skiped')
                         state["skipped"] += 1
                         continue
@@ -51,7 +49,8 @@ class OAIMigration(OAIDBBase):
                                            nusl_id=record.json["id"])
                     db.session.add(oai_record)
                     print(
-                        f'{idx}. Record with oai_id "{oai_identifier}" and nusl_id "{record.json["id"]}" '
+                        f'{idx}. Record with oai_id "{oai_identifier}" and nusl_id "'
+                        f'{record.json["id"]}" '
                         f'has '
                         f'been added')
                     state["added"] += 1
