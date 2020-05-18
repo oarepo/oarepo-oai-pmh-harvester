@@ -67,7 +67,7 @@ class OAISynchronizer(OAIDBBase):
     def synchronize(self,
                     identifiers=None,
                     start_oai: str = None,
-                    start_id: int = None,
+                    start_id: int = 0,
                     break_on_error: bool = True):
         """
 
