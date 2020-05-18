@@ -20,7 +20,10 @@ def test_run(app, test_db, migrate_provider):
 
 def test_run_failed(app, test_db, migrate_provider):
     class OAIDBBaseFailed(OAIDBBase):
-        def synchronize(self):
+        def synchronize(self,
+                        start_oai: str = None,
+                        start_id: int = None,
+                        break_on_error: bool = True):
             assert False, "Testing exception handling"
 
     base = OAIDBBaseFailed(migrate_provider)

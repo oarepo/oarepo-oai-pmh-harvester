@@ -18,17 +18,17 @@ def test_init(app, test_db, migrate_provider):
 
 
 def test_delete(migrate_provider):
-    def delete_handler(oai_identifier, datestamp):
+    def delete_handler(oai_identifier):
         pass
 
     synchronizer = OAISynchronizer(migrate_provider, delete_record=delete_handler)
-    synchronizer.delete("bla", datetime.utcnow())
+    synchronizer.delete("bla")
 
 
 def test_delete_2(migrate_provider):
     synchronizer = OAISynchronizer(migrate_provider)
     with pytest.raises(HandlerNotFoundError):
-        synchronizer.delete("bla", datetime.utcnow())
+        synchronizer.delete("bla")
 
 
 def test_synchronize_delete(migrate_provider):
