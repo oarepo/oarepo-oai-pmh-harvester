@@ -7,9 +7,11 @@ Welcome to Invenio-Oarepo-OAI-PMH-Harvester's documentation!
 ============================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
+   installation_
+   quickstart
    databases
 
 

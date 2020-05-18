@@ -102,6 +102,6 @@ class OAIProvider(db.Model):
 
 class OAIRecordExc(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    oai_identifier = db.Column(db.String, unique=True, nullable=False)
+    oai_identifier = db.Column(db.String, nullable=False)
     traceback = db.Column(db.Text(), nullable=True)
     oai_sync_id = db.Column(db.Integer, ForeignKey('oarepo_oai_sync.id'))
