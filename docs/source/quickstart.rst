@@ -328,3 +328,66 @@ Example of whole rule function:
 The rule function must return the **OAITransformer.PROCESSED** constant. If it does not return it, the transformer throws
 a ValueError exception with a path description in the source JSON file. So all paths must have their function rules
 or be listed in the initializer when synchronizing as unhandled_paths.
+
+Handlers
+---------
+
+The library leaves absolute freedom to the user how to handle new, changed and deleted records. The user must provide
+the library with three handlers for creating, updating, and deleting a record.
+
+#. Create record handler:
+
+    The function must take a metadata argument, which is a python dictionary, and return a
+    Record instance (Invenio-Records). Optionally, the function can take the type of a persistent identifier.
+
+    Example of create handler:
+
+    .. code-block:: python
+
+        def create_draft_record(record: dict, pid_type=None, pid_value=None):
+            if not pid_type:
+                pid_type = "dnusl"
+            if not pid_value:
+                pid_value = record["id"]
+            id = uuid.uuid4()
+            pid = PersistentIdentifier.create(
+                pid_type,
+                pid_value,
+                pid_provider=None,
+                object_type="rec",
+                object_uuid=id,
+                status=PIDStatus.REGISTERED,
+            )
+            db_record = DraftThesisRecord.create(record, id_=id)
+            return db_record
+
+#. Update record handler:
+
+    The function must take the existing record (Invenio-Record) and metadata (python dictionary) as arguments and must return again (Invenio-Record).
+
+    Example function:
+
+    .. code-block:: python
+
+        def update_draft_record(existing_record, record):
+            previous_id = existing_record['id']
+            previous_identifier = existing_record['identifier']
+            existing_record.clear()
+            existing_record['id'] = previous_id
+            existing_record['identifier'] = previous_identifier
+            for k, v in record.items():
+                existing_record[k] = v
+            existing_record.commit()
+            db_record = existing_record
+            return db_record
+
+#. Delete record handler
+
+    The function must take an existing record (Invenio-Record) as an argument and must return None. The function must take care of deleting the record.
+
+    Example function:
+
+    .. code-block:: python
+
+        def delete_draft_record(record: Record):
+            record.delete()
