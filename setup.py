@@ -60,6 +60,7 @@ setup(
         ],
         'flask.commands': [
             'nusl = example.cli:nusl',
+            'oai = invenio_oarepo_oai_pmh_harvester.cli:oai'
         ],
         'invenio_oarepo_oai_pmh_harvester.parsers': [
             'xoai = example.parser'
