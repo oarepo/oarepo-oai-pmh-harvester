@@ -1,5 +1,5 @@
 ===============================
-Invenio-NUSL-OAI-PMH Harvester
+invenio-oarepo-oai-pmh-harvester
 ===============================
 
 .. image:: https://readthedocs.org/projects/invenio-oarepo-oai-pmh-harvester/badge/?version=latest
