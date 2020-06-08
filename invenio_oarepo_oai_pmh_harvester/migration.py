@@ -46,7 +46,7 @@ class OAIMigration(OAIDBBase):
                     oai_record = OAIRecord(oai_identifier=oai_identifier,
                                            timestamp=datetime.utcnow(),
                                            metadata_record=record,
-                                           nusl_id=record.json["id"])
+                                           pid=record.json["id"])
                     db.session.add(oai_record)
                     print(
                         f'{idx}. Record with oai_id "{oai_identifier}" and nusl_id "'

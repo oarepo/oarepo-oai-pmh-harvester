@@ -1,11 +1,14 @@
 import random
 from datetime import datetime
+from pprint import pprint
 from unittest.mock import MagicMock
 
 import pytest
+from requests import ConnectionError
 from sickle import Sickle
 from sickle.iterator import OAIItemIterator
 
+from invenio_nusl_theses.proxies import nusl_theses
 from invenio_oarepo_oai_pmh_harvester.exceptions import HandlerNotFoundError
 from invenio_oarepo_oai_pmh_harvester.models import OAISync
 from invenio_oarepo_oai_pmh_harvester.register import Decorators
@@ -51,7 +54,7 @@ def test_synchronize_create(migrate_provider, record_xml, sample_record):
         xml = record_xml
 
     def create_handler(*args, **kwargs):
-        return sample_record.id
+        return sample_record
 
     @Decorators.parser("test_parser", "nusl")
     def parser(*args, **kwargs):
@@ -61,8 +64,11 @@ def test_synchronize_create(migrate_provider, record_xml, sample_record):
             "language": ["cze", "eng"]
         }
 
-    synchronizer = OAISynchronizer(migrate_provider, parser_name="test_parser",
-                                   create_record=create_handler)
+    synchronizer = OAISynchronizer(migrate_provider,
+                                   parser_name="test_parser",
+                                   create_record=create_handler,
+                                   id_handler=nusl_theses.attach_id
+                                   )
     synchronizer.sickle.GetRecord = MagicMock(return_value=Record())
     synchronizer.transformer.transform = MagicMock(return_value={
         "id": "1",
@@ -70,19 +76,26 @@ def test_synchronize_create(migrate_provider, record_xml, sample_record):
         "language": ["cze", "eng"]
     })
     synchronizer.oai_sync = OAISync(provider_id=migrate_provider.id)
-    synchronizer.update("bla", datetime.utcnow())
+    record = synchronizer.update("bla", datetime.utcnow())
+    assert record == {'id': '1', 'identifier': [{'value': 'oai:server:id', 'type': 'originalOAI'}]}
 
 
 def test_get_oai_identifiers(migrate_provider):
     oai_sync = OAISynchronizer(migrate_provider)
-    results = oai_sync._get_oai_identifiers()
-    assert isinstance(results, OAIItemIterator)
+    try:
+        results = oai_sync._get_oai_identifiers()
+        assert isinstance(results, OAIItemIterator)
+    except ConnectionError:
+        pytest.skip("Connection error")
 
 
 def test_get_oai_identifiers_2(migrate_provider):
     oai_sync = OAISynchronizer(migrate_provider)
-    results = oai_sync._get_oai_identifiers(
-        sickle=Sickle("https://invenio.nusl.cz/oai2d/"),
-        metadata_prefix="marcxml",
-    )
-    assert isinstance(results, OAIItemIterator)
+    try:
+        results = oai_sync._get_oai_identifiers(
+            sickle=Sickle("https://invenio.nusl.cz/oai2d/"),
+            metadata_prefix="marcxml",
+        )
+        assert isinstance(results, OAIItemIterator)
+    except ConnectionError:
+        pytest.skip("Connection error")

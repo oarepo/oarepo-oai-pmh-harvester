@@ -36,6 +36,7 @@ class OAISynchronizer(OAIDBBase):
             create_record: Callable = None,
             delete_record: Callable = None,
             update_record: Callable = None,
+            id_handler: Callable = None,
             pid_type: str = None,
             oai_identifiers: List[str] = None
     ):
@@ -54,6 +55,7 @@ class OAISynchronizer(OAIDBBase):
         self.update_record_handler = update_record
         self.delete_record_handler = delete_record
         self.oai_identifiers = oai_identifiers
+        self.id_handler = id_handler
 
     def run(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
         """
@@ -76,13 +78,7 @@ class OAISynchronizer(OAIDBBase):
         """
         oai_logger.info(f"OAI harvester on endpoint: {self.provider.oai_endpoint} has started!")
 
-        if identifiers is None:
-            if self.oai_identifiers is None:
-                identifiers = self._get_oai_identifiers()
-            else:
-                identifiers = self._get_oai_identifiers(identifiers_list=self.oai_identifiers)
-
-        identifiers = islice(identifiers, start_id, None)
+        identifiers = self._get_identifiers(identifiers, start_id)
         collect = False
         for idx, identifier in enumerate(identifiers, start=start_id):
             oai_logger.info(f"{idx}. Record, OAI ID: '{identifier}'")
@@ -90,7 +86,7 @@ class OAISynchronizer(OAIDBBase):
             oai_identifier = identifier.identifier
             if not start_oai or oai_identifier == start_oai:
                 collect = True
-            if not collect:
+            if not collect: # pragma: no cover
                 continue
             deleted = identifier.deleted
             try:
@@ -98,7 +94,8 @@ class OAISynchronizer(OAIDBBase):
                     self._delete(identifier, oai_identifier)
                 else:
                     try:
-                        self.update(oai_identifier, datestamp)
+                        record = self.update(oai_identifier, datestamp)
+                        self.index_record(record)
                     except IdDoesNotExist:
                         self._delete(identifier, oai_identifier)
                 if idx % 100:
@@ -118,6 +115,15 @@ class OAISynchronizer(OAIDBBase):
                 if break_on_error:
                     raise
                 continue
+
+    def _get_identifiers(self, identifiers=None, start_id: int = 0):
+        if identifiers is None:
+            if self.oai_identifiers is None:
+                identifiers = self._get_oai_identifiers()
+            else:
+                identifiers = self._get_oai_identifiers(identifiers_list=self.oai_identifiers)
+        identifiers = islice(identifiers, start_id, None)
+        return identifiers
 
     def _delete(self, identifier, oai_identifier):
         self.delete(oai_identifier)
@@ -164,17 +170,18 @@ class OAISynchronizer(OAIDBBase):
         parsed = self.parse(xml)
         transformed = self.transform(parsed)
         transformed.update(self.provider.constant_fields)
+        if self.id_handler:
+            transformed = self.get_ids(transformed, oai_rec)
         if self.validation_handler:
             self.validation_handler(transformed)
 
         if oai_rec is None:
-            transformed = self.attach_id(transformed)
             record = self.create_record(transformed)
             oai_rec = OAIRecord(
                 id=record.id,
                 oai_identifier=oai_identifier,
                 creation_sync_id=self.oai_sync.id,
-                nusl_id=transformed["id"]
+                pid=transformed["id"]
             )
             self.created += 1
             db.session.add(oai_rec)
@@ -182,13 +189,16 @@ class OAISynchronizer(OAIDBBase):
                 f"Identifier '{oai_identifier}' has been created and '{record.id}' has been "
                 f"assigned as a UUID")
         else:
-            transformed = self.attach_id(transformed, nusl_id=oai_rec.nusl_id)
             record = self.update_record(transformed)
             self.modified += 1
             oai_rec.modification_sync_id = self.oai_sync.id
             oai_logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
         oai_rec.last_sync_id = self.oai_sync.id
         oai_rec.timestamp = datestamp
+        return record
+
+    @staticmethod
+    def index_record(record):
         nusl_theses.index_draft_record(record)
 
     def transform(self, parsed, handler=None):
@@ -253,7 +263,7 @@ class OAISynchronizer(OAIDBBase):
             if not oai_record:
                 return
             record = nusl_theses.get_record_by_id(pid_type=self.pid_type,
-                                                  pid_value=oai_record.nusl_id)
+                                                  pid_value=oai_record.pid)
             self.delete_record_handler(record)
         else:
             raise HandlerNotFoundError(
@@ -270,13 +280,12 @@ class OAISynchronizer(OAIDBBase):
                 "There are records presents in database, but no OAIRecord found. Please ensure "
                 "that you run migration script")
 
-    @staticmethod
-    def attach_id(transformed, nusl_id=None):
-        if not nusl_id:
-            nusl_id = str(nusl_theses.get_new_pid())
-        transformed["id"] = nusl_id
-        transformed["identifier"].append({
-            "type": "nusl",
-            "value": nusl_id
-        })
-        return transformed
+    def get_ids(self, metadata, oai_record: OAIRecord = None):
+        if self.id_handler:
+            if oai_record:
+                return self.id_handler(metadata, pid_value=oai_record.pid)
+            else:
+                return self.id_handler(metadata)
+        else:
+            raise HandlerNotFoundError(
+                "Please specify ID handler during OAISynchronization instantiate")

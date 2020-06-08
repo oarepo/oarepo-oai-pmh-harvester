@@ -22,7 +22,7 @@ class OAIRecord(db.Model):
         unique=True,
         nullable=False
     )
-    nusl_id = db.Column(
+    pid = db.Column(
         db.String(),
         unique=True,
         nullable=False
