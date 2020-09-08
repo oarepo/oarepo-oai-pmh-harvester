@@ -9,10 +9,10 @@ from sickle import Sickle
 from sickle.iterator import OAIItemIterator
 
 from invenio_nusl_theses.proxies import nusl_theses
-from invenio_oarepo_oai_pmh_harvester.exceptions import HandlerNotFoundError
-from invenio_oarepo_oai_pmh_harvester.models import OAISync
-from invenio_oarepo_oai_pmh_harvester.register import Decorators
-from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
+from oarepo_oai_pmh_harvester.exceptions import HandlerNotFoundError
+from oarepo_oai_pmh_harvester.models import OAISync
+from oarepo_oai_pmh_harvester.register import Decorators
+from oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 
 
 def test_init(app, test_db, migrate_provider):

@@ -5,8 +5,8 @@ from flask import cli, current_app
 from invenio_db import db
 from invenio_nusl.cli import nusl
 from invenio_nusl_theses.proxies import nusl_theses
-from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
-from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
+from oarepo_oai_pmh_harvester.models import OAIProvider
+from oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 
 
 @nusl.group()

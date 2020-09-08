@@ -33,12 +33,12 @@ packages = find_packages()
 
 # Get the version string. Cannot be done with import!
 g = {}
-with open(os.path.join('invenio_oarepo_oai_pmh_harvester', 'version.py'), 'rt') as fp:
+with open(os.path.join('oarepo_oai_pmh_harvester', 'version.py'), 'rt') as fp:
     exec(fp.read(), g)
     version = g['__version__']
 
 setup(
-    name='invenio-oarepo-oai-pmh-harvester',
+    name='oarepo-oai-pmh-harvester',
     version=version,
     description=__doc__,
     # long_description=,
@@ -53,32 +53,33 @@ setup(
     platforms='any',
     entry_points={
         'invenio_db.models': [
-            'invenio_oarepo_oai_pmh_harvester = invenio_oarepo_oai_pmh_harvester.models',
+            'oarepo_oai_pmh_harvester = oarepo_oai_pmh_harvester.models',
         ],
         'invenio_db.alembic': [
-            'invenio_oarepo_oai_pmh_harvester = invenio_oarepo_oai_pmh_harvester:alembic',
+            'oarepo_oai_pmh_harvester = oarepo_oai_pmh_harvester:alembic',
         ],
         'flask.commands': [
             'nusl = example.cli:nusl',
-            'oai = invenio_oarepo_oai_pmh_harvester.cli:oai'
-        ],
-        'invenio_oarepo_oai_pmh_harvester.parsers': [
-            'xoai = example.parser'
-        ],
-        'invenio_oarepo_oai_pmh_harvester.rules': [
-            'abstract = example.rules.uk.abstract',
-            'contributor = example.rules.uk.contributor',
-            'creator = example.rules.uk.creator',
-            'date_accepted = example.rules.uk.date_accepted',
-            'defended = example.rules.uk.defended',
-            'degree_grantor = example.rules.uk.degree_grantor',
-            'doctype = example.rules.uk.doctype',
-            'identifier = example.rules.uk.identifier',
-            'language = example.rules.uk.language',
-            'study_field = example.rules.uk.study_field',
-            'subject = example.rules.uk.subject',
-            'title = example.rules.uk.title',
+            'oai = oarepo_oai_pmh_harvester.cli:oai'
         ]
+        # TODO: přesunout do example
+        # 'oarepo_oai_pmh_harvester.parsers': [
+        #     'xoai = example.parser'
+        # ],
+        # 'oarepo_oai_pmh_harvester.rules': [
+        #     'abstract = example.rules.uk.abstract',
+        #     'contributor = example.rules.uk.contributor',
+        #     'creator = example.rules.uk.creator',
+        #     'date_accepted = example.rules.uk.date_accepted',
+        #     'defended = example.rules.uk.defended',
+        #     'degree_grantor = example.rules.uk.degree_grantor',
+        #     'doctype = example.rules.uk.doctype',
+        #     'identifier = example.rules.uk.identifier',
+        #     'language = example.rules.uk.language',
+        #     'study_field = example.rules.uk.study_field',
+        #     'subject = example.rules.uk.subject',
+        #     'title = example.rules.uk.title',
+        # ]
     },
     extras_require=extras_require,
     install_requires=install_requires,

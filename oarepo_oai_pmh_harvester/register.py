@@ -2,8 +2,8 @@ import functools
 
 from pkg_resources import iter_entry_points
 
-from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
-from invenio_oarepo_oai_pmh_harvester.utils import infinite_dd
+from oarepo_oai_pmh_harvester.transformer import OAITransformer
+from oarepo_oai_pmh_harvester.utils import infinite_dd
 
 
 class Singleton:
@@ -17,8 +17,8 @@ class Singleton:
 
 class Registry(Singleton):
     def __init__(self):
-        self.parsers_ep = "invenio_oarepo_oai_pmh_harvester.parsers"
-        self.rules_ep = "invenio_oarepo_oai_pmh_harvester.rules"
+        self.parsers_ep = "oarepo_oai_pmh_harvester.parsers"
+        self.rules_ep = "oarepo_oai_pmh_harvester.rules"
         self.parsers = infinite_dd()
         self.rules = infinite_dd()
 

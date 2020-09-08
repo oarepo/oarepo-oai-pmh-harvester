@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from invenio_oarepo_oai_pmh_harvester.register import Decorators
+from oarepo_oai_pmh_harvester.register import Decorators
 
 
 def xml_to_dict_xoai(tree):

@@ -1,7 +1,7 @@
 from invenio_initial_theses_conversion.rules.marc21.bd7102 import get_degree_grantor
 
-from invenio_oarepo_oai_pmh_harvester.register import Decorators
-from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
+from oarepo_oai_pmh_harvester.register import Decorators
+from oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 
 @Decorators.rule('xoai')

@@ -1,6 +1,6 @@
 import pytest
 
-from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
+from oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 
 def test_init():

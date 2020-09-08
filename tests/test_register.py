@@ -1,7 +1,7 @@
 from pprint import pprint
 
-from invenio_oarepo_oai_pmh_harvester import registry
-from invenio_oarepo_oai_pmh_harvester.register import Decorators
+from oarepo_oai_pmh_harvester import registry
+from oarepo_oai_pmh_harvester.register import Decorators
 
 
 def test_parser_decorator():

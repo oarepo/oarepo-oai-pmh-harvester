@@ -1,6 +1,6 @@
 from example.rules.utils import get_iso_lang_code
-from invenio_oarepo_oai_pmh_harvester.register import Decorators
-from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
+from oarepo_oai_pmh_harvester.register import Decorators
+from oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 
 @Decorators.rule('xoai')

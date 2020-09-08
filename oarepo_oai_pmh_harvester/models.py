@@ -6,7 +6,7 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType, JSONType
 
-from invenio_oarepo_oai_pmh_harvester import registry
+from oarepo_oai_pmh_harvester import registry
 
 
 class OAIRecord(db.Model):

@@ -5,8 +5,8 @@ from invenio_db import db
 from invenio_records.models import RecordMetadata
 from sqlalchemy.exc import IntegrityError
 
-from invenio_oarepo_oai_pmh_harvester.models import OAIRecord, OAIProvider
-from invenio_oarepo_oai_pmh_harvester.oai_base import OAIDBBase
+from oarepo_oai_pmh_harvester.models import OAIRecord, OAIProvider
+from oarepo_oai_pmh_harvester.oai_base import OAIDBBase
 
 
 class OAIMigration(OAIDBBase):

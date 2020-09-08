@@ -1,4 +1,4 @@
-from invenio_oarepo_oai_pmh_harvester.version import __version__
+from oarepo_oai_pmh_harvester.version import __version__
 
 
 def test_version_1():

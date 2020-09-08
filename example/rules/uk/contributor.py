@@ -1,5 +1,5 @@
 from example.rules.utils import get_ref
-from invenio_oarepo_oai_pmh_harvester.register import Decorators
+from oarepo_oai_pmh_harvester.register import Decorators
 
 
 @Decorators.rule("xoai")

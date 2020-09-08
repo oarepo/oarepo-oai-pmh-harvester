@@ -11,12 +11,12 @@ from sickle import Sickle
 from sickle.oaiexceptions import IdDoesNotExist
 
 from invenio_nusl_theses.proxies import nusl_theses
-from invenio_oarepo_oai_pmh_harvester import registry
-from invenio_oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError, HandlerNotFoundError, \
+from oarepo_oai_pmh_harvester import registry
+from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError, HandlerNotFoundError, \
     NoMigrationError
-from invenio_oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc)
-from invenio_oarepo_oai_pmh_harvester.oai_base import OAIDBBase
-from invenio_oarepo_oai_pmh_harvester.transformer import OAITransformer
+from oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc)
+from oarepo_oai_pmh_harvester.oai_base import OAIDBBase
+from oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)

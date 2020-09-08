@@ -1,7 +1,7 @@
 import pytest
 
-from invenio_oarepo_oai_pmh_harvester.models import OAISync
-from invenio_oarepo_oai_pmh_harvester.oai_base import OAIDBBase
+from oarepo_oai_pmh_harvester.models import OAISync
+from oarepo_oai_pmh_harvester.oai_base import OAIDBBase
 
 
 def test_init(app, test_db, migrate_provider):

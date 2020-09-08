@@ -1,6 +1,6 @@
 import pytest
 
-from invenio_oarepo_oai_pmh_harvester.exceptions import EndPointNotFoundError, \
+from oarepo_oai_pmh_harvester.exceptions import EndPointNotFoundError, \
     PrefixNotFoundError, \
     ProviderNotFoundError, RuleRequiredError, ParserNotFoundError, HandlerNotFoundError
 

@@ -5,7 +5,7 @@ from click import STRING, File
 from flask import cli
 from invenio_db import db
 
-from invenio_oarepo_oai_pmh_harvester.models import OAIProvider
+from oarepo_oai_pmh_harvester.models import OAIProvider
 
 
 @click.group()

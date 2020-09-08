@@ -25,8 +25,8 @@ from sqlalchemy_utils import create_database, database_exists
 
 from flask_taxonomies_es import FlaskTaxonomiesES
 from invenio_nusl_theses import InvenioNUSLTheses
-from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAIRecord, OAISync
-from invenio_oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
+from oarepo_oai_pmh_harvester.models import OAIProvider, OAIRecord, OAISync
+from oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 
 
 @pytest.yield_fixture()

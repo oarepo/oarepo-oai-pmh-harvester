@@ -3,7 +3,7 @@ from datetime import datetime
 
 from invenio_db import db
 
-from invenio_oarepo_oai_pmh_harvester.models import OAIProvider, OAISync
+from oarepo_oai_pmh_harvester.models import OAIProvider, OAISync
 
 
 class OAIDBBase:

@@ -1,5 +1,5 @@
-from invenio_oarepo_oai_pmh_harvester.migration import OAIMigration
-from invenio_oarepo_oai_pmh_harvester.models import OAIRecord
+from oarepo_oai_pmh_harvester.migration import OAIMigration
+from oarepo_oai_pmh_harvester.models import OAIRecord
 
 
 def test_migrate(app, test_db, sample_record, migrate_provider):
