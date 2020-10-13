@@ -16,9 +16,8 @@ def test_init_2():
 
 
 def test_iter_json_1():
-    def transform_handler(paths, el, results, phase, **kwargs):
-        results[0]["spam"] = el
-        return OAITransformer.PROCESSED
+    def transform_handler(el, **kwargs):
+        return {"spam": el}
 
     record = {
         "path": {
@@ -39,10 +38,8 @@ def test_iter_json_1():
 
 
 def test_iter_json_2():
-    def transform_handler(paths, el, results, phase, **kwargs):
-        results[-1].setdefault("spam", [])
-        results[-1]["spam"].append(el)
-        return OAITransformer.PROCESSED
+    def transform_handler(el, **kwargs):
+        return {"spam": el}
 
     record = {
         "path": {
