@@ -10,13 +10,10 @@ from invenio_records.models import RecordMetadata
 from sickle import Sickle
 from sickle.oaiexceptions import IdDoesNotExist
 
-from invenio_nusl_theses.proxies import nusl_theses
-from oarepo_oai_pmh_harvester import registry
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError, HandlerNotFoundError, \
     NoMigrationError
 from oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc)
 from oarepo_oai_pmh_harvester.oai_base import OAIDBBase
-from oarepo_oai_pmh_harvester.transformer import OAITransformer
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
@@ -30,32 +27,17 @@ class OAISynchronizer(OAIDBBase):
     def __init__(
             self,
             provider: OAIProvider,
-            parser_name: str = None,
-            unhandled_paths: set = None,
-            validation: Callable = None,
-            create_record: Callable = None,
-            delete_record: Callable = None,
-            update_record: Callable = None,
-            id_handler: Callable = None,
-            pid_type: str = None,
+            parser: Callable = None,
+            transformer=None,
             oai_identifiers: List[str] = None
     ):
         super().__init__(provider)
-        self.pid_type = pid_type
         self.provider = provider
         self.oai_sync = None
         self.sickle = Sickle(self.provider.oai_endpoint)
-        registry.load()
-        self.parsers = provider.get_parsers()
-        self.rules = provider.get_rules(parser_name) or {}
-        self.parser = self.parsers.get(parser_name) or {}
-        self.transformer = OAITransformer(self.rules, unhandled_paths=unhandled_paths)
-        self.validation_handler = validation
-        self.create_record_handler = create_record
-        self.update_record_handler = update_record
-        self.delete_record_handler = delete_record
+        self.parser = parser
+        self.transformer = transformer
         self.oai_identifiers = oai_identifiers
-        self.id_handler = id_handler
 
     def run(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
         """
@@ -63,7 +45,7 @@ class OAISynchronizer(OAIDBBase):
         :return:
         :rtype:
         """
-        self.ensure_migration()
+        # self.ensure_migration() TODO: dovyřešit
         super().run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
 
     def synchronize(self,
@@ -197,9 +179,9 @@ class OAISynchronizer(OAIDBBase):
         oai_rec.timestamp = datestamp
         return record
 
-    @staticmethod
-    def index_record(record):
-        nusl_theses.index_draft_record(record)
+    # @staticmethod
+    # def index_record(record):
+    #     nusl_theses.index_draft_record(record)
 
     def transform(self, parsed, handler=None):
         if not handler:
@@ -242,13 +224,13 @@ class OAISynchronizer(OAIDBBase):
         :return:
         :rtype:
         """
-        if self.update_record_handler:
-            existing_record = nusl_theses.get_record_by_id(self.pid_type, metadata["id"])
-            return self.update_record_handler(existing_record, metadata)
-        else:
-            raise HandlerNotFoundError(
-                'Please specify update handler during initialization. Must specify '
-                '"update_record" named parameter')
+        # if self.update_record_handler:
+        #     existing_record = nusl_theses.get_record_by_id(self.pid_type, metadata["id"])
+        #     return self.update_record_handler(existing_record, metadata)
+        # else:
+        #     raise HandlerNotFoundError(
+        #         'Please specify update handler during initialization. Must specify '
+        #         '"update_record" named parameter')
 
     def delete(self, oai_identifier):
         """
@@ -258,17 +240,17 @@ class OAISynchronizer(OAIDBBase):
         :return:
         :rtype:
         """
-        if self.delete_record_handler:
-            oai_record = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
-            if not oai_record:
-                return
-            record = nusl_theses.get_record_by_id(pid_type=self.pid_type,
-                                                  pid_value=oai_record.pid)
-            self.delete_record_handler(record)
-        else:
-            raise HandlerNotFoundError(
-                'Please specify delete handler during initialization. Must specify '
-                '"delete_record" named parameter')
+        # if self.delete_record_handler:
+        #     oai_record = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
+        #     if not oai_record:
+        #         return
+        #     record = nusl_theses.get_record_by_id(pid_type=self.pid_type,
+        #                                           pid_value=oai_record.pid)
+        #     self.delete_record_handler(record)
+        # else:
+        #     raise HandlerNotFoundError(
+        #         'Please specify delete handler during initialization. Must specify '
+        #         '"delete_record" named parameter')
 
     @staticmethod
     def ensure_migration():

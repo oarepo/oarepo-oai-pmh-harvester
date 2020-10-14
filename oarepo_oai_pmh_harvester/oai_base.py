@@ -8,6 +8,8 @@ from oarepo_oai_pmh_harvester.models import OAIProvider, OAISync
 
 class OAIDBBase:
     def __init__(self, provider: OAIProvider):
+        # TODO: předělat deleted, created a modified, aby se při každé synchronizaci vynulovali,
+        #  momentálně pojede instance celou dobu se serverem
         self.provider = provider
         self.deleted = 0
         self.created = 0

@@ -6,7 +6,6 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType, JSONType
 
-from oarepo_oai_pmh_harvester import registry
 
 
 class OAIRecord(db.Model):
@@ -91,13 +90,20 @@ class OAIProvider(db.Model):
         default=lambda: dict(),
         nullable=True
     )
+    unhandled_paths = db.Column(
+        db.JSON().with_variant(
+            postgresql.JSONB(none_as_null=True),
+            'postgresql',
+        ).with_variant(
+            JSONType(),
+            'sqlite',
+        ).with_variant(
+            JSONType(),
+            'mysql',
+        ),
+        nullable=True
+    )
 
-    def get_parsers(self):
-        return registry.parsers.get(self.code) or {}
-
-    @staticmethod
-    def get_rules(parser_name):
-        return registry.rules.get(parser_name)
 
 
 class OAIRecordExc(db.Model):
