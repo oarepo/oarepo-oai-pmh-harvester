@@ -1,17 +1,18 @@
 import logging
 import traceback
+import uuid
 from itertools import islice
 from typing import Callable, List
 
 import pytz
 from dateutil.parser import isoparse
 from invenio_db import db
-from invenio_records.models import RecordMetadata
+from invenio_pidstore import current_pidstore
+from invenio_records_rest.utils import obj_or_import_string
 from sickle import Sickle
 from sickle.oaiexceptions import IdDoesNotExist
 
-from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError, HandlerNotFoundError, \
-    NoMigrationError
+from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc)
 from oarepo_oai_pmh_harvester.oai_base import OAIDBBase
 
@@ -19,6 +20,7 @@ oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
 
 
+# TODO: převést pod providera
 class OAISynchronizer(OAIDBBase):
     """
 
@@ -29,17 +31,25 @@ class OAISynchronizer(OAIDBBase):
             provider: OAIProvider,
             parser: Callable = None,
             transformer=None,
-            oai_identifiers: List[str] = None
+            oai_identifiers: List[str] = None,
+            endpoints=None,
+            default_endpoint: str = "recid",
+            endpoint_mapping=None
     ):
         super().__init__(provider)
+        if endpoint_mapping is None:
+            endpoint_mapping = {}
         self.provider = provider
         self.oai_sync = None
         self.sickle = Sickle(self.provider.oai_endpoint)
         self.parser = parser
         self.transformer = transformer
         self.oai_identifiers = oai_identifiers
+        self.endpoints = endpoints
+        self.default_endpoint = default_endpoint
+        self.endpoint_mapping = endpoint_mapping
 
-    def run(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
+    def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True):
         """
 
         :return:
@@ -68,7 +78,7 @@ class OAISynchronizer(OAIDBBase):
             oai_identifier = identifier.identifier
             if not start_oai or oai_identifier == start_oai:
                 collect = True
-            if not collect: # pragma: no cover
+            if not collect:  # pragma: no cover
                 continue
             deleted = identifier.deleted
             try:
@@ -76,8 +86,7 @@ class OAISynchronizer(OAIDBBase):
                     self._delete(identifier, oai_identifier)
                 else:
                     try:
-                        record = self.update(oai_identifier, datestamp)
-                        self.index_record(record)
+                        self.create_or_update(oai_identifier, datestamp)
                     except IdDoesNotExist:
                         self._delete(identifier, oai_identifier)
                 if idx % 100:
@@ -131,7 +140,7 @@ class OAISynchronizer(OAIDBBase):
         return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
                                       set=set_)
 
-    def update(self, oai_identifier, datestamp):
+    def create_or_update(self, oai_identifier, datestamp):
         """
 
         :param oai_identifier:
@@ -152,10 +161,6 @@ class OAISynchronizer(OAIDBBase):
         parsed = self.parse(xml)
         transformed = self.transform(parsed)
         transformed.update(self.provider.constant_fields)
-        if self.id_handler:
-            transformed = self.get_ids(transformed, oai_rec)
-        if self.validation_handler:
-            self.validation_handler(transformed)
 
         if oai_rec is None:
             record = self.create_record(transformed)
@@ -203,71 +208,67 @@ class OAISynchronizer(OAIDBBase):
                     "decorator @Decorators.parser or specify parser as function parameter.")
         return parser(xml_etree)
 
-    def create_record(self, metadata):
-        """
+    def create_record(self, data):
+        minter = self.get_minter()
+        record_class = self.get_record_class()
+        indexer_class = self.get_indexer_class()
 
-        :return:
-        :rtype:
-        """
-        if self.create_record_handler:
-            record = self.create_record_handler(metadata, pid_type=self.pid_type)
-            return record
-        else:
-            raise HandlerNotFoundError(
-                'Please specify create handler during initialization. Must specify '
-                '"create_record" named parameter')
+        # Create uuid for record
+        record_uuid = uuid.uuid4()
+        # Create persistent identifier
+        pid = minter(record_uuid, data=data)
+        # Create record
+        record = record_class.create(data, id_=record_uuid)
+
+        db.session.commit()
+
+        # Index the record
+        if indexer_class:
+            indexer_class().index(record)
+
+        return record
 
     def update_record(self, metadata):
-        """
-
-
-        :return:
-        :rtype:
-        """
-        # if self.update_record_handler:
-        #     existing_record = nusl_theses.get_record_by_id(self.pid_type, metadata["id"])
-        #     return self.update_record_handler(existing_record, metadata)
-        # else:
-        #     raise HandlerNotFoundError(
-        #         'Please specify update handler during initialization. Must specify '
-        #         '"update_record" named parameter')
+        # TODO:
+        pass
 
     def delete(self, oai_identifier):
-        """
-
-        :param oai_identifier:
-        :type oai_identifier:
-        :return:
-        :rtype:
-        """
-        # if self.delete_record_handler:
-        #     oai_record = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
-        #     if not oai_record:
-        #         return
-        #     record = nusl_theses.get_record_by_id(pid_type=self.pid_type,
-        #                                           pid_value=oai_record.pid)
-        #     self.delete_record_handler(record)
-        # else:
-        #     raise HandlerNotFoundError(
-        #         'Please specify delete handler during initialization. Must specify '
-        #         '"delete_record" named parameter')
+        # TODO:
+        pass
 
     @staticmethod
     def ensure_migration():
         # TODO: Zlepšit kontrolu zda proběhla migrace úspěšně
-        oai_record_count = OAIRecord.query.count()
-        records_count = RecordMetadata.query.count()
-        if records_count > 0 and oai_record_count == 0:
-            raise NoMigrationError(
-                "There are records presents in database, but no OAIRecord found. Please ensure "
-                "that you run migration script")
+        pass
+        # oai_record_count = OAIRecord.query.count()
+        # records_count = RecordMetadata.query.count()
+        # if records_count > 0 and oai_record_count == 0:
+        #     raise NoMigrationError(
+        #         "There are records presents in database, but no OAIRecord found. Please ensure "
+        #         "that you run migration script")
 
-    def get_ids(self, metadata, oai_record: OAIRecord = None):
-        if self.id_handler:
-            if oai_record:
-                return self.id_handler(metadata, pid_value=oai_record.pid)
-            else:
-                return self.id_handler(metadata)
-        else:
-            raise HandlerNotFoundError(
-                "Please specify ID handler during OAISynchronization instantiate")
+    def get_endpoint_config(self, data):
+        end_point_name = None
+        if not data:
+            data = {}
+        if self.endpoint_mapping:
+            end_point_name = self.endpoint_mapping["mapping"].get(
+                data.get(self.endpoint_mapping["field_name"]))
+        endpoint_config = self.endpoints.get(end_point_name) or self.endpoints.get(
+            self.default_endpoint)
+        return endpoint_config
+
+    def get_minter(self, data=None):
+        endpoint_config = self.get_endpoint_config(data)
+        minter_name = endpoint_config["pid_minter"]
+        return current_pidstore.minters.get(minter_name)
+
+    def get_record_class(self, data=None):
+        endpoint_config = self.get_endpoint_config(data)
+        record_class = endpoint_config["record_class"]
+        return obj_or_import_string(record_class)
+
+    def get_indexer_class(self, data=None):
+        endpoint_config = self.get_endpoint_config(data)
+        record_class = endpoint_config["indexer_class"]
+        return obj_or_import_string(record_class)

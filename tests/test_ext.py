@@ -12,3 +12,8 @@ def test_OArepoOAIClientState(app, db):
 def test_load_synchronizers(app, db):
     client = OArepoOAIClient(app)
     current_oai_client.load_synchronizers()
+
+
+def test_run(app, db):
+    client = OArepoOAIClient(app)
+    current_oai_client.run()

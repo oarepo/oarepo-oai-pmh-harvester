@@ -12,14 +12,16 @@ from .synchronization import OAISynchronizer
 
 class OArepoOAIClientState:
     def __init__(self, app, _rules: defaultdict = None, _parsers: defaultdict = None,
-                 _providers: dict = None, _synchronizers=None, transformer_class=OAITransformer):
+                 _providers: dict = None, _synchronizers=None, transformer_class=OAITransformer,
+                 _endpoints=None):
         self.app = app
         self._rules = _rules
         self._parsers = _parsers
         self._providers = _providers
         self._synchronizers = _synchronizers
         self.transformer_class = transformer_class
-        self.endpoints = app.config.get("RECORDS_REST_ENDPOINTS", {})
+        self._endpoints = _endpoints
+        print(self.endpoints)
 
     @property
     def providers(self):
@@ -45,6 +47,15 @@ class OArepoOAIClientState:
             self.load_synchronizers()
         return self._synchronizers
 
+    @property
+    def endpoints(self):
+        if not self._endpoints:
+            self.load_endpoints()
+        return self._endpoints
+
+    def load_endpoints(self):
+        self._endpoints = self.app.config.get("RECORDS_REST_ENDPOINTS", {})
+
     def _load_rules(self):
         for ep in iter_entry_points('oarepo_oai_pmh_harvester.rules'):
             ep.load()
@@ -60,11 +71,17 @@ class OArepoOAIClientState:
                 provider = OAIProvider.query.filter_by(code=k).one_or_none()
                 if provider:
                     continue
-                provider = OAIProvider(code=k, description=v.get("description"),
-                                       oai_endpoint=v.get("oai_endpoint"), set_=v.get("set"),
-                                       metadata_prefix=v.get("metadata_prefix"),
-                                       constant_fields=v.get("constant_fields", {}),
-                                       unhandled_paths=v.get("unhandled_paths", []))
+                provider = OAIProvider(
+                    code=k,
+                    description=v.get("description"),
+                    oai_endpoint=v.get("oai_endpoint"),
+                    set_=v.get("set"),
+                    metadata_prefix=v.get("metadata_prefix"),
+                    constant_fields=v.get("constant_fields", {}),
+                    unhandled_paths=v.get("unhandled_paths", []),
+                    default_endpoint=v.get("default_endpoint"),
+                    endpoint_mapping=v.get("endpoint_mapping")
+                )
                 if not self._providers:
                     self._providers = {}
                 self._providers.setdefault(k, provider)
@@ -97,12 +114,21 @@ class OArepoOAIClientState:
         providers = self.providers
         if not providers:
             raise Exception("No providers, please provide provider in config")
-        for k, v in self._providers.items():
+        for k, provider in self._providers.items():
             if not self._synchronizers:
                 self._synchronizers = {}
-            self._synchronizers.setdefault(k, OAISynchronizer(provider=v, parser=self.parsers[k][
-                v.metadata_prefix], transformer=self.transformer_class(
-                rules=self.rules[v.metadata_prefix], unhandled_paths=set(v.unhandled_paths))))
+            self._synchronizers.setdefault(k, OAISynchronizer(
+                provider=provider,
+                parser=self.parsers[k][provider.metadata_prefix],
+                transformer=self.transformer_class(
+                    rules=self.rules[provider.metadata_prefix],
+                    unhandled_paths=set(provider.unhandled_paths)),
+                endpoints=self.endpoints,
+                default_endpoint=provider.default_endpoint,
+                endpoint_mapping=provider.endpoint_mapping
+
+            )
+                                           )
         print(self._synchronizers)
 
     def run(self):
@@ -110,7 +136,8 @@ class OArepoOAIClientState:
         """
         Function that start OAI synchronization
         """
-        pass
+        for k, v in self.synchronizers.items():
+            v.run()
 
 
 class OArepoOAIClient:

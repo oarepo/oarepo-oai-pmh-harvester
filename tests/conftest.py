@@ -6,11 +6,74 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from flask import Flask
+from flask import Flask, current_app
+from flask_principal import Principal
+from invenio_access import InvenioAccess
+from invenio_accounts import InvenioAccounts
 from invenio_base.signals import app_loaded
 from invenio_db import InvenioDB
 from invenio_db import db as db_
+from invenio_indexer import InvenioIndexer
+from invenio_indexer.api import RecordIndexer
+from invenio_jsonschemas import InvenioJSONSchemas
+from invenio_pidstore import InvenioPIDStore
+from invenio_records import Record, InvenioRecords
+from invenio_records_rest import InvenioRecordsREST
+from invenio_records_rest.schemas.fields import SanitizedUnicode
+from invenio_records_rest.utils import PIDConverter
+from invenio_search import RecordsSearch, InvenioSearch
+from marshmallow import Schema
+from marshmallow.fields import Integer, Nested
 from sqlalchemy_utils import database_exists, drop_database, create_database
+
+
+class TestSchema(Schema):
+    """Test record schema."""
+    title = SanitizedUnicode()
+    pid = Integer()
+
+
+class TestRecord(Record):
+    """Reference enabled test record class."""
+    MARSHMALLOW_SCHEMA = TestSchema
+    VALIDATE_MARSHMALLOW = True
+    VALIDATE_PATCH = True
+
+    @property
+    def canonical_url(self):
+        SERVER_NAME = current_app.config["SERVER_NAME"]
+        return f"http://{SERVER_NAME}/api/records/{self['pid']}"
+        # return url_for('invenio_records_rest.recid_item',
+        #                pid_value=self['pid'], _external=True)
+
+
+RECORDS_REST_ENDPOINTS = {
+    'recid': dict(
+        pid_type='recid',
+        pid_minter='recid',
+        pid_fetcher='recid',
+        default_endpoint_prefix=True,
+        search_class=RecordsSearch,
+        indexer_class=RecordIndexer,
+        search_index='records',
+        search_type=None,
+        record_serializers={
+            'application/json': 'oarepo_validate:json_response',
+        },
+        search_serializers={
+            'application/json': 'oarepo_validate:json_search',
+        },
+        record_loaders={
+            'application/json': 'oarepo_validate:json_loader',
+        },
+        record_class=TestRecord,
+        list_route='/records/',
+        item_route='/records/<pid(recid):pid_value>',
+        default_media_type='application/json',
+        max_result_window=10000,
+        error_handlers=dict()
+    )
+}
 
 
 @pytest.yield_fixture(scope="module")
@@ -24,24 +87,25 @@ def app():
         SERVER_NAME='127.0.0.1:5000',
         INVENIO_INSTANCE_PATH=instance_path,
         DEBUG=True,
-        # in tests, api is not on /api but directly in the root
-        # PIDSTORE_RECID_FIELD='pid',
-        # FLASK_TAXONOMIES_URL_PREFIX='/2.0/taxonomies/',
-        # # RECORDS_REST_ENDPOINTS=RECORDS_REST_ENDPOINTS,
-        # CELERY_BROKER_URL='amqp://guest:guest@localhost:5672//',
-        # CELERY_TASK_ALWAYS_EAGER=True,
-        # CELERY_RESULT_BACKEND='cache',
-        # CELERY_CACHE_BACKEND='memory',
-        # CELERY_TASK_EAGER_PROPAGATES=True,
-        # SUPPORTED_LANGUAGES=["cs", "en"],
-        # ELASTICSEARCH_DEFAULT_LANGUAGE_TEMPLATE={
-        #     "type": "text",
-        #     "fields": {
-        #         "keywords": {
-        #             "type": "keyword"
-        #         }
-        #     }
-        # }
+        OAREPO_OAI_PROVIDERS={
+            "uk": {
+                "description": "Univerzita Karlova",
+                "oai_endpoint": "https://dspace.cuni.cz/oai/nusl",
+                "set": "nusl_set",
+                "metadata_prefix": "xoai",
+                "unhandled_paths": ["/example/path"],
+                "default_endpoint": "recid",
+                "use_default_endpoint": True,
+                "endpoint_mapping": {
+                    "field_name": "doc_type",
+                    "mapping": {
+                        "record": "recid"
+                    }
+                }
+            }
+        },
+        RECORDS_REST_ENDPOINTS=RECORDS_REST_ENDPOINTS,
+        PIDSTORE_RECID_FIELD='pid'
     )
 
     app.secret_key = 'changeme'
@@ -49,20 +113,20 @@ def app():
 
     InvenioDB(app)
     # OARepoReferences(app)
-    # InvenioAccounts(app)
-    # InvenioAccess(app)
-    # Principal(app)
-    # InvenioJSONSchemas(app)
-    # InvenioSearch(app)
-    # InvenioIndexer(app)
+    InvenioAccounts(app)
+    InvenioAccess(app)
+    Principal(app)
+    InvenioJSONSchemas(app)
+    InvenioSearch(app)
+    InvenioIndexer(app)
     # OARepoMappingIncludesExt(app)
-    # InvenioRecords(app)
-    # InvenioRecordsREST(app)
+    InvenioRecords(app)
+    InvenioRecordsREST(app)
     # InvenioCelery(app)
-    # InvenioPIDStore(app)
+    InvenioPIDStore(app)
     # Invenio Records Draft initialization
     # RecordsDraft(app)
-    # app.url_map.converters['pid'] = PIDConverter
+    app.url_map.converters['pid'] = PIDConverter
 
     # # Celery
     # print(app.config["CELERY_BROKER_URL"])
@@ -109,15 +173,6 @@ def db(app):
     os.environ["INVENIO_SQLALCHEMY_DATABASE_URI"] = db_path
     app.config.update(
         SQLALCHEMY_DATABASE_URI=db_path,
-        OAREPO_OAI_PROVIDERS={
-            "uk": {
-                "description": "Univerzita Karlova",
-                "oai_endpoint": "https://dspace.cuni.cz/oai/nusl",
-                "set": "nusl_set",
-                "metadata_prefix": "xoai",
-                "unhandled_paths": ["/example/path"]
-            }
-        }
     )
     if database_exists(str(db_.engine.url)):
         drop_database(db_.engine.url)
@@ -137,6 +192,13 @@ def db(app):
     # Explicitly close DB connection
     db_.session.close()
     db_.drop_all()
+
+
+@pytest.fixture()
+def metadata():
+    return {
+        "title": "Testovací záznam",
+    }
 
 # @pytest.fixture()
 # def es():

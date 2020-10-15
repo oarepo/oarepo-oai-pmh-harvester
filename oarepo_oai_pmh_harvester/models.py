@@ -7,7 +7,6 @@ from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType, JSONType
 
 
-
 class OAIRecord(db.Model):
     __tablename__ = "oarepo_oai_record"
     id = db.Column(
@@ -103,7 +102,20 @@ class OAIProvider(db.Model):
         ),
         nullable=True
     )
-
+    default_endpoint = db.Column(db.String(), nullable=False)
+    endpoint_mapping = db.Column(
+        db.JSON().with_variant(
+            postgresql.JSONB(none_as_null=True),
+            'postgresql',
+        ).with_variant(
+            JSONType(),
+            'sqlite',
+        ).with_variant(
+            JSONType(),
+            'mysql',
+        ),
+        nullable=True
+    )
 
 
 class OAIRecordExc(db.Model):
