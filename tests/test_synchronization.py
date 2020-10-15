@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from oarepo_oai_pmh_harvester.ext import OArepoOAIClient
+from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
 def test_get_endpoint_config(app, db, metadata):
-    client = OArepoOAIClient(app)
     synchronizer = current_oai_client.synchronizers["uk"]
     res = synchronizer.get_endpoint_config(metadata)
     assert res is not None
@@ -11,11 +13,31 @@ def test_get_endpoint_config(app, db, metadata):
 
 
 def test_create_record(app, db, metadata):
-    client = OArepoOAIClient(app)
     synchronizers = current_oai_client.synchronizers
     synchronizer = synchronizers["uk"]
     rec = synchronizer.create_record(metadata)
-    print(rec)
+    assert rec == {'title': 'Testovací záznam', 'pid': '1'}
+
+
+def test_update_record(app, db, metadata):
+    synchronizers = current_oai_client.synchronizers
+    synchronizer = synchronizers["uk"]
+    record = synchronizer.create_record(metadata)
+    oai_sync = OAISync(provider_id=1)
+    db.session.add(oai_sync)
+    db.session.commit()
+    oai_rec = OAIRecord(
+        id=record.id,
+        oai_identifier="oai:example.cz:1",
+        creation_sync_id=oai_sync.id,
+        pid="1",
+        timestamp=datetime.now()
+    )
+    db.session.add(oai_rec)
+    db.session.commit()
+    metadata["title"] = "Updated record"
+    record2 = synchronizer.update_record(oai_rec, metadata)
+    assert record2 == {'title': 'Updated record', 'pid': '1'}
 
 # import random
 # from datetime import datetime

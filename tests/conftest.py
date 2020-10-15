@@ -26,6 +26,8 @@ from marshmallow import Schema
 from marshmallow.fields import Integer, Nested
 from sqlalchemy_utils import database_exists, drop_database, create_database
 
+from oarepo_oai_pmh_harvester.ext import OArepoOAIClient
+
 
 class TestSchema(Schema):
     """Test record schema."""
@@ -127,6 +129,7 @@ def app():
     # Invenio Records Draft initialization
     # RecordsDraft(app)
     app.url_map.converters['pid'] = PIDConverter
+    OArepoOAIClient(app)
 
     # # Celery
     # print(app.config["CELERY_BROKER_URL"])

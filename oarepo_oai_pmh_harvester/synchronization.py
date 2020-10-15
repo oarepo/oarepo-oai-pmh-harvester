@@ -8,6 +8,7 @@ import pytz
 from dateutil.parser import isoparse
 from invenio_db import db
 from invenio_pidstore import current_pidstore
+from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
 from sickle import Sickle
 from sickle.oaiexceptions import IdDoesNotExist
@@ -176,7 +177,7 @@ class OAISynchronizer(OAIDBBase):
                 f"Identifier '{oai_identifier}' has been created and '{record.id}' has been "
                 f"assigned as a UUID")
         else:
-            record = self.update_record(transformed)
+            record = self.update_record(oai_rec, transformed)
             self.modified += 1
             oai_rec.modification_sync_id = self.oai_sync.id
             oai_logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
@@ -228,9 +229,17 @@ class OAISynchronizer(OAIDBBase):
 
         return record
 
-    def update_record(self, metadata):
-        # TODO:
-        pass
+    def update_record(self, oai_rec, data):
+        indexer_class = self.get_indexer_class()
+
+        record = Record.get_record(oai_rec.id)
+        record.clear()
+        record.update(data)
+        record.commit()
+        db.session.commit()
+        if indexer_class:
+            indexer_class().index(record)
+        return record
 
     def delete(self, oai_identifier):
         # TODO:
