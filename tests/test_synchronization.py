@@ -1,5 +1,9 @@
 from datetime import datetime
 
+import pytest
+from invenio_records import Record
+from sqlalchemy.orm.exc import NoResultFound
+
 from oarepo_oai_pmh_harvester.ext import OArepoOAIClient
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
@@ -38,6 +42,30 @@ def test_update_record(app, db, metadata):
     metadata["title"] = "Updated record"
     record2 = synchronizer.update_record(oai_rec, metadata)
     assert record2 == {'title': 'Updated record', 'pid': '1'}
+
+
+def test_delete_record(app, db, metadata):
+    synchronizers = current_oai_client.synchronizers
+    synchronizer = synchronizers["uk"]
+    record = synchronizer.create_record(metadata)
+    oai_sync = OAISync(provider_id=1)
+    db.session.add(oai_sync)
+    db.session.commit()
+    oai_rec = OAIRecord(
+        id=record.id,
+        oai_identifier="oai:example.cz:1",
+        creation_sync_id=oai_sync.id,
+        pid="1",
+        timestamp=datetime.now()
+    )
+    db.session.add(oai_rec)
+    db.session.commit()
+    metadata["title"] = "Updated record"
+    synchronizer.delete_record(oai_rec)
+    with pytest.raises(NoResultFound):
+        Record.get_record(oai_rec.id)
+    deleted_record = Record.get_record(oai_rec.id, with_deleted=True)
+    print(deleted_record)
 
 # import random
 # from datetime import datetime

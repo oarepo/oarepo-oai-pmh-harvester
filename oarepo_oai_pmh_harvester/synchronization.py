@@ -8,6 +8,7 @@ import pytz
 from dateutil.parser import isoparse
 from invenio_db import db
 from invenio_pidstore import current_pidstore
+from invenio_pidstore.models import PersistentIdentifier
 from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
 from sickle import Sickle
@@ -118,7 +119,8 @@ class OAISynchronizer(OAIDBBase):
         return identifiers
 
     def _delete(self, identifier, oai_identifier):
-        self.delete(oai_identifier)
+        # TODO: přepsat, aby byla správně volána metoda delete_record
+        self.delete_record(oai_identifier)
         self.deleted += 1
         oai_logger.info(f"Identifier '{identifier}' has been marked as deleted")
 
@@ -185,10 +187,6 @@ class OAISynchronizer(OAIDBBase):
         oai_rec.timestamp = datestamp
         return record
 
-    # @staticmethod
-    # def index_record(record):
-    #     nusl_theses.index_draft_record(record)
-
     def transform(self, parsed, handler=None):
         if not handler:
             handler = self.transformer.transform
@@ -241,9 +239,21 @@ class OAISynchronizer(OAIDBBase):
             indexer_class().index(record)
         return record
 
-    def delete(self, oai_identifier):
-        # TODO:
-        pass
+    def delete_record(self, oai_rec):
+        indexer_class = self.get_indexer_class()
+
+        record = Record.get_record(oai_rec.id)
+        record.delete()
+        # mark all PIDs as DELETED
+        all_pids = PersistentIdentifier.query.filter(
+            PersistentIdentifier.object_uuid == record.id,
+        ).all()
+        for rec_pid in all_pids:
+            if not rec_pid.is_deleted():
+                rec_pid.delete()
+        db.session.commit()
+        if indexer_class:
+            indexer_class().delete(record)
 
     @staticmethod
     def ensure_migration():
