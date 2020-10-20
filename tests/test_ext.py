@@ -1,19 +1,11 @@
-from oarepo_oai_pmh_harvester.ext import OArepoOAIClient
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
-def test_OArepoOAIClientState(app, db):
-    client = OArepoOAIClient(app)
-    res = current_oai_client.rules
-    res2 = current_oai_client.parsers
-    print(res, res2)
-
-
-def test_load_synchronizers(app, db):
-    client = OArepoOAIClient(app)
-    current_oai_client.load_synchronizers()
-
-
-def test_run(app, db):
-    client = OArepoOAIClient(app)
-    current_oai_client.run()
+class TestExt:
+    def test_OArepoOAIClientState(self,load_entry_points, app, db):
+        rules = current_oai_client.rules
+        parsers = current_oai_client.parsers
+        synchronizers = current_oai_client.synchronizers
+        assert rules is not None
+        assert parsers is not None
+        assert synchronizers is not None
