@@ -1,6 +1,7 @@
 from __future__ import absolute_import, print_function
 
 import os
+import pathlib
 import shutil
 import tempfile
 from pathlib import Path
@@ -22,6 +23,7 @@ from invenio_records_rest import InvenioRecordsREST
 from invenio_records_rest.schemas.fields import SanitizedUnicode
 from invenio_records_rest.utils import PIDConverter
 from invenio_search import RecordsSearch, InvenioSearch
+from lxml import etree
 from marshmallow import Schema
 from marshmallow.fields import Integer, Nested
 from sqlalchemy_utils import database_exists, drop_database, create_database
@@ -78,7 +80,7 @@ RECORDS_REST_ENDPOINTS = {
 }
 
 
-@pytest.yield_fixture(scope="module")
+@pytest.yield_fixture()
 def app():
     instance_path = tempfile.mkdtemp()
     app = Flask('testapp', instance_path=instance_path)
@@ -167,7 +169,7 @@ def app():
     shutil.rmtree(instance_path)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def db(app):
     """Create database for the tests."""
     dir_path = os.path.dirname(__file__)
@@ -203,686 +205,968 @@ def metadata():
         "title": "Testovací záznam",
     }
 
-# @pytest.fixture()
-# def es():
-#     return Elasticsearch()
+
+@pytest.fixture()
+def load_entry_points():
+    import pkg_resources
+    distribution = pkg_resources.Distribution(__file__)
+    entry_point = pkg_resources.EntryPoint.parse('xoai = example.parser', dist=distribution)
+    entry_point2 = pkg_resources.EntryPoint.parse('rule = example.rules.uk.rule', dist=distribution)
+    distribution._ep_map = {
+        'oarepo_oai_pmh_harvester.parsers': {'xoai': entry_point},
+        'oarepo_oai_pmh_harvester.rules': {'rule': entry_point2}
+    }
+    pkg_resources.working_set.add(distribution)
+    print(pkg_resources.working_set)
 
 
-# @pytest.yield_fixture
-# def es_index(es):
-#     index_name = "test_index"
-#     if not es.indices.exists(index=index_name):
-#         yield es.indices.create(index_name)
-#
-#     if es.indices.exists(index=index_name):
-#         es.indices.delete(index_name)
+@pytest.fixture()
+def record_xml():
+    dir_ = pathlib.Path(__file__).parent.absolute()
+    path = dir_ / "data" / "test_xml.xml"
+    with open(str(path), "r") as f:
+        tree = etree.parse(f)
+        return tree.getroot()
 
 
-# @pytest.fixture
-# def client(app, db):
-#     from flask_taxonomies.models import Base
-#     Base.metadata.create_all(db.engine)
-#     return app.test_client()
-
-
-# @pytest.fixture
-# def permission_client(app, db):
-#     app.config.update(
-#         FLASK_TAXONOMIES_PERMISSION_FACTORIES={
-#             'taxonomy_create': [Permission(RoleNeed('admin'))],
-#             'taxonomy_update': [Permission(RoleNeed('admin'))],
-#             'taxonomy_delete': [Permission(RoleNeed('admin'))],
-#
-#             'taxonomy_term_create': [Permission(RoleNeed('admin'))],
-#             'taxonomy_term_update': [Permission(RoleNeed('admin'))],
-#             'taxonomy_term_delete': [Permission(RoleNeed('admin'))],
-#             'taxonomy_term_move': [Permission(RoleNeed('admin'))],
-#         }
-#     )
-#     from flask_taxonomies.models import Base
-#     Base.metadata.create_all(db.engine)
-#     return app.test_client()
-
-#
-# @pytest.fixture
-# def tax_url(app):
-#     url = app.config['FLASK_TAXONOMIES_URL_PREFIX']
-#     if not url.endswith('/'):
-#         url += '/'
-#     return url
-#
-#
-# # @pytest.fixture(scope="module")
-# # def taxonomy(app, db):
-# #     taxonomy = current_flask_taxonomies.create_taxonomy("test_taxonomy", extra_data={
-# #         "title":
-# #             {
-# #                 "cs": "test_taxonomy",
-# #                 "en": "test_taxonomy"
-# #             }
-# #     })
-# #     db.session.commit()
-# #     return taxonomy
-#
-#
-# @pytest.fixture(scope="module")
-# def taxonomy_tree(app, db, taxonomy):
-#     # accessRights
-#     id1 = TermIdentification(taxonomy=taxonomy, slug="c_abf2")
-#     term1 = current_flask_taxonomies.create_term(id1, extra_data={
-#         "title": {
-#             "cs": "otevřený přístup",
-#             "en": "open access"
-#         },
-#         "relatedURI": {
-#             "coar": "http://purl.org/coar/access_right/c_abf2",
-#             "vocabs": "https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/public",
-#             "eprint": "http://purl.org/eprint/accessRights/OpenAccess"
-#         }
-#     })
-#
-#     # resource type
-#     id2 = TermIdentification(taxonomy=taxonomy, slug="bakalarske_prace")
-#     term2 = current_flask_taxonomies.create_term(id2, extra_data={
-#         "title": {
-#             "cs": "Bakalářské práce",
-#             "en": "Bachelor’s theses"
-#         }
-#     })
-#
-#     # institution
-#     id3 = TermIdentification(taxonomy=taxonomy, slug="61384984")
-#     term3 = current_flask_taxonomies.create_term(id3, extra_data={
-#         "title": {
-#             "cs": "Akademie múzických umění v Praze",
-#             "en": "Academy of Performing Arts in Prague"
-#         },
-#         "type": "veřejná VŠ",
-#         "aliases": ["AMU"],
-#         "related": {
-#             "rid": "51000"
-#         },
-#         "address": "Malostranské náměstí 259/12, 118 00 Praha 1",
-#         "ico": "61384984",
-#         "url": "https://www.amu.cz",
-#         "provider": True,
-#     })
-#
-#     # language
-#     id4 = TermIdentification(taxonomy=taxonomy, slug="cze")
-#     term4 = current_flask_taxonomies.create_term(id4, extra_data={
-#         "title": {
-#             "cs": "čeština",
-#             "en": "Czech"
-#         }
-#     })
-#
-#     # contributor
-#     id5 = TermIdentification(taxonomy=taxonomy, slug="supervisor")
-#     term5 = current_flask_taxonomies.create_term(id5, extra_data={
-#         "title": {
-#             "cs": "supervizor",
-#             "en": "supervisor"
-#         },
-#         "dataCiteCode": "Supervisor"
-#     })
-#
-#     # funder
-#     id6 = TermIdentification(taxonomy=taxonomy, slug="ntk")
-#     term6 = current_flask_taxonomies.create_term(id6, extra_data={
-#         "title": {
-#             "cs": "Národní technická knihovna",
-#             "en": "National library of technology"
-#         },
-#         "funderISVaVaICode": "123456789"
-#     })
-#
-#     # country
-#     id7 = TermIdentification(taxonomy=taxonomy, slug="cz")
-#     term7 = current_flask_taxonomies.create_term(id7, extra_data={
-#         "title": {
-#             "cs": "Česko",
-#             "en": "Czechia"
-#         },
-#         "code": {
-#             "number": "203",
-#             "alpha2": "CZ",
-#             "alpha3": "CZE"
-#         }
-#     })
-#
-#     # relationship
-#     id8 = TermIdentification(taxonomy=taxonomy, slug="isversionof")
-#     term8 = current_flask_taxonomies.create_term(id8, extra_data={
-#         "title": {
-#             "cs": "jeVerzí",
-#             "en": "isVersionOf"
-#         }
-#     })
-#
-#     # rights
-#     id9 = TermIdentification(taxonomy=taxonomy, slug="copyright")
-#     term9 = current_flask_taxonomies.create_term(id9, extra_data={
-#         "title": {
-#             "cs": "Dílo je chráněno podle autorského zákona č. 121/2000 Sb.",
-#             "en": "This work is protected under the Copyright Act No. 121/2000 Coll."
-#         }
-#     })
-#
-#     # series
-#     id9 = TermIdentification(taxonomy=taxonomy, slug="maj")
-#     term9 = current_flask_taxonomies.create_term(id9, extra_data={
-#         "name": "maj",
-#         "volume": "1"
-#     })
-#
-#     # subject
-#     id10 = TermIdentification(taxonomy=taxonomy, slug="psh3001")
-#     term10 = current_flask_taxonomies.create_term(id10, extra_data={
-#         "title": {
-#             "cs": "Reynoldsovo číslo",
-#             "en": "Reynolds number"
-#         },
-#         "reletedURI": ["http://psh.techlib.cz/skos/PSH3001"],
-#         "DateRevised": "2007-01-26T16:14:37"
-#     })
-#
-#     id11 = TermIdentification(taxonomy=taxonomy, slug="psh3000")
-#     term11 = current_flask_taxonomies.create_term(id11, extra_data={
-#         "title": {
-#             "cs": "turbulentní proudění",
-#             "en": "turbulent flow"
-#         },
-#         "reletedURI": ["http://psh.techlib.cz/skos/PSH3000"],
-#         "DateRevised": "2007-01-26T16:14:37"
-#     })
-#
-#     id12 = TermIdentification(taxonomy=taxonomy, slug="D010420")
-#     term12 = current_flask_taxonomies.create_term(id12, extra_data={
-#         "title": {
-#             "cs": "pentany",
-#             "en": "Pentanes"
-#         },
-#         "reletedURI": ["http://www.medvik.cz/link/D010420", "http://id.nlm.nih.gov/mesh/D010420"],
-#         "DateRevised": "2007-01-26T16:14:37",
-#         "DateCreated": "2007-01-26T16:14:37",
-#         "DateDateEstablished": "2007-01-26T16:14:37",
-#     })
-#
-#     # studyField
-#     id13 = TermIdentification(taxonomy=taxonomy, slug="O_herectvi-alternativniho-divadla")
-#     term13 = current_flask_taxonomies.create_term(id13, extra_data={
-#         "title": {
-#             "cs": "Herectví alternativního divadla",
-#         },
-#         "AKVO": "8203R082"
-#     })
-#
-#     # conference
-#     id14 = TermIdentification(taxonomy=taxonomy, slug="cze_conference")
-#     term14 = current_flask_taxonomies.create_term(id14, extra_data={
-#         "title": {
-#             "cs": "Česká konference",
-#         },
-#     })
-#
-#     # certifying authority
-#     id15 = TermIdentification(taxonomy=taxonomy, slug="mdcr")
-#     term15 = current_flask_taxonomies.create_term(id15, extra_data={
-#         "title": {
-#             "cs": "Ministerstvo dopravy",
-#             "en": "Ministry of transport"
-#         },
-#     })
-#
-#     # N_resultUsage
-#     id16 = TermIdentification(taxonomy=taxonomy, slug="C")
-#     term16 = current_flask_taxonomies.create_term(id16, extra_data={
-#         "title": {
-#             "cs": "Výsledek je užíván bez omezení okruhu uživatelů",
-#         },
-#     })
-#
-#     # N_resultUsage
-#     id17 = TermIdentification(taxonomy=taxonomy, slug="A")
-#     term17 = current_flask_taxonomies.create_term(id17, extra_data={
-#         "title": {
-#             "cs": "certifikovaná metodika (NmetC)",
-#         },
-#     })
-#
-#     db.session.commit()
-
-
-# def get_pid():
-#     """Generates a new PID for a record."""
-#     record_uuid = uuid.uuid4()
-#     provider = RecordIdProvider.create(
-#         object_type='rec',
-#         object_uuid=record_uuid,
-#     )
-#     return record_uuid, provider.pid.pid_value
-
-
-# @pytest.fixture()
-# def base_json():
-#     return {
-#         "accessRights": [{
-#             "is_ancestor": False,
-#             "links": {
-#                 "self": "http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/c-abf2"
-#             }
-#         }],
-#
-#         "control_number": "411100",
-#         "creator": [
-#             {
-#                 "name": "Daniel Kopecký"
-#             }
-#         ],
-#         "dateIssued": "2010-07-01",
-#         "keywords": [
-#             {"cs": "1", "en": "1"},
-#             {"cs": "2", "en": "2"},
-#             {"cs": "3", "en": "3"},
-#         ],
-#         "language": [
-#             {
-#                 "is_ancestor": False,
-#                 "links": {
-#                     "self": "http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/cze"
-#                 }
-#             }
-#         ],
-#         "provider": [
-#             {
-#                 "is_ancestor": False,
-#                 "links": {
-#                     "self": "http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/61384984"
-#                 }
-#             }
-#         ],
-#         "resourceType": [
-#             {
-#                 "is_ancestor": False,
-#                 "links": {
-#                     "self": "http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/bakalarske-prace"
-#                 }
-#             }
-#         ],
-#         "title": [{
-#             "cs": "Testovací záznam",
-#             "en": "Test record"
-#         }]
-#     }
-#
-#
-# @pytest.fixture()
-# def base_json_dereferenced():
-#     return {
-#         'accessRights': [{
-#             'is_ancestor': False,
-#             'links': {
-#                 'self': 'http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/c-abf2'
-#             },
-#             'relatedURI': {
-#                 'coar': 'http://purl.org/coar/access_right/c_abf2',
-#                 'eprint': 'http://purl.org/eprint/accessRights/OpenAccess',
-#                 'vocabs':
-#                     'https://vocabs.acdh.oeaw.ac.at/archeaccessrestrictions/public'
-#             },
-#             'title': {'cs': 'otevřený přístup', 'en': 'open access'}
-#         }],
-#         'control_number': '411100',
-#         'creator': [{'name': 'Daniel Kopecký'}],
-#         'dateIssued': '2010-07-01',
-#         "keywords": [
-#             {"cs": "1", "en": "1"},
-#             {"cs": "2", "en": "2"},
-#             {"cs": "3", "en": "3"},
-#         ],
-#         'language': [{
-#             'is_ancestor': False,
-#             'links': {
-#                 'self': 'http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/cze'
-#             },
-#             'title': {'cs': 'čeština', 'en': 'Czech'}
-#         }],
-#         'provider': [{
-#             'address': 'Malostranské náměstí 259/12, 118 00 Praha 1',
-#             'aliases': ['AMU'],
-#             'ico': '61384984',
-#             'is_ancestor': False,
-#             'links': {
-#                 'self': 'http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/61384984'
-#             },
-#             'provider': True,
-#             'related': {'rid': '51000'},
-#             'title': {
-#                 'cs': 'Akademie múzických umění v Praze',
-#                 'en': 'Academy of Performing Arts in Prague'
-#             },
-#             'type': 'veřejná VŠ',
-#             'url': 'https://www.amu.cz'
-#         }],
-#         'entities': [{
-#             'address': 'Malostranské náměstí 259/12, 118 00 Praha 1',
-#             'aliases': ['AMU'],
-#             'ico': '61384984',
-#             'is_ancestor': False,
-#             'links': {
-#                 'self': 'http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/61384984'
-#             },
-#             'provider': True,
-#             'related': {'rid': '51000'},
-#             'title': {
-#                 'cs': 'Akademie múzických umění v Praze',
-#                 'en': 'Academy of Performing Arts in Prague'
-#             },
-#             'type': 'veřejná VŠ',
-#             'url': 'https://www.amu.cz'
-#         }],
-#         'resourceType': [{
-#             'is_ancestor': False,
-#             'links': {
-#                 'self': 'http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/bakalarske-prace'
-#             },
-#             'title': {
-#                 'cs': 'Bakalářské práce',
-#                 'en': 'Bachelor’s theses'
-#             }
-#         }],
-#         'title': [{'cs': 'Testovací záznam', 'en': 'Test record'}]
-#     }
-#
-#
-# @pytest.fixture()
-# def base_nresult():
-#     return {
-#         "N_certifyingAuthority": [{
-#             "links": {
-#                 "self": "http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/mdcr"
-#             }
-#         }],
-#         "N_dateCertified": "2020-03-19",
-#         "N_economicalParameters": "Výsledky diagnostiky staveb jsou podkladem pro návrh vhodného "
-#                                   "způsobu opatření či zásahu (údržba/ oprava/ rekonstrukce). "
-#                                   "Pokud jsou tyto podklady v dostatečném rozsahu a kvalitě vede "
-#                                   "to k optimalizaci nákladů a zvyšování životnosti staveb. K "
-#                                   "tomuto účelu může nemalou měrou přispět uplatnění kombinace "
-#                                   "nedestruktivních diagnostických metod jako je rázové zařízení "
-#                                   "FWD a georadar. V kap. 2.5 jsou uvedeny konkrétní příklady "
-#                                   "kombinace rázového zařízení FWD a georadaru při diagnostickém "
-#                                   "průzkumu vozovky s demonstrováním přínosu jejich použití.",
-#         "N_technicalParameters": "Metodika uvádí jak postupovat při použití kombinace dvou "
-#                                  "nedestruktivních diagnostických zařízení – rázového zařízení "
-#                                  "FWD (pro hodnocení únosnosti vozovek) a georadaru (pro "
-#                                  "zjišťování tlouštěk konstrukčních vrstev, k identifikaci "
-#                                  "nehomogenit, skrytých vad a poruch) při diagnostickém průzkumu "
-#                                  "vozovek pozemních komunikací. Upozorňuje na přínosy, "
-#                                  "které plynou ze zpracování dat naměřených oběma zařízeními a "
-#                                  "jejich využití při tvorbě homogenních sekcí, které slouží jako "
-#                                  "podklad pro plánování údržby, oprav a rekonstrukcí vozovek. "
-#                                  "Cílem metodiky je uvést: - zásady pro uplatnění kombinace "
-#                                  "rázového zařízení FWD a georadaru, - postup při použití "
-#                                  "kombinace těchto dvou nedestruktivních diagnostických metod, "
-#                                  "- upřesnění postupu při tvorbě homogenních sekcí, - konkrétní "
-#                                  "příklady, při kterých je kombinace těchto zařízení využívána.",
-#         "N_internalID": "N-2020-FWD-GPR",
-#         "N_referenceNumber": "1/2020-710-VV/1",
-#         "N_resultUsage": [{
-#             "links": {
-#                 "self": "http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/c"
-#             }
-#         }],
-#         "N_type": [{
-#             "links": {
-#                 "self": "http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/a"
-#             }
-#         }]
-#     }
-#
-#
-# @pytest.fixture()
-# def base_nresult_dereferenced():
-#     return {
-#         'N_certifyingAuthority': [{
-#             'is_ancestor': False,
-#             'links': {
-#                 'self':
-#                     'http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/mdcr'
-#             },
-#             'title': {
-#                 'cs': 'Ministerstvo dopravy',
-#                 'en': 'Ministry of transport'
-#             }
-#         }],
-#         'N_dateCertified': "2020-03-19",
-#         'N_economicalParameters': 'Výsledky diagnostiky staveb jsou podkladem pro '
-#                                   'návrh vhodného způsobu opatření či zásahu (údržba/ '
-#                                   'oprava/ rekonstrukce). Pokud jsou tyto podklady v '
-#                                   'dostatečném rozsahu a kvalitě vede to k '
-#                                   'optimalizaci nákladů a zvyšování životnosti '
-#                                   'staveb. K tomuto účelu může nemalou měrou přispět '
-#                                   'uplatnění kombinace nedestruktivních '
-#                                   'diagnostických metod jako je rázové zařízení FWD a '
-#                                   'georadar. V kap. 2.5 jsou uvedeny konkrétní '
-#                                   'příklady kombinace rázového zařízení FWD a '
-#                                   'georadaru při diagnostickém průzkumu vozovky s '
-#                                   'demonstrováním přínosu jejich použití.',
-#         'N_internalID': 'N-2020-FWD-GPR',
-#         'N_referenceNumber': '1/2020-710-VV/1',
-#         'N_resultUsage': [{
-#             'is_ancestor': False,
-#             'links': {
-#                 'self': 'http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/c'
-#             },
-#             'title': {
-#                 'cs': 'Výsledek je užíván bez omezení okruhu '
-#                       'uživatelů'
-#             }
-#         }],
-#         'N_technicalParameters': 'Metodika uvádí jak postupovat při použití kombinace '
-#                                  'dvou nedestruktivních diagnostických zařízení – '
-#                                  'rázového zařízení FWD (pro hodnocení únosnosti '
-#                                  'vozovek) a georadaru (pro zjišťování tlouštěk '
-#                                  'konstrukčních vrstev, k identifikaci nehomogenit, '
-#                                  'skrytých vad a poruch) při diagnostickém průzkumu '
-#                                  'vozovek pozemních komunikací. Upozorňuje na '
-#                                  'přínosy, které plynou ze zpracování dat naměřených '
-#                                  'oběma zařízeními a jejich využití při tvorbě '
-#                                  'homogenních sekcí, které slouží jako podklad pro '
-#                                  'plánování údržby, oprav a rekonstrukcí vozovek. '
-#                                  'Cílem metodiky je uvést: - zásady pro uplatnění '
-#                                  'kombinace rázového zařízení FWD a georadaru, - '
-#                                  'postup při použití kombinace těchto dvou '
-#                                  'nedestruktivních diagnostických metod, - upřesnění '
-#                                  'postupu při tvorbě homogenních sekcí, - konkrétní '
-#                                  'příklady, při kterých je kombinace těchto zařízení '
-#                                  'využívána.',
-#         'N_type': [{
-#             'is_ancestor': False,
-#             'links': {'self': 'http://127.0.0.1:5000/2.0/taxonomies/test_taxonomy/a'},
-#             'title': {'cs': 'certifikovaná metodika (NmetC)'}
-#         }]
-#     }
-
-
-# from __future__ import absolute_import, print_function
-#
-# import os
-# import pathlib
-# import shutil
-# import sys
-# import tempfile
-#
-# import pytest
-# from flask import Flask
-# from flask_taxonomies import FlaskTaxonomies
-# from flask_taxonomies.views import blueprint as taxonomies_blueprint
-# from invenio_db import InvenioDB
-# from invenio_db import db as db_
-# from invenio_indexer import InvenioIndexer
-# from invenio_jsonschemas import InvenioJSONSchemas
-# from invenio_pidstore.models import PersistentIdentifier, Redirect
-# from invenio_records import InvenioRecords, Record
-# from invenio_records.models import RecordMetadata
-# from invenio_records_draft.cli import make_schemas
-# from invenio_records_draft.ext import InvenioRecordsDraft
-# from invenio_search import InvenioSearch
-# from lxml import etree
-# from sqlalchemy_utils import create_database, database_exists
-#
-# from flask_taxonomies_es import FlaskTaxonomiesES
-# from invenio_nusl_theses import InvenioNUSLTheses
-# from oarepo_oai_pmh_harvester.models import OAIProvider, OAIRecord, OAISync
-# from oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
-#
-#
-# @pytest.yield_fixture()
-# def app():
-#     instance_path = tempfile.mkdtemp()
-#     app = Flask('testapp', instance_path=instance_path)
-#
-#     app.config.update(
-#         JSONSCHEMAS_HOST="nusl.cz",
-#         SQLALCHEMY_TRACK_MODIFICATIONS=True,
-#         SQLALCHEMY_DATABASE_URI=os.environ.get(
-#             'SQLALCHEMY_DATABASE_URI',
-#             'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user="oarepo", pw="oarepo",
-#                                                                   url="127.0.0.1",
-#                                                                   db="oarepo")),
-#         SERVER_NAME='127.0.0.1:5000',
-#     )
-#     InvenioRecordsDraft(app)
-#     InvenioJSONSchemas(app)
-#     InvenioRecords(app)
-#     InvenioSearch(app)
-#     InvenioIndexer(app)
-#     InvenioDB(app)
-#     FlaskTaxonomies(app)
-#     FlaskTaxonomiesES(app)
-#     InvenioNUSLTheses(app)
-#     with app.app_context():
-#         app.register_blueprint(taxonomies_blueprint)
-#         yield app
-#
-#     shutil.rmtree(instance_path)
-#
-#
-# @pytest.yield_fixture()
-# def db(app):
-#     """Database fixture."""
-#     if not database_exists(str(db_.engine.url)):
-#         create_database(str(db_.engine.url))
-#     yield db_
-#
-#     # Explicitly close DB connection
-#     db_.session.close()
-#
-#
-# @pytest.yield_fixture()
-# def uk_db(app):
-#     """Database fixture."""
-#     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
-#         user="oarepo", pw="oarepo", url="127.0.0.1", db="test_uk")
-#     if not database_exists(str(db_.engine.url)):
-#         create_database(str(db_.engine.url))
-#     Redirect.__table__.drop(db_.engine)
-#     PersistentIdentifier.__table__.drop(db_.engine)
-#     OAIRecord.__table__.drop(db_.engine)
-#     RecordMetadata.__table__.drop(db_.engine)
-#     OAISync.__table__.drop(db_.engine)
-#     db_.create_all()
-#     yield db_
-#
-#     # Explicitly close DB connection
-#     db_.session.close()
-#
-#
-# @pytest.fixture
-# def test_db(app):
-#     """Create database for the tests."""
-#     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-#     if not database_exists(str(db_.engine.url)):
-#         create_database(db_.engine.url)
-#     db_.drop_all()
-#     db_.create_all()
-#
-#     yield db_
-#
-#     # Explicitly close DB connection
-#     db_.session.close()
-#     db_.drop_all()
-#
-#
-# @pytest.fixture()
-# def synchronizer_instance(app, test_db):
-#     provider = OAIProvider(
-#         code="uk",
-#         oai_endpoint="https://dspace.cuni.cz/oai/nusl",
-#         set_="nusl_set",
-#         metadata_prefix="xoai"
-#     )
-#     db_.session.add(provider)
-#     db_.session.commit()
-#     return OAISynchronizer(provider)
-#
-#
-# @pytest.fixture()
-# def record_xml():
-#     dir_ = pathlib.Path(__file__).parent.absolute()
-#     path = dir_ / "data" / "test_xml.xml"
-#     with open(str(path), "r") as f:
-#         tree = etree.parse(f)
-#         return tree.getroot()
-#
-#
-# @pytest.fixture()
-# def sample_record(app, test_db):
-#     record = Record.create(
-#         {
-#             "id": "1",
-#             "identifier": [
-#                 {
-#                     "value": "oai:server:id",
-#                     "type": "originalOAI"
-#                 }
-#             ]
-#         }
-#     )
-#     db_.session.commit()
-#     return record
-#
-#
-# @pytest.fixture()
-# def migrate_provider(app, test_db):
-#     provider = OAIProvider(
-#         code="nusl",
-#         description="Migration from old NUSL",
-#         oai_endpoint="https://invenio.nusl.cz/oai2d/"
-#     )
-#     db_.session.add(provider)
-#     db_.session.commit()
-#     return provider
-#
-# @pytest.fixture
-# def schemas(app):
-#     runner = app.test_cli_runner()
-#     result = runner.invoke(make_schemas)
-#     if result.exit_code:
-#         print(result.output, file=sys.stderr)
-#     assert result.exit_code == 0
-#
-#     # trigger registration of new schemas, normally performed
-#     # via app_loaded signal that is not emitted in tests
-#     with app.app_context():
-#         app.extensions['invenio-records-draft']._register_draft_schemas(app)
-#         app.extensions['invenio-records-draft']._register_draft_mappings(app)
-#
-#     return {
-#         'published': 'https://localhost:5000/schemas/records/record-v1.0.0.json',
-#         'draft': 'https://localhost:5000/schemas/draft/records/record-v1.0.0.json',
-#     }
-#
-#
+@pytest.fixture()
+def parsed_record_xml():
+    return {
+        'bundles': [{
+                        'bundle': [{
+                                       'bitstreams': [{
+                                                          'bitstream': [{
+                                                                            'checksum': [
+                                                                                '2de77554460e124aa955ec4906b27574'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Extracted '
+                                                                                'text'],
+                                                                            'format': [
+                                                                                'text/plain'],
+                                                                            'name': [
+                                                                                'DPTX_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'originalName': [
+                                                                                'DPTX_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'sid': ['7'],
+                                                                            'size': ['121688'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/7/DPTX_2005_2_11410_OSZD001_67587_0_20611.pdf.txt\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        },
+                                                                        {
+                                                                            'checksum': [
+                                                                                '824c83826460b4b93efd3a86f4610a33'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Extracted '
+                                                                                'text'],
+                                                                            'format': [
+                                                                                'text/plain'],
+                                                                            'name': [
+                                                                                'DPBC_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'originalName': [
+                                                                                'DPBC_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'sid': ['8'],
+                                                                            'size': ['1421'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/8/DPBC_2005_2_11410_OSZD001_67587_0_20611.pdf.txt\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        },
+                                                                        {
+                                                                            'checksum': [
+                                                                                '824c83826460b4b93efd3a86f4610a33'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Extracted '
+                                                                                'text'],
+                                                                            'format': [
+                                                                                'text/plain'],
+                                                                            'name': [
+                                                                                'DPBE_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'originalName': [
+                                                                                'DPBE_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'sid': ['9'],
+                                                                            'size': ['1421'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/9/DPBE_2005_2_11410_OSZD001_67587_0_20611.pdf.txt\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        },
+                                                                        {
+                                                                            'checksum': [
+                                                                                '386a8671b9361cd1cb3bbe020c5ffc69'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Extracted '
+                                                                                'text'],
+                                                                            'format': [
+                                                                                'text/plain'],
+                                                                            'name': [
+                                                                                'DPPV_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'originalName': [
+                                                                                'DPPV_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'sid': ['10'],
+                                                                            'size': ['2979'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/10/DPPV_2005_2_11410_OSZD001_67587_0_20611.pdf.txt\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        },
+                                                                        {
+                                                                            'checksum': [
+                                                                                'e9d61122e5b83af1ec0a9e6a7831079c'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Extracted '
+                                                                                'text'],
+                                                                            'format': [
+                                                                                'text/plain'],
+                                                                            'name': [
+                                                                                'DPPO_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'originalName': [
+                                                                                'DPPO_2005_2_11410_OSZD001_67587_0_20611.pdf.txt'],
+                                                                            'sid': ['11'],
+                                                                            'size': ['3167'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/11/DPPO_2005_2_11410_OSZD001_67587_0_20611.pdf.txt\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        }]
+                                                      }],
+                                       'name': ['TEXT']
+                                   },
+                                   {
+                                       'bitstreams': [{
+                                                          'bitstream': [{
+                                                                            'checksum': [
+                                                                                'ec1020c2c1319cfb23454e4a80c76624'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Náhledový '
+                                                                                'obrázek'],
+                                                                            'format': ['image/png'],
+                                                                            'name': [
+                                                                                'thumbnail.png'],
+                                                                            'sid': ['6'],
+                                                                            'size': ['21344'],
+                                                                            'url': [
+                                                                                'https://dspace.cuni.cz/bitstream/20.500.11956/2623/6/thumbnail.png']
+                                                                        }]
+                                                      }],
+                                       'name': ['THUMBNAIL']
+                                   },
+                                   {
+                                       'bitstreams': [{
+                                                          'bitstream': [{
+                                                                            'checksum': [
+                                                                                'c09f13bbfd40f8a0c029f059f8e0eae5'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': ['Text '
+                                                                                            'práce'],
+                                                                            'format': [
+                                                                                'application/pdf'],
+                                                                            'name': [
+                                                                                'DPTX_2005_2_11410_OSZD001_67587_0_20611.pdf'],
+                                                                            'sid': ['1'],
+                                                                            'size': ['14129928'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/1/DPTX_2005_2_11410_OSZD001_67587_0_20611.pdf\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        },
+                                                                        {
+                                                                            'checksum': [
+                                                                                'dc442bc11a081392c9528775bb18d0e9'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Abstrakt'],
+                                                                            'format': [
+                                                                                'application/pdf'],
+                                                                            'name': [
+                                                                                'DPBC_2005_2_11410_OSZD001_67587_0_20611.pdf'],
+                                                                            'sid': ['2'],
+                                                                            'size': ['81938'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/2/DPBC_2005_2_11410_OSZD001_67587_0_20611.pdf\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        },
+                                                                        {
+                                                                            'checksum': [
+                                                                                '5e5109bf584190086414c0dc6e4b8d93'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Abstrakt '
+                                                                                '(anglicky)'],
+                                                                            'format': [
+                                                                                'application/pdf'],
+                                                                            'name': [
+                                                                                'DPBE_2005_2_11410_OSZD001_67587_0_20611.pdf'],
+                                                                            'sid': ['3'],
+                                                                            'size': ['81938'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/3/DPBE_2005_2_11410_OSZD001_67587_0_20611.pdf\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        },
+                                                                        {
+                                                                            'checksum': [
+                                                                                '96f8f75445d061231c6b519657ea0fb8'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Posudek '
+                                                                                'vedoucího'],
+                                                                            'format': [
+                                                                                'application/pdf'],
+                                                                            'name': [
+                                                                                'DPPV_2005_2_11410_OSZD001_67587_0_20611.pdf'],
+                                                                            'sid': ['4'],
+                                                                            'size': ['187174'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/4/DPPV_2005_2_11410_OSZD001_67587_0_20611.pdf\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        },
+                                                                        {
+                                                                            'checksum': [
+                                                                                '8cb8b7459d50ffe4809cc1a94243f493'],
+                                                                            'checksumAlgorithm': [
+                                                                                'MD5'],
+                                                                            'description': [
+                                                                                'Posudek '
+                                                                                'oponenta'],
+                                                                            'format': [
+                                                                                'application/pdf'],
+                                                                            'name': [
+                                                                                'DPPO_2005_2_11410_OSZD001_67587_0_20611.pdf'],
+                                                                            'sid': ['5'],
+                                                                            'size': ['193346'],
+                                                                            'url': ['\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '      '
+                                                                                    'https://dspace.cuni.cz/bitstream/20.500.11956/2623/5/DPPO_2005_2_11410_OSZD001_67587_0_20611.pdf\n'
+                                                                                    '             '
+                                                                                    '             '
+                                                                                    '  ']
+                                                                        }]
+                                                      }],
+                                       'name': ['ORIGINAL']
+                                   }]
+                    }],
+        'dc': [{
+                   'contributor': [{
+                                       'advisor': [{'value': [['Kubíčková, Věra']]}],
+                                       'referee': [{'value': [['Hronzová, Marie']]}]
+                                   }],
+                   'creator': [{'value': [['Smolková, Lenka']]}],
+                   'date': [{
+                                'accessioned': [{'value': [['2017-03-17T09:30:02Z']]}],
+                                'available': [{'value': [['2017-03-17T09:30:02Z']]}],
+                                'issued': [{'value': [['2006']]}]
+                            }],
+                   'description': [{
+                                       'abstract': [{
+                                                        'cs_CZ': [{
+                                                                      'value': ['Ze života lidí '
+                                                                                'se stále vytrácí '
+                                                                                'přirozený pohyb. '
+                                                                                'Vymoženosti '
+                                                                                'současné\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'společnosti ( '
+                                                                                'televize, '
+                                                                                'počítače...) '
+                                                                                'tyto trendy '
+                                                                                'návyku snížené '
+                                                                                'potřeby pohybu '
+                                                                                'jen\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'podporují. '
+                                                                                '&quot;Změnil se '
+                                                                                'charakter, '
+                                                                                'zaměření, účel a '
+                                                                                'cíl pohybových '
+                                                                                'aktivit, došlo\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'kjejich značné '
+                                                                                'diferenciaci a '
+                                                                                'disproporci mezi '
+                                                                                'aktivními a '
+                                                                                'pasivními '
+                                                                                'účastníky. '
+                                                                                'Objevují\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'se nepřiměřené '
+                                                                                'emoce až '
+                                                                                'hysterie v '
+                                                                                'souvislosti se '
+                                                                                'sportovními '
+                                                                                'akcemi, '
+                                                                                'uctívání\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'silnějších, '
+                                                                                'dravějších, '
+                                                                                'případně i '
+                                                                                'bohatších.&quot; '
+                                                                                '(9) Je nezbytné, '
+                                                                                'aby tělesná\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'zdatnost a její '
+                                                                                'význam byla '
+                                                                                'vnímána lidmi '
+                                                                                'jako důležitá '
+                                                                                'životní hodnota. '
+                                                                                'Vždyť přiměřeně\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'tělesně zdatný '
+                                                                                'člověk, navíc '
+                                                                                'pohybově '
+                                                                                'kultivovaný, se '
+                                                                                'v praktickém '
+                                                                                'životě spolu s\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'mravními postoji '
+                                                                                'a vzdělaností '
+                                                                                'přibližuje k '
+                                                                                'ideálu '
+                                                                                'všestranně '
+                                                                                'rozvinutého '
+                                                                                'člověka. V\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'lidském životě '
+                                                                                'hraje '
+                                                                                'nejvýznamnější '
+                                                                                'období pro '
+                                                                                'účinný tělesný a '
+                                                                                'pohybový rozvoj '
+                                                                                'školní\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'věk. Právě v '
+                                                                                'dětském věku je '
+                                                                                'podpůrně '
+                                                                                'pohybový systém '
+                                                                                'velmi citlivý na '
+                                                                                'nepřiměřenou\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'strukturu '
+                                                                                'tělesné zátěže a '
+                                                                                'nedostatek '
+                                                                                'pohybové '
+                                                                                'aktivity. Nelze '
+                                                                                'přehlédnout, že '
+                                                                                'značný\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'počet dětí '
+                                                                                'projevuje nízkou '
+                                                                                'tělesnou '
+                                                                                'zdatnost a také '
+                                                                                'nedostatečné '
+                                                                                'zvládnutí pro '
+                                                                                'život\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'důležitých '
+                                                                                'pohybových '
+                                                                                'dovedností. '
+                                                                                'Kolisko uvádí '
+                                                                                '(7, str.5), že '
+                                                                                '20% dětí '
+                                                                                'předškolního\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'věku trpí vadným '
+                                                                                'držením těla a v '
+                                                                                'období 11-12 let '
+                                                                                'je tento stav '
+                                                                                'téměř '
+                                                                                'trojnásobný.\n'
+                                                                                '                 '
+                                                                                '           ']
+                                                                  }],
+                                                        'en_US': [{
+                                                                      'value': ['Ze života lidí '
+                                                                                'se stále vytrácí '
+                                                                                'přirozený pohyb. '
+                                                                                'Vymoženosti '
+                                                                                'současné\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'společnosti ( '
+                                                                                'televize, '
+                                                                                'počítače...) '
+                                                                                'tyto trendy '
+                                                                                'návyku snížené '
+                                                                                'potřeby pohybu '
+                                                                                'jen\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'podporují. '
+                                                                                '&quot;Změnil se '
+                                                                                'charakter, '
+                                                                                'zaměření, účel a '
+                                                                                'cíl pohybových '
+                                                                                'aktivit, došlo\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'kjejich značné '
+                                                                                'diferenciaci a '
+                                                                                'disproporci mezi '
+                                                                                'aktivními a '
+                                                                                'pasivními '
+                                                                                'účastníky. '
+                                                                                'Objevují\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'se nepřiměřené '
+                                                                                'emoce až '
+                                                                                'hysterie v '
+                                                                                'souvislosti se '
+                                                                                'sportovními '
+                                                                                'akcemi, '
+                                                                                'uctívání\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'silnějších, '
+                                                                                'dravějších, '
+                                                                                'případně i '
+                                                                                'bohatších.&quot; '
+                                                                                '(9) Je nezbytné, '
+                                                                                'aby tělesná\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'zdatnost a její '
+                                                                                'význam byla '
+                                                                                'vnímána lidmi '
+                                                                                'jako důležitá '
+                                                                                'životní hodnota. '
+                                                                                'Vždyť přiměřeně\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'tělesně zdatný '
+                                                                                'člověk, navíc '
+                                                                                'pohybově '
+                                                                                'kultivovaný, se '
+                                                                                'v praktickém '
+                                                                                'životě spolu s\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'mravními postoji '
+                                                                                'a vzdělaností '
+                                                                                'přibližuje k '
+                                                                                'ideálu '
+                                                                                'všestranně '
+                                                                                'rozvinutého '
+                                                                                'člověka. V\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'lidském životě '
+                                                                                'hraje '
+                                                                                'nejvýznamnější '
+                                                                                'období pro '
+                                                                                'účinný tělesný a '
+                                                                                'pohybový rozvoj '
+                                                                                'školní\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'věk. Právě v '
+                                                                                'dětském věku je '
+                                                                                'podpůrně '
+                                                                                'pohybový systém '
+                                                                                'velmi citlivý na '
+                                                                                'nepřiměřenou\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'strukturu '
+                                                                                'tělesné zátěže a '
+                                                                                'nedostatek '
+                                                                                'pohybové '
+                                                                                'aktivity. Nelze '
+                                                                                'přehlédnout, že '
+                                                                                'značný\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'počet dětí '
+                                                                                'projevuje nízkou '
+                                                                                'tělesnou '
+                                                                                'zdatnost a také '
+                                                                                'nedostatečné '
+                                                                                'zvládnutí pro '
+                                                                                'život\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'důležitých '
+                                                                                'pohybových '
+                                                                                'dovedností. '
+                                                                                'Kolisko uvádí '
+                                                                                '(7, str.5), že '
+                                                                                '20% dětí '
+                                                                                'předškolního\n'
+                                                                                '                 '
+                                                                                '               '
+                                                                                'věku trpí vadným '
+                                                                                'držením těla a v '
+                                                                                'období 11-12 let '
+                                                                                'je tento stav '
+                                                                                'téměř '
+                                                                                'trojnásobný.\n'
+                                                                                '                 '
+                                                                                '           ']
+                                                                  }]
+                                                    }],
+                                       'department': [{
+                                                          'cs_CZ': [{
+                                                                        'value': ['Katedra '
+                                                                                  'tělesné '
+                                                                                  'výchovy']
+                                                                    }]
+                                                      }],
+                                       'faculty': [{
+                                                       'cs_CZ': [{
+                                                                     'value': ['Pedagogická '
+                                                                               'fakulta']
+                                                                 }],
+                                                       'en_US': [{
+                                                                     'value': ['Faculty of '
+                                                                               'Education']
+                                                                 }]
+                                                   }],
+                                       'provenance': [{
+                                                          'en': [{
+                                                                     'value': ['Made available in '
+                                                                               'DSpace on '
+                                                                               '2017-03-17T09:30:02Z '
+                                                                               '(GMT). No. of\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'bitstreams: 6\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'DPTX_2005_2_11410_OSZD001_67587_0_20611.pdf: '
+                                                                               '14129928 bytes, '
+                                                                               'checksum:\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'c09f13bbfd40f8a0c029f059f8e0eae5 '
+                                                                               '(MD5)\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'DPBC_2005_2_11410_OSZD001_67587_0_20611.pdf: '
+                                                                               '81938 bytes, '
+                                                                               'checksum:\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'dc442bc11a081392c9528775bb18d0e9 '
+                                                                               '(MD5)\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'DPBE_2005_2_11410_OSZD001_67587_0_20611.pdf: '
+                                                                               '81938 bytes, '
+                                                                               'checksum:\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               '5e5109bf584190086414c0dc6e4b8d93 '
+                                                                               '(MD5)\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'DPPV_2005_2_11410_OSZD001_67587_0_20611.pdf: '
+                                                                               '187174 bytes, '
+                                                                               'checksum:\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               '96f8f75445d061231c6b519657ea0fb8 '
+                                                                               '(MD5)\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'DPPO_2005_2_11410_OSZD001_67587_0_20611.pdf: '
+                                                                               '193346 bytes, '
+                                                                               'checksum:\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               '8cb8b7459d50ffe4809cc1a94243f493 '
+                                                                               '(MD5)\n'
+                                                                               '                  '
+                                                                               '              '
+                                                                               'thumbnail.png: '
+                                                                               '21344 bytes, '
+                                                                               'checksum: '
+                                                                               'ec1020c2c1319cfb23454e4a80c76624 '
+                                                                               '(MD5)\n'
+                                                                               '                  '
+                                                                               '          ']
+                                                                 }]
+                                                      }]
+                                   }],
+                   'identifier': [{
+                                      'aleph': [{'value': [['000572336']]}],
+                                      'repId': [{'value': [['20611']]}],
+                                      'uri': [
+                                          {'value': [['http://hdl.handle.net/20.500.11956/2623']]}]
+                                  }],
+                   'language': [{
+                                    'cs_CZ': [{'value': ['Čeština']}],
+                                    'iso': [{'value': [['cs_CZ']]}]
+                                }],
+                   'publisher': [{
+                                     'cs_CZ': [{
+                                                   'value': ['Univerzita Karlova, Pedagogická '
+                                                             'fakulta']
+                                               }]
+                                 }],
+                   'title': [{
+                                 'cs_CZ': [{
+                                               'value': ['Zdravotní tělesná výchova na '
+                                                         'základních školách v Plzni a '
+                                                         'okolí']
+                                           }],
+                                 'translated': [{
+                                                    'en_US': [{
+                                                                  'value': ['Physical Education '
+                                                                            'at Basic Schools in '
+                                                                            'Pilsen and the '
+                                                                            'Surrounding\n'
+                                                                            '                                '
+                                                                            'Areas\n'
+                                                                            '                            ']
+                                                              }]
+                                                }]
+                             }],
+                   'type': [{'cs_CZ': [{'value': ['diplomová práce']}]}]
+               }],
+        'dcterms': [{
+                        'created': [{'value': [['2006']]}],
+                        'dateAccepted': [{'value': [['2006-01-17']]}]
+                    }],
+        'others': [{
+                       'handle': ['20.500.11956/2623'],
+                       'identifier': ['oai:dspace.cuni.cz:20.500.11956/2623'],
+                       'lastModifyDate': ['2017-09-11 10:12:53.118']
+                   }],
+        'repository': [{'mail': ['dspace@is.cuni.cz'], 'name': ['DSpace Repozitář']}],
+        'thesis': [{
+                       'degree': [{
+                                      'discipline': [{
+                                                         'cs_CZ': [{
+                                                                       'value': ['Učitelství pro '
+                                                                                 '1. stupeň '
+                                                                                 'základní '
+                                                                                 'školy']
+                                                                   }],
+                                                         'en_US': [{
+                                                                       'value': ['Teacher '
+                                                                                 'Training for '
+                                                                                 'Primary '
+                                                                                 'Schools']
+                                                                   }]
+                                                     }],
+                                      'level': [{'cs_CZ': [{'value': ['magisterské']}]}],
+                                      'name': [{'value': [['Mgr.']]}],
+                                      'program': [{
+                                                      'cs_CZ': [{
+                                                                    'value': ['Učitelství pro '
+                                                                              'základní školy']
+                                                                }],
+                                                      'en_US': [{
+                                                                    'value': ['Teacher Training '
+                                                                              'for Primary '
+                                                                              'Schools']
+                                                                }]
+                                                  }]
+                                  }],
+                       'grade': [{
+                                     'cs': [{'cs_CZ': [{'value': ['Výborně']}]}],
+                                     'en': [{'en_US': [{'value': ['Excellent']}]}]
+                                 }]
+                   }],
+        'uk': [{
+                   'abstract': [{
+                                    'cs': [{
+                                               'cs_CZ': [{
+                                                             'value': ['Ze života lidí se stále '
+                                                                       'vytrácí přirozený pohyb. '
+                                                                       'Vymoženosti současné\n'
+                                                                       '                                '
+                                                                       'společnosti ( televize, '
+                                                                       'počítače...) tyto trendy '
+                                                                       'návyku snížené potřeby '
+                                                                       'pohybu jen\n'
+                                                                       '                                '
+                                                                       'podporují. &quot;Změnil '
+                                                                       'se charakter, zaměření, '
+                                                                       'účel a cíl pohybových '
+                                                                       'aktivit, došlo\n'
+                                                                       '                                '
+                                                                       'kjejich značné '
+                                                                       'diferenciaci a '
+                                                                       'disproporci mezi '
+                                                                       'aktivními a pasivními '
+                                                                       'účastníky. Objevují\n'
+                                                                       '                                '
+                                                                       'se nepřiměřené emoce až '
+                                                                       'hysterie v souvislosti se '
+                                                                       'sportovními akcemi, '
+                                                                       'uctívání\n'
+                                                                       '                                '
+                                                                       'silnějších, dravějších, '
+                                                                       'případně i '
+                                                                       'bohatších.&quot; (9) Je '
+                                                                       'nezbytné, aby tělesná\n'
+                                                                       '                                '
+                                                                       'zdatnost a její význam '
+                                                                       'byla vnímána lidmi jako '
+                                                                       'důležitá životní hodnota. '
+                                                                       'Vždyť přiměřeně\n'
+                                                                       '                                '
+                                                                       'tělesně zdatný člověk, '
+                                                                       'navíc pohybově '
+                                                                       'kultivovaný, se v '
+                                                                       'praktickém životě spolu '
+                                                                       's\n'
+                                                                       '                                '
+                                                                       'mravními postoji a '
+                                                                       'vzdělaností přibližuje k '
+                                                                       'ideálu všestranně '
+                                                                       'rozvinutého člověka. V\n'
+                                                                       '                                '
+                                                                       'lidském životě hraje '
+                                                                       'nejvýznamnější období pro '
+                                                                       'účinný tělesný a pohybový '
+                                                                       'rozvoj školní\n'
+                                                                       '                                '
+                                                                       'věk. Právě v dětském věku '
+                                                                       'je podpůrně pohybový '
+                                                                       'systém velmi citlivý na '
+                                                                       'nepřiměřenou\n'
+                                                                       '                                '
+                                                                       'strukturu tělesné zátěže '
+                                                                       'a nedostatek pohybové '
+                                                                       'aktivity. Nelze '
+                                                                       'přehlédnout, že značný\n'
+                                                                       '                                '
+                                                                       'počet dětí projevuje '
+                                                                       'nízkou tělesnou zdatnost '
+                                                                       'a také nedostatečné '
+                                                                       'zvládnutí pro život\n'
+                                                                       '                                '
+                                                                       'důležitých pohybových '
+                                                                       'dovedností. Kolisko uvádí '
+                                                                       '(7, str.5), že 20% dětí '
+                                                                       'předškolního\n'
+                                                                       '                                '
+                                                                       'věku trpí vadným držením '
+                                                                       'těla a v období 11-12 let '
+                                                                       'je tento stav téměř '
+                                                                       'trojnásobný.\n'
+                                                                       '                            ']
+                                                         }]
+                                           }],
+                                    'en': [{
+                                               'en_US': [{
+                                                             'value': ['Ze života lidí se stále '
+                                                                       'vytrácí přirozený pohyb. '
+                                                                       'Vymoženosti současné\n'
+                                                                       '                                '
+                                                                       'společnosti ( televize, '
+                                                                       'počítače...) tyto trendy '
+                                                                       'návyku snížené potřeby '
+                                                                       'pohybu jen\n'
+                                                                       '                                '
+                                                                       'podporují. &quot;Změnil '
+                                                                       'se charakter, zaměření, '
+                                                                       'účel a cíl pohybových '
+                                                                       'aktivit, došlo\n'
+                                                                       '                                '
+                                                                       'kjejich značné '
+                                                                       'diferenciaci a '
+                                                                       'disproporci mezi '
+                                                                       'aktivními a pasivními '
+                                                                       'účastníky. Objevují\n'
+                                                                       '                                '
+                                                                       'se nepřiměřené emoce až '
+                                                                       'hysterie v souvislosti se '
+                                                                       'sportovními akcemi, '
+                                                                       'uctívání\n'
+                                                                       '                                '
+                                                                       'silnějších, dravějších, '
+                                                                       'případně i '
+                                                                       'bohatších.&quot; (9) Je '
+                                                                       'nezbytné, aby tělesná\n'
+                                                                       '                                '
+                                                                       'zdatnost a její význam '
+                                                                       'byla vnímána lidmi jako '
+                                                                       'důležitá životní hodnota. '
+                                                                       'Vždyť přiměřeně\n'
+                                                                       '                                '
+                                                                       'tělesně zdatný člověk, '
+                                                                       'navíc pohybově '
+                                                                       'kultivovaný, se v '
+                                                                       'praktickém životě spolu '
+                                                                       's\n'
+                                                                       '                                '
+                                                                       'mravními postoji a '
+                                                                       'vzdělaností přibližuje k '
+                                                                       'ideálu všestranně '
+                                                                       'rozvinutého člověka. V\n'
+                                                                       '                                '
+                                                                       'lidském životě hraje '
+                                                                       'nejvýznamnější období pro '
+                                                                       'účinný tělesný a pohybový '
+                                                                       'rozvoj školní\n'
+                                                                       '                                '
+                                                                       'věk. Právě v dětském věku '
+                                                                       'je podpůrně pohybový '
+                                                                       'systém velmi citlivý na '
+                                                                       'nepřiměřenou\n'
+                                                                       '                                '
+                                                                       'strukturu tělesné zátěže '
+                                                                       'a nedostatek pohybové '
+                                                                       'aktivity. Nelze '
+                                                                       'přehlédnout, že značný\n'
+                                                                       '                                '
+                                                                       'počet dětí projevuje '
+                                                                       'nízkou tělesnou zdatnost '
+                                                                       'a také nedostatečné '
+                                                                       'zvládnutí pro život\n'
+                                                                       '                                '
+                                                                       'důležitých pohybových '
+                                                                       'dovedností. Kolisko uvádí '
+                                                                       '(7, str.5), že 20% dětí '
+                                                                       'předškolního\n'
+                                                                       '                                '
+                                                                       'věku trpí vadným držením '
+                                                                       'těla a v období 11-12 let '
+                                                                       'je tento stav téměř '
+                                                                       'trojnásobný.\n'
+                                                                       '                            ']
+                                                         }]
+                                           }]
+                                }],
+                   'degree-discipline': [{
+                                             'cs': [{
+                                                        'cs_CZ': [{
+                                                                      'value': ['Učitelství pro '
+                                                                                '1. stupeň '
+                                                                                'základní '
+                                                                                'školy']
+                                                                  }]
+                                                    }],
+                                             'en': [{
+                                                        'en_US': [{
+                                                                      'value': ['Teacher Training '
+                                                                                'for Primary '
+                                                                                'Schools']
+                                                                  }]
+                                                    }]
+                                         }],
+                   'degree-program': [{
+                                          'cs': [{
+                                                     'cs_CZ': [{
+                                                                   'value': ['Učitelství pro '
+                                                                             'základní školy']
+                                                               }]
+                                                 }],
+                                          'en': [{
+                                                     'en_US': [{
+                                                                   'value': ['Teacher Training '
+                                                                             'for Primary '
+                                                                             'Schools']
+                                                               }]
+                                                 }]
+                                      }],
+                   'faculty-abbr': [{'cs': [{'cs_CZ': [{'value': ['PedF']}]}]}],
+                   'faculty-name': [{
+                                        'cs': [{
+                                                   'cs_CZ': [{
+                                                                 'value': ['Pedagogická '
+                                                                           'fakulta']
+                                                             }]
+                                               }],
+                                        'en': [{
+                                                   'en_US': [{
+                                                                 'value': ['Faculty of '
+                                                                           'Education']
+                                                             }]
+                                               }]
+                                    }],
+                   'grantor': [{
+                                   'cs_CZ': [{
+                                                 'value': ['Univerzita Karlova, Pedagogická '
+                                                           'fakulta, Katedra tělesné '
+                                                           'výchovy']
+                                             }]
+                               }],
+                   'publication-place': [{'cs_CZ': [{'value': ['Praha']}]}],
+                   'taxonomy': [{
+                                    'organization-cs': [{
+                                                            'cs_CZ': [{
+                                                                          'value': ['Pedagogická '
+                                                                                    'fakulta::Katedra '
+                                                                                    'tělesné '
+                                                                                    'výchovy']
+                                                                      }]
+                                                        }]
+                                }],
+                   'thesis': [{'type': [{'cs_CZ': [{'value': ['diplomová práce']}]}]}]
+               }]
+    }
