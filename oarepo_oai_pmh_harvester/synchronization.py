@@ -83,14 +83,15 @@ class OAISynchronizer(OAIDBBase):
             if not collect:  # pragma: no cover
                 continue
             deleted = identifier.deleted
+            oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
             try:
                 if deleted:
-                    self._delete(identifier, oai_identifier)
+                    self._delete(oai_rec)
                 else:
                     try:
-                        self.create_or_update(oai_identifier, datestamp)
+                        self.create_or_update(oai_identifier, datestamp, oai_rec=oai_rec)
                     except IdDoesNotExist:
-                        self._delete(identifier, oai_identifier)
+                        self._delete(oai_rec)
                 if idx % 100:
                     db.session.commit()
             except Exception:
@@ -118,11 +119,10 @@ class OAISynchronizer(OAIDBBase):
         identifiers = islice(identifiers, start_id, None)
         return identifiers
 
-    def _delete(self, identifier, oai_identifier):
-        # TODO: přepsat, aby byla správně volána metoda delete_record
-        self.delete_record(oai_identifier)
+    def _delete(self, oai_rec):
+        self.delete_record(oai_rec)
         self.deleted += 1
-        oai_logger.info(f"Identifier '{identifier}' has been marked as deleted")
+        oai_logger.info(f"Identifier '{oai_rec.oai_identifier}' has been marked as deleted")
 
     def _get_oai_identifiers(
             self,
@@ -143,7 +143,7 @@ class OAISynchronizer(OAIDBBase):
         return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
                                       set=set_)
 
-    def create_or_update(self, oai_identifier, datestamp):
+    def create_or_update(self, oai_identifier, datestamp, oai_rec=None):
         """
 
         :param oai_identifier:
@@ -153,7 +153,6 @@ class OAISynchronizer(OAIDBBase):
         :return:
         :rtype:
         """
-        oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
         if oai_rec:
             our_datestamp = pytz.UTC.localize(oai_rec.timestamp)
             oai_record_datestamp = isoparse(datestamp)
@@ -254,17 +253,6 @@ class OAISynchronizer(OAIDBBase):
         db.session.commit()
         if indexer_class:
             indexer_class().delete(record)
-
-    @staticmethod
-    def ensure_migration():
-        # TODO: Zlepšit kontrolu zda proběhla migrace úspěšně
-        pass
-        # oai_record_count = OAIRecord.query.count()
-        # records_count = RecordMetadata.query.count()
-        # if records_count > 0 and oai_record_count == 0:
-        #     raise NoMigrationError(
-        #         "There are records presents in database, but no OAIRecord found. Please ensure "
-        #         "that you run migration script")
 
     def get_endpoint_config(self, data):
         end_point_name = None
