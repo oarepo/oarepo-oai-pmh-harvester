@@ -10,7 +10,16 @@ from .models import OAIProvider
 from .synchronization import OAISynchronizer
 
 
-class OArepoOAIClientState:
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class OArepoOAIClientState(metaclass=Singleton):
     def __init__(self, app, _rules: defaultdict = None, _parsers: defaultdict = None,
                  _providers: dict = None, _synchronizers=None, transformer_class=OAITransformer,
                  _endpoints=None):
