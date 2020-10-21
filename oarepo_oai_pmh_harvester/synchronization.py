@@ -1,3 +1,4 @@
+import datetime
 import logging
 import traceback
 import uuid
@@ -6,11 +7,13 @@ from typing import Callable, List
 
 import pytz
 from dateutil.parser import isoparse
+from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
+from lxml.etree import _Element
 from sickle import Sickle
 from sickle.oaiexceptions import IdDoesNotExist
 
@@ -36,11 +39,16 @@ class OAISynchronizer(OAIDBBase):
             oai_identifiers: List[str] = None,
             endpoints=None,
             default_endpoint: str = "recid",
-            endpoint_mapping=None
+            endpoint_mapping=None,
+            pid_field=None
     ):
         super().__init__(provider)
         if endpoint_mapping is None:
             endpoint_mapping = {}
+        if pid_field is None:
+            self.pid_field = current_app.config.get('PIDSTORE_RECID_FIELD', "recid")
+        else:
+            self.pid_field = pid_field
         self.provider = provider
         self.oai_sync = None
         self.sickle = Sickle(self.provider.oai_endpoint)
@@ -143,34 +151,26 @@ class OAISynchronizer(OAIDBBase):
         return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
                                       set=set_)
 
-    def create_or_update(self, oai_identifier, datestamp, oai_rec=None):
-        """
-
-        :param oai_identifier:
-        :type oai_identifier:
-        :param datestamp:
-        :type datestamp:
-        :return:
-        :rtype:
-        """
+    def create_or_update(self, oai_identifier, datestamp, oai_rec=None, xml: _Element = None):
         if oai_rec:
             our_datestamp = pytz.UTC.localize(oai_rec.timestamp)
             oai_record_datestamp = isoparse(datestamp)
             if our_datestamp >= oai_record_datestamp:
                 oai_logger.info(f'Record with oai_identifier "{oai_identifier}" already exists')
                 return
-        xml = self.get_xml(oai_identifier)
+        if not xml:
+            xml = self.get_xml(oai_identifier)
         parsed = self.parse(xml)
         transformed = self.transform(parsed)
         transformed.update(self.provider.constant_fields)
 
         if oai_rec is None:
-            record = self.create_record(transformed)
+            record, pid = self.create_record(transformed)
             oai_rec = OAIRecord(
                 id=record.id,
                 oai_identifier=oai_identifier,
                 creation_sync_id=self.oai_sync.id,
-                pid=transformed["id"]
+                pid=pid.pid_value  # TODO: tady musí být fetcher
             )
             self.created += 1
             db.session.add(oai_rec)
@@ -183,7 +183,7 @@ class OAISynchronizer(OAIDBBase):
             oai_rec.modification_sync_id = self.oai_sync.id
             oai_logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
         oai_rec.last_sync_id = self.oai_sync.id
-        oai_rec.timestamp = datestamp
+        oai_rec.timestamp = isoparse(datestamp)
         return record
 
     def transform(self, parsed, handler=None):
@@ -224,14 +224,16 @@ class OAISynchronizer(OAIDBBase):
         if indexer_class:
             indexer_class().index(record)
 
-        return record
+        return record, pid
 
     def update_record(self, oai_rec, data):
         indexer_class = self.get_indexer_class()
-
+        fetcher = self.get_fetcher(data)
         record = Record.get_record(oai_rec.id)
+        pid = fetcher(oai_rec.id, dict(record))
         record.clear()
         record.update(data)
+        record[self.pid_field] = pid.pid_value
         record.commit()
         db.session.commit()
         if indexer_class:
@@ -269,6 +271,11 @@ class OAISynchronizer(OAIDBBase):
         endpoint_config = self.get_endpoint_config(data)
         minter_name = endpoint_config["pid_minter"]
         return current_pidstore.minters.get(minter_name)
+
+    def get_fetcher(self, data=None):
+        endpoint_config = self.get_endpoint_config(data)
+        fetcher_name = endpoint_config["pid_fetcher"]
+        return current_pidstore.fetchers.get(fetcher_name)
 
     def get_record_class(self, data=None):
         endpoint_config = self.get_endpoint_config(data)

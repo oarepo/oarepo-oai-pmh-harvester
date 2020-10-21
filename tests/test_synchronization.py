@@ -8,6 +8,7 @@ import requests
 from invenio_records import Record
 from lxml.etree import _Element
 from pytest import skip
+from pytz import utc
 from sickle.iterator import OAIItemIterator
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -25,13 +26,13 @@ class TestSynchronization:
     def test_create_record(self, load_entry_points, app, db, metadata, ):
         synchronizers = app.extensions['oarepo-oai-client'].synchronizers
         synchronizer = synchronizers["uk"]
-        rec = synchronizer.create_record(metadata)
+        rec, pid = synchronizer.create_record(metadata)
         assert rec == {'title': 'Testovací záznam', 'pid': '1'}
 
     def test_update_record(self, load_entry_points, app, db, metadata):
         synchronizers = current_oai_client.synchronizers
         synchronizer = synchronizers["uk"]
-        record = synchronizer.create_record(metadata)
+        record, id_ = synchronizer.create_record(metadata)
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
@@ -57,7 +58,7 @@ class TestSynchronization:
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
-        record = synchronizer.create_record(metadata)
+        record, id_ = synchronizer.create_record(metadata)
         oai_sync = OAISync(provider_id=1)
         db.session.add(oai_sync)
         db.session.commit()
@@ -81,7 +82,7 @@ class TestSynchronization:
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
-        record = synchronizer.create_record(metadata)
+        record, id_ = synchronizer.create_record(metadata)
         oai_sync = OAISync(provider_id=1)
         db.session.add(oai_sync)
         db.session.commit()
@@ -148,3 +149,23 @@ class TestSynchronization:
         synchronizer = synchronizers["uk"]
         transformed = synchronizer.transform({})
         assert transformed == {}
+
+    def test_create_or_update(self, load_entry_points, app, db, record_xml):
+        synchronizers = current_oai_client.synchronizers
+        synchronizer = synchronizers["uk"]
+        oai_sync = OAISync(provider_id=1)
+        synchronizer.oai_sync = oai_sync
+        record = synchronizer.create_or_update("oai:dspace.cuni.cz:20.500.11956/2623",
+                                               '2017-09-11T08:12:53Z', xml=record_xml)
+        db.session.commit()
+        assert record == {'pid': '1', 'title': 'Testovací záznam'}
+        oai_rec = OAIRecord.query.filter_by(pid=1).one_or_none()
+        record2 = synchronizer.create_or_update("oai:dspace.cuni.cz:20.500.11956/2623",
+                                                '2017-09-11T08:12:53Z', xml=record_xml,
+                                                oai_rec=oai_rec)
+        assert record2 is None
+        new_time_stemp = datetime.utcnow().replace(tzinfo=utc).isoformat()
+        record3 = synchronizer.create_or_update("oai:dspace.cuni.cz:20.500.11956/2623",
+                                                new_time_stemp, xml=record_xml,
+                                                oai_rec=oai_rec)
+        assert record3 == {'pid': '1', 'title': 'Testovací záznam'}
