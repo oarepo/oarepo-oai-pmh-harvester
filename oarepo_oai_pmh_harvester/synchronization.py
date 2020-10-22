@@ -1,12 +1,10 @@
-import datetime
 import logging
 import traceback
 import uuid
 from itertools import islice
 from typing import Callable, List
 
-import pytz
-from dateutil.parser import isoparse
+import arrow
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
@@ -75,7 +73,7 @@ class OAISynchronizer:
         with db.session.begin_nested():
             self.oai_sync = OAISync(
                 provider=self.provider,
-                sync_start=datetime.datetime.utcnow(),
+                sync_start=arrow.utcnow().datetime,  # datetime.datetime.utcnow(),
                 status="active")
             db.session.add(self.oai_sync)
         db.session.commit()
@@ -92,7 +90,7 @@ class OAISynchronizer:
         with db.session.begin_nested():
             # self.oai_sync = db.session.merge(self.oai_sync)
             self.oai_sync.status = status
-            self.oai_sync.sync_end = datetime.datetime.utcnow()
+            self.oai_sync.sync_end = arrow.utcnow().datetime  # datetime.datetime.utcnow()
             self.oai_sync.rec_modified = self.modified
             self.oai_sync.rec_created = self.created
             self.oai_sync.rec_deleted = self.deleted
@@ -125,7 +123,8 @@ class OAISynchronizer:
             if not collect:  # pragma: no cover
                 continue
             try:
-                self.record_crud(oai_rec, datestamp=datestamp, deleted=deleted, idx=idx, oai_identifier=oai_identifier,)
+                self.record_crud(oai_rec, datestamp=datestamp, deleted=deleted, idx=idx,
+                                 oai_identifier=oai_identifier, )
             except Exception:
                 self.exception_handler(oai_identifier)
                 if break_on_error:
@@ -148,7 +147,7 @@ class OAISynchronizer:
     def record_crud(self,
                     oai_rec: OAIRecord = None,
                     oai_identifier: str = None,
-                    datestamp: str = datetime.datetime.utcnow().isoformat(),
+                    datestamp: str = arrow.utcnow().isoformat(),
                     deleted: bool = False,
                     xml: _Element = None,
                     idx: int = 0):
@@ -205,10 +204,10 @@ class OAISynchronizer:
         return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
                                       set=set_)
 
-    def create_or_update(self, oai_identifier, datestamp, oai_rec=None, xml: _Element = None):
+    def create_or_update(self, oai_identifier, datestamp: str, oai_rec=None, xml: _Element = None):
         if oai_rec:
-            our_datestamp = pytz.UTC.localize(oai_rec.timestamp)
-            oai_record_datestamp = isoparse(datestamp)
+            our_datestamp = arrow.get(oai_rec.timestamp)
+            oai_record_datestamp = arrow.get(datestamp)
             if our_datestamp >= oai_record_datestamp:
                 oai_logger.info(f'Record with oai_identifier "{oai_identifier}" already exists')
                 return
@@ -237,7 +236,7 @@ class OAISynchronizer:
             oai_rec.modification_sync_id = self.oai_sync.id
             oai_logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
         oai_rec.last_sync_id = self.oai_sync.id
-        oai_rec.timestamp = isoparse(datestamp)
+        oai_rec.timestamp = arrow.get(datestamp).datetime
         return record
 
     def transform(self, parsed, handler=None):
