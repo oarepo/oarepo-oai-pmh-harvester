@@ -46,6 +46,16 @@ class OAIRecord(db.Model):
         backref=backref("oarepo_oai_record", uselist=False)
     )
 
+    def __repr__(self):
+        return f"OAIRecord(id={self.id}, oai_identifier={self.oai_identifier}, pid={self.pid}, " \
+               f"last_sync_id={self.last_sync_id}, modification_s" \
+               f"ync_id={self.modification_sync_id}, creation_sync_id={self.creation_sync_id}, " \
+               f"timestamp={self.timestamp})"
+
+    @classmethod
+    def get_record(cls, oai_identifier):
+        return cls.query.filter_by(oai_identifier=oai_identifier).one_or_none()
+
 
 class OAISync(db.Model):
     __tablename__ = "oarepo_oai_sync"
