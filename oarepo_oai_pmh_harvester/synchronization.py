@@ -15,6 +15,7 @@ from lxml.etree import _Element
 from sickle import Sickle
 from sickle.models import Header
 from sickle.oaiexceptions import IdDoesNotExist
+from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc, OAISync)
@@ -123,7 +124,7 @@ class OAISynchronizer:
             if not collect:  # pragma: no cover
                 continue
             try:
-                self.record_crud(oai_rec, datestamp=datestamp, deleted=deleted, idx=idx,
+                self.record_crud(oai_rec, timestamp=datestamp, deleted=deleted, idx=idx,
                                  oai_identifier=oai_identifier, )
             except Exception:
                 self.exception_handler(oai_identifier)
@@ -147,7 +148,7 @@ class OAISynchronizer:
     def record_crud(self,
                     oai_rec: OAIRecord = None,
                     oai_identifier: str = None,
-                    datestamp: str = arrow.utcnow().isoformat(),
+                    timestamp: str = arrow.utcnow().isoformat(),
                     deleted: bool = False,
                     xml: _Element = None,
                     idx: int = 0):
@@ -159,8 +160,8 @@ class OAISynchronizer:
             self._delete(oai_rec)
         else:
             try:
-                self.create_or_update(oai_identifier, datestamp, oai_rec=oai_rec, xml=xml)
-            except IdDoesNotExist:
+                self.create_or_update(oai_identifier, timestamp, oai_rec=oai_rec, xml=xml)
+            except IdDoesNotExist:  # pragma: no cover
                 self._delete(oai_rec)
         if idx % 100:
             db.session.commit()
@@ -282,11 +283,16 @@ class OAISynchronizer:
     def update_record(self, oai_rec, data):
         indexer_class = self.get_indexer_class()
         fetcher = self.get_fetcher(data)
-        record = Record.get_record(oai_rec.id)
-        pid = fetcher(oai_rec.id, dict(record))
+        try:
+            record = Record.get_record(oai_rec.id)
+        except NoResultFound:
+            record = Record.get_record(oai_rec.id, with_deleted=True)
+            record.revert(-2)
+            record.update(record.model.json)
+        fetched_pid = fetcher(oai_rec.id, dict(record))
         record.clear()
         record.update(data)
-        record[self.pid_field] = pid.pid_value
+        record[self.pid_field] = fetched_pid.pid_value
         record.commit()
         db.session.commit()
         if indexer_class:
@@ -298,13 +304,15 @@ class OAISynchronizer:
 
         record = Record.get_record(oai_rec.id)
         record.delete()
-        # mark all PIDs as DELETED
-        all_pids = PersistentIdentifier.query.filter(
-            PersistentIdentifier.object_uuid == record.id,
-        ).all()
-        for rec_pid in all_pids:
-            if not rec_pid.is_deleted():
-                rec_pid.delete()
+        # TODO: rozmyslet se jak nakládat s PIDy
+        # # mark all PIDs as DELETED
+        # all_pids = PersistentIdentifier.query.filter(
+        #     PersistentIdentifier.object_uuid == record.id,
+        # ).all()
+        # for rec_pid in all_pids:
+        #     if not rec_pid.is_deleted():
+        #         rec_pid.delete()
+
         db.session.commit()
         if indexer_class:
             indexer_class().delete(record)

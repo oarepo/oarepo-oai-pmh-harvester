@@ -1,7 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
 from itertools import islice
-from pprint import pprint
 
 import pytest
 import requests
@@ -10,10 +9,10 @@ from lxml.etree import _Element
 from pytest import skip
 from pytz import utc
 from sickle.iterator import OAIItemIterator
-from sickle.models import Header, OAIItem
+from sickle.models import Header
 from sqlalchemy.orm.exc import NoResultFound
 
-from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIProvider
+from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIProvider, OAIRecordExc
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
@@ -182,11 +181,6 @@ class TestSynchronization:
         assert synchronizer.modified == 0
         assert synchronizer.deleted == 0
 
-    # def test_synchronize(self, load_entry_points, app, db):
-    #     synchronizers = current_oai_client.synchronizers
-    #     synchronizer = synchronizers["uk"]
-    #     synchronizer.synchronize()
-
     def test_get_oai_header_data(self, load_entry_points, app, db, record_xml):
         header_xml = record_xml[0]
         header = Header(header_xml)
@@ -208,3 +202,65 @@ class TestSynchronization:
         oai_rec = OAIRecord.get_record(oai_identifier)
         assert oai_rec is not None
         synchronizer.record_crud(oai_rec=oai_rec)
+        db.session.commit()
+        oai_rec2 = OAIRecord.get_record(oai_identifier)
+        assert oai_rec == oai_rec2
+        timestamp2 = oai_rec2.timestamp
+        synchronizer.record_crud(oai_rec=oai_rec, timestamp='2050-10-22T08:18:08.567698+00:00',
+                                 xml=record_xml)
+        db.session.commit()
+        oai_rec3 = OAIRecord.get_record(oai_identifier)
+        assert oai_rec3.timestamp > timestamp2
+        synchronizer.record_crud(oai_rec=oai_rec3, deleted=True)
+        db.session.commit()
+        # oai_rec4 = OAIRecord.get_record(oai_identifier)
+        # assert oai_rec4 is None
+        # TODO: zamyslet se co udělat se smazaným OAI recordem, invenio smaže metadata a označí
+        #  PID jako smazaný, ale záznam zůstane. Otázka je co se stane,
+        #  když OAI provider záznam obnoví a/nebo zaktualizuje.
+
+    def test_record_crud_2(self, load_entry_points, app, db, record_xml):
+        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
+        synchronizer = synchronizers["uk"]
+        oai_sync = OAISync(provider_id=1)
+        synchronizer.oai_sync = oai_sync
+        oai_identifier = "oai:dspace.cuni.cz:20.500.11956/2623"
+
+        # vytvoření záznamu
+        synchronizer.record_crud(oai_identifier=oai_identifier, xml=record_xml)
+        db.session.commit()
+        oai_rec = OAIRecord.get_record(oai_identifier)
+        assert oai_rec is not None
+
+        # smazání záznamu
+        synchronizer.record_crud(oai_rec=oai_rec, deleted=True)
+        db.session.commit()
+        oai_rec2 = OAIRecord.get_record(oai_identifier)
+        assert oai_rec == oai_rec2
+
+        # obnovení záznamu
+        synchronizer.record_crud(oai_rec=oai_rec, timestamp='2050-10-22T08:18:08.567698+00:00',
+                                 xml=record_xml)
+        db.session.commit()
+        oai_rec3 = OAIRecord.get_record(oai_identifier)
+        assert oai_rec3 is not None
+        record = Record.get_record(oai_rec.id)
+        assert record is not None
+
+    def test_exception_handler(self, load_entry_points, app, db):
+        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
+        synchronizer = synchronizers["uk"]
+        provider = OAIProvider.query.filter_by(code="uk").one_or_none()
+        if not provider:
+            current_oai_client.create_providers()
+        oai_sync = OAISync(provider_id=1)
+        db.session.add(oai_sync)
+        db.session.commit()
+        synchronizer.oai_sync = oai_sync
+        oai_identifier = "oai:dspace.cuni.cz:20.500.11956/2623"
+        try:
+            raise Exception("Test exception")
+        except Exception:
+            synchronizer.exception_handler(oai_identifier)
+        oai_exc = OAIRecordExc.query.filter_by(id=1).one_or_none()
+        print(oai_exc.traceback)
