@@ -26,7 +26,7 @@ oai_logger.setLevel(logging.DEBUG)
 
 
 # TODO: převést pod providera
-class OAISynchronizer(OAIDBBase):
+class OAISynchronizer:
     """
 
     """
@@ -42,7 +42,13 @@ class OAISynchronizer(OAIDBBase):
             endpoint_mapping=None,
             pid_field=None
     ):
-        super().__init__(provider)
+        self.provider = provider
+
+        # Counters
+        self.deleted = 0
+        self.created = 0
+        self.modified = 0
+
         if endpoint_mapping is None:
             endpoint_mapping = {}
         if pid_field is None:
@@ -65,8 +71,35 @@ class OAISynchronizer(OAIDBBase):
         :return:
         :rtype:
         """
-        # self.ensure_migration() TODO: dovyřešit
-        super().run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
+        self.restart_counters()
+        with db.session.begin_nested():
+            self.oai_sync = OAISync(
+                provider=self.provider,
+                sync_start=datetime.datetime.utcnow(),
+                status="active")
+            db.session.add(self.oai_sync)
+        db.session.commit()
+        try:
+            self.synchronize(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
+            self.update_oai_sync("ok")
+        except:
+            self.update_oai_sync("failed")
+            raise
+        finally:
+            db.session.commit()
+
+    def update_oai_sync(self, status):
+        with db.session.begin_nested():
+            # self.oai_sync = db.session.merge(self.oai_sync)
+            self.oai_sync.status = status
+            self.oai_sync.sync_end = datetime.datetime.utcnow()
+            self.oai_sync.rec_modified = self.modified
+            self.oai_sync.rec_created = self.created
+            self.oai_sync.rec_deleted = self.deleted
+            if status == "failed":
+                self.oai_sync.logs = traceback.format_exc()
+            db.session.add(self.oai_sync)
+        db.session.commit()
 
     def synchronize(self,
                     identifiers=None,
