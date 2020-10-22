@@ -15,11 +15,11 @@ from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
 from lxml.etree import _Element
 from sickle import Sickle
+from sickle.models import Header
 from sickle.oaiexceptions import IdDoesNotExist
 
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
-from oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc)
-from oarepo_oai_pmh_harvester.oai_base import OAIDBBase
+from oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc, OAISync)
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
@@ -65,7 +65,7 @@ class OAISynchronizer:
         self.default_endpoint = default_endpoint
         self.endpoint_mapping = endpoint_mapping
 
-    def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True):
+    def run(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
         """
 
         :return:
@@ -114,42 +114,63 @@ class OAISynchronizer:
         oai_logger.info(f"OAI harvester on endpoint: {self.provider.oai_endpoint} has started!")
 
         identifiers = self._get_identifiers(identifiers, start_id)
-        collect = False
         for idx, identifier in enumerate(identifiers, start=start_id):
             oai_logger.info(f"{idx}. Record, OAI ID: '{identifier}'")
-            datestamp = identifier.datestamp
-            oai_identifier = identifier.identifier
-            if not start_oai or oai_identifier == start_oai:
+            datestamp, deleted, oai_identifier = self.get_oai_header_data(identifier)
+            oai_rec = OAIRecord.get_record(oai_identifier)
+            if not start_oai or oai_identifier == start_oai:  # pragma: no cover
                 collect = True
+            else:
+                collect = False
             if not collect:  # pragma: no cover
                 continue
-            deleted = identifier.deleted
-            oai_rec = OAIRecord.query.filter_by(oai_identifier=oai_identifier).one_or_none()
             try:
-                if deleted:
-                    self._delete(oai_rec)
-                else:
-                    try:
-                        self.create_or_update(oai_identifier, datestamp, oai_rec=oai_rec)
-                    except IdDoesNotExist:
-                        self._delete(oai_rec)
-                if idx % 100:
-                    db.session.commit()
+                self.record_crud(oai_rec, datestamp=datestamp, deleted=deleted, idx=idx, oai_identifier=oai_identifier,)
             except Exception:
-                exc = traceback.format_exc()
-                print(exc, "\n\n\n")
-                oai_exc = OAIRecordExc.query.filter_by(oai_identifier=oai_identifier,
-                                                       oai_sync_id=self.oai_sync.id).one_or_none()
-                if not oai_exc:
-                    oai_exc = OAIRecordExc(oai_identifier=oai_identifier, traceback=exc,
-                                           oai_sync_id=self.oai_sync.id)
-                    db.session.add(oai_exc)
-                else:
-                    oai_exc.traceback = exc
-                db.session.commit()
+                self.exception_handler(oai_identifier)
                 if break_on_error:
                     raise
                 continue
+
+    def exception_handler(self, oai_identifier):
+        exc = traceback.format_exc()
+        print(exc, "\n\n\n")
+        oai_exc = OAIRecordExc.query.filter_by(oai_identifier=oai_identifier,
+                                               oai_sync_id=self.oai_sync.id).one_or_none()
+        if not oai_exc:
+            oai_exc = OAIRecordExc(oai_identifier=oai_identifier, traceback=exc,
+                                   oai_sync_id=self.oai_sync.id)
+            db.session.add(oai_exc)
+        else:
+            oai_exc.traceback = exc
+        db.session.commit()
+
+    def record_crud(self,
+                    oai_rec: OAIRecord = None,
+                    oai_identifier: str = None,
+                    datestamp: str = datetime.datetime.utcnow().isoformat(),
+                    deleted: bool = False,
+                    xml: _Element = None,
+                    idx: int = 0):
+        if not (oai_rec or oai_identifier):
+            raise Exception("You have to provide oai_rec or oai_identifier")
+        if not oai_identifier:
+            oai_identifier = oai_rec.oai_identifier
+        if deleted:
+            self._delete(oai_rec)
+        else:
+            try:
+                self.create_or_update(oai_identifier, datestamp, oai_rec=oai_rec, xml=xml)
+            except IdDoesNotExist:
+                self._delete(oai_rec)
+        if idx % 100:
+            db.session.commit()
+
+    def get_oai_header_data(self, identifier: Header):
+        datestamp = identifier.datestamp
+        oai_identifier = identifier.identifier
+        deleted = identifier.deleted
+        return datestamp, deleted, oai_identifier
 
     def _get_identifiers(self, identifiers=None, start_id: int = 0):
         if identifiers is None:
@@ -319,3 +340,8 @@ class OAISynchronizer:
         endpoint_config = self.get_endpoint_config(data)
         record_class = endpoint_config["indexer_class"]
         return obj_or_import_string(record_class)
+
+    def restart_counters(self):
+        self.deleted = 0
+        self.created = 0
+        self.modified = 0

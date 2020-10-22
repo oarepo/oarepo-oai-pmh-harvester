@@ -10,6 +10,7 @@ from lxml.etree import _Element
 from pytest import skip
 from pytz import utc
 from sickle.iterator import OAIItemIterator
+from sickle.models import Header, OAIItem
 from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIProvider
@@ -169,3 +170,41 @@ class TestSynchronization:
                                                 new_time_stemp, xml=record_xml,
                                                 oai_rec=oai_rec)
         assert record3 == {'pid': '1', 'title': 'Testovací záznam'}
+
+    def test_restart_counters(self, load_entry_points, app, db):
+        synchronizers = current_oai_client.synchronizers
+        synchronizer = synchronizers["uk"]
+        synchronizer.created = 100
+        synchronizer.modified = 100
+        synchronizer.deleted = 100
+        synchronizer.restart_counters()
+        assert synchronizer.created == 0
+        assert synchronizer.modified == 0
+        assert synchronizer.deleted == 0
+
+    # def test_synchronize(self, load_entry_points, app, db):
+    #     synchronizers = current_oai_client.synchronizers
+    #     synchronizer = synchronizers["uk"]
+    #     synchronizer.synchronize()
+
+    def test_get_oai_header_data(self, load_entry_points, app, db, record_xml):
+        header_xml = record_xml[0]
+        header = Header(header_xml)
+        synchronizers = current_oai_client.synchronizers
+        synchronizer = synchronizers["uk"]
+        res_tuple = synchronizer.get_oai_header_data(header)
+        assert res_tuple == ('2017-09-11T08:12:53Z', False, 'oai:dspace.cuni.cz:20.500.11956/2623')
+
+    def test_record_crud(self, load_entry_points, app, db, record_xml):
+        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
+        synchronizer = synchronizers["uk"]
+        oai_sync = OAISync(provider_id=1)
+        synchronizer.oai_sync = oai_sync
+        oai_identifier = "oai:dspace.cuni.cz:20.500.11956/2623"
+        with pytest.raises(Exception, match="You have to provide oai_rec or oai_identifier"):
+            synchronizer.record_crud()
+        synchronizer.record_crud(oai_identifier=oai_identifier, xml=record_xml)
+        db.session.commit()
+        oai_rec = OAIRecord.get_record(oai_identifier)
+        assert oai_rec is not None
+        synchronizer.record_crud(oai_rec=oai_rec)
