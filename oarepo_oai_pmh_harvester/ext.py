@@ -20,7 +20,7 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
-
+# TODO: každý provider může mít více synchronizerů, musí se předělat
 class OArepoOAIClientState(metaclass=Singleton):
     def __init__(self, app, _rules: defaultdict = None, _parsers: defaultdict = None,
                  _providers: dict = None, _synchronizers=None, transformer_class=OAITransformer,
@@ -137,13 +137,11 @@ class OArepoOAIClientState(metaclass=Singleton):
                 endpoints=self.endpoints,
                 default_endpoint=provider.default_endpoint,
                 endpoint_mapping=provider.endpoint_mapping
-
             )
                                            )
-        print(self._synchronizers)
 
     def run(self):
-        # TODO:
+        # TODO: přesunout do cli
         """
         Function that start OAI synchronization
         """
