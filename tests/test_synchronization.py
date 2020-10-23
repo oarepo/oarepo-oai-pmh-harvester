@@ -12,6 +12,7 @@ from sickle.iterator import OAIItemIterator
 from sickle.models import Header
 from sqlalchemy.orm.exc import NoResultFound
 
+import oarepo_oai_pmh_harvester.utils
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIProvider, OAIRecordExc
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
@@ -180,14 +181,6 @@ class TestSynchronization:
         assert synchronizer.created == 0
         assert synchronizer.modified == 0
         assert synchronizer.deleted == 0
-
-    def test_get_oai_header_data(self, load_entry_points, app, db, record_xml):
-        header_xml = record_xml[0]
-        header = Header(header_xml)
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
-        res_tuple = synchronizer.get_oai_header_data(header)
-        assert res_tuple == ('2017-09-11T08:12:53Z', False, 'oai:dspace.cuni.cz:20.500.11956/2623')
 
     def test_record_crud(self, load_entry_points, app, db, record_xml):
         synchronizers = app.extensions['oarepo-oai-client'].synchronizers
