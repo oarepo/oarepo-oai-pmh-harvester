@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime
 from itertools import islice
+from pprint import pprint
 
 import pytest
 import requests
@@ -12,6 +13,7 @@ from sickle.iterator import OAIItemIterator
 from sickle.models import Header
 from sqlalchemy.orm.exc import NoResultFound
 
+import oarepo_oai_pmh_harvester.utils
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIProvider, OAIRecordExc
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
@@ -181,14 +183,6 @@ class TestSynchronization:
         assert synchronizer.modified == 0
         assert synchronizer.deleted == 0
 
-    def test_get_oai_header_data(self, load_entry_points, app, db, record_xml):
-        header_xml = record_xml[0]
-        header = Header(header_xml)
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
-        res_tuple = synchronizer.get_oai_header_data(header)
-        assert res_tuple == ('2017-09-11T08:12:53Z', False, 'oai:dspace.cuni.cz:20.500.11956/2623')
-
     def test_record_crud(self, load_entry_points, app, db, record_xml):
         synchronizers = app.extensions['oarepo-oai-client'].synchronizers
         synchronizer = synchronizers["uk"]
@@ -264,3 +258,59 @@ class TestSynchronization:
             synchronizer.exception_handler(oai_identifier)
         oai_exc = OAIRecordExc.query.filter_by(id=1).one_or_none()
         print(oai_exc.traceback)
+
+    def test_record_handling(self, load_entry_points, app, db, record_xml):
+        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
+        synchronizer = synchronizers["uk"]
+        provider = OAIProvider.query.filter_by(code="uk").one_or_none()
+        if not provider:
+            current_oai_client.create_providers()
+        oai_sync = OAISync(provider_id=1)
+        db.session.add(oai_sync)
+        db.session.commit()
+        synchronizer.oai_sync = oai_sync
+
+        synchronizer.record_handling(1, xml=record_xml)
+        oai_rec = OAIRecord.get_record(oai_identifier="oai:dspace.cuni.cz:20.500.11956/2623")
+        record = Record.get_record(id_=oai_rec.id)
+        assert record == {'pid': '1', 'title': 'Testovací záznam'}
+
+    def test_update_oai_sync(self, load_entry_points, app, db, record_xml):
+        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
+        synchronizer = synchronizers["uk"]
+        provider = OAIProvider.query.filter_by(code="uk").one_or_none()
+        if not provider:
+            current_oai_client.create_providers()
+        oai_sync = OAISync(provider_id=1)
+        db.session.add(oai_sync)
+        db.session.commit()
+        synchronizer.oai_sync = oai_sync
+
+        synchronizer.created = 100
+        db.session.commit()
+        synchronizer.update_oai_sync("ok")
+
+        res_oai_sync = OAISync.query.get(1)
+        print(type(res_oai_sync.sync_end))
+        assert res_oai_sync.rec_created == 100
+        assert res_oai_sync.status == "ok"
+        assert isinstance(res_oai_sync.sync_end, datetime)
+
+    def test_update_oai_sync_2(self, load_entry_points, app, db, record_xml):
+        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
+        synchronizer = synchronizers["uk"]
+        provider = OAIProvider.query.filter_by(code="uk").one_or_none()
+        if not provider:
+            current_oai_client.create_providers()
+        oai_sync = OAISync(provider_id=1)
+        db.session.add(oai_sync)
+        db.session.commit()
+        synchronizer.oai_sync = oai_sync
+        try:
+            raise Exception("Test exception")
+        except Exception:
+            synchronizer.update_oai_sync("failed")
+
+        res_oai_sync = OAISync.query.get(1)
+        assert res_oai_sync.logs is not None
+

@@ -8,7 +8,6 @@ import arrow
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
-from invenio_pidstore.models import PersistentIdentifier
 from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
 from lxml.etree import _Element
@@ -19,12 +18,15 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc, OAISync)
+from oarepo_oai_pmh_harvester.utils import get_oai_header_data
 
 oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
 
 
 # TODO: převést pod providera
+
+
 class OAISynchronizer:
     """
 
@@ -104,7 +106,7 @@ class OAISynchronizer:
                     identifiers=None,
                     start_oai: str = None,
                     start_id: int = 0,
-                    break_on_error: bool = True):
+                    break_on_error: bool = True):  # pragma: no cover
         """
 
         :return:
@@ -114,23 +116,36 @@ class OAISynchronizer:
 
         identifiers = self._get_identifiers(identifiers, start_id)
         for idx, identifier in enumerate(identifiers, start=start_id):
-            oai_logger.info(f"{idx}. Record, OAI ID: '{identifier}'")
-            datestamp, deleted, oai_identifier = self.get_oai_header_data(identifier)
-            oai_rec = OAIRecord.get_record(oai_identifier)
-            if not start_oai or oai_identifier == start_oai:  # pragma: no cover
-                collect = True
-            else:
-                collect = False
-            if not collect:  # pragma: no cover
-                continue
-            try:
-                self.record_crud(oai_rec, timestamp=datestamp, deleted=deleted, idx=idx,
-                                 oai_identifier=oai_identifier, )
-            except Exception:
-                self.exception_handler(oai_identifier)
-                if break_on_error:
-                    raise
-                continue
+            self.record_handling(idx, start_oai, break_on_error, identifier)
+
+    def record_handling(self, idx, start_oai: str = None, break_on_error: bool = True,
+                        identifier: Header = None,
+                        xml: _Element = None):
+        if not (identifier or xml):
+            raise Exception("Must provide header or xml")
+        if identifier and xml:
+            raise Exception("You must provide only header or xml")
+        if identifier:
+            datestamp, deleted, oai_identifier = get_oai_header_data(identifier)
+        else:
+            datestamp, deleted, oai_identifier = get_oai_header_data(xml=xml)
+        oai_logger.info(f"{idx}. Record, OAI ID: '{oai_identifier}'")
+        oai_rec = OAIRecord.get_record(oai_identifier)
+        if not start_oai or oai_identifier == start_oai:  # pragma: no cover TODO: vyřešit
+            # start_oai/není implemntováno
+            collect = True
+        else:
+            collect = False
+        if not collect:  # pragma: no cover
+            return
+        try:
+            self.record_crud(oai_rec, timestamp=datestamp, deleted=deleted, idx=idx,
+                             oai_identifier=oai_identifier, xml=xml)
+        except Exception:  # pragma: no cover
+            self.exception_handler(oai_identifier)
+            if break_on_error:
+                raise
+            return
 
     def exception_handler(self, oai_identifier):
         exc = traceback.format_exc()
@@ -165,12 +180,6 @@ class OAISynchronizer:
                 self._delete(oai_rec)
         if idx % 100:
             db.session.commit()
-
-    def get_oai_header_data(self, identifier: Header):
-        datestamp = identifier.datestamp
-        oai_identifier = identifier.identifier
-        deleted = identifier.deleted
-        return datestamp, deleted, oai_identifier
 
     def _get_identifiers(self, identifiers=None, start_id: int = 0):
         if identifiers is None:
@@ -224,7 +233,7 @@ class OAISynchronizer:
                 id=record.id,
                 oai_identifier=oai_identifier,
                 creation_sync_id=self.oai_sync.id,
-                pid=pid.pid_value  # TODO: tady musí být fetcher
+                pid=pid.pid_value
             )
             self.created += 1
             db.session.add(oai_rec)
@@ -261,6 +270,7 @@ class OAISynchronizer:
         return parser(xml_etree)
 
     def create_record(self, data):
+        # TODO: dodělat případ, kdy record má již přidělený PID (import z nušlu)
         minter = self.get_minter()
         record_class = self.get_record_class()
         indexer_class = self.get_indexer_class()
