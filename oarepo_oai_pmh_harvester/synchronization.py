@@ -12,7 +12,6 @@ from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
 from lxml.etree import _Element
 from sickle import Sickle
-from sickle.models import Header
 from sickle.oaiexceptions import IdDoesNotExist
 from sqlalchemy.orm.exc import NoResultFound
 
