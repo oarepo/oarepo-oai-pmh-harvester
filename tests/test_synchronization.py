@@ -1,7 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
 from itertools import islice
-from pprint import pprint
 
 import pytest
 import requests
@@ -10,30 +9,26 @@ from lxml.etree import _Element
 from pytest import skip
 from pytz import utc
 from sickle.iterator import OAIItemIterator
-from sickle.models import Header
 from sqlalchemy.orm.exc import NoResultFound
 
-import oarepo_oai_pmh_harvester.utils
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIProvider, OAIRecordExc
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
 class TestSynchronization:
     def test_get_endpoint_config(self, load_entry_points, app, db, metadata):
-        synchronizer = current_oai_client.synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         res = synchronizer.get_endpoint_config(metadata)
         assert res is not None
         assert isinstance(res, dict)
 
     def test_create_record(self, load_entry_points, app, db, metadata, ):
-        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         rec, pid = synchronizer.create_record(metadata)
         assert rec == {'title': 'Testovací záznam', 'pid': '1'}
 
     def test_update_record(self, load_entry_points, app, db, metadata):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         record, id_ = synchronizer.create_record(metadata)
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
@@ -55,8 +50,7 @@ class TestSynchronization:
         assert record2 == {'title': 'Updated record', 'pid': '1'}
 
     def test_delete_record(self, load_entry_points, app, db, metadata):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
@@ -79,8 +73,7 @@ class TestSynchronization:
         deleted_record = Record.get_record(oai_rec.id, with_deleted=True)
 
     def test_delete(self, load_entry_points, app, db, metadata):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
@@ -104,8 +97,7 @@ class TestSynchronization:
         deleted_record = Record.get_record(oai_rec.id, with_deleted=True)
 
     def test_get_xml(self, load_entry_points, app, db):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         try:
             xml = synchronizer.get_xml("oai:dspace.cuni.cz:20.500.11956/111006")
         except requests.exceptions.RequestException:
@@ -120,41 +112,35 @@ class TestSynchronization:
                 d = [default_to_regular(_) for _ in d]
             return d
 
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         parsed = synchronizer.parse(record_xml)
         res = default_to_regular(parsed)
         assert res == parsed_record_xml
 
     def test_get_oai_identifiers(self, load_entry_points, app, db):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         ids = synchronizer._get_oai_identifiers()
         assert isinstance(ids, OAIItemIterator)
 
     def test_get_oai_identifiers_2(self, load_entry_points, app, db):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         ids = synchronizer._get_oai_identifiers(
             identifiers_list=["oai:dspace.cuni.cz:20.500.11956/111006"])
         assert len(ids) == 1
         assert isinstance(ids, list)
 
     def test_get_identifiers(self, load_entry_points, app, db):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         ids = synchronizer._get_identifiers()
         assert isinstance(ids, islice)
 
     def test_transform(self, load_entry_points, app, db):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         transformed = synchronizer.transform({})
         assert transformed == {}
 
     def test_create_or_update(self, load_entry_points, app, db, record_xml):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         oai_sync = OAISync(provider_id=1)
         synchronizer.oai_sync = oai_sync
         record = synchronizer.create_or_update("oai:dspace.cuni.cz:20.500.11956/2623",
@@ -173,8 +159,7 @@ class TestSynchronization:
         assert record3 == {'pid': '1', 'title': 'Testovací záznam'}
 
     def test_restart_counters(self, load_entry_points, app, db):
-        synchronizers = current_oai_client.synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         synchronizer.created = 100
         synchronizer.modified = 100
         synchronizer.deleted = 100
@@ -184,8 +169,7 @@ class TestSynchronization:
         assert synchronizer.deleted == 0
 
     def test_record_crud(self, load_entry_points, app, db, record_xml):
-        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         oai_sync = OAISync(provider_id=1)
         synchronizer.oai_sync = oai_sync
         oai_identifier = "oai:dspace.cuni.cz:20.500.11956/2623"
@@ -214,8 +198,7 @@ class TestSynchronization:
         #  když OAI provider záznam obnoví a/nebo zaktualizuje.
 
     def test_record_crud_2(self, load_entry_points, app, db, record_xml):
-        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         oai_sync = OAISync(provider_id=1)
         synchronizer.oai_sync = oai_sync
         oai_identifier = "oai:dspace.cuni.cz:20.500.11956/2623"
@@ -242,8 +225,7 @@ class TestSynchronization:
         assert record is not None
 
     def test_exception_handler(self, load_entry_points, app, db):
-        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
@@ -260,8 +242,7 @@ class TestSynchronization:
         print(oai_exc.traceback)
 
     def test_record_handling(self, load_entry_points, app, db, record_xml):
-        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
@@ -276,8 +257,7 @@ class TestSynchronization:
         assert record == {'pid': '1', 'title': 'Testovací záznam'}
 
     def test_update_oai_sync(self, load_entry_points, app, db, record_xml):
-        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
@@ -297,8 +277,7 @@ class TestSynchronization:
         assert isinstance(res_oai_sync.sync_end, datetime)
 
     def test_update_oai_sync_2(self, load_entry_points, app, db, record_xml):
-        synchronizers = app.extensions['oarepo-oai-client'].synchronizers
-        synchronizer = synchronizers["uk"]
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
@@ -313,4 +292,3 @@ class TestSynchronization:
 
         res_oai_sync = OAISync.query.get(1)
         assert res_oai_sync.logs is not None
-

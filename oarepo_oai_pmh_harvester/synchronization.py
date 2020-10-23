@@ -12,11 +12,12 @@ from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
 from lxml.etree import _Element
 from sickle import Sickle
+from sickle.models import Header
 from sickle.oaiexceptions import IdDoesNotExist
 from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
-from oarepo_oai_pmh_harvester.models import (OAIProvider, OAIRecord, OAIRecordExc, OAISync)
+from oarepo_oai_pmh_harvester.models import (OAIRecord, OAIRecordExc, OAISync)
 from oarepo_oai_pmh_harvester.utils import get_oai_header_data
 
 oai_logger = logging.getLogger(__name__)
@@ -33,7 +34,11 @@ class OAISynchronizer:
 
     def __init__(
             self,
-            provider: OAIProvider,
+            provider_id,
+            oai_endpoint,
+            metadata_prefix,
+            set_,
+            constant_fields: dict = None,
             parser: Callable = None,
             transformer=None,
             oai_identifiers: List[str] = None,
@@ -42,7 +47,6 @@ class OAISynchronizer:
             endpoint_mapping=None,
             pid_field=None
     ):
-        self.provider = provider
 
         # Counters
         self.deleted = 0
@@ -55,15 +59,22 @@ class OAISynchronizer:
             self.pid_field = current_app.config.get('PIDSTORE_RECID_FIELD', "recid")
         else:
             self.pid_field = pid_field
-        self.provider = provider
+        self.provider_id = provider_id
+        self.metadata_prefix = metadata_prefix
+        self.oai_endpoint = oai_endpoint
         self.oai_sync = None
-        self.sickle = Sickle(self.provider.oai_endpoint)
+        self.sickle = Sickle(self.oai_endpoint)
         self.parser = parser
         self.transformer = transformer
         self.oai_identifiers = oai_identifiers
         self.endpoints = endpoints
         self.default_endpoint = default_endpoint
         self.endpoint_mapping = endpoint_mapping
+        self.set_ = set_
+        if constant_fields:
+            self.constant_fields = constant_fields
+        else:
+            self.constant_fields = {}
 
     def run(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
         """
@@ -74,7 +85,7 @@ class OAISynchronizer:
         self.restart_counters()
         with db.session.begin_nested():
             self.oai_sync = OAISync(
-                provider=self.provider,
+                provider_id=self.provider_id,
                 sync_start=arrow.utcnow().datetime,  # datetime.datetime.utcnow(),
                 status="active")
             db.session.add(self.oai_sync)
@@ -111,7 +122,7 @@ class OAISynchronizer:
         :return:
         :rtype:
         """
-        oai_logger.info(f"OAI harvester on endpoint: {self.provider.oai_endpoint} has started!")
+        oai_logger.info(f"OAI harvester on endpoint: {self.oai_endpoint} has started!")
 
         identifiers = self._get_identifiers(identifiers, start_id)
         for idx, identifier in enumerate(identifiers, start=start_id):
@@ -202,14 +213,14 @@ class OAISynchronizer:
             identifiers_list: List[str] = None):
         if identifiers_list:
             return [self.sickle.GetRecord(identifier=identifier,
-                                          metadataPrefix=self.provider.metadata_prefix).header for
+                                          metadataPrefix=self.metadata_prefix).header for
                     identifier in identifiers_list]
         if not sickle:
             sickle = self.sickle
         if not metadata_prefix:
-            metadata_prefix = self.provider.metadata_prefix
+            metadata_prefix = self.metadata_prefix
         if not set_:
-            set_ = self.provider.set_
+            set_ = self.set_
         return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
                                       set=set_)
 
@@ -224,7 +235,7 @@ class OAISynchronizer:
             xml = self.get_xml(oai_identifier)
         parsed = self.parse(xml)
         transformed = self.transform(parsed)
-        transformed.update(self.provider.constant_fields)
+        transformed.update(self.constant_fields)
 
         if oai_rec is None:
             record, pid = self.create_record(transformed)
@@ -255,7 +266,7 @@ class OAISynchronizer:
 
     def get_xml(self, oai_identifier):
         original_record = self.sickle.GetRecord(identifier=oai_identifier,
-                                                metadataPrefix=self.provider.metadata_prefix)
+                                                metadataPrefix=self.metadata_prefix)
         return original_record.xml
 
     def parse(self, xml_etree, parser=None):

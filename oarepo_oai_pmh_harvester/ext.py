@@ -20,7 +20,7 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
-# TODO: každý provider může mít více synchronizerů, musí se předělat
+
 class OArepoOAIClientState(metaclass=Singleton):
     def __init__(self, app, _rules: defaultdict = None, _parsers: defaultdict = None,
                  _providers: dict = None, _synchronizers=None, transformer_class=OAITransformer,
@@ -38,6 +38,7 @@ class OArepoOAIClientState(metaclass=Singleton):
     def providers(self):
         if self._providers is None:
             self.create_providers()
+        # TODO: dodělat kontrolu jestli je v DB
         return self._providers
 
     @property
@@ -51,12 +52,6 @@ class OArepoOAIClientState(metaclass=Singleton):
         if self._parsers is None:
             self._load_parsers()
         return self._parsers
-
-    @property
-    def synchronizers(self):
-        if not self._synchronizers:
-            self.load_synchronizers()
-        return self._synchronizers
 
     @property
     def endpoints(self):
@@ -85,23 +80,21 @@ class OArepoOAIClientState(metaclass=Singleton):
                 provider = OAIProvider(
                     code=k,
                     description=v.get("description"),
-                    oai_endpoint=v.get("oai_endpoint"),
-                    set_=v.get("set"),
-                    metadata_prefix=v.get("metadata_prefix"),
-                    constant_fields=v.get("constant_fields", {}),
-                    unhandled_paths=v.get("unhandled_paths", []),
-                    default_endpoint=v.get("default_endpoint"),
-                    endpoint_mapping=v.get("endpoint_mapping")
                 )
+                db.session.add(provider)
+                db.session.commit()
+                provider._synchronizers = {}
+                for sync_config in v.get("synchronizers", []):
+                    synchronizer = self.create_synchronizer(provider.code, sync_config, provider.id)
+                    provider._synchronizers[sync_config["name"]] = synchronizer
                 if not self._providers:
                     self._providers = {}
                 self._providers.setdefault(k, provider)
-                db.session.add(provider)
             db.session.commit()
 
-    def rule(self, path, parser, phase=OAITransformer.PHASE_PRE):
+    def rule(self, provider, parser, path, phase=OAITransformer.PHASE_PRE):
         def wrapper(func):
-            self.add_rule(func, parser, path, phase)
+            self.add_rule(func, provider, parser, path, phase)
 
         return wrapper
 
@@ -111,42 +104,31 @@ class OArepoOAIClientState(metaclass=Singleton):
 
         return wrapper
 
-    def add_rule(self, func, parser_name, path, phase):
+    def add_rule(self, func, provider, parser_name, path, phase):
         if not self._rules:
             self._rules = infinite_dd()
-        self._rules[parser_name][path][phase] = func
+        self._rules[provider][parser_name][path][phase] = func
 
     def add_parser(self, func, name, provider):
         if not self._parsers:
             self._parsers = infinite_dd()
         self._parsers[provider][name] = func
 
-    def load_synchronizers(self):
-        providers = self.providers
-        if not providers:
-            raise Exception("No providers, please provide provider in config")
-        for k, provider in self._providers.items():
-            if not self._synchronizers:
-                self._synchronizers = {}
-            self._synchronizers.setdefault(k, OAISynchronizer(
-                provider=provider,
-                parser=self.parsers[k][provider.metadata_prefix],
-                transformer=self.transformer_class(
-                    rules=self.rules[provider.metadata_prefix],
-                    unhandled_paths=set(provider.unhandled_paths)),
-                endpoints=self.endpoints,
-                default_endpoint=provider.default_endpoint,
-                endpoint_mapping=provider.endpoint_mapping
-            )
-                                           )
-
-    def run(self):
-        # TODO: přesunout do cli
-        """
-        Function that start OAI synchronization
-        """
-        for k, v in self.synchronizers.items():
-            v.run()
+    def create_synchronizer(self, provider_code, config, provider_id):
+        return OAISynchronizer(
+            provider_id=provider_id,
+            metadata_prefix=config["metadata_prefix"],
+            set_=config["set"],
+            constant_fields=config.get("constant_field", {}),
+            oai_endpoint=config["oai_endpoint"],
+            parser=self.parsers[provider_code][config["metadata_prefix"]],
+            transformer=self.transformer_class(
+                rules=self.rules[provider_code][config["metadata_prefix"]],
+                unhandled_paths=set(config.get("unhandled_paths", []))),
+            endpoints=self.endpoints,
+            default_endpoint=config.get("default_endpoint", "recid"),
+            endpoint_mapping=config.get("endpoint_mapping", {})
+        )
 
 
 class OArepoOAIClient:

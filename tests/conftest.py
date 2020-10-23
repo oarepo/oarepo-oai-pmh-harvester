@@ -94,18 +94,23 @@ def app():
         OAREPO_OAI_PROVIDERS={
             "uk": {
                 "description": "Univerzita Karlova",
-                "oai_endpoint": "https://dspace.cuni.cz/oai/nusl",
-                "set": "nusl_set",
-                "metadata_prefix": "xoai",
-                "unhandled_paths": ["/dc/unhandled"],
-                "default_endpoint": "recid",
-                "use_default_endpoint": True,
-                "endpoint_mapping": {
-                    "field_name": "doc_type",
-                    "mapping": {
-                        "record": "recid"
+                "synchronizers": [
+                    {
+                        "name": "xoai",
+                        "oai_endpoint": "https://dspace.cuni.cz/oai/nusl",
+                        "set": "nusl_set",
+                        "metadata_prefix": "xoai",
+                        "unhandled_paths": ["/dc/unhandled"],
+                        "default_endpoint": "recid",
+                        "use_default_endpoint": True,
+                        "endpoint_mapping": {
+                            "field_name": "doc_type",
+                            "mapping": {
+                                "record": "recid"
+                            }
+                        }
                     }
-                }
+                ]
             }
         },
         RECORDS_REST_ENDPOINTS=RECORDS_REST_ENDPOINTS,

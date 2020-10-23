@@ -82,6 +82,13 @@ class OAIProvider(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(16), nullable=False, unique=True)
     description = db.Column(db.String(2048), nullable=True)
+    synchronizers = relationship("OAISynchronizers", backref=backref("provider"))
+
+
+class OAISynchronizers(db.Model):
+    __tablename__ = "oarepo_oai_synchronizers"
+    id = db.Column(db.Integer, primary_key=True)
+    provider_id = db.Column(db.Integer, ForeignKey('oarepo_oai_provider.id'))
     oai_endpoint = db.Column(db.String(2048), nullable=False)
     set_ = db.Column(db.String(256), name="set")
     metadata_prefix = db.Column(db.String(32), default="oai_dc")

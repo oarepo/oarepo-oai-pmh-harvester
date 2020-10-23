@@ -3,8 +3,7 @@ from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
 def test_get_record(load_entry_points, app, db, record_xml):
-    synchronizers = current_oai_client.synchronizers
-    synchronizer = synchronizers["uk"]
+    synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
     oai_sync = OAISync(provider_id=1)
     synchronizer.oai_sync = oai_sync
     record = synchronizer.create_or_update("oai:dspace.cuni.cz:20.500.11956/2623",
