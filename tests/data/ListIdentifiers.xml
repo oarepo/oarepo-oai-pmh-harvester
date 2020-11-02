@@ -8,10 +8,10 @@
             <identifier>oai:test.example.com::1585310</identifier>
             <datestamp>2011-07-18T16:31:00Z</datestamp>
         </header>
-        <header status="deleted">
-            <identifier>oai:test.example.com::1585576</identifier>
-            <datestamp>2011-08-10T16:22:00Z</datestamp>
-        </header>
-        <resumptionToken completeListSize="4" cursor="0">ListIdentifiers2.xml</resumptionToken>
+<!--        <header status="deleted">-->
+<!--            <identifier>oai:test.example.com::1585576</identifier>-->
+<!--            <datestamp>2011-08-10T16:22:00Z</datestamp>-->
+<!--        </header>-->
+<!--        <resumptionToken completeListSize="4" cursor="0">ListIdentifiers2.xml</resumptionToken>-->
     </ListIdentifiers>
 </OAI-PMH>
