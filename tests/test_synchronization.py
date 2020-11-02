@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime
 from itertools import islice
+from unittest import mock
 
 import pytest
 import requests
@@ -13,6 +14,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIProvider, OAIRecordExc
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
+from tests.helpers import mock_harvest
 
 
 class TestSynchronization:
@@ -294,10 +296,19 @@ class TestSynchronization:
         assert res_oai_sync.logs is not None
 
     def test_run(self, load_entry_points, app, db, record_xml):
-
-
+        patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
         synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
         provider = OAIProvider.query.filter_by(code="uk").one_or_none()
         if not provider:
             current_oai_client.create_providers()
-        print(synchronizer)
+        patch.start()
+        synchronizer.run()
+        patch.stop()
+
+        oai_sync = OAISync.query.get(1)
+        assert oai_sync.status == "ok"
+        assert oai_sync.rec_created == 1
+        oai_rec = OAIRecord.query.all()[-1]
+        assert oai_rec.pid == "1"
+        record = Record.get_record(id_=oai_rec.id)
+        assert record["title"] == "Testovací záznam"
