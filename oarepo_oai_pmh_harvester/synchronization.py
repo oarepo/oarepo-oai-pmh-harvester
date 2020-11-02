@@ -76,7 +76,7 @@ class OAISynchronizer:
         else:
             self.constant_fields = {}
 
-    def run(self, start_oai: str = None, start_id: int = None, break_on_error: bool = True):
+    def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True):
         """
 
         :return:
