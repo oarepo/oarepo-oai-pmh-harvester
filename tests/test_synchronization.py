@@ -292,3 +292,12 @@ class TestSynchronization:
 
         res_oai_sync = OAISync.query.get(1)
         assert res_oai_sync.logs is not None
+
+    def test_run(self, load_entry_points, app, db, record_xml):
+
+
+        synchronizer = current_oai_client.providers["uk"]._synchronizers["xoai"]
+        provider = OAIProvider.query.filter_by(code="uk").one_or_none()
+        if not provider:
+            current_oai_client.create_providers()
+        print(synchronizer)
