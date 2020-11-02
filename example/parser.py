@@ -21,7 +21,7 @@ def xml_to_dict_xoai(tree):
 
 
 @current_oai_client.parser("xoai", "uk")
-def parser_refine(etree):
+def xoai_parser_refine(etree):
     return xml_to_dict_xoai(list(list(etree)[1])[0])
 
 
