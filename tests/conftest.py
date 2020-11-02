@@ -111,14 +111,14 @@ def app():
                         }
                     }
                 ]
-            }
+            },
         },
         RECORDS_REST_ENDPOINTS=RECORDS_REST_ENDPOINTS,
         PIDSTORE_RECID_FIELD='pid'
     )
 
     app.secret_key = 'changeme'
-    print("\n\nINSTANCE PATH:", os.environ.get("INVENIO_INSTANCE_PATH"))
+    # print("\n\nINSTANCE PATH:", os.environ.get("INVENIO_INSTANCE_PATH"))
 
     InvenioDB(app)
     # OARepoReferences(app)
@@ -168,7 +168,7 @@ def app():
 
     with app.app_context():
         # app.register_blueprint(taxonomies_blueprint)
-        print(app.url_map)
+        # print(app.url_map)
         yield app
 
     shutil.rmtree(instance_path)
@@ -222,7 +222,6 @@ def load_entry_points():
         'oarepo_oai_pmh_harvester.rules': {'rule': entry_point2}
     }
     pkg_resources.working_set.add(distribution)
-    print(pkg_resources.working_set)
 
 
 @pytest.fixture()
@@ -252,3 +251,6 @@ def parsed_record_xml():
             }
         ]
     }
+
+
+
