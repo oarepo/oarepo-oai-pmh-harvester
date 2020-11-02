@@ -32,7 +32,6 @@ class OArepoOAIClientState(metaclass=Singleton):
         self._synchronizers = _synchronizers
         self.transformer_class = transformer_class
         self._endpoints = _endpoints
-        print(self.endpoints)
 
     @property
     def providers(self):
