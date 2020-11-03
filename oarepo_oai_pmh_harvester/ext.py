@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from invenio_db import db
 from pkg_resources import iter_entry_points
+from sqlalchemy import inspect
 
 from oarepo_oai_pmh_harvester.transformer import OAITransformer
 from oarepo_oai_pmh_harvester.utils import infinite_dd
@@ -35,9 +36,13 @@ class OArepoOAIClientState(metaclass=Singleton):
 
     @property
     def providers(self):
+        # db.session.refresh()
         if self._providers is None:
             self.create_providers()
-        # TODO: dodělat kontrolu jestli je v DB
+        # TODO: Codereview - udělat lépe kontrolu jestli je v db.
+        state = [inspect(provider).persistent for provider in self._providers.values()]
+        if not all(state):
+            self.create_providers()
         return self._providers
 
     @property
@@ -128,6 +133,22 @@ class OArepoOAIClientState(metaclass=Singleton):
             default_endpoint=config.get("default_endpoint", "recid"),
             endpoint_mapping=config.get("endpoint_mapping", {})
         )
+
+    def run(self, providers: list = None):
+        print(self.providers)
+
+    def _run_provider(self, provider: str, start_oai: str = None, start_id: int = 0,
+                      break_on_error: bool = True):
+        provider_ = self.providers[provider]
+        for synchronizer in provider_._synchronizers.keys():
+            self._run_synchronizer(provider, synchronizer, start_oai=start_oai, start_id=start_id,
+                                   break_on_error=break_on_error)
+
+    def _run_synchronizer(self, provider: str, synchronizer: str, start_oai: str = None,
+                          start_id: int = 0, break_on_error: bool = True):
+        provider = self.providers[provider]
+        synchronizer = provider._synchronizers[synchronizer]
+        synchronizer.run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
 
 
 class OArepoOAIClient:
