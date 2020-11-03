@@ -1,4 +1,5 @@
 # TODO: dotesat uživatelské rozhraní
+
 def run():
     pass
     # TODO: spustit vše

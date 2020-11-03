@@ -85,6 +85,7 @@ class OAIProvider(db.Model):
     synchronizers = relationship("OAISynchronizers", backref=backref("provider"))
 
 
+# TODO: spojit s OAISynchronizer v synchronization.py
 class OAISynchronizers(db.Model):
     __tablename__ = "oarepo_oai_synchronizers"
     id = db.Column(db.Integer, primary_key=True)

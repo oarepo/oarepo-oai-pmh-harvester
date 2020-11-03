@@ -24,9 +24,6 @@ oai_logger = logging.getLogger(__name__)
 oai_logger.setLevel(logging.DEBUG)
 
 
-# TODO: převést pod providera
-
-
 class OAISynchronizer:
     """
 
