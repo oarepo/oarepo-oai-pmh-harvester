@@ -118,57 +118,23 @@ def app():
     )
 
     app.secret_key = 'changeme'
-    # print("\n\nINSTANCE PATH:", os.environ.get("INVENIO_INSTANCE_PATH"))
 
     InvenioDB(app)
-    # OARepoReferences(app)
     InvenioAccounts(app)
     InvenioAccess(app)
     Principal(app)
     InvenioJSONSchemas(app)
     InvenioSearch(app)
     InvenioIndexer(app)
-    # OARepoMappingIncludesExt(app)
     InvenioRecords(app)
     InvenioRecordsREST(app)
-    # InvenioCelery(app)
     InvenioPIDStore(app)
-    # Invenio Records Draft initialization
-    # RecordsDraft(app)
     app.url_map.converters['pid'] = PIDConverter
     OArepoOAIClient(app)
-
-    # # Celery
-    # print(app.config["CELERY_BROKER_URL"])
-
-    # login_manager = LoginManager()
-    # login_manager.init_app(app)
-    # login_manager.login_view = 'login'
-    #
-    # @login_manager.user_loader
-    # def basic_user_loader(user_id):
-    #     user_obj = User.query.get(int(user_id))
-    #     return user_obj
-
-    # app.register_blueprint(create_blueprint_from_app(app))
-
-    # @app.route('/test/login/<int:id>', methods=['GET', 'POST'])
-    # def test_login(id):
-    #     print("test: logging user with id", id)
-    #     response = make_response()
-    #     user = User.query.get(id)
-    #     login_user(user)
-    #     set_identity(user)
-    #     return response
-
-    # app.extensions['invenio-search'].mappings["test"] = mapping
-    # app.extensions["invenio-jsonschemas"].schemas["test"] = schema
 
     app_loaded.send(app, app=app)
 
     with app.app_context():
-        # app.register_blueprint(taxonomies_blueprint)
-        # print(app.url_map)
         yield app
 
     shutil.rmtree(instance_path)
@@ -190,13 +156,6 @@ def db(app):
         create_database(db_.engine.url)
     db_.create_all()
 
-    #### TAXONOMIES
-    # subprocess.run(["invenio", "taxonomies", "init"])
-    # runner = app.test_cli_runner()
-    # result = runner.invoke(init_db)
-    # if result.exit_code:
-    #     print(result.output, file=sys.stderr)
-    # assert result.exit_code == 0
     yield db_
 
     # Explicitly close DB connection
@@ -251,6 +210,3 @@ def parsed_record_xml():
             }
         ]
     }
-
-
-
