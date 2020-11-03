@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import List
 
 from invenio_db import db
 from pkg_resources import iter_entry_points
@@ -134,15 +135,42 @@ class OArepoOAIClientState(metaclass=Singleton):
             endpoint_mapping=config.get("endpoint_mapping", {})
         )
 
-    def run(self, providers: list = None):
-        print(self.providers)
+    def run(self, providers_codes: List[str] = None, synchronizers_codes: List[str] = None,
+            break_on_error: bool = True, start_oai: str = None,
+            start_id: int = 0):
+        if not providers_codes:
+            providers_codes = [_ for _ in self.providers.keys()]
+        if len(providers_codes) > 1:
+            for code in providers_codes:
+                self._run_provider(code, break_on_error=break_on_error)
+        elif len(providers_codes) == 1:
+            if not synchronizers_codes:
+                synchronizers_codes = [_ for _ in
+                                       self.providers[providers_codes[0]]._synchronizers.keys()]
+            if len(synchronizers_codes) > 1:
+                for code in synchronizers_codes:
+                    self._run_synchronizer(providers_codes[0], code, break_on_error=break_on_error)
+            elif len(synchronizers_codes) == 1:
+                if start_oai and start_id != 0:
+                    raise Exception("You can not enter start_oai and START_ID simultaneously.")
+                elif start_oai:
+                    self._run_synchronizer(providers_codes[0], synchronizers_codes[0],
+                                           break_on_error=break_on_error, start_oai=start_oai)
+                elif start_id != 0:
+                    self._run_synchronizer(providers_codes[0], synchronizers_codes[0],
+                                           break_on_error=break_on_error, start_id=start_id)
+                else:
+                    self._run_synchronizer(providers_codes[0], synchronizers_codes[0],
+                                           break_on_error=break_on_error)
+            else:
+                raise Exception("Something unexpected happened.")
+        else:
+            raise Exception("Something unexpected happened.")
 
-    def _run_provider(self, provider: str, start_oai: str = None, start_id: int = 0,
-                      break_on_error: bool = True):
+    def _run_provider(self, provider: str, break_on_error: bool = True):
         provider_ = self.providers[provider]
         for synchronizer in provider_._synchronizers.keys():
-            self._run_synchronizer(provider, synchronizer, start_oai=start_oai, start_id=start_id,
-                                   break_on_error=break_on_error)
+            self._run_synchronizer(provider, synchronizer, break_on_error=break_on_error)
 
     def _run_synchronizer(self, provider: str, synchronizer: str, start_oai: str = None,
                           start_id: int = 0, break_on_error: bool = True):
