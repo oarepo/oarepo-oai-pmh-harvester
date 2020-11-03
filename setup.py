@@ -6,14 +6,17 @@ import os
 
 from setuptools import find_packages, setup
 
-extras_require = {
-    "devel": ['oarepo>=3.3.0.4, <3.4.0.0'],
-    "docs": ["sphinx"]
-}
 tests_require = [
     'pytest',
-    'pytest-cov'
+    'pytest-cov',
+    'oarepo'
 ]
+
+extras_require = {
+    "tests": tests_require,
+    "postgresql": ["psycopg2-binary"],
+    "sqlite": []
+}
 
 setup_requires = [
     'pytest-runner>=2.7',
@@ -22,11 +25,6 @@ setup_requires = [
 install_requires = [
     'sickle',
     'click',
-    'jmespath',
-    'prettytable',
-    'flask',
-    'sqlalchemy',
-    'invenio-records'
 ]
 
 packages = find_packages()

@@ -1,0 +1,62 @@
+dist: focal
+
+addons:
+  postgresql: 9.6
+
+services:
+  - postgresql
+
+notifications:
+  email: false
+
+sudo: false
+
+language: python
+
+matrix:
+  fast_finish: true
+
+cache:
+  - pip
+
+
+env:
+  global:
+    - POSTGRESQL_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/oai-pmh-harvester-test"
+  matrix:
+    - REQUIREMENTS=release EXTRAS=postgresql,tests SQLALCHEMY_DATABASE_URI=$POSTGRESQL_SQLALCHEMY_DATABASE_URI
+    - REQUIREMENTS=release EXTRAS=sqlite,tests
+
+python:
+  - "3.7"
+  - "3.8"
+
+before_install:
+  - travis_retry pip install --upgrade pip setuptools py
+  - "travis_retry pip install twine wheel coveralls requirements-builder pip-tools"
+  - "requirements-builder --level=pypi -e $EXTRAS setup.py > .travis-release-requirements.in"
+  - "pip-compile -U --verbose -o .travis-release-requirements.txt .travis-release-requirements.in"
+  - cat .travis-release-requirements.txt
+
+install:
+  - travis_retry pip install -r .travis-release-requirements.txt
+
+before_script:
+  - psql -U postgres -c 'create database "oai-pmh-harvester-test"'
+
+script:
+  - "./run-tests.sh"
+
+after_success:
+  - coveralls
+
+deploy:
+  provider: pypi
+  user: "__token__"
+  password:
+    secure: "Ayb3JqnLiLraokC7AFpZzneN36lRzvVmMWHJaXWty2FhFIi+XRuyitn4wyz8zsQULxznO1Wb20pJTH7MncvVJllYC/mb84Xdo5vBSLzvzg27IUABJZw6HtBbRc71Hgfb6hdSJ7mIYGNXIIT6czHUZ7ICv6z6eP8ysKFfjph81uiTYq2peVfGOY//Ti4vvhKEzNh/lRCdnzq+BnYi6C5VBwz+cdcxRQoZgCh2xjWPm/OR2baZQQEnG8F2fweYoqpvI+WF/H+OSp5L7LIR30d37O4sfAgg24NcrGgac67Pp7s2FBnmQLC3YA1GM/F1TfITiIzkHFQ/nfAqRibY1yOADQ/hJoz3wCr+LaJHoScdlGt5p1caTO6kX4TR36VPrfZzWZCrSnQGVjj/0PtKRAYYuyrbIB4B/nPO8AXcSUeaCEKO+khyv5qxPn2YchcVFI+JPnQz4uK9WEml3MZMKTRSL7gtQ/fssQwjnBZNYWT5XyQBUJMrOycrfrd62JuTTIJAu6lcqFh62rIoAc+vAN7mfHjzLk6/5Z4ZWb/sCMDDVNAPjT4PZEGaC9Diad8203kKBA7KtvTD2Sh5cer8tXQ0ypNsha9u0tPd+BUVFAV9PF7kD99jq7C3capRYQyUiFB3RkcME99Op1T4o3XdQroeG/aLH9BJc/p3EN0r7sLz2gk="
+  on:
+    tags: true
+    branch: master
+  distributions: "sdist bdist_wheel"
+  skip_existing: true
