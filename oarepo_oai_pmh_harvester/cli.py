@@ -1,42 +1,45 @@
-import json
-
+# TODO: dotesat uživatelské rozhraní
 import click
-from click import STRING, File
 from flask import cli
-from invenio_db import db
 
-from oarepo_oai_pmh_harvester.models import OAIProvider
+from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
 @click.group()
 def oai():
-    """OAI harvester commands"""
-
-
-@oai.group()
-def register():
+    """
+    Oai harvester commands
+    """
     pass
 
 
-@register.command("provider")
-@click.option('-c', '--code', required=True, help="The unique code that define provider",
-              type=STRING)
-@click.option('-d', '--description', help="Provider description")
-@click.option('-e', '--end_point', 'ep', required=True, help="Provider endpoint - url address")
-@click.option('-s', '--set', 'set_', help="Name of OAI set")
-@click.option('-p', '--prefix', help="Metadata prefix")
-@click.option('-f', '--file', 'constant_fields', type=File(),
-              help="Path to the json file where is stored constant fields")
+@oai.command("run")
+@click.option("-p", "--provider", "provider", multiple=True, default=None,
+              help="Code name of provider, defined in invenio.cfg")
+@click.option("-s", "--synchronizer", "synchronizer", multiple=True, default=None,
+              help="Code name of OAI-PMH setup, defined in invenio.cfg")
+@click.option('--break/--no-break', 'break_on_error',
+              help="Break on error, if true program is terminated when record cause error",
+              default=True
+              )
+@click.option('-o', '--start_oai', default=None,
+              help="OAI identifier from where synchronization begin")
+@click.option("-i", "--start_id", default=0, type=int)
 @cli.with_appcontext
-def register_provider(code, ep, description=None, set_=None, prefix=None, constant_fields=None):
-    provider = OAIProvider.query.filter_by(code=code).one_or_none()
-    if provider:
-        click.secho(f"Provider with code '{code}' already exists. For update call update method ("
-                    f"invenio oai update provider [options])", bg='yellow', fg='red')
-        return
-    if constant_fields:
-        constant_fields = json.load(constant_fields)
-    provider = OAIProvider(code=code, description=description, oai_endpoint=ep, set_=set_,
-                           metadata_prefix=prefix, constant_fields=constant_fields)
-    db.session.add(provider)
-    db.session.commit()
+def run(provider, synchronizer, break_on_error, start_oai, start_id):
+    """
+    Starts harvesting the resources set in invenio.cfg through the OAREPO_OAI_PROVIDERS
+    environment variable.
+    """
+    if not provider:
+        provider = None
+    else:
+        provider = list(provider)
+    if not synchronizer:
+        synchronizer = None
+    else:
+        synchronizer = list(synchronizer)
+    current_oai_client.run(providers_codes=provider, synchronizers_codes=synchronizer,
+                           break_on_error=break_on_error, start_oai=start_oai, start_id=start_id)
+
+# TODO: použít minter/nepoužít minter

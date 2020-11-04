@@ -6,8 +6,6 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType, JSONType
 
-from oarepo_oai_pmh_harvester import registry
-
 
 class OAIRecord(db.Model):
     __tablename__ = "oarepo_oai_record"
@@ -48,6 +46,16 @@ class OAIRecord(db.Model):
         backref=backref("oarepo_oai_record", uselist=False)
     )
 
+    def __repr__(self):
+        return f"OAIRecord(id={self.id}, oai_identifier={self.oai_identifier}, pid={self.pid}, " \
+               f"last_sync_id={self.last_sync_id}, modification_s" \
+               f"ync_id={self.modification_sync_id}, creation_sync_id={self.creation_sync_id}, " \
+               f"timestamp={self.timestamp})"
+
+    @classmethod
+    def get_record(cls, oai_identifier):
+        return cls.query.filter_by(oai_identifier=oai_identifier).one_or_none()
+
 
 class OAISync(db.Model):
     __tablename__ = "oarepo_oai_sync"
@@ -74,6 +82,14 @@ class OAIProvider(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(16), nullable=False, unique=True)
     description = db.Column(db.String(2048), nullable=True)
+    synchronizers = relationship("OAISynchronizers", backref=backref("provider"))
+
+
+# TODO: spojit s OAISynchronizer v synchronization.py
+class OAISynchronizers(db.Model):
+    __tablename__ = "oarepo_oai_synchronizers"
+    id = db.Column(db.Integer, primary_key=True)
+    provider_id = db.Column(db.Integer, ForeignKey('oarepo_oai_provider.id'))
     oai_endpoint = db.Column(db.String(2048), nullable=False)
     set_ = db.Column(db.String(256), name="set")
     metadata_prefix = db.Column(db.String(32), default="oai_dc")
@@ -91,13 +107,33 @@ class OAIProvider(db.Model):
         default=lambda: dict(),
         nullable=True
     )
-
-    def get_parsers(self):
-        return registry.parsers.get(self.code) or {}
-
-    @staticmethod
-    def get_rules(parser_name):
-        return registry.rules.get(parser_name)
+    unhandled_paths = db.Column(
+        db.JSON().with_variant(
+            postgresql.JSONB(none_as_null=True),
+            'postgresql',
+        ).with_variant(
+            JSONType(),
+            'sqlite',
+        ).with_variant(
+            JSONType(),
+            'mysql',
+        ),
+        nullable=True
+    )
+    default_endpoint = db.Column(db.String(), nullable=False)
+    endpoint_mapping = db.Column(
+        db.JSON().with_variant(
+            postgresql.JSONB(none_as_null=True),
+            'postgresql',
+        ).with_variant(
+            JSONType(),
+            'sqlite',
+        ).with_variant(
+            JSONType(),
+            'mysql',
+        ),
+        nullable=True
+    )
 
 
 class OAIRecordExc(db.Model):

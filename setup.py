@@ -6,14 +6,17 @@ import os
 
 from setuptools import find_packages, setup
 
-extras_require = {
-    "devel": ['oarepo[deploy-es7,taxonomies,draft]>=3.2.1.2'],
-    "docs": ["sphinx"]
-}
 tests_require = [
     'pytest',
-    'pytest-cov'
+    'pytest-cov',
+    'oarepo'
 ]
+
+extras_require = {
+    "tests": tests_require,
+    "postgresql": ["psycopg2-binary"],
+    "sqlite": []
+}
 
 setup_requires = [
     'pytest-runner>=2.7',
@@ -22,11 +25,6 @@ setup_requires = [
 install_requires = [
     'sickle',
     'click',
-    'jmespath',
-    'prettytable',
-    'flask',
-    'sqlalchemy',
-    'invenio-records'
 ]
 
 packages = find_packages()
@@ -59,27 +57,8 @@ setup(
             'oarepo_oai_pmh_harvester = oarepo_oai_pmh_harvester:alembic',
         ],
         'flask.commands': [
-            'nusl = example.cli:nusl',
             'oai = oarepo_oai_pmh_harvester.cli:oai'
-        ]
-        # TODO: přesunout do example
-        # 'oarepo_oai_pmh_harvester.parsers': [
-        #     'xoai = example.parser'
-        # ],
-        # 'oarepo_oai_pmh_harvester.rules': [
-        #     'abstract = example.rules.uk.abstract',
-        #     'contributor = example.rules.uk.contributor',
-        #     'creator = example.rules.uk.creator',
-        #     'date_accepted = example.rules.uk.date_accepted',
-        #     'defended = example.rules.uk.defended',
-        #     'degree_grantor = example.rules.uk.degree_grantor',
-        #     'doctype = example.rules.uk.doctype',
-        #     'identifier = example.rules.uk.identifier',
-        #     'language = example.rules.uk.language',
-        #     'study_field = example.rules.uk.study_field',
-        #     'subject = example.rules.uk.subject',
-        #     'title = example.rules.uk.title',
-        # ]
+        ],
     },
     extras_require=extras_require,
     install_requires=install_requires,
