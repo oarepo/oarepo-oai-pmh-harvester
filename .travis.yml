@@ -1,52 +1,52 @@
 os: linux
-
 dist: focal
-
 services:
-  - postgresql
-
+- postgresql
 notifications:
   email: false
-
 language: python
-
 matrix:
   fast_finish: true
-
 cache:
-  - pip
-
-
+- pip
 env:
   global:
-    - POSTGRESQL_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/invenio"
-    - ES7_DOWNLOAD_URL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.1-linux-x86_64.tar.gz"
-    - ES_HOST=127.0.0.1
+  - POSTGRESQL_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/invenio"
+  - ES7_DOWNLOAD_URL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.1-linux-x86_64.tar.gz"
+  - ES_HOST=127.0.0.1
   matrix:
-    - REQUIREMENTS=release EXTRAS=postgresql,tests ES=$ES7_DOWNLOAD_URL SQLALCHEMY_DATABASE_URI=$POSTGRESQL_SQLALCHEMY_DATABASE_URI
-    - REQUIREMENTS=release EXTRAS=sqlite,tests ES=$ES7_DOWNLOAD_URL
-
+  - REQUIREMENTS=release EXTRAS=postgresql,tests ES=$ES7_DOWNLOAD_URL SQLALCHEMY_DATABASE_URI=$POSTGRESQL_SQLALCHEMY_DATABASE_URI
+  - REQUIREMENTS=release EXTRAS=sqlite,tests ES=$ES7_DOWNLOAD_URL
 python:
-  - "3.7"
-  - "3.8"
-
+- '3.7'
+- '3.8'
 before_install:
-  - travis_retry pip install --upgrade pip setuptools py
-  - "travis_retry pip install twine wheel coveralls requirements-builder pip-tools"
-  - "requirements-builder --level=pypi -e $EXTRAS setup.py > .travis-release-requirements.in"
-  - "pip-compile -U --verbose -o .travis-release-requirements.txt .travis-release-requirements.in"
-  - cat .travis-release-requirements.txt
-  - mkdir /tmp/elasticsearch
-  - wget -O - $ES | tar xz --directory=/tmp/elasticsearch --strip-components=1
-  - "/tmp/elasticsearch/bin/elasticsearch &"
-  - sleep 10
-
+- travis_retry pip install --upgrade pip setuptools py
+- travis_retry pip install twine wheel coveralls requirements-builder pip-tools
+- requirements-builder --level=pypi -e $EXTRAS setup.py > .travis-release-requirements.in
+- pip-compile -U --verbose -o .travis-release-requirements.txt .travis-release-requirements.in
+- cat .travis-release-requirements.txt
+- mkdir /tmp/elasticsearch
+- wget -O - $ES | tar xz --directory=/tmp/elasticsearch --strip-components=1
+- "/tmp/elasticsearch/bin/elasticsearch &"
+- sleep 10
 install:
-  - travis_retry pip install -r .travis-release-requirements.txt
-
+- travis_retry pip install -r .travis-release-requirements.txt
 script:
-  - "./run-tests.sh"
-
+- "./run-tests.sh"
 after_success:
-  - coveralls
-
+- coveralls
+before_deploy:
+- |-
+  SRCTAG=$(cat oarepo_oai_pmh_harvester/version.py | grep '__version__' | sed 's/__version__//' | sed 's/=//g' | sed 's/"//g' | sed "s/'//g" | sed 's/[ \t\n]//g')
+  test $SRCTAG == $TRAVIS_TAG
+deploy:
+  provider: pypi
+  user: __token__
+  on:
+    tags: true
+    branch: master
+  distributions: sdist bdist_wheel
+  skip_existing: true
+  password:
+    secure: vXnxbb+68XsTgnV5oyw1e1Dw/kpX7w5He+1PbcnHmmLWSK733DRo/zovqgDtf323JKE3jHBEWvMiSZGSPVJDn52nGd0+1EGQk+ufJuRct5Ca8iDLaJQDfLqh3b4GxaawwNU+GcPYW8ZZ4Djozi7vANe6feflkBC27BoEw91lxyPmIU8Tm1ZIHbVooRkQfPU8kNrc6kNw8vhgQmBV5IYBz9ZhSQ+hG4Rrj5q2VguxM23+/nSQRxn9H/g1IG8uDQ/4fBAwb+oJxbK9d8bjuEgwrXHcOqW7G2rJqYJpOkKA7DktW6xeyl4cq2X3EFvXgvSfBIXgirnThOqFlDmuZVxXIV8A95nPrW9MCk+JFtkA7ToIZdbvjKYFDZXBh0Rb5O7+0Zb0BsPN9ruiK2OSi3Iyn0lZUrYqUfst7PSrfwtnyAJgOh361QJAc3VAPCezKZTtKWBbPniJOg7K8ZrmFc+h82A2GgJe7uWFUgpOWeaqItHEj/JtaCJQYRXsfpR8nqZoouR80eksjvu6XY956utGIEUqziuzEnFMx/dVEWwbCIiLjjloAhNEoCtixo8TiVngmYIbOAVJmdJJ4vNwaEbZhODi0RViYqcFVhZgu3RXFzmhJCcyvJow2ax7mCb4luyloXLkWXGlsESDTnuDyJwvxf3A4Cn77FWwr6YwHHXvAfI=
