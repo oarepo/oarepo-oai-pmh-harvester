@@ -38,7 +38,7 @@ install:
   - travis_retry pip install -r .travis-release-requirements.txt
 
 before_script:
-  - psql -U postgres -c 'create database "oai-pmh-harvester-test"'
+  - psql -h localhost -U postgres -c 'create database "oai-pmh-harvester-test"'
 
 script:
   - "./run-tests.sh"
