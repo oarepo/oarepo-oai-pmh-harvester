@@ -27,6 +27,9 @@ install_requires = [
     'click',
 ]
 
+with open("README.md", "r") as f:
+    long_description = f.read()
+
 packages = find_packages()
 
 # Get the version string. Cannot be done with import!
@@ -39,7 +42,8 @@ setup(
     name='oarepo-oai-pmh-harvester',
     version=version,
     description=__doc__,
-    # long_description=,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     keywords='invenio oarepo oai pmh harvester',
     license='MIT',
     author='Daniel Kopecký',
@@ -64,16 +68,4 @@ setup(
     install_requires=install_requires,
     setup_requires=setup_requires,
     tests_require=tests_require,
-    classifiers=[
-        'Environment :: Web Environment',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
-        'Development Status :: 3 - Planning',
-    ],
 )
