@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2013-02-27T10:07:54Z</responseDate>
+    <request identifier="oai:test.example.com:1996652" metadataPrefix="oai_dc" verb="GetRecord">
+        http://test.example.com/oai
+    </request>
+    <GetRecord>
+        <record>
+            <header>
+                <identifier>oai:test.example.com:1996652</identifier>
+                <datestamp>2011-09-05T12:51:52Z</datestamp>
+            </header>
+            <metadata>
+                <metadata xmlns="http://www.lyncode.com/xoai" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xsi:schemaLocation="http://www.lyncode.com/xoai http://www.lyncode.com/xsd/xoai.xsd">
+                    <element name="dc">
+                        <element name="title">
+                            <field name="value">Testovací záznam</field>
+                        </element>
+                        <element name="unhandled">
+                            <field name="value">Bla</field>
+                        </element>
+                    </element>
+                </metadata>
+            </metadata>
+        </record>
+    </GetRecord>
+</OAI-PMH>

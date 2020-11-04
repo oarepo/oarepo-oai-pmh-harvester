@@ -101,3 +101,5 @@ ENV/
 oai-venv/
 
 old_venv/
+
+database.db

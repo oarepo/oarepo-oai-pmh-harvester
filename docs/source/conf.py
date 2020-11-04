@@ -13,7 +13,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath(
-    '/../../invenio-oarepo-oai-pmh-harvester/invenio_oarepo_oai_pmh_harvester'))
+    '/../../invenio-oarepo-oai-pmh-harvester/oarepo_oai_pmh_harvester'))
 
 
 # -- Project information -----------------------------------------------------
