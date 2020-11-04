@@ -102,7 +102,7 @@ def app():
                         "metadata_prefix": "xoai",
                         "unhandled_paths": ["/dc/unhandled"],
                         "default_endpoint": "recid",
-                        "use_default_endpoint": True,
+                        # "use_default_endpoint": True,
                         "endpoint_mapping": {
                             "field_name": "doc_type",
                             "mapping": {
@@ -140,21 +140,36 @@ def app():
     shutil.rmtree(instance_path)
 
 
+# @pytest.fixture()
+# def db(app):
+#     """Create database for the tests."""
+#     dir_path = os.path.dirname(__file__)
+#     parent_path = str(Path(dir_path).parent)
+#     db_path = os.environ.get('SQLALCHEMY_DATABASE_URI', f'sqlite:////{parent_path}/database.db')
+#     os.environ["INVENIO_SQLALCHEMY_DATABASE_URI"] = db_path
+#     app.config.update(
+#         SQLALCHEMY_DATABASE_URI=db_path,
+#     )
+#     if database_exists(str(db_.engine.url)):
+#         drop_database(db_.engine.url)
+#     if not database_exists(str(db_.engine.url)):
+#         create_database(db_.engine.url)
+#     db_.create_all()
+#
+#     yield db_
+#
+#     # Explicitly close DB connection
+#     db_.session.close()
+#     db_.drop_all()
+    
 @pytest.fixture()
 def db(app):
-    """Create database for the tests."""
-    dir_path = os.path.dirname(__file__)
-    parent_path = str(Path(dir_path).parent)
-    db_path = os.environ.get('SQLALCHEMY_DATABASE_URI', f'sqlite:////{parent_path}/database.db')
-    os.environ["INVENIO_SQLALCHEMY_DATABASE_URI"] = db_path
-    app.config.update(
-        SQLALCHEMY_DATABASE_URI=db_path,
-    )
-    if database_exists(str(db_.engine.url)):
-        drop_database(db_.engine.url)
-    if not database_exists(str(db_.engine.url)):
-        create_database(db_.engine.url)
-    db_.create_all()
+    """"Returns fresh db."""
+    with app.app_context():
+        if not database_exists(str(db_.engine.url)) and \
+          app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
+            create_database(db_.engine.url)
+        db_.create_all()
 
     yield db_
 
