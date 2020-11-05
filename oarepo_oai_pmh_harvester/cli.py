@@ -24,7 +24,9 @@ def oai():
               )
 @click.option('-o', '--start_oai', default=None,
               help="OAI identifier from where synchronization begin")
-@click.option("-i", "--start_id", default=0, type=int)
+@click.option("-i", "--start_id", default=0, type=int,
+              help="The serial number from which the synchronization starts. This is useful if "
+                   "for some reason the previous synchronization was interrupted at some point.")
 @cli.with_appcontext
 def run(provider, synchronizer, break_on_error, start_oai, start_id):
     """
