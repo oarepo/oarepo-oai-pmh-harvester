@@ -103,9 +103,9 @@ class OArepoOAIClientState(metaclass=Singleton):
 
         return wrapper
 
-    def parser(self, name, provider):
+    def parser(self, name):
         def wrapper(func):
-            self.add_parser(func, name, provider)
+            self.add_parser(func, name)
 
         return wrapper
 
@@ -114,10 +114,10 @@ class OArepoOAIClientState(metaclass=Singleton):
             self._rules = infinite_dd()
         self._rules[provider][parser_name][path][phase] = func
 
-    def add_parser(self, func, name, provider):
+    def add_parser(self, func, name):
         if not self._parsers:
             self._parsers = infinite_dd()
-        self._parsers[provider][name] = func
+        self._parsers[name] = func
 
     def create_synchronizer(self, provider_code, config, provider_id):
         return OAISynchronizer(
@@ -126,7 +126,7 @@ class OArepoOAIClientState(metaclass=Singleton):
             set_=config["set"],
             constant_fields=config.get("constant_field", {}),
             oai_endpoint=config["oai_endpoint"],
-            parser=self.parsers[provider_code][config["metadata_prefix"]],
+            parser=self.parsers[config["metadata_prefix"]],
             transformer=self.transformer_class(
                 rules=self.rules[provider_code][config["metadata_prefix"]],
                 unhandled_paths=set(config.get("unhandled_paths", []))),
