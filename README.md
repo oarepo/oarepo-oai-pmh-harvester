@@ -78,7 +78,110 @@ Successful data collection requires several steps, which consist of:
 
 ### Parsers
 
+A function that transforms XML into JSON (implemented as a python dictionary). The module where the function is located must be specified in entry_points and the function itself marked with a decorator. The function takes **lxml.etree._Element** as an argument and returns a dictionary.
+
+* **entry_points**:
+
+The module is registered in entry_points under the keyword ***oarepo_oai_pmh_harvester.parsers***, for example as
+ follows: 
+ 
+ ```python
+entry_points={
+        'oarepo_oai_pmh_harvester.parsers': [
+            'xoai = example.parser',
+        ],
+    }
+```
+
+* **decorator**:
+The decorator has one parameter, the name of the metadata_format and that must be same as in config metadata_prefix. The function must accept one positional argument (etree._Element) and return a dictionary.
+
+```python
+from oarepo_oai_pmh_harvester.proxies import current_oai_client
+
+@current_oai_client.parser("xoai")
+def xml_to_json_parser(etree):
+    ...some magic
+    return dict_
+```
 
 ### Rules
 
+The raw parsed JSON is converted to the final JSON in the transformation. The built-in transformer recursively
+ traverses the raw JSON and remaps the raw JSON to the final JSON. The transformer searches all paths to see if a
+  rule exists for that path or if the path is in an **unhandled path** in the configuration. If it does not meet any
+   of the conditions, it raises an error to warn the user that he has forgotten about a metadata field.
+   
+A rule is a function that accepts the el (element) and kwargs (name parameters) arguments and returns the reworked
+ element as a python dictionary. The module that contains the rule must be specified in entry_points and the function itself must be registered using a decorator.
+ 
+* **entry_points**:
+
+The module is registered in entry_points under the keyword ***oarepo_oai_pmh_harvester.rules***, for example as
+ follows: 
+ 
+ ```python
+entry_points={
+        'oarepo_oai_pmh_harvester.parsers': [
+            'xoai = example.rule',
+        ],
+    }
+```
+
+* **decorator**:
+
+The decorator has four positional arguments and one named argument:
+1. provider_name: must be same as in config
+2. metadata_prefix: must be same as in config
+3. json_path: level is separated with "/"
+4. phase: 
+    * pre: the rule is applied during the creation of the final JSON.
+    * post: the rule is applied after the all pre rules
+
+     
+The rule function itself must accept the el (element) and ** kwargs arguments in the signature. El is the JSON value
+ at the given JSON address. It must return dictionary (eg: {"title": "Example title"})
+ 
+ Kwargs contain several useful variables:
+ * ***paths***: a set containing an absolute JSON path and all subsequent relative levels path eg (/dc/title/en, dc
+ /title/en, title/en, en)
+ * ***results***: a list of individual results, which will make up the final JSON.
+ * ***phase***: pre or post phase
+ * ***record***: raw json as defaultdict
+ 
+ Example of a rule:
+
+```python
+from oarepo_oai_pmh_harvester.proxies import current_oai_client
+
+
+@current_oai_client.rule("provider_name", "metadata_prefix", "/dc/title/en", phase="pre")
+def rule(el, **kwargs):
+    value_ = el[0]["value"][0]
+    return {"title": value_}
+```
+
 ### CLI
+If all components (config, parser, rules) are set, the program can be run via the CLI:
+
+```bash
+Usage: invenio oai run [OPTIONS]
+
+  Starts harvesting the resources set in invenio.cfg through the
+  OAREPO_OAI_PROVIDERS environment variable.
+
+Options:
+  -p, --provider TEXT      Code name of provider, defined in invenio.cfg
+  -s, --synchronizer TEXT  Code name of OAI-PMH setup, defined in invenio.cfg
+  --break / --no-break     Break on error, if true program is terminated when
+                           record cause error
+
+  -o, --start_oai TEXT     OAI identifier from where synchronization begin
+  -i, --start_id INTEGER   The serial number from which the synchronization
+                           starts. This is useful if for some reason the
+                           previous synchronization was interrupted at some
+                           point.
+
+  --help                   Show this message and exit.
+
+```
