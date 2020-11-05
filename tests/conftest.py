@@ -1,10 +1,8 @@
 from __future__ import absolute_import, print_function
 
-import os
 import pathlib
 import shutil
 import tempfile
-from pathlib import Path
 
 import pytest
 from flask import Flask, current_app
@@ -26,7 +24,7 @@ from invenio_search import RecordsSearch, InvenioSearch
 from lxml import etree
 from marshmallow import Schema
 from marshmallow.fields import Integer
-from sqlalchemy_utils import database_exists, drop_database, create_database
+from sqlalchemy_utils import database_exists, create_database
 
 from oarepo_oai_pmh_harvester.ext import OArepoOAIClient
 
@@ -140,34 +138,12 @@ def app():
     shutil.rmtree(instance_path)
 
 
-# @pytest.fixture()
-# def db(app):
-#     """Create database for the tests."""
-#     dir_path = os.path.dirname(__file__)
-#     parent_path = str(Path(dir_path).parent)
-#     db_path = os.environ.get('SQLALCHEMY_DATABASE_URI', f'sqlite:////{parent_path}/database.db')
-#     os.environ["INVENIO_SQLALCHEMY_DATABASE_URI"] = db_path
-#     app.config.update(
-#         SQLALCHEMY_DATABASE_URI=db_path,
-#     )
-#     if database_exists(str(db_.engine.url)):
-#         drop_database(db_.engine.url)
-#     if not database_exists(str(db_.engine.url)):
-#         create_database(db_.engine.url)
-#     db_.create_all()
-#
-#     yield db_
-#
-#     # Explicitly close DB connection
-#     db_.session.close()
-#     db_.drop_all()
-    
 @pytest.fixture()
 def db(app):
     """"Returns fresh db."""
     with app.app_context():
         if not database_exists(str(db_.engine.url)) and \
-          app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
+                app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
             create_database(db_.engine.url)
         db_.create_all()
 
