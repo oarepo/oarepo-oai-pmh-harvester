@@ -122,7 +122,7 @@ The module is registered in entry_points under the keyword ***oarepo_oai_pmh_har
  
  ```python
 entry_points={
-        'oarepo_oai_pmh_harvester.parsers': [
+        'oarepo_oai_pmh_harvester.rules': [
             'xoai = example.rule',
         ],
     }
