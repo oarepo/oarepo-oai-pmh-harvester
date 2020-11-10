@@ -1,10 +1,9 @@
 import uuid
 
 from invenio_db import db
-from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy_utils import UUIDType, JSONType
+from sqlalchemy_utils import UUIDType
 
 
 class OAIRecord(db.Model):
@@ -26,17 +25,17 @@ class OAIRecord(db.Model):
         nullable=False
     )
     last_sync_id = db.Column(
-        db.INTEGER(),
+        db.Integer(),
         ForeignKey('oarepo_oai_sync.id'),
         nullable=True
     )
     modification_sync_id = db.Column(
-        db.INTEGER(),
+        db.Integer(),
         ForeignKey('oarepo_oai_sync.id'),
         nullable=True
     )
     creation_sync_id = db.Column(
-        db.INTEGER(),
+        db.Integer(),
         ForeignKey('oarepo_oai_sync.id'),
         nullable=True
     )
@@ -60,80 +59,68 @@ class OAIRecord(db.Model):
 class OAISync(db.Model):
     __tablename__ = "oarepo_oai_sync"
     id = db.Column(db.Integer, primary_key=True)
-    provider_id = db.Column(db.Integer, ForeignKey('oarepo_oai_provider.id'))
+    provider_code = db.Column(db.String, nullable=False)
     sync_start = db.Column(db.TIMESTAMP)
     sync_end = db.Column(db.TIMESTAMP)
     status = db.Column(db.String(32))
     logs = db.Column(db.Text())
 
     # number of created, modified and deleted records for statistics
-    rec_created = db.Column(db.Integer)
-    rec_modified = db.Column(db.Integer)
-    rec_deleted = db.Column(db.Integer)
-    provider = relationship(
-        "OAIProvider",
-        backref=backref("synchronizations")
-    )
-    traceback = relationship("OAIRecordExc", backref=backref("synchronizations"))
+    records_created = db.Column(db.Integer)
+    records_modified = db.Column(db.Integer)
+    records_deleted = db.Column(db.Integer)
+    tracebacks = relationship("OAIRecordExc", backref=backref("synchronization"))
 
 
-class OAIProvider(db.Model):
-    __tablename__ = "oarepo_oai_provider"
-    id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(16), nullable=False, unique=True)
-    description = db.Column(db.String(2048), nullable=True)
-    synchronizers = relationship("OAISynchronizers", backref=backref("provider"))
-
-
-# TODO: spojit s OAISynchronizer v synchronization.py
-class OAISynchronizers(db.Model):
-    __tablename__ = "oarepo_oai_synchronizers"
-    id = db.Column(db.Integer, primary_key=True)
-    provider_id = db.Column(db.Integer, ForeignKey('oarepo_oai_provider.id'))
-    oai_endpoint = db.Column(db.String(2048), nullable=False)
-    set_ = db.Column(db.String(256), name="set")
-    metadata_prefix = db.Column(db.String(32), default="oai_dc")
-    constant_fields = db.Column(
-        db.JSON().with_variant(
-            postgresql.JSONB(none_as_null=True),
-            'postgresql',
-        ).with_variant(
-            JSONType(),
-            'sqlite',
-        ).with_variant(
-            JSONType(),
-            'mysql',
-        ),
-        default=lambda: dict(),
-        nullable=True
-    )
-    unhandled_paths = db.Column(
-        db.JSON().with_variant(
-            postgresql.JSONB(none_as_null=True),
-            'postgresql',
-        ).with_variant(
-            JSONType(),
-            'sqlite',
-        ).with_variant(
-            JSONType(),
-            'mysql',
-        ),
-        nullable=True
-    )
-    default_endpoint = db.Column(db.String(), nullable=False)
-    endpoint_mapping = db.Column(
-        db.JSON().with_variant(
-            postgresql.JSONB(none_as_null=True),
-            'postgresql',
-        ).with_variant(
-            JSONType(),
-            'sqlite',
-        ).with_variant(
-            JSONType(),
-            'mysql',
-        ),
-        nullable=True
-    )
+# TODO: odstranit a udělat rest api z configu
+# class OAISynchronizers(db.Model):
+#     __tablename__ = "oarepo_oai_synchronizers"
+#     id = db.Column(db.Integer, primary_key=True)
+#     provider_id = db.Column(db.Integer, ForeignKey('oarepo_oai_provider.id'))
+#     oai_endpoint = db.Column(db.String(2048), nullable=False)
+#     set_ = db.Column(db.String(256), name="set")
+#     metadata_prefix = db.Column(db.String(32), default="oai_dc")
+#     constant_fields = db.Column(
+#         db.JSON().with_variant(
+#             postgresql.JSONB(none_as_null=True),
+#             'postgresql',
+#         ).with_variant(
+#             JSONType(),
+#             'sqlite',
+#         ).with_variant(
+#             JSONType(),
+#             'mysql',
+#         ),
+#         default=lambda: dict(),
+#         nullable=True
+#     )
+#     unhandled_paths = db.Column(
+#         db.JSON().with_variant(
+#             postgresql.JSONB(none_as_null=True),
+#             'postgresql',
+#         ).with_variant(
+#             JSONType(),
+#             'sqlite',
+#         ).with_variant(
+#             JSONType(),
+#             'mysql',
+#         ),
+#         nullable=True
+#     )
+#     default_endpoint = db.Column(db.String(), nullable=False)
+#     endpoint_mapping = db.Column(
+#         db.JSON().with_variant(
+#             postgresql.JSONB(none_as_null=True),
+#             'postgresql',
+#         ).with_variant(
+#             JSONType(),
+#             'sqlite',
+#         ).with_variant(
+#             JSONType(),
+#             'mysql',
+#         ),
+#         nullable=True
+#     )
 
 
 class OAIRecordExc(db.Model):

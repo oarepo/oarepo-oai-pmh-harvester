@@ -5,6 +5,7 @@ from itertools import islice
 from typing import Callable, List
 
 import arrow
+from arrow import Arrow
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
@@ -31,7 +32,7 @@ class OAISynchronizer:
 
     def __init__(
             self,
-            provider_id,
+            provider_code,
             oai_endpoint,
             metadata_prefix,
             set_,
@@ -42,7 +43,8 @@ class OAISynchronizer:
             endpoints=None,
             default_endpoint: str = "recid",
             endpoint_mapping=None,
-            pid_field=None
+            pid_field=None,
+            from_: str = None
     ):
 
         # Counters
@@ -56,7 +58,7 @@ class OAISynchronizer:
             self.pid_field = current_app.config.get('PIDSTORE_RECID_FIELD', "recid")
         else:
             self.pid_field = pid_field
-        self.provider_id = provider_id
+        self.provider_code = provider_code
         self.metadata_prefix = metadata_prefix
         self.oai_endpoint = oai_endpoint
         self.oai_sync = None
@@ -72,6 +74,27 @@ class OAISynchronizer:
             self.constant_fields = constant_fields
         else:
             self.constant_fields = {}
+        self._from = None
+        if from_:
+            self.from_ = from_
+
+    @property
+    def from_(self):
+        return self._from
+
+    @from_.setter
+    def from_(self, value):
+        if value == "latest":
+            last_sync = OAISync.query.order_by(OAISync.id.desc()).first()
+            if last_sync:
+                self._from = arrow.get(last_sync)
+        elif value is not None:
+            if isinstance(value, Arrow):
+                self._from = value
+            else:
+                self._from = arrow.get(value)
+        else:
+            self._from = None
 
     def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True):
         """
@@ -82,7 +105,7 @@ class OAISynchronizer:
         self.restart_counters()
         with db.session.begin_nested():
             self.oai_sync = OAISync(
-                provider_id=self.provider_id,
+                provider_code=self.provider_code,  # TODO: nahradit provider.code
                 sync_start=arrow.utcnow().datetime,  # datetime.datetime.utcnow(),
                 status="active")
             db.session.add(self.oai_sync)
@@ -101,9 +124,9 @@ class OAISynchronizer:
             # self.oai_sync = db.session.merge(self.oai_sync)
             self.oai_sync.status = status
             self.oai_sync.sync_end = arrow.utcnow().datetime  # datetime.datetime.utcnow()
-            self.oai_sync.rec_modified = self.modified
-            self.oai_sync.rec_created = self.created
-            self.oai_sync.rec_deleted = self.deleted
+            self.oai_sync.records_modified = self.modified
+            self.oai_sync.records_created = self.created
+            self.oai_sync.records_deleted = self.deleted
             if status == "failed":
                 self.oai_sync.logs = traceback.format_exc()
             db.session.add(self.oai_sync)
@@ -207,7 +230,9 @@ class OAISynchronizer:
             sickle=None,
             metadata_prefix=None,
             set_=None,
-            identifiers_list: List[str] = None):
+            identifiers_list: List[str] = None,
+            from_: Arrow = None
+    ):
         if identifiers_list:
             return [self.sickle.GetRecord(identifier=identifier,
                                           metadataPrefix=self.metadata_prefix).header for
@@ -218,8 +243,19 @@ class OAISynchronizer:
             metadata_prefix = self.metadata_prefix
         if not set_:
             set_ = self.set_
-        return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
-                                      set=set_)
+        if not from_:
+            if self.from_:
+                from_ = self.from_
+            else:
+                return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
+                                              set=set_)
+        return sickle.ListIdentifiers(
+            **{
+                "metadataPrefix": metadata_prefix,
+                "set": set_,
+                "from": from_.format("YYYY-MM-DD")
+            }
+        )
 
     def create_or_update(self, oai_identifier, datestamp: str, oai_rec=None, xml: _Element = None):
         if oai_rec:
