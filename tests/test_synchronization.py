@@ -274,7 +274,7 @@ class TestSynchronization:
 
         res_oai_sync = OAISync.query.get(1)
         print(type(res_oai_sync.sync_end))
-        assert res_oai_sync.rec_created == 100
+        assert res_oai_sync.records_created == 100
         assert res_oai_sync.status == "ok"
         assert isinstance(res_oai_sync.sync_end, datetime)
 
@@ -307,7 +307,7 @@ class TestSynchronization:
 
         oai_sync = OAISync.query.get(1)
         assert oai_sync.status == "ok"
-        assert oai_sync.rec_created == 1
+        assert oai_sync.records_created == 1
         oai_rec = OAIRecord.query.all()[-1]
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)

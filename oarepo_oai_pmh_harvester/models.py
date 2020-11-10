@@ -68,9 +68,9 @@ class OAISync(db.Model):
     logs = db.Column(db.Text())
 
     # number of created, modified and deleted records for statistics
-    rec_created = db.Column(db.Integer)
-    rec_modified = db.Column(db.Integer)
-    rec_deleted = db.Column(db.Integer)
+    records_created = db.Column(db.Integer)
+    records_modified = db.Column(db.Integer)
+    records_deleted = db.Column(db.Integer)
     provider = relationship(
         "OAIProvider",
         backref=backref("synchronizations")

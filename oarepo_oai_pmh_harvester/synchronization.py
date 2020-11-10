@@ -101,9 +101,9 @@ class OAISynchronizer:
             # self.oai_sync = db.session.merge(self.oai_sync)
             self.oai_sync.status = status
             self.oai_sync.sync_end = arrow.utcnow().datetime  # datetime.datetime.utcnow()
-            self.oai_sync.rec_modified = self.modified
-            self.oai_sync.rec_created = self.created
-            self.oai_sync.rec_deleted = self.deleted
+            self.oai_sync.records_modified = self.modified
+            self.oai_sync.records_created = self.created
+            self.oai_sync.records_deleted = self.deleted
             if status == "failed":
                 self.oai_sync.logs = traceback.format_exc()
             db.session.add(self.oai_sync)

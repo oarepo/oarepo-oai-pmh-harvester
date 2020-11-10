@@ -29,7 +29,7 @@ class TestExt:
 
         oai_sync = OAISync.query.get(1)
         assert oai_sync.status == "ok"
-        assert oai_sync.rec_created == 1
+        assert oai_sync.records_created == 1
         oai_rec = OAIRecord.query.all()[-1]
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)
@@ -43,7 +43,7 @@ class TestExt:
 
         oai_sync = OAISync.query.get(1)
         assert oai_sync.status == "ok"
-        assert oai_sync.rec_created == 1
+        assert oai_sync.records_created == 1
         oai_rec = OAIRecord.query.all()[-1]
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)
@@ -57,7 +57,7 @@ class TestExt:
 
         oai_sync = OAISync.query.get(1)
         assert oai_sync.status == "ok"
-        assert oai_sync.rec_created == 1
+        assert oai_sync.records_created == 1
         oai_rec = OAIRecord.query.all()[-1]
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)
@@ -71,7 +71,7 @@ class TestExt:
 
         oai_sync = OAISync.query.get(1)
         assert oai_sync.status == "ok"
-        assert oai_sync.rec_created == 1
+        assert oai_sync.records_created == 1
         oai_rec = OAIRecord.query.all()[-1]
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)
@@ -85,7 +85,7 @@ class TestExt:
 
         oai_sync = OAISync.query.get(1)
         assert oai_sync.status == "ok"
-        assert oai_sync.rec_created == 1
+        assert oai_sync.records_created == 1
         oai_rec = OAIRecord.query.all()[-1]
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)
