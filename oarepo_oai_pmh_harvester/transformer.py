@@ -1,3 +1,6 @@
+from oarepo_oai_pmh_harvester.utils import merge
+
+
 class OAITransformer:
     PHASE_PRE = "pre"
     PHASE_POST = "post"
@@ -90,7 +93,7 @@ class OAITransformer:
                                  **self.options)
             assert ret is not None, f"Handler {handler[phase]} must not return None"
             if isinstance(ret, dict):
-                results[-1].update(ret)
+                results[-1] = merge(results[-1], ret)
                 ret = OAITransformer.PROCESSED
             elif ret == OAITransformer.PROCESSED:
                 pass

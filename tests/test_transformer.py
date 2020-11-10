@@ -106,3 +106,39 @@ class TestTransformer:
         transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", })
         with pytest.raises(ValueError):
             result = transformer.transform(record)
+
+    def test_iter_json_5(self):
+        def transform_handler(el, **kwargs):
+            return {
+                "spam": {
+                    "spam1": el
+                }
+            }
+
+        def transform_handler_2(el, **kwargs):
+            return {
+                "spam": {
+                    "spam2": el
+                }
+            }
+
+        record = {
+            "path": {
+                "to": {
+                    "field": "bla"
+                }
+            },
+            "spam": "ham",
+            "spam2": "blah"
+        }
+        rules = {
+            "/spam": {
+                "pre": transform_handler
+            },
+            "/spam2": {
+                "pre": transform_handler_2
+            }
+        }
+        transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", })
+        result = transformer.transform(record)
+        assert result == {'spam': {'spam1': 'ham', 'spam2': 'blah'}}
