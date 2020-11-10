@@ -7,6 +7,7 @@ from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType, JSONType
 
 
+# TODO: sjednotit Integer a INTEGER
 class OAIRecord(db.Model):
     __tablename__ = "oarepo_oai_record"
     id = db.Column(
@@ -26,17 +27,17 @@ class OAIRecord(db.Model):
         nullable=False
     )
     last_sync_id = db.Column(
-        db.INTEGER(),
+        db.Integer(),
         ForeignKey('oarepo_oai_sync.id'),
         nullable=True
     )
     modification_sync_id = db.Column(
-        db.INTEGER(),
+        db.Integer(),
         ForeignKey('oarepo_oai_sync.id'),
         nullable=True
     )
     creation_sync_id = db.Column(
-        db.INTEGER(),
+        db.Integer(),
         ForeignKey('oarepo_oai_sync.id'),
         nullable=True
     )
@@ -85,7 +86,7 @@ class OAIProvider(db.Model):
     synchronizers = relationship("OAISynchronizers", backref=backref("provider"))
 
 
-# TODO: spojit s OAISynchronizer v synchronization.py
+# TODO: odstranit a udělat rest api z configu
 class OAISynchronizers(db.Model):
     __tablename__ = "oarepo_oai_synchronizers"
     id = db.Column(db.Integer, primary_key=True)
