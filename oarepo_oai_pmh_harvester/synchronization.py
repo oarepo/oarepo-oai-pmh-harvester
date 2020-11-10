@@ -31,7 +31,7 @@ class OAISynchronizer:
 
     def __init__(
             self,
-            provider_id,
+            provider_code,
             oai_endpoint,
             metadata_prefix,
             set_,
@@ -56,7 +56,7 @@ class OAISynchronizer:
             self.pid_field = current_app.config.get('PIDSTORE_RECID_FIELD', "recid")
         else:
             self.pid_field = pid_field
-        self.provider_id = provider_id
+        self.provider_code = provider_code
         self.metadata_prefix = metadata_prefix
         self.oai_endpoint = oai_endpoint
         self.oai_sync = None
@@ -82,7 +82,7 @@ class OAISynchronizer:
         self.restart_counters()
         with db.session.begin_nested():
             self.oai_sync = OAISync(
-                provider_id=self.provider_id,
+                provider_code=self.provider_code,  # TODO: nahradit provider.code
                 sync_start=arrow.utcnow().datetime,  # datetime.datetime.utcnow(),
                 status="active")
             db.session.add(self.oai_sync)

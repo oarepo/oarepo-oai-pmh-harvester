@@ -2,7 +2,8 @@ from unittest import mock
 
 from invenio_records import Record
 
-from oarepo_oai_pmh_harvester.models import OAIProvider, OAISync, OAIRecord
+from oarepo_oai_pmh_harvester.models import OAISync, OAIRecord
+from oarepo_oai_pmh_harvester.provider import OAIProvider
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 from oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 from tests.helpers import mock_harvest
@@ -14,7 +15,7 @@ class TestExt:
         assert isinstance(providers, dict)
         keys = list(providers.keys())
         assert isinstance(providers[keys[0]], OAIProvider)
-        synchronizers = providers[keys[0]]._synchronizers
+        synchronizers = providers[keys[0]].synchronizers
         assert isinstance(synchronizers, dict)
         assert isinstance(list(synchronizers.values())[0], OAISynchronizer)
 

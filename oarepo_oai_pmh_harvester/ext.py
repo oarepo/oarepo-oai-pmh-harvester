@@ -1,14 +1,12 @@
 from collections import defaultdict
 from typing import List
 
-from invenio_db import db
 from pkg_resources import iter_entry_points
-from sqlalchemy import inspect
 
 from oarepo_oai_pmh_harvester.transformer import OAITransformer
 from oarepo_oai_pmh_harvester.utils import infinite_dd
 from . import config
-from .models import OAIProvider
+from .provider import OAIProvider
 from .synchronization import OAISynchronizer
 
 
@@ -37,12 +35,7 @@ class OArepoOAIClientState(metaclass=Singleton):
 
     @property
     def providers(self):
-        # db.session.refresh()
         if self._providers is None:
-            self.create_providers()
-        # TODO: Codereview - udělat lépe kontrolu jestli je v db.
-        state = [inspect(provider).persistent for provider in self._providers.values()]
-        if not all(state):
             self.create_providers()
         return self._providers
 
@@ -79,23 +72,17 @@ class OArepoOAIClientState(metaclass=Singleton):
         providers = self.app.config.get("OAREPO_OAI_PROVIDERS")
         if providers:
             for k, v in providers.items():
-                provider = OAIProvider.query.filter_by(code=k).one_or_none()
-                if provider:
-                    continue
                 provider = OAIProvider(
                     code=k,
                     description=v.get("description"),
-                )
-                db.session.add(provider)
-                db.session.commit()
-                provider._synchronizers = {}
+                ) # vytvořím providera
+                provider.synchronizers = {}
                 for sync_config in v.get("synchronizers", []):
-                    synchronizer = self.create_synchronizer(provider.code, sync_config, provider.id)
-                    provider._synchronizers[sync_config["name"]] = synchronizer
+                    synchronizer = self.create_synchronizer(provider.code, sync_config)
+                    provider.synchronizers[sync_config["name"]] = synchronizer
                 if not self._providers:
                     self._providers = {}
                 self._providers.setdefault(k, provider)
-            db.session.commit()
 
     def rule(self, provider, parser, path, phase=OAITransformer.PHASE_PRE):
         def wrapper(func):
@@ -119,9 +106,9 @@ class OArepoOAIClientState(metaclass=Singleton):
             self._parsers = infinite_dd()
         self._parsers[name] = func
 
-    def create_synchronizer(self, provider_code, config, provider_id):
+    def create_synchronizer(self, provider_code, config):
         return OAISynchronizer(
-            provider_id=provider_id,
+            provider_code=provider_code,
             metadata_prefix=config["metadata_prefix"],
             set_=config["set"],
             constant_fields=config.get("constant_field", {}),
@@ -146,7 +133,7 @@ class OArepoOAIClientState(metaclass=Singleton):
         elif len(providers_codes) == 1:
             if not synchronizers_codes:
                 synchronizers_codes = [_ for _ in
-                                       self.providers[providers_codes[0]]._synchronizers.keys()]
+                                       self.providers[providers_codes[0]].synchronizers.keys()]
             if len(synchronizers_codes) > 1:
                 for code in synchronizers_codes:
                     self._run_synchronizer(providers_codes[0], code, break_on_error=break_on_error)
@@ -169,13 +156,13 @@ class OArepoOAIClientState(metaclass=Singleton):
 
     def _run_provider(self, provider: str, break_on_error: bool = True):
         provider_ = self.providers[provider]
-        for synchronizer in provider_._synchronizers.keys():
+        for synchronizer in provider_.synchronizers.keys():
             self._run_synchronizer(provider, synchronizer, break_on_error=break_on_error)
 
     def _run_synchronizer(self, provider: str, synchronizer: str, start_oai: str = None,
                           start_id: int = 0, break_on_error: bool = True):
         provider = self.providers[provider]
-        synchronizer = provider._synchronizers[synchronizer]
+        synchronizer = provider.synchronizers[synchronizer]
         synchronizer.run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
 
 
