@@ -13,5 +13,5 @@ class OAIProvider:
         return {
             "code": self.code,
             "description": self.description,
-            "synchronizers": self.synchronizers  # TODO: vymyslet lepší reprezentaci
+            "synchronizers": self.synchronizers
         }

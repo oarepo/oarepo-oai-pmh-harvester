@@ -6,7 +6,6 @@ from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import UUIDType
 
 
-# TODO: sjednotit Integer a INTEGER
 class OAIRecord(db.Model):
     __tablename__ = "oarepo_oai_record"
     id = db.Column(
@@ -60,7 +59,7 @@ class OAIRecord(db.Model):
 class OAISync(db.Model):
     __tablename__ = "oarepo_oai_sync"
     id = db.Column(db.Integer, primary_key=True)
-    provider_code = db.Column(db.String, nullable=False)  # TODO: nahradit provider_code
+    provider_code = db.Column(db.String, nullable=False)
     sync_start = db.Column(db.TIMESTAMP)
     sync_end = db.Column(db.TIMESTAMP)
     status = db.Column(db.String(32))
