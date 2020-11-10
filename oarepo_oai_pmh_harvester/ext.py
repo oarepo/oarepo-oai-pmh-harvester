@@ -8,6 +8,7 @@ from oarepo_oai_pmh_harvester.utils import infinite_dd
 from . import config
 from .provider import OAIProvider
 from .synchronization import OAISynchronizer
+from .views import oai_client_blueprint
 
 
 class Singleton(type):
@@ -175,6 +176,13 @@ class OArepoOAIClient:
 
     def init_app(self, app):
         self.init_config(app)
+
+        # register blueprint
+        prefix = app.config.get('OAREPO_OAI_CLIENT_URL_PREFIX', "/oai-client")
+        if prefix.startswith('/api'):
+            prefix = prefix[4:]
+        app.register_blueprint(oai_client_blueprint, url_prefix=prefix)
+
         app.extensions['oarepo-oai-client'] = OArepoOAIClientState(app)
 
     def init_config(self, app):
