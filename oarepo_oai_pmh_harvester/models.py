@@ -72,14 +72,6 @@ class OAISync(db.Model):
     tracebacks = relationship("OAIRecordExc", backref=backref("synchronization"))
 
 
-# class OAIProvider(db.Model):
-#     __tablename__ = "oarepo_oai_provider"
-#     id = db.Column(db.Integer, primary_key=True)
-#     code = db.Column(db.String(16), nullable=False, unique=True)
-#     description = db.Column(db.String(2048), nullable=True)
-#     synchronizers = relationship("OAISynchronizers", backref=backref("provider"))
-
-
 # TODO: odstranit a udělat rest api z configu
 # class OAISynchronizers(db.Model):
 #     __tablename__ = "oarepo_oai_synchronizers"
