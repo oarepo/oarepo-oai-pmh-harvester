@@ -120,7 +120,8 @@ class OArepoOAIClientState(metaclass=Singleton):
                 unhandled_paths=set(config.get("unhandled_paths", []))),
             endpoints=self.endpoints,
             default_endpoint=config.get("default_endpoint", "recid"),
-            endpoint_mapping=config.get("endpoint_mapping", {})
+            endpoint_mapping=config.get("endpoint_mapping", {}),
+            from_=config.get("from")
         )
 
     def run(self, providers_codes: List[str] = None, synchronizers_codes: List[str] = None,

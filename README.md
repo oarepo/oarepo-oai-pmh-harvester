@@ -36,9 +36,9 @@ OAREPO_OAI_PROVIDERS={
                         "oai_endpoint": "https://example.com/oai/",
                         "set": "example_set",
                         "metadata_prefix": "oai_dc",
+                        "from": "latest",
                         "unhandled_paths": ["/dc/unhandled"],
                         "default_endpoint": "recid",
-                        "use_default_endpoint": True,
                         "endpoint_mapping": {
                             "field_name": "doc_type",
                             "mapping": {
@@ -57,6 +57,11 @@ OAREPO_OAI_PROVIDERS={
     * **oai_endpoint**: URL adress
     * **set**: name of OAI set
     * **metadata_prefix**: name of OAI metadata prefix
+    * **from**: the date from which the synchronization starts, it is optional parameter with three options:
+    
+        1. **latest**: checks for changes since the last sync
+        1. **date** [YYYY-MM-DD]: check for change since entered date
+        1. **none**: parameter is omitted, then start full synchronization  
     * **unhandled_paths**: List of paths in json that are not handled by any rule.It must be specified, otherwise the client will report an error that the path was not processed by any rule.
     * **default_endpoint**: The name of the end_point defined in RECORDS_REST_ENDPOINTS from the invenio-records-rest
      library, which will be used as the base unless otherwise specified.

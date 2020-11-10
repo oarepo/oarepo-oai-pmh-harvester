@@ -5,6 +5,7 @@ from unittest import mock
 
 import pytest
 import requests
+import arrow
 from invenio_records import Record
 from lxml.etree import _Element
 from pytest import skip
@@ -14,6 +15,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIRecordExc
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
+from oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 from tests.helpers import mock_harvest
 
 
@@ -121,6 +123,19 @@ class TestSynchronization:
             identifiers_list=["oai:dspace.cuni.cz:20.500.11956/111006"])
         assert len(ids) == 1
         assert isinstance(ids, list)
+
+    def test_get_oai_identifiers_3(self, load_entry_points, app, db):
+        synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        from_ = arrow.get("2020-01-01")
+        ids = synchronizer._get_oai_identifiers(from_=from_)
+        assert isinstance(ids, OAIItemIterator)
+
+    def test_get_oai_identifiers_4(self, load_entry_points, app, db):
+        synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        from_ = arrow.get("2020-01-01")
+        synchronizer.from_ = from_
+        ids = synchronizer._get_oai_identifiers()
+        assert isinstance(ids, OAIItemIterator)
 
     def test_get_identifiers(self, load_entry_points, app, db):
         synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]

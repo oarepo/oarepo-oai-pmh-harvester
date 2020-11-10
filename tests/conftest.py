@@ -101,6 +101,7 @@ def app():
                         "metadata_prefix": "xoai",
                         "unhandled_paths": ["/dc/unhandled"],
                         "default_endpoint": "recid",
+                        "from": "latest",
                         # "use_default_endpoint": True,
                         "endpoint_mapping": {
                             "field_name": "doc_type",

@@ -5,6 +5,7 @@ from itertools import islice
 from typing import Callable, List
 
 import arrow
+from arrow import Arrow
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
@@ -42,7 +43,8 @@ class OAISynchronizer:
             endpoints=None,
             default_endpoint: str = "recid",
             endpoint_mapping=None,
-            pid_field=None
+            pid_field=None,
+            from_: str = None
     ):
 
         # Counters
@@ -72,6 +74,27 @@ class OAISynchronizer:
             self.constant_fields = constant_fields
         else:
             self.constant_fields = {}
+        self._from = None
+        if from_:
+            self.from_ = from_
+
+    @property
+    def from_(self):
+        return self._from
+
+    @from_.setter
+    def from_(self, value):
+        if value == "latest":
+            last_sync = OAISync.query.order_by(OAISync.id.desc()).first()
+            if last_sync:
+                self._from = arrow.get(last_sync)
+        elif value is not None:
+            if isinstance(value, Arrow):
+                self._from = value
+            else:
+                self._from = arrow.get(value)
+        else:
+            self._from = None
 
     def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True):
         """
@@ -207,7 +230,9 @@ class OAISynchronizer:
             sickle=None,
             metadata_prefix=None,
             set_=None,
-            identifiers_list: List[str] = None):
+            identifiers_list: List[str] = None,
+            from_: Arrow = None
+    ):
         if identifiers_list:
             return [self.sickle.GetRecord(identifier=identifier,
                                           metadataPrefix=self.metadata_prefix).header for
@@ -218,8 +243,19 @@ class OAISynchronizer:
             metadata_prefix = self.metadata_prefix
         if not set_:
             set_ = self.set_
-        return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
-                                      set=set_)
+        if not from_:
+            if self.from_:
+                from_ = self.from_
+            else:
+                return sickle.ListIdentifiers(metadataPrefix=metadata_prefix,
+                                              set=set_)
+        return sickle.ListIdentifiers(
+            **{
+                "metadataPrefix": metadata_prefix,
+                "set": set_,
+                "from": from_.format("YYYY-MM-DD")
+            }
+        )
 
     def create_or_update(self, oai_identifier, datestamp: str, oai_rec=None, xml: _Element = None):
         if oai_rec:

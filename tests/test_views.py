@@ -14,6 +14,7 @@ def test_get_providers(app, db):
                     }
                 }, 'metadata_prefix': 'xoai',
                 'name': 'xoai',
+                'from': 'latest',
                 'oai_endpoint': 'https://dspace.cuni.cz/oai/nusl',
                 'set': 'nusl_set',
                 'unhandled_paths': [
