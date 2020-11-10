@@ -27,6 +27,7 @@ from marshmallow.fields import Integer
 from sqlalchemy_utils import database_exists, create_database
 
 from oarepo_oai_pmh_harvester.ext import OArepoOAIClient
+from oarepo_oai_pmh_harvester.views import oai_client_blueprint
 
 
 class TestSchema(Schema):
@@ -129,6 +130,8 @@ def app():
     InvenioPIDStore(app)
     app.url_map.converters['pid'] = PIDConverter
     OArepoOAIClient(app)
+    # app.register_blueprint(oai_client_blueprint, url_prefix="/oai-client")
+    print("\n\nURL MAP", app.url_map)
 
     app_loaded.send(app, app=app)
 

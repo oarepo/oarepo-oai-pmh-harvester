@@ -63,6 +63,9 @@ setup(
         'flask.commands': [
             'oai = oarepo_oai_pmh_harvester.cli:oai'
         ],
+        'invenio_base.api_apps': [
+            'oarepo_oai_pmh_harvester = oarepo_oai_pmh_harvester.ext:OArepoOAIClient',
+        ],
     },
     extras_require=extras_require,
     install_requires=install_requires,

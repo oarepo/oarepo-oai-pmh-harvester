@@ -1,4 +1,3 @@
-# TODO: dotesat uživatelské rozhraní
 import click
 from flask import cli
 
