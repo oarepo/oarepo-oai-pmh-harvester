@@ -31,6 +31,10 @@ def merge(a, b, path=None):
                 merge(a[key], b[key], path + [str(key)])
             elif a[key] == b[key]:
                 pass  # same leaf value
+            elif isinstance(a[key], list) and isinstance(b[key], list):
+                for _ in b[key]:
+                    if _ not in a[key]:
+                        a[key].append(_)
             else:
                 raise Exception('Conflict at %s' % '.'.join(path + [str(key)]))
         else:
