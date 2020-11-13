@@ -21,3 +21,8 @@ def test_merge():
     with pytest.raises(Exception):
         merge({1: {"a": "A"}, 2: {"b": "B"}}, {1: {"a": "A"}, 2: {"b": "C"}})
     assert res == {1: {'a': 'A'}, 2: {'b': 'B', 'c': 'C'}, 3: {'d': 'D'}}
+
+
+def test_merge_2():
+    res = merge({1: {"a": "A"}, 2: ["a"]}, {2: ["a", "b", "c"], 3: {"d": "D"}})
+    assert res == {1: {'a': 'A'}, 2: ['a', 'b', 'c'], 3: {'d': 'D'}}
