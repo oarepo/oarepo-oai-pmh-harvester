@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+from oarepo_oai_pmh_harvester.decorators import parser
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
@@ -20,7 +21,7 @@ def xml_to_dict_xoai(tree):
     return tree_dict
 
 
-@current_oai_client.parser("xoai")
+@parser("xoai")
 def xoai_parser_refine(etree):
     return xml_to_dict_xoai(list(list(etree)[1])[0])
 
