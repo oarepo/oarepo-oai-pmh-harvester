@@ -85,17 +85,7 @@ class OArepoOAIClientState(metaclass=Singleton):
                     self._providers = {}
                 self._providers.setdefault(k, provider)
 
-    def rule(self, provider, parser, path, phase=OAITransformer.PHASE_PRE):
-        def wrapper(func):
-            self.add_rule(func, provider, parser, path, phase)
 
-        return wrapper
-
-    def parser(self, name):
-        def wrapper(func):
-            self.add_parser(func, name)
-
-        return wrapper
 
     def add_rule(self, func, provider, parser_name, path, phase):
         if not self._rules:
