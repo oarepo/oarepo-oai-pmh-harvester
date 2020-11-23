@@ -14,3 +14,10 @@ def parser(name):
         current_oai_client.add_parser(func, name)
 
     return wrapper
+
+
+def endpoint_handler(provider, parser):
+    def wrapper(func):
+        current_oai_client.add_endpoint_handler(func, provider, parser)
+
+    return wrapper

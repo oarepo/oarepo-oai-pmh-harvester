@@ -44,7 +44,8 @@ class OAISynchronizer:
             default_endpoint: str = "recid",
             endpoint_mapping=None,
             pid_field=None,
-            from_: str = None
+            from_: str = None,
+            endpoint_handler: dict = None
     ):
 
         # Counters
@@ -77,6 +78,7 @@ class OAISynchronizer:
         self._from = None
         if from_:
             self.from_ = from_
+        self.endpoint_handler = endpoint_handler
 
     @property
     def from_(self):
@@ -377,6 +379,12 @@ class OAISynchronizer:
         if self.endpoint_mapping:
             end_point_name = self.endpoint_mapping["mapping"].get(
                 data.get(self.endpoint_mapping["field_name"]))
+            if not end_point_name and self.endpoint_handler:
+                provider = self.endpoint_handler.get(self.provider_code)
+                if provider:
+                    handler = provider.get(self.metadata_prefix)
+                    if handler:
+                        end_point_name = handler(data)
         endpoint_config = self.endpoints.get(end_point_name) or self.endpoints.get(
             self.default_endpoint)
         return endpoint_config
