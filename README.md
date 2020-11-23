@@ -69,6 +69,34 @@ OAREPO_OAI_PROVIDERS={
     which endpoint will be assigned to a particular record. In most cases, an endpoint can be assigned based on a
      metadata field (***field_name***) that is assigned a dictionary ***mapping***, where key is the value of the
       metadata field and the dictionary value is assigned to the endpoint.
+      
+### Endpoint handler
+
+If endpoint_mapping cannot be expressed using a dictionary, it is possible to use a handler. Handler is a function
+ that receives already transformed data and returns the name rest endpoint. It is registered as entry_point
+  (***oarepo_oai_pmh_harvester.mapping***) and using the endpoint_handler decorator. More in the example.
+  
+```python
+entry_points={
+       'oarepo_oai_pmh_harvester.mapping': [
+           '<name> = example.endpoint_handler',
+       ],
+   }
+
+```
+
+```python
+@endpoint_handler(<provider>, <metadataprefix>)
+def mapping_handler(data):
+    resource = data.get("resource"):
+    if resource == "book":
+        return "book_model"
+    elif resource == "journal":
+        return "journal"
+    else:
+        return "recid"
+
+```
 
 ## Usage
 
@@ -102,9 +130,9 @@ entry_points={
 The decorator has one parameter, the name of the metadata_format and that must be same as in config metadata_prefix. The function must accept one positional argument (etree._Element) and return a dictionary.
 
 ```python
-from oarepo_oai_pmh_harvester.proxies import current_oai_client
+from oarepo_oai_pmh_harvester.decorators import parser
 
-@current_oai_client.parser("xoai")
+@parser("xoai")
 def xml_to_json_parser(etree):
     ...some magic
     return dict_
@@ -157,10 +185,10 @@ The rule function itself must accept the el (element) and ** kwargs arguments in
  Example of a rule:
 
 ```python
-from oarepo_oai_pmh_harvester.proxies import current_oai_client
+from oarepo_oai_pmh_harvester.decorators import rule
 
 
-@current_oai_client.rule("provider_name", "metadata_prefix", "/dc/title/en", phase="pre")
+@rule("provider_name", "metadata_prefix", "/dc/title/en", phase="pre")
 def rule(el, **kwargs):
     value_ = el[0]["value"][0]
     return {"title": value_}

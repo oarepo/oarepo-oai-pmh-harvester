@@ -25,10 +25,11 @@ class Singleton(type):
 class OArepoOAIClientState(metaclass=Singleton):
     def __init__(self, app, _rules: defaultdict = None, _parsers: defaultdict = None,
                  _providers: dict = None, _synchronizers=None, transformer_class=OAITransformer,
-                 _endpoints=None):
+                 _endpoints=None, endpoint_handlers: dict = None):
         self.app = app
         self._rules = _rules
         self._parsers = _parsers
+        self._endpoint_handlers = endpoint_handlers
         self._providers = _providers
         self._synchronizers = _synchronizers
         self.transformer_class = transformer_class
@@ -53,13 +54,22 @@ class OArepoOAIClientState(metaclass=Singleton):
         return self._parsers
 
     @property
+    def endpoint_handlers(self):
+        if self._endpoint_handlers is None:
+            self._load_endpoint_handlers()
+        return self._endpoint_handlers
+
+    @property
     def endpoints(self):
         if not self._endpoints:
             self.load_endpoints()
         return self._endpoints
 
     def load_endpoints(self):
-        self._endpoints = self.app.config.get("RECORDS_REST_ENDPOINTS", {})
+        res = {}
+        res.update(self.app.config.get("RECORDS_REST_ENDPOINTS", {}))
+        res.update(self.app.config.get("RECORDS_DRAFT_ENDPOINTS", {}))
+        self._endpoints = res
 
     def _load_rules(self):
         for ep in iter_entry_points('oarepo_oai_pmh_harvester.rules'):
@@ -69,6 +79,10 @@ class OArepoOAIClientState(metaclass=Singleton):
         for ep in iter_entry_points('oarepo_oai_pmh_harvester.parsers'):
             ep.load()
 
+    def _load_endpoint_handlers(self):
+        for ep in iter_entry_points('oarepo_oai_pmh_harvester.mapping'):
+            ep.load()
+
     def create_providers(self):
         providers = self.app.config.get("OAREPO_OAI_PROVIDERS")
         if providers:
@@ -76,7 +90,7 @@ class OArepoOAIClientState(metaclass=Singleton):
                 provider = OAIProvider(
                     code=k,
                     description=v.get("description"),
-                ) # vytvořím providera
+                )  # vytvořím providera
                 provider.synchronizers = {}
                 for sync_config in v.get("synchronizers", []):
                     synchronizer = self.create_synchronizer(provider.code, sync_config)
@@ -85,12 +99,15 @@ class OArepoOAIClientState(metaclass=Singleton):
                     self._providers = {}
                 self._providers.setdefault(k, provider)
 
-
-
     def add_rule(self, func, provider, parser_name, path, phase):
         if not self._rules:
             self._rules = infinite_dd()
         self._rules[provider][parser_name][path][phase] = func
+
+    def add_endpoint_handler(self, func, provider, parser_name):
+        if not self._endpoint_handlers:
+            self._endpoint_handlers = infinite_dd()
+        self._endpoint_handlers[provider][parser_name] = func
 
     def add_parser(self, func, name):
         if not self._parsers:
@@ -111,7 +128,8 @@ class OArepoOAIClientState(metaclass=Singleton):
             endpoints=self.endpoints,
             default_endpoint=config.get("default_endpoint", "recid"),
             endpoint_mapping=config.get("endpoint_mapping", {}),
-            from_=config.get("from")
+            from_=config.get("from"),
+            endpoint_handler=self._endpoint_handlers
         )
 
     def run(self, providers_codes: List[str] = None, synchronizers_codes: List[str] = None,
