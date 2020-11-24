@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 from oarepo_oai_pmh_harvester.decorators import parser
-from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
 def xml_to_dict_xoai(tree):
