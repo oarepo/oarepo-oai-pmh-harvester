@@ -316,9 +316,9 @@ class OAISynchronizer:
 
     def create_record(self, data):
         # TODO: dodělat případ, kdy record má již přidělený PID (import z nušlu)
-        minter = self.get_minter()
-        record_class = self.get_record_class()
-        indexer_class = self.get_indexer_class()
+        minter = self.get_minter(data)
+        record_class = self.get_record_class(data)
+        indexer_class = self.get_indexer_class(data)
 
         # Create uuid for record
         record_uuid = uuid.uuid4()
