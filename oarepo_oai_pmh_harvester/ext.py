@@ -80,7 +80,7 @@ class OArepoOAIClientState(metaclass=Singleton):
             ep.load()
 
     def _load_endpoint_handlers(self):
-        for ep in iter_entry_points('oarepo_oai_pmh_harvester.mapping'):
+        for ep in iter_entry_points('oarepo_oai_pmh_harvester.mappings'):
             ep.load()
 
     def create_providers(self):
