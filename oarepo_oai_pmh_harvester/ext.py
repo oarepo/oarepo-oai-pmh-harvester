@@ -129,7 +129,7 @@ class OArepoOAIClientState(metaclass=Singleton):
             default_endpoint=config.get("default_endpoint", "recid"),
             endpoint_mapping=config.get("endpoint_mapping", {}),
             from_=config.get("from"),
-            endpoint_handler=self._endpoint_handlers
+            endpoint_handler=self.endpoint_handlers
         )
 
     def run(self, providers_codes: List[str] = None, synchronizers_codes: List[str] = None,

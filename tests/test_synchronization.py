@@ -3,9 +3,9 @@ from datetime import datetime
 from itertools import islice
 from unittest import mock
 
+import arrow
 import pytest
 import requests
-import arrow
 from invenio_records import Record
 from lxml.etree import _Element
 from pytest import skip
@@ -15,7 +15,6 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIRecordExc
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
-from oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 from tests.helpers import mock_harvest
 
 
@@ -93,10 +92,10 @@ class TestSynchronization:
 
     def test_get_xml(self, load_entry_points, app, db):
         synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
-        try:
-            xml = synchronizer.get_xml("oai:dspace.cuni.cz:20.500.11956/111006")
-        except requests.exceptions.RequestException:
-            skip("Connection failed")
+        patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
+        patch.start()
+        xml = synchronizer.get_xml("oai:dspace.cuni.cz:20.500.11956/111006")
+        patch.stop()
         assert isinstance(xml, _Element)
 
     def test_parse(self, load_entry_points, app, db, record_xml, parsed_record_xml):
@@ -114,32 +113,47 @@ class TestSynchronization:
 
     def test_get_oai_identifiers(self, load_entry_points, app, db):
         synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
+        patch.start()
         ids = synchronizer._get_oai_identifiers()
+        patch.stop()
         assert isinstance(ids, OAIItemIterator)
 
     def test_get_oai_identifiers_2(self, load_entry_points, app, db):
         synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
+        patch.start()
         ids = synchronizer._get_oai_identifiers(
             identifiers_list=["oai:dspace.cuni.cz:20.500.11956/111006"])
+        patch.stop()
         assert len(ids) == 1
         assert isinstance(ids, list)
 
     def test_get_oai_identifiers_3(self, load_entry_points, app, db):
         synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
         from_ = arrow.get("2020-01-01")
+        patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
+        patch.start()
         ids = synchronizer._get_oai_identifiers(from_=from_)
+        patch.stop()
         assert isinstance(ids, OAIItemIterator)
 
     def test_get_oai_identifiers_4(self, load_entry_points, app, db):
         synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
         from_ = arrow.get("2020-01-01")
         synchronizer.from_ = from_
+        patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
+        patch.start()
         ids = synchronizer._get_oai_identifiers()
+        patch.stop()
         assert isinstance(ids, OAIItemIterator)
 
     def test_get_identifiers(self, load_entry_points, app, db):
         synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
+        patch.start()
         ids = synchronizer._get_identifiers()
+        patch.stop()
         assert isinstance(ids, islice)
 
     def test_transform(self, load_entry_points, app, db):

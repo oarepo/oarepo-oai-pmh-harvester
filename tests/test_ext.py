@@ -1,3 +1,4 @@
+from typing import Callable
 from unittest import mock
 
 from invenio_records import Record
@@ -18,9 +19,6 @@ class TestExt:
         synchronizers = providers[keys[0]].synchronizers
         assert isinstance(synchronizers, dict)
         assert isinstance(list(synchronizers.values())[0], OAISynchronizer)
-
-    # def test_run(self, load_entry_points, app, db):
-    #     current_oai_client.run()
 
     def test_run_synchronizer(self, load_entry_points, app, db):
         patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
@@ -91,3 +89,7 @@ class TestExt:
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)
         assert record["title"] == "Testovací záznam"
+
+    def test_load_ep(self, load_entry_points, app, db):
+        res = current_oai_client.endpoint_handlers
+        assert isinstance(res["uk"]["xoai"], Callable)
