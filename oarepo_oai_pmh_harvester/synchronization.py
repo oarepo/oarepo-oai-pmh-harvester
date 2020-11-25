@@ -315,10 +315,10 @@ class OAISynchronizer:
         return parser(xml_etree)
 
     def create_record(self, data):
-        # TODO: dodělat případ, kdy record má již přidělený PID (import z nušlu)
-        minter = self.get_minter(data)
-        record_class = self.get_record_class(data)
-        indexer_class = self.get_indexer_class(data)
+        endpoint_config = self.get_endpoint_config(data)
+        minter = self.get_minter(data, endpoint_config=endpoint_config)
+        record_class = self.get_record_class(data, endpoint_config=endpoint_config)
+        indexer_class = self.get_indexer_class(data, endpoint_config=endpoint_config)
 
         # Create uuid for record
         record_uuid = uuid.uuid4()
@@ -389,25 +389,29 @@ class OAISynchronizer:
             self.default_endpoint)
         return endpoint_config
 
-    def get_minter(self, data=None):
-        endpoint_config = self.get_endpoint_config(data)
+    def get_minter(self, data=None, endpoint_config=None):
+        if not endpoint_config:
+            endpoint_config = self.get_endpoint_config(data)
         minter_name = endpoint_config["pid_minter"]
         return current_pidstore.minters.get(minter_name)
 
-    def get_fetcher(self, data=None):
-        endpoint_config = self.get_endpoint_config(data)
+    def get_fetcher(self, data=None, endpoint_config=None):
+        if not endpoint_config:
+            endpoint_config = self.get_endpoint_config(data)
         fetcher_name = endpoint_config["pid_fetcher"]
         return current_pidstore.fetchers.get(fetcher_name)
 
-    def get_record_class(self, data=None):
-        endpoint_config = self.get_endpoint_config(data)
+    def get_record_class(self, data=None, endpoint_config=None):
+        if not endpoint_config:
+            endpoint_config = self.get_endpoint_config(data)
         record_class = endpoint_config["record_class"]
         return obj_or_import_string(record_class)
 
-    def get_indexer_class(self, data=None):
-        endpoint_config = self.get_endpoint_config(data)
-        record_class = endpoint_config["indexer_class"]
-        return obj_or_import_string(record_class)
+    def get_indexer_class(self, data=None, endpoint_config=None):
+        if not endpoint_config:
+            endpoint_config = self.get_endpoint_config(data)
+        indexer_class = endpoint_config.get("indexer_class", 'invenio_indexer.api.RecordIndexer')
+        return obj_or_import_string(indexer_class)
 
     def restart_counters(self):
         self.deleted = 0
