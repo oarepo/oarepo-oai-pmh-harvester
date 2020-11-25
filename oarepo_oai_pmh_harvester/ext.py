@@ -67,8 +67,11 @@ class OArepoOAIClientState(metaclass=Singleton):
 
     def load_endpoints(self):
         res = {}
-        res.update(self.app.config.get("RECORDS_REST_ENDPOINTS", {}))
-        res.update(self.app.config.get("RECORDS_DRAFT_ENDPOINTS", {}))
+        draft_endpoints = self.app.config.get("RECORDS_DRAFT_ENDPOINTS")
+        if draft_endpoints:
+            res.update(self.app.config["RECORDS_REST_ENDPOINTS"].endpoints)
+        else:
+            res.update(self.app.config.get("RECORDS_REST_ENDPOINTS", {}))
         self._endpoints = res
 
     def _load_rules(self):
