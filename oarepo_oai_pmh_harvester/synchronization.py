@@ -325,7 +325,7 @@ class OAISynchronizer:
         # Create persistent identifier
         pid = minter(record_uuid, data=data)
         # Create record
-        record = record_class.create(data, id_=record_uuid)
+        record = record_class.create(data, id_=pid.object_uuid)
 
         db.session.commit()
 
@@ -373,19 +373,26 @@ class OAISynchronizer:
             indexer_class().delete(record)
 
     def get_endpoint_config(self, data):
-        end_point_name = None
+        endpoint_name = None
         if not data:
             data = {}
         if self.endpoint_mapping:
-            end_point_name = self.endpoint_mapping["mapping"].get(
+            endpoint_name = self.endpoint_mapping["mapping"].get(
                 data.get(self.endpoint_mapping["field_name"]))
-        if not end_point_name and self.endpoint_handler:
+        if not endpoint_name and self.endpoint_handler:
             provider = self.endpoint_handler.get(self.provider_code)
             if provider:
                 handler = provider.get(self.metadata_prefix)
                 if handler:
-                    end_point_name = handler(data)
-        endpoint_config = self.endpoints.get(end_point_name) or self.endpoints.get(
+                    endpoint_name = handler(data)
+        draft_configs = current_app.config.get("RECORDS_DRAFT_ENDPOINTS")
+        if draft_configs:
+            draft_endpoint_config = draft_configs.get(endpoint_name)
+            if draft_endpoint_config:
+                draft_endpoint_name = draft_endpoint_config.get("draft")
+                if draft_endpoint_name:
+                    endpoint_name = draft_endpoint_name
+        endpoint_config = self.endpoints.get(endpoint_name) or self.endpoints.get(
             self.default_endpoint)
         return endpoint_config
 
