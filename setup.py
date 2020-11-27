@@ -66,6 +66,9 @@ setup(
         'invenio_base.api_apps': [
             'oarepo_oai_pmh_harvester = oarepo_oai_pmh_harvester.ext:OArepoOAIClient',
         ],
+        'invenio_base.apps': [
+            'oarepo_records_draft = oarepo_oai_pmh_harvester.ext:OArepoOAIClient'
+        ]
     },
     extras_require=extras_require,
     install_requires=install_requires,
