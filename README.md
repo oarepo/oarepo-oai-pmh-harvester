@@ -36,6 +36,7 @@ OAREPO_OAI_PROVIDERS={
                         "oai_endpoint": "https://example.com/oai/",
                         "set": "example_set",
                         "metadata_prefix": "oai_dc",
+                        "bulk": True,
                         "from": "latest",
                         "unhandled_paths": ["/dc/unhandled"],
                         "default_endpoint": "recid",
@@ -44,7 +45,7 @@ OAREPO_OAI_PROVIDERS={
                             "mapping": {
                                 "record": "recid"
                             }
-                        }
+                        },
                     }
                 ]
             },
@@ -57,6 +58,8 @@ OAREPO_OAI_PROVIDERS={
     * **oai_endpoint**: URL adress
     * **set**: name of OAI set
     * **metadata_prefix**: name of OAI metadata prefix
+    * **bulk**: if bulk is True, the records are requested by ListRecords method (OAI-PMH protocol), if bulk is False
+     every record is requested by GetRecord method(OAI-PMH protocol). Default is True.
     * **from**: the date from which the synchronization starts, it is optional parameter with three options:
     
         1. **latest**: checks for changes since the last sync

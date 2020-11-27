@@ -93,3 +93,7 @@ class TestExt:
     def test_load_ep(self, load_entry_points, app, db):
         res = current_oai_client.endpoint_handlers
         assert isinstance(res["uk"]["xoai"], Callable)
+
+    def test_print_prividers(self, load_entry_points, app, db):
+        for k, v in current_oai_client.providers:
+            print(k, v)
