@@ -45,7 +45,8 @@ class OAISynchronizer:
             endpoint_mapping=None,
             pid_field=None,
             from_: str = None,
-            endpoint_handler: dict = None
+            endpoint_handler: dict = None,
+            bulk: bool = True
     ):
 
         # Counters
@@ -79,6 +80,7 @@ class OAISynchronizer:
         if from_:
             self.from_ = from_
         self.endpoint_handler = endpoint_handler
+        self.bulk = bulk
 
     @property
     def from_(self):
@@ -146,9 +148,27 @@ class OAISynchronizer:
         """
         oai_logger.info(f"OAI harvester on endpoint: {self.oai_endpoint} has started!")
 
-        identifiers = self._get_identifiers(identifiers, start_id)
-        for idx, identifier in enumerate(identifiers, start=start_id):
-            self.record_handling(idx, start_oai, break_on_error, identifier)
+        if not self.bulk:
+            identifiers = self._get_identifiers(identifiers, start_id)
+            for idx, identifier in enumerate(identifiers, start=start_id):
+                self.record_handling(idx, start_oai, break_on_error, identifier)
+        else:
+            records = self._get_records_iterator(start_id)
+            for idx, record in enumerate(records, start=start_id):
+                self.record_handling(idx, start_oai, break_on_error, xml=record.xml)
+
+    def _get_records_iterator(self, start_id: int = 0):
+        if self.from_:
+            records = self.sickle.ListRecords(
+                **{
+                    "metadataPrefix": self.metadata_prefix,
+                    "set": self.set_,
+                    "from": self.from_.format("YYYY-MM-DD")
+                }
+            )
+        else:
+            records = self.sickle.ListRecords(metadataPrefix=self.metadata_prefix, set=self.set_)
+        return islice(records, start_id, None)
 
     def record_handling(self, idx, start_oai: str = None, break_on_error: bool = True,
                         identifier: Header = None,
@@ -223,6 +243,8 @@ class OAISynchronizer:
         return identifiers
 
     def _delete(self, oai_rec):
+        if not oai_rec:
+            return
         self.delete_record(oai_rec)
         self.deleted += 1
         oai_logger.info(f"Identifier '{oai_rec.oai_identifier}' has been marked as deleted")
@@ -355,6 +377,8 @@ class OAISynchronizer:
         return record
 
     def delete_record(self, oai_rec):
+        if not oai_rec:
+            return
         indexer_class = self.get_indexer_class()
 
         record = Record.get_record(oai_rec.id)

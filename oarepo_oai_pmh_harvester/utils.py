@@ -10,9 +10,9 @@ def infinite_dd():
 
 
 def get_oai_header_data(header: Header = None, xml: _Element = None):
-    if not (header or xml):
+    if not (header or xml):  # pragma: no cover
         raise Exception("Must provide header or xml")
-    if header and xml:
+    if header and xml:  # pragma: no cover
         raise Exception("You must provide only header or xml")
     if xml:
         header = Header(xml.find('.//' + get_namespace(xml) + 'header'))
