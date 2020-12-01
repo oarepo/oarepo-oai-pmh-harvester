@@ -175,27 +175,12 @@ class TestTransformer:
         }
         transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", })
         result = transformer.transform(record)
+        rulesExceptions = result["rulesExceptions"]
+        assert rulesExceptions is not None
+        assert "path" in rulesExceptions[0]
+        assert "phase" in rulesExceptions[0]
+        assert "exception" in rulesExceptions[0]
+        del result["rulesExceptions"]
         assert result == {
-            'rulesExceptions': [
-                {
-                    'element': 'blah',
-                    'exception': 'Traceback (most recent call last):\n'
-                                 '  File '
-                                 '"/home/semtex/GoogleDrive/Projekty/Pracovní/oarepo/oarepo-oai-pmh'
-                                 '-harvester/oarepo_oai_pmh_harvester/transformer.py", '
-                                 'line 95, in call_handlers\n'
-                                 '    ret = handler[phase](el=el, '
-                                 'paths=paths, results=results, '
-                                 'phase=phase,\n'
-                                 '  File '
-                                 '"/home/semtex/GoogleDrive/Projekty/Pracovní/oarepo/oarepo-oai-pmh'
-                                 '-harvester/tests/test_transformer.py", '
-                                 'line 157, in transform_handler_2\n'
-                                 '    raise Exception("Test exception")\n'
-                                 'Exception: Test exception\n',
-                    'path': '/spam2',
-                    'phase': 'pre'
-                }
-            ],
             'spam': {'spam1': 'ham'}
         }
