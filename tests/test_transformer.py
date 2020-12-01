@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pytest
 
 from oarepo_oai_pmh_harvester.transformer import OAITransformer
@@ -142,3 +144,43 @@ class TestTransformer:
         transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", })
         result = transformer.transform(record)
         assert result == {'spam': {'spam1': 'ham', 'spam2': 'blah'}}
+
+    def test_iter_json_6(self):
+        def transform_handler(el, **kwargs):
+            return {
+                "spam": {
+                    "spam1": el
+                }
+            }
+
+        def transform_handler_2(el, **kwargs):
+            raise Exception("Test exception")
+
+        record = {
+            "path": {
+                "to": {
+                    "field": "bla"
+                }
+            },
+            "spam": "ham",
+            "spam2": "blah"
+        }
+        rules = {
+            "/spam": {
+                "pre": transform_handler
+            },
+            "/spam2": {
+                "pre": transform_handler_2
+            }
+        }
+        transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", })
+        result = transformer.transform(record)
+        rulesExceptions = result["rulesExceptions"]
+        assert rulesExceptions is not None
+        assert "path" in rulesExceptions[0]
+        assert "phase" in rulesExceptions[0]
+        assert "exception" in rulesExceptions[0]
+        del result["rulesExceptions"]
+        assert result == {
+            'spam': {'spam1': 'ham'}
+        }

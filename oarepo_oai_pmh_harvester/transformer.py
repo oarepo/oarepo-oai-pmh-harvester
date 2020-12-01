@@ -1,3 +1,5 @@
+import traceback
+
 from oarepo_oai_pmh_harvester.utils import merge
 
 
@@ -89,8 +91,17 @@ class OAITransformer:
             handler = self.rules[path]
             if phase not in handler:
                 continue
-            ret = handler[phase](el=el, paths=paths, results=results, phase=phase, record=record,
-                                 **self.options)
+            try:
+                ret = handler[phase](el=el, paths=paths, results=results, phase=phase,
+                                     record=record,
+                                     **self.options)
+            except Exception:
+                exc = traceback.format_exc()
+                if not "rulesExceptions" in results[-1]:
+                    results[-1]["rulesExceptions"] = []
+                results[-1]["rulesExceptions"].append(
+                    {"path": path, "element": el, "phase": phase, "exception": exc})
+                return OAITransformer.PROCESSED
             assert ret is not None, f"Handler {handler[phase]} must not return None"
             if isinstance(ret, dict):
                 results[-1] = merge(results[-1], ret)

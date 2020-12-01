@@ -21,9 +21,6 @@ from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from oarepo_oai_pmh_harvester.models import (OAIRecord, OAIRecordExc, OAISync)
 from oarepo_oai_pmh_harvester.utils import get_oai_header_data
 
-oai_logger = logging.getLogger(__name__)
-oai_logger.setLevel(logging.DEBUG)
-
 
 class OAISynchronizer:
     """
@@ -146,7 +143,7 @@ class OAISynchronizer:
         :return:
         :rtype:
         """
-        oai_logger.info(f"OAI harvester on endpoint: {self.oai_endpoint} has started!")
+        print(f"OAI harvester on endpoint: {self.oai_endpoint} has started!")
 
         if not self.bulk:
             identifiers = self._get_identifiers(identifiers, start_id)
@@ -181,7 +178,7 @@ class OAISynchronizer:
             datestamp, deleted, oai_identifier = get_oai_header_data(identifier)
         else:
             datestamp, deleted, oai_identifier = get_oai_header_data(xml=xml)
-        oai_logger.info(f"{idx}. Record, OAI ID: '{oai_identifier}'")
+        print(f"{idx}. Record, OAI ID: '{oai_identifier}'")
         oai_rec = OAIRecord.get_record(oai_identifier)
         if not start_oai or oai_identifier == start_oai:  # pragma: no cover TODO: vyřešit
             # start_oai/není implemntováno
@@ -247,7 +244,7 @@ class OAISynchronizer:
             return
         self.delete_record(oai_rec)
         self.deleted += 1
-        oai_logger.info(f"Identifier '{oai_rec.oai_identifier}' has been marked as deleted")
+        print(f"Identifier '{oai_rec.oai_identifier}' has been marked as deleted")
 
     def _get_oai_identifiers(
             self,
@@ -286,7 +283,7 @@ class OAISynchronizer:
             our_datestamp = arrow.get(oai_rec.timestamp)
             oai_record_datestamp = arrow.get(datestamp)
             if our_datestamp >= oai_record_datestamp:
-                oai_logger.info(f'Record with oai_identifier "{oai_identifier}" already exists')
+                print(f'Record with oai_identifier "{oai_identifier}" already exists')
                 return
         if not xml:
             xml = self.get_xml(oai_identifier)
@@ -304,14 +301,14 @@ class OAISynchronizer:
             )
             self.created += 1
             db.session.add(oai_rec)
-            oai_logger.info(
+            print(
                 f"Identifier '{oai_identifier}' has been created and '{record.id}' has been "
                 f"assigned as a UUID")
         else:
             record = self.update_record(oai_rec, transformed)
             self.modified += 1
             oai_rec.modification_sync_id = self.oai_sync.id
-            oai_logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
+            print(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
         oai_rec.last_sync_id = self.oai_sync.id
         oai_rec.timestamp = arrow.get(datestamp).datetime
         return record
