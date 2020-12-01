@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pytest
 
 from oarepo_oai_pmh_harvester.transformer import OAITransformer
@@ -142,3 +144,58 @@ class TestTransformer:
         transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", })
         result = transformer.transform(record)
         assert result == {'spam': {'spam1': 'ham', 'spam2': 'blah'}}
+
+    def test_iter_json_6(self):
+        def transform_handler(el, **kwargs):
+            return {
+                "spam": {
+                    "spam1": el
+                }
+            }
+
+        def transform_handler_2(el, **kwargs):
+            raise Exception("Test exception")
+
+        record = {
+            "path": {
+                "to": {
+                    "field": "bla"
+                }
+            },
+            "spam": "ham",
+            "spam2": "blah"
+        }
+        rules = {
+            "/spam": {
+                "pre": transform_handler
+            },
+            "/spam2": {
+                "pre": transform_handler_2
+            }
+        }
+        transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", })
+        result = transformer.transform(record)
+        assert result == {
+            'rulesExceptions': [
+                {
+                    'element': 'blah',
+                    'exception': 'Traceback (most recent call last):\n'
+                                 '  File '
+                                 '"/home/semtex/GoogleDrive/Projekty/Pracovní/oarepo/oarepo-oai-pmh'
+                                 '-harvester/oarepo_oai_pmh_harvester/transformer.py", '
+                                 'line 95, in call_handlers\n'
+                                 '    ret = handler[phase](el=el, '
+                                 'paths=paths, results=results, '
+                                 'phase=phase,\n'
+                                 '  File '
+                                 '"/home/semtex/GoogleDrive/Projekty/Pracovní/oarepo/oarepo-oai-pmh'
+                                 '-harvester/tests/test_transformer.py", '
+                                 'line 157, in transform_handler_2\n'
+                                 '    raise Exception("Test exception")\n'
+                                 'Exception: Test exception\n',
+                    'path': '/spam2',
+                    'phase': 'pre'
+                }
+            ],
+            'spam': {'spam1': 'ham'}
+        }
