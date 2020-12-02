@@ -21,3 +21,17 @@ def endpoint_handler(provider, parser):
         current_oai_client.add_endpoint_handler(func, provider, parser)
 
     return wrapper
+
+
+def pre_processor(provider, parser):
+    def wrapper(func):
+        current_oai_client.add_pre_processor(func, provider, parser)
+
+    return wrapper
+
+
+def post_processor(provider, parser):
+    def wrapper(func):
+        current_oai_client.add_post_processor(func, provider, parser)
+
+    return wrapper
