@@ -111,6 +111,8 @@ Successful data collection requires several steps, which consist of:
 1. **Configuration** (see configuration chapter)
 1. **Parser**: function that converts XML into JSON
 1. **Rules**: functions that convert raw JSON (from parser) into final JSON
+1. **Processors (optional)**: two type of function (pre and post), that enable change data either before
+ transformation (pre_processor) or after transformation (post_processor)
 
 ### Parsers
 
@@ -196,6 +198,58 @@ def rule(el, **kwargs):
     value_ = el[0]["value"][0]
     return {"title": value_}
 ```
+### Processors
+The downloaded XML is first converted to JSON and then this JSON is remapped to JSON according to our model
+. Sometimes it is necessary to modify the input or output JSON and the **Processors** are used for this purpose
+. There are two types of processors pre and post.
+
+#### Pre-processor
+It is used for updating data before transformation. Pre processor is registered similarly as other components. It is
+ necessary to register entry point and mark function with decorator.
+ 
+  ```python
+entry_points={
+        'oarepo_oai_pmh_harvester.pre_processors': [
+            '<name> = example.pre_processors',
+        ],
+    }
+```
+
+ Example of a pre_processor:
+
+```python
+from oarepo_oai_pmh_harvester.decorators import pre_processor
+
+
+@pre_processor("provider_name", "metadata_prefix")
+def pre_processor_1(data):
+    data = data.update({"some_change": "change"})
+    return data
+```
+
+#### Post-processor
+It is used for updating data after transformation.
+ 
+  ```python
+entry_points={
+        'oarepo_oai_pmh_harvester.post_processors': [
+            '<name> = example.post_processors',
+        ],
+    }
+```
+
+ Example of a pre_processor:
+
+```python
+from oarepo_oai_pmh_harvester.decorators import post_processor
+
+
+@post_processor("provider_name", "metadata_prefix")
+def pre_processor_1(data):
+    data = data.update({"some_change_2": "change_2"})
+    return data
+```
+ 
 
 ### CLI
 If all components (config, parser, rules) are set, the program can be run via the CLI:
