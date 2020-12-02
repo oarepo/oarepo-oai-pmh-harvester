@@ -172,10 +172,16 @@ def load_entry_points():
     entry_point = pkg_resources.EntryPoint.parse('xoai = example.parser', dist=distribution)
     entry_point2 = pkg_resources.EntryPoint.parse('rule = example.rules.uk.rule', dist=distribution)
     entry_point3 = pkg_resources.EntryPoint.parse('handler = example.mapping', dist=distribution)
+    entry_point4 = pkg_resources.EntryPoint.parse('pre_processor = example.pre_processors',
+                                                  dist=distribution)
+    entry_point5 = pkg_resources.EntryPoint.parse('post_processor = example.post_processors',
+                                                  dist=distribution)
     distribution._ep_map = {
         'oarepo_oai_pmh_harvester.parsers': {'xoai': entry_point},
         'oarepo_oai_pmh_harvester.rules': {'rule': entry_point2},
-        'oarepo_oai_pmh_harvester.mappings': {'handler': entry_point3}
+        'oarepo_oai_pmh_harvester.mappings': {'handler': entry_point3},
+        'oarepo_oai_pmh_harvester.pre_processors': {'pre_processor': entry_point4},
+        'oarepo_oai_pmh_harvester.post_processors': {'post_processor': entry_point5},
     }
     pkg_resources.working_set.add(distribution)
 

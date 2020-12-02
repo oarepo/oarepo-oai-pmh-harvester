@@ -25,7 +25,8 @@ class Singleton(type):
 class OArepoOAIClientState(metaclass=Singleton):
     def __init__(self, app, _rules: defaultdict = None, _parsers: defaultdict = None,
                  _providers: dict = None, _synchronizers=None, transformer_class=OAITransformer,
-                 _endpoints=None, endpoint_handlers: dict = None):
+                 _endpoints=None, endpoint_handlers: dict = None, _pre_processors: dict = None,
+                 _post_processors: dict = None):
         self.app = app
         self._rules = _rules
         self._parsers = _parsers
@@ -34,6 +35,8 @@ class OArepoOAIClientState(metaclass=Singleton):
         self._synchronizers = _synchronizers
         self.transformer_class = transformer_class
         self._endpoints = _endpoints
+        self._pre_processors = _pre_processors
+        self._post_processors = _post_processors
 
     @property
     def providers(self):
@@ -54,16 +57,28 @@ class OArepoOAIClientState(metaclass=Singleton):
         return self._parsers
 
     @property
+    def endpoints(self):
+        if not self._endpoints:
+            self.load_endpoints()
+        return self._endpoints
+
+    @property
     def endpoint_handlers(self):
         if self._endpoint_handlers is None:
             self._load_endpoint_handlers()
         return self._endpoint_handlers
 
     @property
-    def endpoints(self):
-        if not self._endpoints:
-            self.load_endpoints()
-        return self._endpoints
+    def pre_processors(self):
+        if self._pre_processors is None:
+            self._load_pre_processors()
+        return self._pre_processors
+
+    @property
+    def post_processors(self):
+        if self._post_processors is None:
+            self._load_post_processors()
+        return self._post_processors
 
     def load_endpoints(self):
         res = {}
@@ -84,6 +99,14 @@ class OArepoOAIClientState(metaclass=Singleton):
 
     def _load_endpoint_handlers(self):
         for ep in iter_entry_points('oarepo_oai_pmh_harvester.mappings'):
+            ep.load()
+
+    def _load_pre_processors(self):
+        for ep in iter_entry_points('oarepo_oai_pmh_harvester.pre_processors'):
+            ep.load()
+
+    def _load_post_processors(self):
+        for ep in iter_entry_points('oarepo_oai_pmh_harvester.post_processors'):
             ep.load()
 
     def create_providers(self):
@@ -107,15 +130,25 @@ class OArepoOAIClientState(metaclass=Singleton):
             self._rules = infinite_dd()
         self._rules[provider][parser_name][path][phase] = func
 
+    def add_parser(self, func, name):
+        if not self._parsers:
+            self._parsers = infinite_dd()
+        self._parsers[name] = func
+
     def add_endpoint_handler(self, func, provider, parser_name):
         if not self._endpoint_handlers:
             self._endpoint_handlers = infinite_dd()
         self._endpoint_handlers[provider][parser_name] = func
 
-    def add_parser(self, func, name):
-        if not self._parsers:
-            self._parsers = infinite_dd()
-        self._parsers[name] = func
+    def add_pre_processor(self, func, provider, parser_name):
+        if not self._pre_processors:
+            self._pre_processors = defaultdict(lambda: defaultdict(list))
+        self._pre_processors[provider][parser_name].append(func)
+
+    def add_post_processor(self, func, provider, parser_name):
+        if not self._post_processors:
+            self._post_processors = defaultdict(lambda: defaultdict(list))
+        self._post_processors[provider][parser_name].append(func)
 
     def create_synchronizer(self, provider_code, config):
         return OAISynchronizer(
@@ -133,7 +166,11 @@ class OArepoOAIClientState(metaclass=Singleton):
             endpoint_mapping=config.get("endpoint_mapping", {}),
             from_=config.get("from"),
             endpoint_handler=self.endpoint_handlers,
-            bulk=config.get("bulk", True)
+            bulk=config.get("bulk", True),
+            pre_processors=self.pre_processors[provider_code][
+                config["metadata_prefix"]] if self.pre_processors else None,
+            post_processors=self.post_processors[provider_code][
+                config["metadata_prefix"]] if self.post_processors else None
         )
 
     def run(self, providers_codes: List[str] = None, synchronizers_codes: List[str] = None,

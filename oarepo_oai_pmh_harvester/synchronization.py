@@ -43,7 +43,9 @@ class OAISynchronizer:
             pid_field=None,
             from_: str = None,
             endpoint_handler: dict = None,
-            bulk: bool = True
+            bulk: bool = True,
+            pre_processors: dict = None,
+            post_processors: dict = None
     ):
 
         # Counters
@@ -78,6 +80,8 @@ class OAISynchronizer:
             self.from_ = from_
         self.endpoint_handler = endpoint_handler
         self.bulk = bulk
+        self.pre_processors = pre_processors
+        self.post_processors = post_processors
 
     @property
     def from_(self):
@@ -288,7 +292,13 @@ class OAISynchronizer:
         if not xml:
             xml = self.get_xml(oai_identifier)
         parsed = self.parse(xml)
+        if self.pre_processors:
+            for processor in self.pre_processors:
+                parsed = processor(parsed)
         transformed = self.transform(parsed)
+        if self.post_processors:
+            for processor in self.post_processors:
+                transformed = processor(transformed)
         transformed.update(self.constant_fields)
 
         if oai_rec is None:
