@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List
+from typing import List, Union
 
 from pkg_resources import iter_entry_points
 
@@ -215,6 +215,12 @@ class OArepoOAIClientState(metaclass=Singleton):
         provider = self.providers[provider]
         synchronizer = provider.synchronizers[synchronizer]
         synchronizer.run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
+
+    def run_synchronizer_by_ids(self, oai_id: Union[str, List[str]], provider: str,
+                                synchronizer: str, break_on_error: bool = True):
+        provider = self.providers[provider]
+        synchronizer = provider.synchronizers[synchronizer]
+        synchronizer.run(break_on_error=break_on_error, oai_id=oai_id)
 
 
 class OArepoOAIClient:
