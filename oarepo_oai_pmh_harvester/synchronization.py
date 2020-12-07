@@ -1,8 +1,7 @@
-import logging
 import traceback
 import uuid
 from itertools import islice
-from typing import Callable, List
+from typing import Callable, List, Union
 
 import arrow
 from arrow import Arrow
@@ -101,7 +100,8 @@ class OAISynchronizer:
         else:
             self._from = None
 
-    def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True):
+    def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True,
+            oai_id: Union[str, List[str]] = None):
         """
 
         :return:
@@ -116,8 +116,20 @@ class OAISynchronizer:
             db.session.add(self.oai_sync)
         db.session.commit()
         try:
-            self.synchronize(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
-            self.update_oai_sync("ok")
+            if oai_id:
+                if isinstance(oai_id, str):
+                    oai_ids = [oai_id]
+                elif isinstance(oai_id, list):
+                    oai_ids = oai_id
+                else:
+                    raise Exception("OAI identifier must be string or list of strings")
+                identifiers = self._get_oai_identifiers(identifiers_list=oai_ids)
+                for idx, identifier in enumerate(identifiers, start=start_id):
+                    self.record_handling(idx, start_oai, break_on_error, identifier)
+                self.update_oai_sync("ok")
+            else:
+                self.synchronize(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
+                self.update_oai_sync("ok")
         except:
             self.update_oai_sync("failed")
             raise
