@@ -81,6 +81,7 @@ class OAISynchronizer:
         self.bulk = bulk
         self.pre_processors = pre_processors
         self.post_processors = post_processors
+        self.overwrite = False
 
     @property
     def from_(self):
@@ -101,12 +102,13 @@ class OAISynchronizer:
             self._from = None
 
     def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True,
-            oai_id: Union[str, List[str]] = None):
+            oai_id: Union[str, List[str]] = None, overwrite: bool = False):
         """
 
         :return:
         :rtype:
         """
+        self.overwrite = overwrite
         self.restart_counters()
         with db.session.begin_nested():
             self.oai_sync = OAISync(
@@ -296,11 +298,12 @@ class OAISynchronizer:
 
     def create_or_update(self, oai_identifier, datestamp: str, oai_rec=None, xml: _Element = None):
         if oai_rec:
-            our_datestamp = arrow.get(oai_rec.timestamp)
-            oai_record_datestamp = arrow.get(datestamp)
-            if our_datestamp >= oai_record_datestamp:
-                print(f'Record with oai_identifier "{oai_identifier}" already exists')
-                return
+            if not self.overwrite:
+                our_datestamp = arrow.get(oai_rec.timestamp)
+                oai_record_datestamp = arrow.get(datestamp)
+                if our_datestamp >= oai_record_datestamp:
+                    print(f'Record with oai_identifier "{oai_identifier}" already exists')
+                    return
         if not xml:
             xml = self.get_xml(oai_identifier)
         parsed = self.parse(xml)
@@ -377,12 +380,14 @@ class OAISynchronizer:
         return record, pid
 
     def update_record(self, oai_rec, data):
-        indexer_class = self.get_indexer_class()
+        endpoint_config = self.get_endpoint_config(data)
+        indexer_class = self.get_indexer_class(data, endpoint_config=endpoint_config)
+        record_class = self.get_record_class(data, endpoint_config=endpoint_config)
         fetcher = self.get_fetcher(data)
         try:
-            record = Record.get_record(oai_rec.id)
+            record = record_class.get_record(oai_rec.id)
         except NoResultFound:
-            record = Record.get_record(oai_rec.id, with_deleted=True)
+            record = record_class.get_record(oai_rec.id, with_deleted=True)
             record.revert(-2)
             record.update(record.model.json)
         fetched_pid = fetcher(oai_rec.id, dict(record))
