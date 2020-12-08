@@ -261,17 +261,31 @@ Usage: invenio oai run [OPTIONS]
   OAREPO_OAI_PROVIDERS environment variable.
 
 Options:
-  -p, --provider TEXT      Code name of provider, defined in invenio.cfg
-  -s, --synchronizer TEXT  Code name of OAI-PMH setup, defined in invenio.cfg
-  --break / --no-break     Break on error, if true program is terminated when
-                           record cause error
+  -p, --provider TEXT           Code name of provider, defined in invenio.cfg
+  -s, --synchronizer TEXT       Code name of OAI-PMH setup, defined in
+                                invenio.cfg
 
-  -o, --start_oai TEXT     OAI identifier from where synchronization begin
-  -i, --start_id INTEGER   The serial number from which the synchronization
-                           starts. This is useful if for some reason the
-                           previous synchronization was interrupted at some
-                           point.
+  --break / --no-break          Break on error, if true program is terminated
+                                when record cause error
 
-  --help                   Show this message and exit.
+  -o, --start_oai TEXT          OAI identifier from where synchronization
+                                begin
+
+  -i, --start_id INTEGER        The serial number from which the
+                                synchronization starts. This is useful if for
+                                some reason the previous synchronization was
+                                interrupted at some point.
+
+  -a, --oai TEXT                OAI identifier that will be fetched and
+                                synchronized. The field is repeatable. If this
+                                option is used, the provider and synchronizer
+                                must be specified and star_id or start_oai
+                                must not be used
+
+  --overwrite / --no-overwrite  Overwriter record with the same timestamp.
+                                Default option is false
+
+  --help                        Show this message and exit.
+
 
 ```

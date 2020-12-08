@@ -31,8 +31,12 @@ def oai():
                    "repeatable. If this option is used, the provider and synchronizer must be "
                    "specified and "
                    "star_id or start_oai must not be used")
+@click.option('--overwrite/--no-overwrite', 'overwrite',
+              help="Overwriter record with the same timestamp. Default option is false",
+              default=False
+              )
 @cli.with_appcontext
-def run(provider, synchronizer, break_on_error, start_oai, start_id, oai):
+def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwrite):
     """
     Starts harvesting the resources set in invenio.cfg through the OAREPO_OAI_PROVIDERS
     environment variable.
@@ -44,10 +48,11 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai):
         provider = provider[0]
         synchronizer = synchronizer[0]
         current_oai_client.run_synchronizer_by_ids(list(oai), provider, synchronizer,
-                                                   break_on_error=break_on_error)
+                                                   break_on_error=break_on_error,
+                                                   overwrite=overwrite)
     else:
         assert l == 0, " If OAI option is used, the provider and synchronizer must be " \
-                          "specified and star_id or start_oai must not be used"
+                       "specified and star_id or start_oai must not be used"
         if not provider:
             provider = None
         else:
