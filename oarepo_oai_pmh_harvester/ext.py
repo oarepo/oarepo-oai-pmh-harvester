@@ -175,7 +175,7 @@ class OArepoOAIClientState(metaclass=Singleton):
 
     def run(self, providers_codes: List[str] = None, synchronizers_codes: List[str] = None,
             break_on_error: bool = True, start_oai: str = None,
-            start_id: int = 0):
+            start_id: int = 0, overwrite: bool = False):
         if not providers_codes:
             providers_codes = [_ for _ in self.providers.keys()]
         if len(providers_codes) > 1:
@@ -205,22 +205,25 @@ class OArepoOAIClientState(metaclass=Singleton):
         else:
             raise Exception("Something unexpected happened.")
 
-    def _run_provider(self, provider: str, break_on_error: bool = True):
+    def _run_provider(self, provider: str, break_on_error: bool = True, overwrite: bool = False):
         provider_ = self.providers[provider]
         for synchronizer in provider_.synchronizers.keys():
-            self._run_synchronizer(provider, synchronizer, break_on_error=break_on_error)
+            self._run_synchronizer(provider, synchronizer, break_on_error=break_on_error,
+                                   overwrite=overwrite)
 
     def _run_synchronizer(self, provider: str, synchronizer: str, start_oai: str = None,
-                          start_id: int = 0, break_on_error: bool = True):
+                          start_id: int = 0, break_on_error: bool = True, overwrite: bool = False):
         provider = self.providers[provider]
         synchronizer = provider.synchronizers[synchronizer]
-        synchronizer.run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
+        synchronizer.run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error,
+                         overwrite=overwrite)
 
     def run_synchronizer_by_ids(self, oai_id: Union[str, List[str]], provider: str,
-                                synchronizer: str, break_on_error: bool = True):
+                                synchronizer: str, break_on_error: bool = True,
+                                overwrite: bool = False):
         provider = self.providers[provider]
         synchronizer = provider.synchronizers[synchronizer]
-        synchronizer.run(break_on_error=break_on_error, oai_id=oai_id)
+        synchronizer.run(break_on_error=break_on_error, oai_id=oai_id, overwrite=overwrite)
 
 
 class OArepoOAIClient:
