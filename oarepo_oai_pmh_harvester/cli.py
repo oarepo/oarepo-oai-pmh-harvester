@@ -36,8 +36,15 @@ def oai():
               help="Overwriter record with the same timestamp. Default option is false",
               default=False
               )
+@click.option('--bulk/--no-bulk', 'bulk',
+              help="Specifies whether a bulk request (ListRecords) is called or a request is "
+                   "called individually (GetRecord). Bulk processing is suitable for "
+                   "synchronizing the entire set, and contrary for individual records."
+                   "Option is working only for -a/--oai option, otherwise bulk is set in config file",
+              default=True
+              )
 @cli.with_appcontext
-def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwrite):
+def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwrite, bulk):
     """
     Starts harvesting the resources set in invenio.cfg through the OAREPO_OAI_PROVIDERS
     environment variable.
@@ -48,9 +55,14 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwr
         assert len(synchronizer) <= 1, "OAI option is only for one provider and synchronizer"
         provider = provider[0]
         synchronizer = synchronizer[0]
-        current_oai_client.run_synchronizer_by_ids(list(oai), provider, synchronizer,
-                                                   break_on_error=break_on_error,
-                                                   overwrite=overwrite)
+        current_oai_client.run_synchronizer_by_ids(
+            list(oai),
+            provider,
+            synchronizer,
+            break_on_error=break_on_error,
+            overwrite=overwrite,
+            bulk=bulk
+        )
     else:
         assert l == 0, " If OAI option is used, the provider and synchronizer must be " \
                        "specified and star_id or start_oai must not be used"
