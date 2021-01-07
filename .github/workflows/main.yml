@@ -17,11 +17,12 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        python-version: [ 3.8 ]
         include:
-          - EXTRAS: "postgresql,tests"
+          - python-version: 3.8
+            EXTRAS: "postgresql,tests"
             SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://postgres@localhost:5432/invenio"
-          - EXTRAS: "sqlite,tests"
+          - python-version: 3.8
+            EXTRAS: "sqlite,tests"
 
     steps:
       - uses: actions/checkout@v2
@@ -51,7 +52,7 @@ jobs:
           stack-version: 7.6.0
       - name: Before install
         env:
-          EXTRAS: $ {{matrix.EXTRAS}}
+          EXTRAS: ${{matrix.EXTRAS}}
         run: |
           pip install --upgrade pip setuptools py
           pip install twine wheel coveralls requirements-builder pip-tools
@@ -63,12 +64,12 @@ jobs:
           pip install -r .travis-release-requirements.txt
       - name: Test with pytest
         env:
-          SQLALCHEMY_DATABASE_URI: $ {{matrix.SQLALCHEMY_DATABASE_URI}}
+          SQLALCHEMY_DATABASE_URI: ${{matrix.SQLALCHEMY_DATABASE_URI}}
         run: |
           "./run-tests.sh"
-#      - name: Check manifest
-#        run: |
-#          check-manifest
+      #      - name: Check manifest
+      #        run: |
+      #          check-manifest
       #
       #    - name: Coveralls
       #      uses: AndreMiras/coveralls-python-action@develop
