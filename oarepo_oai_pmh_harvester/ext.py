@@ -152,6 +152,7 @@ class OArepoOAIClientState(metaclass=Singleton):
 
     def create_synchronizer(self, provider_code, config):
         return OAISynchronizer(
+            name=config["name"],
             provider_code=provider_code,
             metadata_prefix=config["metadata_prefix"],
             set_=config["set"],

@@ -4,7 +4,6 @@ from itertools import islice
 from typing import Callable, List, Union
 
 import arrow
-from arrow import Arrow
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
@@ -28,6 +27,7 @@ class OAISynchronizer:
 
     def __init__(
             self,
+            name,
             provider_code,
             oai_endpoint,
             metadata_prefix,
@@ -35,7 +35,6 @@ class OAISynchronizer:
             constant_fields: dict = None,
             parser: Callable = None,
             transformer=None,
-            oai_identifiers: List[str] = None,
             endpoints=None,
             default_endpoint: str = "recid",
             endpoint_mapping=None,
@@ -58,6 +57,7 @@ class OAISynchronizer:
             self.pid_field = current_app.config.get('PIDSTORE_RECID_FIELD', "recid")
         else:
             self.pid_field = pid_field
+        self.name = name
         self.provider_code = provider_code
         self.metadata_prefix = metadata_prefix
         self.oai_endpoint = oai_endpoint
@@ -65,7 +65,6 @@ class OAISynchronizer:
         self.sickle = Sickle(self.oai_endpoint)
         self.parser = parser
         self.transformer = transformer
-        self.oai_identifiers = oai_identifiers
         self.endpoints = endpoints
         self.default_endpoint = default_endpoint
         self.endpoint_mapping = endpoint_mapping
@@ -94,7 +93,7 @@ class OAISynchronizer:
             if last_sync:
                 self._from = arrow.get(last_sync)
         elif value is not None:
-            if isinstance(value, Arrow):
+            if isinstance(value, arrow.Arrow):
                 self._from = value
             else:
                 self._from = arrow.get(value)
@@ -113,6 +112,7 @@ class OAISynchronizer:
         with db.session.begin_nested():
             self.oai_sync = OAISync(
                 provider_code=self.provider_code,  # TODO: nahradit provider.code
+                synchronizer_code=self.name,
                 sync_start=arrow.utcnow().datetime,  # datetime.datetime.utcnow(),
                 status="active")
             db.session.add(self.oai_sync)
@@ -125,12 +125,11 @@ class OAISynchronizer:
                     oai_ids = oai_id
                 else:
                     raise Exception("OAI identifier must be string or list of strings")
-                identifiers = self._get_oai_identifiers(identifiers_list=oai_ids)
-                for idx, identifier in enumerate(identifiers, start=start_id):
-                    self.record_handling(idx, start_oai, break_on_error, identifier)
+                self.synchronize(identifiers=oai_ids, break_on_error=break_on_error)
                 self.update_oai_sync("ok")
             else:
-                self.synchronize(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error)
+                self.synchronize(start_oai=start_oai, start_id=start_id,
+                                 break_on_error=break_on_error)
                 self.update_oai_sync("ok")
         except:
             self.update_oai_sync("failed")
@@ -168,11 +167,12 @@ class OAISynchronizer:
             for idx, identifier in enumerate(identifiers, start=start_id):
                 self.record_handling(idx, start_oai, break_on_error, identifier)
         else:
-            records = self._get_records_iterator(start_id)
+            records = self._get_records_iterator(start_id, list_identifiers=identifiers)
+            print("Waiting for server...")
             for idx, record in enumerate(records, start=start_id):
                 self.record_handling(idx, start_oai, break_on_error, xml=record.xml)
 
-    def _get_records_iterator(self, start_id: int = 0):
+    def _get_records_iterator(self, start_id: int = 0, list_identifiers: List[str] = None):
         if self.from_:
             records = self.sickle.ListRecords(
                 **{
@@ -183,7 +183,15 @@ class OAISynchronizer:
             )
         else:
             records = self.sickle.ListRecords(metadataPrefix=self.metadata_prefix, set=self.set_)
-        return islice(records, start_id, None)
+        if list_identifiers:
+            return self.record_filter_generator(records, list_identifiers)
+        else:
+            return islice(records, start_id, None)
+
+    def record_filter_generator(self, iterator, identifiers_list):
+        for record in iterator:
+            if record.header.identifier in identifiers_list:
+                yield record
 
     def record_handling(self, idx, start_oai: str = None, break_on_error: bool = True,
                         identifier: Header = None,
@@ -250,10 +258,9 @@ class OAISynchronizer:
 
     def _get_identifiers(self, identifiers=None, start_id: int = 0):
         if identifiers is None:
-            if self.oai_identifiers is None:
-                identifiers = self._get_oai_identifiers()
-            else:
-                identifiers = self._get_oai_identifiers(identifiers_list=self.oai_identifiers)
+            identifiers = self._get_oai_identifiers()
+        else:
+            identifiers = self._get_oai_identifiers(identifiers_list=identifiers)
         identifiers = islice(identifiers, start_id, None)
         return identifiers
 
@@ -270,7 +277,7 @@ class OAISynchronizer:
             metadata_prefix=None,
             set_=None,
             identifiers_list: List[str] = None,
-            from_: Arrow = None
+            from_: arrow.Arrow = None
     ):
         if identifiers_list:
             return [self.sickle.GetRecord(identifier=identifier,

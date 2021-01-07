@@ -60,6 +60,7 @@ class OAISync(db.Model):
     __tablename__ = "oarepo_oai_sync"
     id = db.Column(db.Integer, primary_key=True)
     provider_code = db.Column(db.String, nullable=False)
+    synchronizer_code = db.Column(db.String)
     sync_start = db.Column(db.TIMESTAMP)
     sync_end = db.Column(db.TIMESTAMP)
     status = db.Column(db.String(32))

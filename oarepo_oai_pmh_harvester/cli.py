@@ -1,6 +1,7 @@
 import click
 from flask import cli
 
+from oarepo_oai_pmh_harvester.models import OAIRecordExc, OAISync
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 
 
@@ -64,3 +65,42 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwr
         current_oai_client.run(providers_codes=provider, synchronizers_codes=synchronizer,
                                break_on_error=break_on_error, start_oai=start_oai,
                                start_id=start_id)
+
+
+@oai.command("fix")
+@click.option("-p", "--provider", "provider", default=None,
+              help="Code name of provider, defined in invenio.cfg")
+@click.option("-s", "--synchronizer", "synchronizer", default=None,
+              help="Code name of OAI-PMH setup, defined in invenio.cfg")
+@click.option("-i", "--sync-id", "sync_id", default=None,
+              help="Database id of synchonization", type=int)
+@click.option('--break/--no-break', 'break_on_error',
+              help="Break on error, if true program is terminated when record cause error",
+              default=True
+              )
+@cli.with_appcontext
+def fix_erroneous(provider, synchronizer, sync_id, break_on_error):
+    """
+    Run synchronization of erroneous records.
+    """
+    if sync_id:
+        if provider or synchronizer:
+            print("Provider and synchronizer is ignored, because sync_id was provided.")
+        sync = OAISync.query.get(sync_id)
+        provider = sync.provider_code
+        synchronizer = sync.synchronizer_code
+    elif provider and synchronizer:
+        sync_id_array = OAISync.query.filter_by(provider_code=provider,
+                                                synchronizer_code=synchronizer).all()
+        if sync_id_array:
+            sync_id = sync_id_array[-1].id
+        else:
+            raise Exception(
+                f"There is no synchronization for {provider} and {synchronizer} synchronizer code")
+    else:
+        raise Exception("Sync_id or provider code with synchronizer code must be specified")
+    records = OAIRecordExc.query.filter_by(oai_sync_id=sync_id).all()
+    ids = [record.oai_identifier for record in records]
+    current_oai_client.run_synchronizer_by_ids(list(ids), provider, synchronizer,
+                                               break_on_error=break_on_error,
+                                               overwrite=True)
