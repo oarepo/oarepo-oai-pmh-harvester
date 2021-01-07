@@ -376,9 +376,13 @@ class OAISynchronizer:
         # Create persistent identifier
         pid = minter(record_uuid, data=data)
         # Create record
-        record = record_class.create(data, id_=pid.object_uuid)
-
-        db.session.commit()
+        try:
+            record = record_class.create(data, id_=pid.object_uuid)
+        except:
+            db.session.rollback()
+            raise
+        else:
+            db.session.commit()
 
         # Index the record
         if indexer_class:
