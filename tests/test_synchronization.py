@@ -350,3 +350,19 @@ class TestSynchronization:
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)
         assert record["title"] == "Testovací záznam"
+
+    def test_run_by_id_2(self, load_entry_points, app, db, record_xml):
+        patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
+        synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        synchronizer.bulk = True
+        patch.start()
+        synchronizer.run(oai_id=['oai:test.example.com:1585322'])
+        patch.stop()
+
+        oai_sync = OAISync.query.get(1)
+        assert oai_sync.status == "ok"
+        assert oai_sync.records_created == 1
+        oai_rec = OAIRecord.query.all()[-1]
+        assert oai_rec.pid == "1"
+        record = Record.get_record(id_=oai_rec.id)
+        assert record["title"] == "Testovací záznam"
