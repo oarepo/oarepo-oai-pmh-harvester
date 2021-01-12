@@ -73,57 +73,6 @@ class OAISync(db.Model):
     tracebacks = relationship("OAIRecordExc", backref=backref("synchronization"))
 
 
-# TODO: odstranit a udělat rest api z configu
-# class OAISynchronizers(db.Model):
-#     __tablename__ = "oarepo_oai_synchronizers"
-#     id = db.Column(db.Integer, primary_key=True)
-#     provider_id = db.Column(db.Integer, ForeignKey('oarepo_oai_provider.id'))
-#     oai_endpoint = db.Column(db.String(2048), nullable=False)
-#     set_ = db.Column(db.String(256), name="set")
-#     metadata_prefix = db.Column(db.String(32), default="oai_dc")
-#     constant_fields = db.Column(
-#         db.JSON().with_variant(
-#             postgresql.JSONB(none_as_null=True),
-#             'postgresql',
-#         ).with_variant(
-#             JSONType(),
-#             'sqlite',
-#         ).with_variant(
-#             JSONType(),
-#             'mysql',
-#         ),
-#         default=lambda: dict(),
-#         nullable=True
-#     )
-#     unhandled_paths = db.Column(
-#         db.JSON().with_variant(
-#             postgresql.JSONB(none_as_null=True),
-#             'postgresql',
-#         ).with_variant(
-#             JSONType(),
-#             'sqlite',
-#         ).with_variant(
-#             JSONType(),
-#             'mysql',
-#         ),
-#         nullable=True
-#     )
-#     default_endpoint = db.Column(db.String(), nullable=False)
-#     endpoint_mapping = db.Column(
-#         db.JSON().with_variant(
-#             postgresql.JSONB(none_as_null=True),
-#             'postgresql',
-#         ).with_variant(
-#             JSONType(),
-#             'sqlite',
-#         ).with_variant(
-#             JSONType(),
-#             'mysql',
-#         ),
-#         nullable=True
-#     )
-
-
 class OAIRecordExc(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     oai_identifier = db.Column(db.String, nullable=False)

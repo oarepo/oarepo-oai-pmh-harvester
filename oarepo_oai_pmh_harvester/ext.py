@@ -219,11 +219,17 @@ class OArepoOAIClientState(metaclass=Singleton):
         synchronizer.run(start_oai=start_oai, start_id=start_id, break_on_error=break_on_error,
                          overwrite=overwrite)
 
-    def run_synchronizer_by_ids(self, oai_id: Union[str, List[str]], provider: str,
-                                synchronizer: str, break_on_error: bool = True,
-                                overwrite: bool = False):
+    def run_synchronizer_by_ids(self,
+                                oai_id: Union[str, List[str]],
+                                provider: str,
+                                synchronizer: str,
+                                break_on_error: bool = True,
+                                overwrite: bool = False,
+                                bulk: bool = False
+                                ):
         provider = self.providers[provider]
         synchronizer = provider.synchronizers[synchronizer]
+        synchronizer.bulk = bulk
         synchronizer.run(break_on_error=break_on_error, oai_id=oai_id, overwrite=overwrite)
 
 

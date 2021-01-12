@@ -4,12 +4,14 @@ from itertools import islice
 from typing import Callable, List, Union
 
 import arrow
+import time
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
 from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
 from lxml.etree import _Element
+from requests import HTTPError
 from sickle import Sickle
 from sickle.models import Header
 from sickle.oaiexceptions import IdDoesNotExist
@@ -350,9 +352,18 @@ class OAISynchronizer:
             handler = self.transformer.transform
         return handler(parsed)
 
-    def get_xml(self, oai_identifier):
-        original_record = self.sickle.GetRecord(identifier=oai_identifier,
+    def get_xml(self, oai_identifier, retry=True):
+        try:
+            original_record = self.sickle.GetRecord(identifier=oai_identifier,
                                                 metadataPrefix=self.metadata_prefix)
+        except HTTPError:
+            if retry:
+                time.sleep(1)
+                original_record = self.sickle.GetRecord(identifier=oai_identifier,
+                                                        metadataPrefix=self.metadata_prefix)
+            else:
+                raise
+
         return original_record.xml
 
     def parse(self, xml_etree, parser=None):
@@ -376,9 +387,13 @@ class OAISynchronizer:
         # Create persistent identifier
         pid = minter(record_uuid, data=data)
         # Create record
-        record = record_class.create(data, id_=pid.object_uuid)
-
-        db.session.commit()
+        try:
+            record = record_class.create(data, id_=pid.object_uuid)
+        except:
+            db.session.rollback()
+            raise
+        else:
+            db.session.commit()
 
         # Index the record
         if indexer_class:

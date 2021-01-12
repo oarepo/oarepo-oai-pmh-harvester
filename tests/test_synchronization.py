@@ -6,6 +6,7 @@ from unittest import mock
 import arrow
 import pytest
 import requests
+from invenio_pidstore.models import RecordIdentifier
 from invenio_records import Record
 from lxml.etree import _Element
 from pytest import skip
@@ -366,3 +367,21 @@ class TestSynchronization:
         assert oai_rec.pid == "1"
         record = Record.get_record(id_=oai_rec.id)
         assert record["title"] == "Testovací záznam"
+
+    def test_create_record_2(self, load_entry_points, app, db, metadata, ):
+        RECORDS_REST_ENDPOINTS = app.config["RECORDS_REST_ENDPOINTS"]
+        record_class = RECORDS_REST_ENDPOINTS["recid"]["record_class"]
+
+        class ErrorRecord(record_class):
+            @classmethod
+            def create(cls, data, id_=None, **kwargs):
+                raise Exception("test_exception")
+        RECORDS_REST_ENDPOINTS["recid"]["record_class"] = ErrorRecord
+        app.config["RECORDS_REST_ENDPOINTS"] = RECORDS_REST_ENDPOINTS
+
+        synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        with pytest.raises(Exception):
+            synchronizer.create_record(metadata)
+
+        recid = RecordIdentifier.query.filter_by(recid=1).one_or_none()
+        assert recid is None

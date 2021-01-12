@@ -1,4 +1,9 @@
+import json
+from collections import defaultdict
+from pprint import pprint
+
 import click
+from boltons.tbutils import ParsedException
 from flask import cli
 
 from oarepo_oai_pmh_harvester.models import OAIRecordExc, OAISync
@@ -36,8 +41,16 @@ def oai():
               help="Overwriter record with the same timestamp. Default option is false",
               default=False
               )
+@click.option('--bulk/--no-bulk', 'bulk',
+              help="Specifies whether a bulk request (ListRecords) is called or a request is "
+                   "called individually (GetRecord). Bulk processing is suitable for "
+                   "synchronizing the entire set, and contrary for individual records."
+                   "Option is working only for -a/--oai option, otherwise bulk is set in config "
+                   "file",
+              default=True
+              )
 @cli.with_appcontext
-def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwrite):
+def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwrite, bulk):
     """
     Starts harvesting the resources set in invenio.cfg through the OAREPO_OAI_PROVIDERS
     environment variable.
@@ -48,9 +61,14 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwr
         assert len(synchronizer) <= 1, "OAI option is only for one provider and synchronizer"
         provider = provider[0]
         synchronizer = synchronizer[0]
-        current_oai_client.run_synchronizer_by_ids(list(oai), provider, synchronizer,
-                                                   break_on_error=break_on_error,
-                                                   overwrite=overwrite)
+        current_oai_client.run_synchronizer_by_ids(
+            list(oai),
+            provider,
+            synchronizer,
+            break_on_error=break_on_error,
+            overwrite=overwrite,
+            bulk=bulk
+        )
     else:
         assert l == 0, " If OAI option is used, the provider and synchronizer must be " \
                        "specified and star_id or start_oai must not be used"
@@ -104,3 +122,29 @@ def fix_erroneous(provider, synchronizer, sync_id, break_on_error):
     current_oai_client.run_synchronizer_by_ids(list(ids), provider, synchronizer,
                                                break_on_error=break_on_error,
                                                overwrite=True)
+
+
+@oai.command("group_errors")
+@click.option("-i", "--sync-id", "id_", help="Synchronization id")
+@click.option("-o", "--output", "output", help="Synchronization id")
+@cli.with_appcontext
+def group_errors(id_, output=None):
+    """
+    Return dict with errors grouped by type of error
+    """
+    errors = OAIRecordExc.query.filter_by(oai_sync_id=id_).all()
+    result = defaultdict(list)
+    for error in errors:
+        print(error.oai_identifier)
+        tb = error.traceback
+        tb_formated = ParsedException.from_string(tb)
+        key = tb_formated.exc_msg
+        assert isinstance(key, str)
+        result[key].append(error.oai_identifier)
+    result = dict(result)
+    if output:
+        f = open(output+'/errors.json', 'w+')
+        json.dump(result, f, ensure_ascii=False)
+    else:
+        print(result.keys())
+
