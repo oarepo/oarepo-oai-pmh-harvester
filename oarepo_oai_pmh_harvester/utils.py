@@ -35,6 +35,11 @@ def merge(a, b, path=None):
                 for _ in b[key]:
                     if _ not in a[key]:
                         a[key].append(_)
+            elif isinstance(a[key], str) and isinstance(b[key], str):
+                a[key] = [a[key], b[key]]
+            elif isinstance(a[key], list) and isinstance(b[key], str):
+                if b[key] not in a[key]:
+                    a[key].append(b[key])
             else:
                 raise Exception('Conflict at %s' % '.'.join(path + [str(key)]))
         else:
