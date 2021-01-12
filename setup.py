@@ -25,6 +25,7 @@ setup_requires = [
 install_requires = [
     'sickle',
     'click',
+    'boltons'
 ]
 
 with open("README.md", "r") as f:
