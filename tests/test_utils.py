@@ -1,4 +1,3 @@
-import pytest
 from sickle.models import Header
 
 from oarepo_oai_pmh_harvester.utils import get_oai_header_data, merge
