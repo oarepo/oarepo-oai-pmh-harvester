@@ -20,7 +20,7 @@ from invenio_records import Record, InvenioRecords
 from invenio_records_rest import InvenioRecordsREST
 from invenio_records_rest.schemas.fields import SanitizedUnicode
 from invenio_records_rest.utils import PIDConverter
-from invenio_search import RecordsSearch, InvenioSearch
+from invenio_search import RecordsSearch, InvenioSearch, current_search_client
 from lxml import etree
 from marshmallow import Schema
 from marshmallow.fields import Integer
@@ -137,6 +137,8 @@ def app():
     app_loaded.send(app, app=app)
 
     with app.app_context():
+        if current_search_client.indices.exists("test_index"):
+            current_search_client.indices.delete(index="test_index")
         yield app
 
     shutil.rmtree(instance_path)
@@ -157,6 +159,21 @@ def db(app):
     db_.session.close()
     db_.drop_all()
 
+
+@pytest.fixture()
+def index(app):
+    """"Returns fresh ES index"""
+    with app.app_context():
+        index = "test_index"
+        if not current_search_client.indices.exists(index):
+            current_search_client.indices.create(
+                index=index,
+                ignore=400,
+                body={}
+            )
+        yield index
+        if current_search_client.indices.exists("test_index"):
+            current_search_client.indices.delete(index="test_index")
 
 @pytest.fixture()
 def metadata():
