@@ -261,31 +261,48 @@ Usage: invenio oai run [OPTIONS]
   OAREPO_OAI_PROVIDERS environment variable.
 
 Options:
-  -p, --provider TEXT           Code name of provider, defined in invenio.cfg
-  -s, --synchronizer TEXT       Code name of OAI-PMH setup, defined in
-                                invenio.cfg
+  -p, --provider TEXT             Code name of provider, defined in
+                                  invenio.cfg
 
-  --break / --no-break          Break on error, if true program is terminated
-                                when record cause error
+  -s, --synchronizer TEXT         Code name of OAI-PMH setup, defined in
+                                  invenio.cfg
 
-  -o, --start_oai TEXT          OAI identifier from where synchronization
-                                begin
+  --break / --no-break            Break on error, if true program is
+                                  terminated when record cause error
 
-  -i, --start_id INTEGER        The serial number from which the
-                                synchronization starts. This is useful if for
-                                some reason the previous synchronization was
-                                interrupted at some point.
+  -o, --start_oai TEXT            OAI identifier from where synchronization
+                                  begin
 
-  -a, --oai TEXT                OAI identifier that will be fetched and
-                                synchronized. The field is repeatable. If this
-                                option is used, the provider and synchronizer
-                                must be specified and star_id or start_oai
-                                must not be used
+  -i, --start_id INTEGER          The serial number from which the
+                                  synchronization starts. This is useful if
+                                  for some reason the previous synchronization
+                                  was interrupted at some point.
 
-  --overwrite / --no-overwrite  Overwriter record with the same timestamp.
-                                Default option is false
+  -a, --oai TEXT                  OAI identifier that will be fetched and
+                                  synchronized. The field is repeatable. If
+                                  this option is used, the provider and
+                                  synchronizer must be specified and star_id
+                                  or start_oai must not be used
 
-  --help                        Show this message and exit.
+  --overwrite / --no-overwrite    Overwriter record with the same timestamp.
+                                  Default option is false
+
+  -x, --index TEXT                Name of Elasticsearch index
+  --bulk / --no-bulk              Specifies whether a bulk request
+                                  (ListRecords) is called or a request is
+                                  called individually (GetRecord). Bulk
+                                  processing is suitable for synchronizing the
+                                  entire set, and contrary for individual
+                                  records.Option is working only for -a/--oai
+                                  option, otherwise bulk is set in config file
+
+  --only-fetch / --no-only-fetch  Only fetch option fetch documents from
+                                  source and parse into json a the json store
+                                  in ES index. It is suitable summury for
+                                  creating new rules
+
+  --help                          Show this message and exit.
+
 
 
 ```
