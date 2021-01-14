@@ -18,7 +18,7 @@ from sickle.oaiexceptions import IdDoesNotExist
 from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
-from oarepo_oai_pmh_harvester.models import (OAIRecord, OAIRecordExc, OAISync)
+from oarepo_oai_pmh_harvester.models import (OAIRecord, OAIRecordExc, OAISync, OAIIdentifier)
 from oarepo_oai_pmh_harvester.utils import get_oai_header_data
 
 
@@ -329,12 +329,14 @@ class OAISynchronizer:
             record, pid = self.create_record(transformed)
             oai_rec = OAIRecord(
                 id=record.id,
-                oai_identifier=oai_identifier,
+                # oai_identifier=oai_identifier,
                 creation_sync_id=self.oai_sync.id,
                 pid=pid.pid_value
             )
+            oai_identifier = OAIIdentifier(oai_record_id=oai_rec.id, oai_identifier=oai_identifier)
             self.created += 1
             db.session.add(oai_rec)
+            oai_rec.oai_identifiers.append(oai_identifier)
             print(
                 f"Identifier '{oai_identifier}' has been created and '{record.id}' has been "
                 f"assigned as a UUID")
