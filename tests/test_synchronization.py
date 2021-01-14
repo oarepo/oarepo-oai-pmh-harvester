@@ -5,17 +5,17 @@ from unittest import mock
 
 import arrow
 import pytest
-import requests
 from invenio_pidstore.models import RecordIdentifier
 from invenio_records import Record
+from invenio_search import current_search_client
 from lxml.etree import _Element
-from pytest import skip
 from pytz import utc
 from sickle.iterator import OAIItemIterator
 from sqlalchemy.orm.exc import NoResultFound
 
 from oarepo_oai_pmh_harvester.models import OAIRecord, OAISync, OAIRecordExc
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
+from oarepo_oai_pmh_harvester.synchronization import OAISynchronizer
 from tests.helpers import mock_harvest
 
 
@@ -387,6 +387,32 @@ class TestSynchronization:
         recid = RecordIdentifier.query.filter_by(recid=1).one_or_none()
         assert recid is None
 
-    def test_index(self, load_entry_points, app, db):
+    def test_index(self, load_entry_points, app, db, index):
+        current_oai_client.es_index = None
         synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        synchronizer._index = None
         assert synchronizer.index == "uk_xoai"
+
+    def test_create_or_update_es(self, load_entry_points, app, db, record_xml, index):
+        synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        oai_sync = OAISync(provider_code="uk")
+        synchronizer.oai_sync = oai_sync
+        synchronizer.create_or_update_es("oai:dspace.cuni.cz:20.500.11956/2623", xml=record_xml,
+                                         index=index)
+        es_record = current_search_client.get(id="oai:dspace.cuni.cz:20.500.11956/2623",
+                                              index=index)
+        assert es_record is not None
+        synchronizer.create_or_update_es("oai:dspace.cuni.cz:20.500.11956/2623", xml=record_xml)
+        es_record_2 = current_search_client.get(id="oai:dspace.cuni.cz:20.500.11956/2623",
+                                                index=index)
+        assert es_record_2 is not None
+        assert es_record == es_record_2
+
+    def test_synchronization_init(self, load_entry_points, app, db):
+        sync = OAISynchronizer('test_name',
+                               'test_code',
+                               "http://www.example.com",
+                               "xoai",
+                               "test",
+                               constant_fields={"bla": "blah"})
+        print(sync)
