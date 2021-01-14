@@ -17,7 +17,6 @@ class OAIRecord(db.Model):
     oai_identifier = db.Column(
         db.String(2048),
         unique=True,
-        nullable=False
     )
     pid = db.Column(
         db.String(),
@@ -44,6 +43,7 @@ class OAIRecord(db.Model):
         "RecordMetadata",
         backref=backref("oarepo_oai_record", uselist=False)
     )
+    oai_identifiers = relationship("OAIIdentifier", backref=backref("oarepo_oai_record"))
 
     def __repr__(self):
         return f"OAIRecord(id={self.id}, oai_identifier={self.oai_identifier}, pid={self.pid}, " \
@@ -53,7 +53,11 @@ class OAIRecord(db.Model):
 
     @classmethod
     def get_record(cls, oai_identifier):
-        return cls.query.filter_by(oai_identifier=oai_identifier).one_or_none()
+        oai_identifier = OAIIdentifier.query.filter_by(oai_identifier=oai_identifier).one_or_none()
+        if not oai_identifier:
+            return None
+        else:
+            return cls.query.get(oai_identifier.oai_record_id)
 
 
 class OAISync(db.Model):
@@ -78,3 +82,14 @@ class OAIRecordExc(db.Model):
     oai_identifier = db.Column(db.String, nullable=False)
     traceback = db.Column(db.Text(), nullable=True)
     oai_sync_id = db.Column(db.Integer, ForeignKey('oarepo_oai_sync.id'))
+
+
+class OAIIdentifier(db.Model):
+    __tablename__ = "oarepo_oai_identifiers"
+    id = db.Column(db.Integer, primary_key=True)
+    oai_record_id = db.Column(UUIDType, ForeignKey('oarepo_oai_record.id'))
+    oai_identifier = db.Column(
+        db.String(2048),
+        unique=True,
+        # nullable=False
+    )
