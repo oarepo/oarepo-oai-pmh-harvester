@@ -10,12 +10,14 @@ from invenio_db import db
 from invenio_pidstore import current_pidstore
 from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
+from invenio_search import current_search_client
 from lxml.etree import _Element
 from requests import HTTPError
 from sickle import Sickle
 from sickle.models import Header
 from sickle.oaiexceptions import IdDoesNotExist
 from sqlalchemy.orm.exc import NoResultFound
+from werkzeug.utils import cached_property
 
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from oarepo_oai_pmh_harvester.models import (OAIRecord, OAIRecordExc, OAISync, OAIIdentifier)
@@ -83,6 +85,18 @@ class OAISynchronizer:
         self.pre_processors = pre_processors
         self.post_processors = post_processors
         self.overwrite = False
+        self.es_client = current_search_client
+
+    @cached_property
+    def index(self):
+        _index = f"{self.provider_code}_{self.metadata_prefix}"
+        if not self.es_client.indices.exists(_index):
+            current_search_client.indices.create(
+                index=_index,
+                ignore=400,
+                body={}
+            )
+        return _index
 
     @property
     def from_(self):

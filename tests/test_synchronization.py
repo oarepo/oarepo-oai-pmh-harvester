@@ -376,6 +376,7 @@ class TestSynchronization:
             @classmethod
             def create(cls, data, id_=None, **kwargs):
                 raise Exception("test_exception")
+
         RECORDS_REST_ENDPOINTS["recid"]["record_class"] = ErrorRecord
         app.config["RECORDS_REST_ENDPOINTS"] = RECORDS_REST_ENDPOINTS
 
@@ -385,3 +386,7 @@ class TestSynchronization:
 
         recid = RecordIdentifier.query.filter_by(recid=1).one_or_none()
         assert recid is None
+
+    def test_index(self, load_entry_points, app, db):
+        synchronizer = current_oai_client.providers["uk"].synchronizers["xoai"]
+        assert synchronizer.index == "uk_xoai"
