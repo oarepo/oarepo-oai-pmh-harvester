@@ -5,21 +5,25 @@ from typing import Callable, List, Union
 
 import arrow
 import time
+
+from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
 from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
+from invenio_search import current_search_client
 from lxml.etree import _Element
 from requests import HTTPError
 from sickle import Sickle
 from sickle.models import Header
 from sickle.oaiexceptions import IdDoesNotExist
 from sqlalchemy.orm.exc import NoResultFound
+from werkzeug.utils import cached_property
 
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from oarepo_oai_pmh_harvester.models import (OAIRecord, OAIRecordExc, OAISync, OAIIdentifier)
-from oarepo_oai_pmh_harvester.utils import get_oai_header_data
+from oarepo_oai_pmh_harvester.utils import get_oai_header_data, transform_to_dict
 
 
 class OAISynchronizer:
@@ -45,19 +49,21 @@ class OAISynchronizer:
             endpoint_handler: dict = None,
             bulk: bool = True,
             pre_processors: dict = None,
-            post_processors: dict = None
+            post_processors: dict = None,
+            index: str = None
     ):
 
         # Counters
+        self.only_fetch = False
         self.deleted = 0
         self.created = 0
         self.modified = 0
 
-        if endpoint_mapping is None:
+        if endpoint_mapping is None:  # pragma: no cover
             endpoint_mapping = {}
         if pid_field is None:
             self.pid_field = current_app.config.get('PIDSTORE_RECID_FIELD', "recid")
-        else:
+        else:  # pragma: no cover
             self.pid_field = pid_field
         self.name = name
         self.provider_code = provider_code
@@ -83,6 +89,22 @@ class OAISynchronizer:
         self.pre_processors = pre_processors
         self.post_processors = post_processors
         self.overwrite = False
+        self.es_client = current_search_client
+        self._index = index
+
+    @property
+    def index(self):
+        if self._index:
+            _index = self._index
+        else:
+            _index = f"{self.provider_code}_{self.metadata_prefix}"
+        if not self.es_client.indices.exists(_index): # pragma: no cover
+            current_search_client.indices.create(
+                index=_index,
+                ignore=400,
+                body={}
+            )
+        return _index
 
     @property
     def from_(self):
@@ -103,20 +125,26 @@ class OAISynchronizer:
             self._from = None
 
     def run(self, start_oai: str = None, start_id: int = 0, break_on_error: bool = True,
-            oai_id: Union[str, List[str]] = None, overwrite: bool = False):
+            oai_id: Union[str, List[str]] = None, overwrite: bool = False,
+            only_fetch: bool = False, index: str = None):
         """
 
         :return:
         :rtype:
         """
+        if index:
+            self._index = index
+        self.only_fetch = only_fetch
         self.overwrite = overwrite
         self.restart_counters()
         with db.session.begin_nested():
             self.oai_sync = OAISync(
-                provider_code=self.provider_code,  # TODO: nahradit provider.code
+                provider_code=self.provider_code,
                 synchronizer_code=self.name,
                 sync_start=arrow.utcnow().datetime,  # datetime.datetime.utcnow(),
-                status="active")
+                status="active",
+                purpose="fetch" if only_fetch else "sync"
+            )
             db.session.add(self.oai_sync)
         db.session.commit()
         try:
@@ -125,7 +153,7 @@ class OAISynchronizer:
                     oai_ids = [oai_id]
                 elif isinstance(oai_id, list):
                     oai_ids = oai_id
-                else:
+                else: # pragma: no cover
                     raise Exception("OAI identifier must be string or list of strings")
                 self.synchronize(identifiers=oai_ids, break_on_error=break_on_error)
                 self.update_oai_sync("ok")
@@ -197,10 +225,12 @@ class OAISynchronizer:
 
     def record_handling(self, idx, start_oai: str = None, break_on_error: bool = True,
                         identifier: Header = None,
-                        xml: _Element = None):
-        if not (identifier or xml):
+                        xml: _Element = None, only_fetch: bool = None):
+        if not only_fetch:
+            only_fetch = self.only_fetch
+        if not (identifier or xml): # pragma: no cover
             raise Exception("Must provide header or xml")
-        if identifier and xml:
+        if identifier and xml: # pragma: no cover
             raise Exception("You must provide only header or xml")
         if identifier:
             datestamp, deleted, oai_identifier = get_oai_header_data(identifier)
@@ -217,7 +247,7 @@ class OAISynchronizer:
             return
         try:
             self.record_crud(oai_rec, timestamp=datestamp, deleted=deleted, idx=idx,
-                             oai_identifier=oai_identifier, xml=xml)
+                             oai_identifier=oai_identifier, xml=xml, only_fetch=only_fetch)
         except Exception:  # pragma: no cover
             self.exception_handler(oai_identifier)
             if break_on_error:
@@ -243,20 +273,28 @@ class OAISynchronizer:
                     timestamp: str = arrow.utcnow().isoformat(),
                     deleted: bool = False,
                     xml: _Element = None,
-                    idx: int = 0):
+                    idx: int = 0,
+                    only_fetch: bool = False
+                    ):
         if not (oai_rec or oai_identifier):
             raise Exception("You have to provide oai_rec or oai_identifier")
         if not oai_identifier:
             oai_identifier = oai_rec.oai_identifier
-        if deleted:
-            self._delete(oai_rec)
+        if only_fetch:
+            if deleted:
+                self.delete_es(oai_identifier)
+            else:
+                self.create_or_update_es(oai_identifier, xml=xml)
         else:
-            try:
-                self.create_or_update(oai_identifier, timestamp, oai_rec=oai_rec, xml=xml)
-            except IdDoesNotExist:  # pragma: no cover
+            if deleted:
                 self._delete(oai_rec)
-        if idx % 100:
-            db.session.commit()
+            else:
+                try:
+                    self.create_or_update(oai_identifier, timestamp, oai_rec=oai_rec, xml=xml)
+                except IdDoesNotExist:  # pragma: no cover
+                    self._delete(oai_rec)
+            if idx % 100:
+                db.session.commit()
 
     def _get_identifiers(self, identifiers=None, start_id: int = 0):
         if identifiers is None:
@@ -349,6 +387,24 @@ class OAISynchronizer:
         oai_rec.timestamp = arrow.get(datestamp).datetime
         return record
 
+    def create_or_update_es(self, oai_identifier, xml: _Element = None, index: str = None):
+        if not index:
+            index = self.index
+        if not xml:
+            xml = self.get_xml(oai_identifier)
+        parsed = transform_to_dict(self.parse(xml))
+
+        try:
+            es_record = self.es_client.get(id=oai_identifier, index=index)
+        except NotFoundError:
+            es_record = None
+
+        if es_record is None:
+            self.es_client.create(index, oai_identifier, parsed)
+        else:
+            self.es_client.update(index=index, id=oai_identifier, body={"doc": parsed})
+        return parsed
+
     def transform(self, parsed, handler=None):
         if not handler:
             handler = self.transformer.transform
@@ -357,7 +413,7 @@ class OAISynchronizer:
     def get_xml(self, oai_identifier, retry=True):
         try:
             original_record = self.sickle.GetRecord(identifier=oai_identifier,
-                                                metadataPrefix=self.metadata_prefix)
+                                                    metadataPrefix=self.metadata_prefix)
         except HTTPError:
             if retry:
                 time.sleep(1)
@@ -496,3 +552,10 @@ class OAISynchronizer:
         self.deleted = 0
         self.created = 0
         self.modified = 0
+
+    def delete_es(self, oai_identifier):
+        try:
+            self.es_client.get(id=oai_identifier, index=self.index)
+            self.es_client.delete(index=self.index, id=oai_identifier)
+        except NotFoundError:
+            pass

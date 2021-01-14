@@ -45,3 +45,16 @@ def merge(a, b, path=None):
         else:
             a[key] = b[key]
     return a
+
+def transform_to_dict(source):
+    if isinstance(source, (dict, defaultdict)):
+        target = {}
+        for k, v in source.items():
+            target[k] = transform_to_dict(v)
+    elif isinstance(source, (list, tuple)):
+        target = []
+        for _ in source:
+            target.append(transform_to_dict(_))
+    else:
+        target = source
+    return target

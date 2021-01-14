@@ -41,21 +41,29 @@ def oai():
               help="Overwriter record with the same timestamp. Default option is false",
               default=False
               )
+@click.option('-x', '--index', 'index', help="Name of Elasticsearch index")
 @click.option('--bulk/--no-bulk', 'bulk',
               help="Specifies whether a bulk request (ListRecords) is called or a request is "
                    "called individually (GetRecord). Bulk processing is suitable for "
                    "synchronizing the entire set, and contrary for individual records."
                    "Option is working only for -a/--oai option, otherwise bulk is set in config "
                    "file",
-              default=True
+              default=True)
+@click.option('--only-fetch/--no-only-fetch', 'only_fetch',
+              help="Only fetch option fetch documents from source and parse into json a the json "
+                   "store in ES index. It is suitable summury for creating new rules",
+              default=False
               )
 @cli.with_appcontext
-def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwrite, bulk):
+def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwrite, bulk,
+        only_fetch, index: str = None):
     """
     Starts harvesting the resources set in invenio.cfg through the OAREPO_OAI_PROVIDERS
     environment variable.
     """
     l = len(oai)
+    if index:
+        current_oai_client.es_index = index
     if l > 0 and provider and synchronizer and not start_oai and not start_id:
         assert len(provider) <= 1, "OAI option is only for one provider and synchronizer"
         assert len(synchronizer) <= 1, "OAI option is only for one provider and synchronizer"
@@ -67,7 +75,8 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwr
             synchronizer,
             break_on_error=break_on_error,
             overwrite=overwrite,
-            bulk=bulk
+            bulk=bulk,
+            only_fetch=only_fetch
         )
     else:
         assert l == 0, " If OAI option is used, the provider and synchronizer must be " \
@@ -82,7 +91,7 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwr
             synchronizer = list(synchronizer)
         current_oai_client.run(providers_codes=provider, synchronizers_codes=synchronizer,
                                break_on_error=break_on_error, start_oai=start_oai,
-                               start_id=start_id)
+                               start_id=start_id, only_fetch=only_fetch)
 
 
 @oai.command("fix")
@@ -143,8 +152,7 @@ def group_errors(id_, output=None):
         result[key].append(error.oai_identifier)
     result = dict(result)
     if output:
-        f = open(output+'/errors.json', 'w+')
+        f = open(output + '/errors.json', 'w+')
         json.dump(result, f, ensure_ascii=False)
     else:
         print(result.keys())
-
