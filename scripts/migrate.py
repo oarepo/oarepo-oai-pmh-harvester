@@ -34,5 +34,5 @@ def records_to_oai_identifiers():
 
 
 if __name__ == '__main__':
-    # oai_records_to_oai_identifiers()
+    oai_records_to_oai_identifiers()
     records_to_oai_identifiers()

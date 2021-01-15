@@ -1,11 +1,11 @@
+import logging
+import time
 import traceback
 import uuid
 from itertools import islice
 from typing import Callable, List, Union
 
 import arrow
-import time
-
 from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from invenio_db import db
@@ -19,11 +19,27 @@ from sickle import Sickle
 from sickle.models import Header
 from sickle.oaiexceptions import IdDoesNotExist
 from sqlalchemy.orm.exc import NoResultFound
-from werkzeug.utils import cached_property
 
 from oarepo_oai_pmh_harvester.exceptions import ParserNotFoundError
 from oarepo_oai_pmh_harvester.models import (OAIRecord, OAIRecordExc, OAISync, OAIIdentifier)
 from oarepo_oai_pmh_harvester.utils import get_oai_header_data, transform_to_dict
+
+# create logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# add formatter to ch
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger.addHandler(ch)
 
 
 class OAISynchronizer:
@@ -98,7 +114,7 @@ class OAISynchronizer:
             _index = self._index
         else:
             _index = f"{self.provider_code}_{self.metadata_prefix}"
-        if not self.es_client.indices.exists(_index): # pragma: no cover
+        if not self.es_client.indices.exists(_index):  # pragma: no cover
             current_search_client.indices.create(
                 index=_index,
                 ignore=400,
@@ -153,7 +169,7 @@ class OAISynchronizer:
                     oai_ids = [oai_id]
                 elif isinstance(oai_id, list):
                     oai_ids = oai_id
-                else: # pragma: no cover
+                else:  # pragma: no cover
                     raise Exception("OAI identifier must be string or list of strings")
                 self.synchronize(identifiers=oai_ids, break_on_error=break_on_error)
                 self.update_oai_sync("ok")
@@ -228,9 +244,9 @@ class OAISynchronizer:
                         xml: _Element = None, only_fetch: bool = None):
         if not only_fetch:
             only_fetch = self.only_fetch
-        if not (identifier or xml): # pragma: no cover
+        if not (identifier or xml):  # pragma: no cover
             raise Exception("Must provide header or xml")
-        if identifier and xml: # pragma: no cover
+        if identifier and xml:  # pragma: no cover
             raise Exception("You must provide only header or xml")
         if identifier:
             datestamp, deleted, oai_identifier = get_oai_header_data(identifier)
@@ -401,8 +417,10 @@ class OAISynchronizer:
 
         if es_record is None:
             self.es_client.create(index, oai_identifier, parsed)
+            logger.info(f'Record {oai_identifier} was created in ES')
         else:
             self.es_client.update(index=index, id=oai_identifier, body={"doc": parsed})
+            logger.info(f'Record {oai_identifier} was updated in ES')
         return parsed
 
     def transform(self, parsed, handler=None):
