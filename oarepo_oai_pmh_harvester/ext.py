@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List, Union
+from typing import List, Union, Dict
 
 from pkg_resources import iter_entry_points
 
@@ -136,20 +136,35 @@ class OArepoOAIClientState(metaclass=Singleton):
             self._parsers = infinite_dd()
         self._parsers[name] = func
 
-    def add_endpoint_handler(self, func, provider, parser_name):
+    def add_endpoint_handler(self, func, provider: str = None, parser_name: str = None,
+                             provider_parser_list: List[Dict] = None):
         if not self._endpoint_handlers:
             self._endpoint_handlers = infinite_dd()
-        self._endpoint_handlers[provider][parser_name] = func
+        if provider_parser_list:
+            for _ in provider_parser_list:
+                self._endpoint_handlers[_["provider"]][_["parser"]] = func
+        else:
+            self._endpoint_handlers[provider][parser_name] = func
 
-    def add_pre_processor(self, func, provider, parser_name):
+    def add_pre_processor(self, func, provider: str = None, parser_name: str = None,
+                          provider_parser_list: List[Dict] = None):
         if not self._pre_processors:
             self._pre_processors = defaultdict(lambda: defaultdict(list))
-        self._pre_processors[provider][parser_name].append(func)
+        if provider_parser_list:
+            for _ in provider_parser_list:
+                self._pre_processors[_["provider"]][_["parser"]].append(func)
+        else:
+            self._pre_processors[provider][parser_name].append(func)
 
-    def add_post_processor(self, func, provider, parser_name):
+    def add_post_processor(self, func, provider: str = None, parser_name: str = None,
+                           provider_parser_list: List[Dict] = None):
         if not self._post_processors:
             self._post_processors = defaultdict(lambda: defaultdict(list))
-        self._post_processors[provider][parser_name].append(func)
+        if provider_parser_list:
+            for _ in provider_parser_list:
+                self._post_processors[_["provider"]][_["parser"]].append(func)
+        else:
+            self._post_processors[provider][parser_name].append(func)
 
     def create_synchronizer(self, provider_code, config):
         return OAISynchronizer(
