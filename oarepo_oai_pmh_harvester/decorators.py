@@ -34,7 +34,19 @@ def endpoint_handler(provider: str = None, parser: str = None,
 
 
 def pre_processor(provider: str = None, parser: str = None,
-                  provider_parser_list: List[Dict] = None):
+                  provider_parser_list: List[Dict] = None) -> None:
+    """
+    Decorator that register function for pre processing. You can insert provider and parser or
+    list of dict that contain more providers. Dict must have two keys provider and parser.
+
+
+    :param provider: Name of provider, that is registred in config
+    :type provider: str
+    :param parser: Name of parser, that is registred in config
+    :type parser: str
+    :param provider_parser_list:
+    :type provider_parser_list: List of dict with two keys (provider and parser)
+    """
     if provider_parser_list and (provider or parser):
         raise Exception(
             "If the provider and parser is specified, cannot specify provider_parser_list")
@@ -49,7 +61,19 @@ def pre_processor(provider: str = None, parser: str = None,
 
 
 def post_processor(provider: str = None, parser: str = None,
-                   provider_parser_list: List[Dict] = None):
+                   provider_parser_list: List[Dict] = None) -> None:
+    """
+    Decorator that register function for post processing. You can insert provider and parser or
+    list of dict that contain more providers. Dict must have two keys provider and parser.
+
+
+    :param provider: Name of provider, that is registred in config
+    :type provider: str
+    :param parser: Name of parser, that is registred in config
+    :type parser: str
+    :param provider_parser_list:
+    :type provider_parser_list: List of dict with two keys (provider and parser)
+    """
     if provider_parser_list and (provider or parser):
         raise Exception(
             "If the provider and parser is specified, cannot specify provider_parser_list")

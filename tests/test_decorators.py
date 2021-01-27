@@ -19,32 +19,52 @@ def test_endpoint_handler_2(load_entry_points, app, db):
 
 
 def test_pre_processor(load_entry_points, app, db):
+    if current_oai_client._pre_processors:
+        print(current_oai_client._pre_processors)
+        current_oai_client._pre_processors = None
+
     @pre_processor("uk", "xoai")
     def handler(data):
-        return "hello"
+        print("hello")
+        return data
 
     assert current_oai_client.pre_processors["uk"]["xoai"][0].__name__ == "handler"
 
 
 def test_pre_processor_2(load_entry_points, app, db):
+    if current_oai_client._pre_processors:
+        print(current_oai_client._pre_processors)
+        current_oai_client._pre_processors = None
+
     @pre_processor(provider_parser_list=[{"provider": "uk", "parser": "xoai"}])
     def handler(data):
-        return "hello"
+        print("hello")
+        return data
 
     assert current_oai_client.pre_processors["uk"]["xoai"][0].__name__ == "handler"
     
     
 def test_post_processor(load_entry_points, app, db):
+    if current_oai_client._post_processors:
+        print(current_oai_client._post_processors)
+        current_oai_client._post_processors = None
+    
     @post_processor("uk", "xoai")
     def handler(data):
-        return "hello"
+        print("hello")
+        return data
 
     assert current_oai_client.post_processors["uk"]["xoai"][0].__name__ == "handler"
 
 
 def test_post_processor_2(load_entry_points, app, db):
+    if current_oai_client._post_processors:
+        print(current_oai_client._post_processors)
+        current_oai_client._post_processors = None
+
     @post_processor(provider_parser_list=[{"provider": "uk", "parser": "xoai"}])
     def handler(data):
-        return "hello"
+        print("hello")
+        return data
 
     assert current_oai_client.post_processors["uk"]["xoai"][0].__name__ == "handler"
