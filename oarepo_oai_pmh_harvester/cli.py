@@ -1,6 +1,5 @@
 import json
 from collections import defaultdict
-from pprint import pprint
 
 import click
 from boltons.tbutils import ParsedException

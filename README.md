@@ -215,7 +215,7 @@ entry_points={
     }
 ```
 
- Example of a pre_processor:
+ Two examples of the same pre_processors:
 
 ```python
 from oarepo_oai_pmh_harvester.decorators import pre_processor
@@ -223,7 +223,17 @@ from oarepo_oai_pmh_harvester.decorators import pre_processor
 
 @pre_processor("provider_name", "metadata_prefix")
 def pre_processor_1(data):
-    data = data.update({"some_change": "change"})
+    data = data.update({"some_change_2": "change_2"})
+    return data
+```
+
+```python
+from oarepo_oai_pmh_harvester.decorators import pre_processor
+
+
+@pre_processor(provider_parser_list=[{"provider": "provider_name", "parser": "parser_name"}])
+def pre_processor_1(data):
+    data = data.update({"some_change_2": "change_2"})
     return data
 ```
 
@@ -238,14 +248,24 @@ entry_points={
     }
 ```
 
- Example of a pre_processor:
+ Two examples of the same post_processors:
 
 ```python
 from oarepo_oai_pmh_harvester.decorators import post_processor
 
 
 @post_processor("provider_name", "metadata_prefix")
-def pre_processor_1(data):
+def post_processor_1(data):
+    data = data.update({"some_change_2": "change_2"})
+    return data
+```
+
+```python
+from oarepo_oai_pmh_harvester.decorators import post_processor
+
+
+@post_processor(provider_parser_list=[{"provider": "provider_name", "parser": "parser_name"}])
+def post_processor_1(data):
     data = data.update({"some_change_2": "change_2"})
     return data
 ```
