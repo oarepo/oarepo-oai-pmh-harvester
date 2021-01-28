@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Any, Callable
 
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
 from oarepo_oai_pmh_harvester.transformer import OAITransformer
@@ -34,7 +34,7 @@ def endpoint_handler(provider: str = None, parser: str = None,
 
 
 def pre_processor(provider: str = None, parser: str = None,
-                  provider_parser_list: List[Dict] = None) -> None:
+                  provider_parser_list: List[Dict] = None) -> Callable:
     """
     Decorator that register function for pre processing. You can insert provider and parser or
     list of dict that contain more providers. Dict must have two keys provider and parser.
@@ -61,7 +61,7 @@ def pre_processor(provider: str = None, parser: str = None,
 
 
 def post_processor(provider: str = None, parser: str = None,
-                   provider_parser_list: List[Dict] = None) -> None:
+                   provider_parser_list: List[Dict] = None) -> Callable:
     """
     Decorator that register function for post processing. You can insert provider and parser or
     list of dict that contain more providers. Dict must have two keys provider and parser.
