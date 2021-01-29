@@ -63,37 +63,46 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwr
     """
     api = create_api()
     with api.app_context():
-        l = len(oai)
-        if index:
-            current_oai_client.es_index = index
-        if l > 0 and provider and synchronizer and not start_oai and not start_id:
-            assert len(provider) <= 1, "OAI option is only for one provider and synchronizer"
-            assert len(synchronizer) <= 1, "OAI option is only for one provider and synchronizer"
-            provider = provider[0]
-            synchronizer = synchronizer[0]
-            current_oai_client.run_synchronizer_by_ids(
-                list(oai),
-                provider,
-                synchronizer,
-                break_on_error=break_on_error,
-                overwrite=overwrite,
-                bulk=bulk,
-                only_fetch=only_fetch
-            )
+        _run_internal(provider=provider, synchronizer=synchronizer, break_on_error=break_on_error,
+                      start_oai=start_oai, start_id=start_id, oai=oai, overwrite=overwrite,
+                      bulk=bulk, only_fetch=only_fetch, index=index)
+
+
+def _run_internal(provider: tuple = tuple(), synchronizer: tuple = tuple(), break_on_error: bool = True,
+                  start_oai: str = None, start_id: int = 0, oai: tuple = tuple(),
+                  overwrite: bool = False, bulk: bool = True, only_fetch: bool = False,
+                  index: str = None):
+    l = len(oai)
+    if index:
+        current_oai_client.es_index = index
+    if l > 0 and provider and synchronizer and not start_oai and not start_id:
+        assert len(provider) <= 1, "OAI option is only for one provider and synchronizer"
+        assert len(synchronizer) <= 1, "OAI option is only for one provider and synchronizer"
+        provider = provider[0]
+        synchronizer = synchronizer[0]
+        current_oai_client.run_synchronizer_by_ids(
+            list(oai),
+            provider,
+            synchronizer,
+            break_on_error=break_on_error,
+            overwrite=overwrite,
+            bulk=bulk,
+            only_fetch=only_fetch
+        )
+    else:
+        assert l == 0, " If OAI option is used, the provider and synchronizer must be " \
+                       "specified and star_id or start_oai must not be used"
+        if not provider:
+            provider = None
         else:
-            assert l == 0, " If OAI option is used, the provider and synchronizer must be " \
-                           "specified and star_id or start_oai must not be used"
-            if not provider:
-                provider = None
-            else:
-                provider = list(provider)
-            if not synchronizer:
-                synchronizer = None
-            else:
-                synchronizer = list(synchronizer)
-            current_oai_client.run(providers_codes=provider, synchronizers_codes=synchronizer,
-                                   break_on_error=break_on_error, start_oai=start_oai,
-                                   start_id=start_id, only_fetch=only_fetch)
+            provider = list(provider)
+        if not synchronizer:
+            synchronizer = None
+        else:
+            synchronizer = list(synchronizer)
+        current_oai_client.run(providers_codes=provider, synchronizers_codes=synchronizer,
+                               break_on_error=break_on_error, start_oai=start_oai,
+                               start_id=start_id, only_fetch=only_fetch)
 
 
 @oai.command("fix")
