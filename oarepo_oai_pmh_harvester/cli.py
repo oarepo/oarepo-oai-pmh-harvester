@@ -4,6 +4,7 @@ from collections import defaultdict
 import click
 from boltons.tbutils import ParsedException
 from flask import cli
+from invenio_app.factory import create_api
 
 from oarepo_oai_pmh_harvester.models import OAIRecordExc, OAISync
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
@@ -60,37 +61,39 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwr
     Starts harvesting the resources set in invenio.cfg through the OAREPO_OAI_PROVIDERS
     environment variable.
     """
-    l = len(oai)
-    if index:
-        current_oai_client.es_index = index
-    if l > 0 and provider and synchronizer and not start_oai and not start_id:
-        assert len(provider) <= 1, "OAI option is only for one provider and synchronizer"
-        assert len(synchronizer) <= 1, "OAI option is only for one provider and synchronizer"
-        provider = provider[0]
-        synchronizer = synchronizer[0]
-        current_oai_client.run_synchronizer_by_ids(
-            list(oai),
-            provider,
-            synchronizer,
-            break_on_error=break_on_error,
-            overwrite=overwrite,
-            bulk=bulk,
-            only_fetch=only_fetch
-        )
-    else:
-        assert l == 0, " If OAI option is used, the provider and synchronizer must be " \
-                       "specified and star_id or start_oai must not be used"
-        if not provider:
-            provider = None
+    api = create_api()
+    with api.app_context():
+        l = len(oai)
+        if index:
+            current_oai_client.es_index = index
+        if l > 0 and provider and synchronizer and not start_oai and not start_id:
+            assert len(provider) <= 1, "OAI option is only for one provider and synchronizer"
+            assert len(synchronizer) <= 1, "OAI option is only for one provider and synchronizer"
+            provider = provider[0]
+            synchronizer = synchronizer[0]
+            current_oai_client.run_synchronizer_by_ids(
+                list(oai),
+                provider,
+                synchronizer,
+                break_on_error=break_on_error,
+                overwrite=overwrite,
+                bulk=bulk,
+                only_fetch=only_fetch
+            )
         else:
-            provider = list(provider)
-        if not synchronizer:
-            synchronizer = None
-        else:
-            synchronizer = list(synchronizer)
-        current_oai_client.run(providers_codes=provider, synchronizers_codes=synchronizer,
-                               break_on_error=break_on_error, start_oai=start_oai,
-                               start_id=start_id, only_fetch=only_fetch)
+            assert l == 0, " If OAI option is used, the provider and synchronizer must be " \
+                           "specified and star_id or start_oai must not be used"
+            if not provider:
+                provider = None
+            else:
+                provider = list(provider)
+            if not synchronizer:
+                synchronizer = None
+            else:
+                synchronizer = list(synchronizer)
+            current_oai_client.run(providers_codes=provider, synchronizers_codes=synchronizer,
+                                   break_on_error=break_on_error, start_oai=start_oai,
+                                   start_id=start_id, only_fetch=only_fetch)
 
 
 @oai.command("fix")
