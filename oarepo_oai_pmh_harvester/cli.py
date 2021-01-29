@@ -4,6 +4,7 @@ from collections import defaultdict
 import click
 from boltons.tbutils import ParsedException
 from flask import cli
+from invenio_app.factory import create_api
 
 from oarepo_oai_pmh_harvester.models import OAIRecordExc, OAISync
 from oarepo_oai_pmh_harvester.proxies import current_oai_client
@@ -60,6 +61,17 @@ def run(provider, synchronizer, break_on_error, start_oai, start_id, oai, overwr
     Starts harvesting the resources set in invenio.cfg through the OAREPO_OAI_PROVIDERS
     environment variable.
     """
+    api = create_api()
+    with api.app_context():
+        _run_internal(provider=provider, synchronizer=synchronizer, break_on_error=break_on_error,
+                      start_oai=start_oai, start_id=start_id, oai=oai, overwrite=overwrite,
+                      bulk=bulk, only_fetch=only_fetch, index=index)
+
+
+def _run_internal(provider: tuple = tuple(), synchronizer: tuple = tuple(), break_on_error: bool = True,
+                  start_oai: str = None, start_id: int = 0, oai: tuple = tuple(),
+                  overwrite: bool = False, bulk: bool = True, only_fetch: bool = False,
+                  index: str = None):
     l = len(oai)
     if index:
         current_oai_client.es_index = index
