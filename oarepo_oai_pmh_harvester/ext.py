@@ -26,9 +26,10 @@ class OArepoOAIClientState(metaclass=Singleton):
     def __init__(self, app, _rules: defaultdict = None, _parsers: defaultdict = None,
                  _providers: dict = None, _synchronizers=None, transformer_class=OAITransformer,
                  _endpoints=None, endpoint_handlers: dict = None, _pre_processors: dict = None,
-                 _post_processors: dict = None):
+                 _post_processors: dict = None, _error_handlers: dict = None):
         self.app = app
         self._rules = _rules
+        self._error_handlers = _error_handlers
         self._parsers = _parsers
         self._endpoint_handlers = endpoint_handlers
         self._providers = _providers
@@ -50,6 +51,12 @@ class OArepoOAIClientState(metaclass=Singleton):
         if self._rules is None:
             self._load_rules()
         return self._rules
+
+    @property
+    def error_handlers(self):
+        if self._error_handlers is None:
+            self._load_error_handlers()
+        return self._error_handlers
 
     @property
     def parsers(self):
@@ -92,6 +99,10 @@ class OArepoOAIClientState(metaclass=Singleton):
 
     def _load_rules(self):
         for ep in iter_entry_points('oarepo_oai_pmh_harvester.rules'):
+            ep.load()
+
+    def _load_error_handlers(self):
+        for ep in iter_entry_points('oarepo_oai_pmh_harvester.error_handlers'):
             ep.load()
 
     def _load_parsers(self):
@@ -166,6 +177,11 @@ class OArepoOAIClientState(metaclass=Singleton):
         else:
             self._post_processors[provider][parser_name].append(func)
 
+    def add_error_handler(self, func, provider, parser_name):
+        if not self._error_handlers:
+            self._error_handlers = infinite_dd()
+        self._error_handlers[provider][parser_name] = func
+
     def create_synchronizer(self, provider_code, config):
         return OAISynchronizer(
             name=config["name"],
@@ -177,7 +193,10 @@ class OArepoOAIClientState(metaclass=Singleton):
             parser=self.parsers[config["metadata_prefix"]],
             transformer=self.transformer_class(
                 rules=self.rules[provider_code][config["metadata_prefix"]],
-                unhandled_paths=set(config.get("unhandled_paths", []))),
+                unhandled_paths=set(config.get("unhandled_paths", [])),
+                error_handler=self.error_handlers.get(provider_code, {}).get(
+                    config["metadata_prefix"]) if self.error_handlers else None
+            ),
             endpoints=self.endpoints,
             default_endpoint=config.get("default_endpoint", "recid"),
             endpoint_mapping=config.get("endpoint_mapping", {}),

@@ -2,6 +2,7 @@ import logging
 import time
 import traceback
 import uuid
+from datetime import datetime
 from itertools import islice
 from typing import Callable, List, Union
 
@@ -206,7 +207,7 @@ class OAISynchronizer:
         :return:
         :rtype:
         """
-        print(f"OAI harvester on endpoint: {self.oai_endpoint} has started!")
+        logger.info(f"OAI harvester on endpoint: {self.oai_endpoint} has started!")
 
         if not self.bulk:
             identifiers = self._get_identifiers(identifiers, start_id)
@@ -215,8 +216,13 @@ class OAISynchronizer:
         else:
             records = self._get_records_iterator(start_id, list_identifiers=identifiers)
             print("Waiting for server...")
+            t0 = datetime.now()
             for idx, record in enumerate(records, start=start_id):
+                logger.debug(f"Time for record: {datetime.now()-t0}")
+                t0 = datetime.now()
                 self.record_handling(idx, start_oai, break_on_error, xml=record.xml)
+                dt = datetime.now() - t0
+                logger.debug(f"Time for record_handling: {dt}")
 
     def _get_records_iterator(self, start_id: int = 0, list_identifiers: List[str] = None):
         if self.from_:
@@ -252,7 +258,7 @@ class OAISynchronizer:
             datestamp, deleted, oai_identifier = get_oai_header_data(identifier)
         else:
             datestamp, deleted, oai_identifier = get_oai_header_data(xml=xml)
-        print(f"{idx}. Record, OAI ID: '{oai_identifier}'")
+        logger.info(f"{idx}. Record, OAI ID: '{oai_identifier}'")
         oai_rec = OAIRecord.get_record(oai_identifier)
         if not start_oai or oai_identifier == start_oai:  # pragma: no cover TODO: vyřešit
             # start_oai/není implemntováno
@@ -325,7 +331,7 @@ class OAISynchronizer:
             return
         self.delete_record(oai_rec)
         self.deleted += 1
-        print(f"Identifier '{oai_rec.oai_identifier}' has been marked as deleted")
+        logger.info(f"Identifier '{oai_rec.oai_identifier}' has been marked as deleted")
 
     def _get_oai_identifiers(
             self,
@@ -365,7 +371,7 @@ class OAISynchronizer:
                 our_datestamp = arrow.get(oai_rec.timestamp)
                 oai_record_datestamp = arrow.get(datestamp)
                 if our_datestamp >= oai_record_datestamp:
-                    print(f'Record with oai_identifier "{oai_identifier}" already exists')
+                    logger.info(f'Record with oai_identifier "{oai_identifier}" already exists')
                     return
         if not xml:
             xml = self.get_xml(oai_identifier)
@@ -391,14 +397,14 @@ class OAISynchronizer:
             self.created += 1
             db.session.add(oai_rec)
             oai_rec.oai_identifiers.append(oai_identifier)
-            print(
+            logger.info(
                 f"Identifier '{oai_identifier}' has been created and '{record.id}' has been "
                 f"assigned as a UUID")
         else:
             record = self.update_record(oai_rec, transformed)
             self.modified += 1
             oai_rec.modification_sync_id = self.oai_sync.id
-            print(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
+            logger.info(f"Identifier '{oai_identifier}' has been updated (UUID: {record.id})")
         oai_rec.last_sync_id = self.oai_sync.id
         oai_rec.timestamp = arrow.get(datestamp).datetime
         return record

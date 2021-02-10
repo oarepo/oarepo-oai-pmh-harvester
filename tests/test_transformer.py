@@ -1,3 +1,4 @@
+import traceback
 from pprint import pprint
 
 import pytest
@@ -146,6 +147,14 @@ class TestTransformer:
         assert result == {'spam': {'spam1': 'ham', 'spam2': 'blah'}}
 
     def test_iter_json_6(self):
+        def exception_handler_1(el, path, phase, results):
+            exc = traceback.format_exc()
+            if not "rulesExceptions" in results[-1]:
+                results[-1]["rulesExceptions"] = []
+            results[-1]["rulesExceptions"].append(
+                {"path": path, "element": el, "phase": phase, "exception": exc})
+            return OAITransformer.PROCESSED
+
         def transform_handler(el, **kwargs):
             return {
                 "spam": {
@@ -173,7 +182,8 @@ class TestTransformer:
                 "pre": transform_handler_2
             }
         }
-        transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", })
+        transformer = OAITransformer(rules=rules, unhandled_paths={"/path/to/field", },
+                                     error_handler=exception_handler_1)
         result = transformer.transform(record)
         rulesExceptions = result["rulesExceptions"]
         assert rulesExceptions is not None

@@ -11,6 +11,13 @@ def rule(provider, parser, path, phase=OAITransformer.PHASE_PRE):
     return wrapper
 
 
+def rule_error_handler(provider, parser):
+    def wrapper(func):
+        current_oai_client.add_error_handler(func, provider, parser)
+
+    return wrapper
+
+
 def parser(name):
     def wrapper(func):
         current_oai_client.add_parser(func, name)
