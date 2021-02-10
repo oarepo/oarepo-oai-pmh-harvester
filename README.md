@@ -113,6 +113,7 @@ Successful data collection requires several steps, which consist of:
 1. **Rules**: functions that convert raw JSON (from parser) into final JSON
 1. **Processors (optional)**: two type of function (pre and post), that enable change data either before
  transformation (pre_processor) or after transformation (post_processor)
+1. **Rule error handlers (optional)**: function that handle errors that occur during rule handling
 
 ### Parsers
 
@@ -268,6 +269,35 @@ from oarepo_oai_pmh_harvester.decorators import post_processor
 def post_processor_1(data):
     data = data.update({"some_change_2": "change_2"})
     return data
+```
+
+### Rule error handlers
+
+Sometimes the rule throws an error, in which case the entire record is lost and the next record is skipped or the 
+entire program is interrupted. The error is loaded into the log, but Invenio has no idea that an error has occurred 
+somewhere in the rule in this case. For such cases, it is possible to define your own **rule_error_handler** and 
+define what should happen to the error. The handler itself registers via the rule_error_handler decorator, which has 
+two mandatory **parameters (provider and parser)**. The handler must then accept these arguments (el, path, phase, 
+results), where el mean element.  See example (registration is via entry points and decorators).
+
+  ```python
+entry_points={
+        'oarepo_oai_pmh_harvester.error_handlers': [
+            '<name> = example.error_handler',
+        ],
+    }
+```
+
+```python
+from oarepo_oai_pmh_harvester.decorators import rule_error_handler
+
+@rule_error_handler("uk", "xoai")
+def error_handler_1(el, path, phase, results):
+    exc = traceback.format_exc()
+    if not "rulesExceptions" in results[-1]:
+        results[-1]["rulesExceptions"] = []
+    results[-1]["rulesExceptions"].append(
+        {"path": path, "element": el, "phase": phase, "exception": exc})
 ```
  
 

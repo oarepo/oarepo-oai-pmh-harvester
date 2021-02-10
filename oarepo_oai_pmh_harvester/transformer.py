@@ -1,4 +1,5 @@
 import traceback
+from typing import Callable
 
 from oarepo_oai_pmh_harvester.utils import merge
 
@@ -9,7 +10,8 @@ class OAITransformer:
     PROCESSED = "ok"
     NO_HANDLER_CALLED = "no_handler_called"
 
-    def __init__(self, rules: dict = None, unhandled_paths: set = None, **options):
+    def __init__(self, rules: dict = None, unhandled_paths: set = None,
+                 error_handler: Callable = None, **options):
         if rules is None:
             rules = {}
         if unhandled_paths is None:
@@ -17,6 +19,7 @@ class OAITransformer:
         self.rules = rules
         self.options = options
         self.unhandled_paths = unhandled_paths
+        self.error_handler = error_handler
 
     def transform(self, record):
         result = {}
@@ -96,12 +99,11 @@ class OAITransformer:
                                      record=record,
                                      **self.options)
             except Exception:
-                exc = traceback.format_exc()
-                if not "rulesExceptions" in results[-1]:
-                    results[-1]["rulesExceptions"] = []
-                results[-1]["rulesExceptions"].append(
-                    {"path": path, "element": el, "phase": phase, "exception": exc})
-                return OAITransformer.PROCESSED
+                if not self.error_handler:
+                    raise
+                else:
+                    self.error_handler(el, path, phase, results)
+                    return OAITransformer.PROCESSED
             assert ret is not None, f"Handler {handler[phase]} must not return None"
             if isinstance(ret, dict):
                 results[-1] = merge(results[-1], ret)
