@@ -190,20 +190,7 @@ class TestTransformer:
         assert "path" in rulesExceptions[0]
         assert "phase" in rulesExceptions[0]
         assert "exception" in rulesExceptions[0]
+        del result["rulesExceptions"]
         assert result == {
-            'spam': {'spam1': 'ham'}, 'rulesExceptions': [{
-                'path': '/spam2', 'element': 'blah',
-                'phase': 'pre',
-                'exception': 'Traceback (most '
-                             'recent call last):\n  '
-                             'File '
-                             '"/home/semtex/GoogleDrive/Projekty/Pracovní/oarepo/oarepo-oai-pmh'
-                             '-harvester/oarepo_oai_pmh_harvester/transformer.py", line 98, '
-                             'in call_handlers\n    ret = handler[phase](el=el, paths=paths, '
-                             'results=results, phase=phase,\n  File '
-                             '"/home/semtex/GoogleDrive/Projekty/Pracovní/oarepo/oarepo-oai-pmh'
-                             '-harvester/tests/test_transformer.py", line 166, '
-                             'in transform_handler_2\n    raise Exception("Test '
-                             'exception")\nException: Test exception\n'
-            }]
+            'spam': {'spam1': 'ham'}
         }
