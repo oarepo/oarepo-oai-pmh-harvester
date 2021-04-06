@@ -11,6 +11,7 @@ from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore import current_pidstore
+from invenio_pidstore.models import PersistentIdentifier
 from invenio_records import Record
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search_client
@@ -219,12 +220,13 @@ class OAISynchronizer:
             t0 = datetime.now()
             for idx, record in enumerate(records, start=start_id):
                 logger.debug(f"Time for record: {datetime.now()-t0}")
-                t0 = datetime.now()
+                t0 = datetime.now() # TODO: odstranit nebo zapisovat do logu
                 self.record_handling(idx, start_oai, break_on_error, xml=record.xml)
                 dt = datetime.now() - t0
                 logger.debug(f"Time for record_handling: {dt}")
 
     def _get_records_iterator(self, start_id: int = 0, list_identifiers: List[str] = None):
+        # TODO: ošetřit jestli jsme něco nezmeškali
         if self.from_:
             records = self.sickle.ListRecords(
                 **{
@@ -260,7 +262,7 @@ class OAISynchronizer:
             datestamp, deleted, oai_identifier = get_oai_header_data(xml=xml)
         logger.info(f"{idx}. Record, OAI ID: '{oai_identifier}'")
         oai_rec = OAIRecord.get_record(oai_identifier)
-        if not start_oai or oai_identifier == start_oai:  # pragma: no cover TODO: vyřešit
+        if not start_oai or oai_identifier == start_oai:  # pragma: no cover TODO: vyřešit, není pozůstatek?
             # start_oai/není implemntováno
             collect = True
         else:
@@ -371,7 +373,7 @@ class OAISynchronizer:
                 our_datestamp = arrow.get(oai_rec.timestamp)
                 oai_record_datestamp = arrow.get(datestamp)
                 if our_datestamp >= oai_record_datestamp:
-                    logger.info(f'Record with oai_identifier "{oai_identifier}" already exists')
+                    logger.info(f'Record with oai_identifier "{oai_identifier}" is unchanged')
                     return
         if not xml:
             xml = self.get_xml(oai_identifier)
@@ -484,6 +486,8 @@ class OAISynchronizer:
         return record, pid
 
     def update_record(self, oai_rec, data):
+        # TODO: vzkříšení PID
+        # TODO: podívat se do records-draft na helper metody
         endpoint_config = self.get_endpoint_config(data)
         indexer_class = self.get_indexer_class(data, endpoint_config=endpoint_config)
         record_class = self.get_record_class(data, endpoint_config=endpoint_config)
@@ -511,14 +515,13 @@ class OAISynchronizer:
 
         record = Record.get_record(oai_rec.id)
         record.delete()
-        # TODO: rozmyslet se jak nakládat s PIDy
-        # # mark all PIDs as DELETED
-        # all_pids = PersistentIdentifier.query.filter(
-        #     PersistentIdentifier.object_uuid == record.id,
-        # ).all()
-        # for rec_pid in all_pids:
-        #     if not rec_pid.is_deleted():
-        #         rec_pid.delete()
+        # mark all PIDs as DELETED
+        all_pids = PersistentIdentifier.query.filter(
+            PersistentIdentifier.object_uuid == record.id,
+        ).all()
+        for rec_pid in all_pids:
+            if not rec_pid.is_deleted():
+                rec_pid.delete()
 
         db.session.commit()
         if indexer_class:
