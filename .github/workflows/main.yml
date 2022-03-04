@@ -5,25 +5,9 @@ on: [ push ]
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     strategy:
       matrix:
-        include:
-          - python-version: 3.8
-            EXTRAS: "postgresql,tests"
-            SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://postgres@localhost:5432/invenio"
-          - python-version: 3.8
-            EXTRAS: "sqlite,tests"
-
+        python-version: [ "3.10" ]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -40,36 +24,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
+
       - name: Configure sysctl limits
         run: |
           sudo swapoff -a
           sudo sysctl -w vm.swappiness=1
           sudo sysctl -w fs.file-max=262144
           sudo sysctl -w vm.max_map_count=262144
-      - name: Runs Elasticsearch
-        uses: elastic/elastic-github-actions/elasticsearch@master
-        with:
-          stack-version: 7.6.0
-      - name: Before install
-        env:
-          EXTRAS: ${{matrix.EXTRAS}}
-        run: |
-          pip install --upgrade pip setuptools py
-          pip install twine wheel coveralls requirements-builder pip-tools
-          requirements-builder --level=pypi -e $EXTRAS setup.py > .travis-release-requirements.in
-          pip-compile -U --verbose -o .travis-release-requirements.txt .travis-release-requirements.in
-          cat .travis-release-requirements.txt
+
       - name: Install dependencies
         run: |
-          pip install -r .travis-release-requirements.txt
+          python -m pip install --upgrade pip wheel setuptools
+          pip install poetry
+          poetry config virtualenvs.create false
+          poetry install
+          cat poetry.lock
+
       - name: Test with pytest
-        env:
-          SQLALCHEMY_DATABASE_URI: ${{matrix.SQLALCHEMY_DATABASE_URI}}
         run: |
-          "./run-tests.sh"
-      #      - name: Check manifest
-      #        run: |
-      #          check-manifest
+          pytest tests
       #
       #    - name: Coveralls
       #      uses: AndreMiras/coveralls-python-action@develop
@@ -88,7 +61,8 @@ jobs:
 
       - name: Build package to publish
         run: |
-          python setup.py sdist bdist_wheel
+          poetry build
+
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -109,6 +83,7 @@ jobs:
         run: |
           ls -la
           ls -la dist
+
       - name: Publish package
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@master
