@@ -37,6 +37,20 @@ except ImportError:
 @shared_task
 def oai_harvest(harvester_id: str, start_from: str, load_from: str = None, dump_to: str = None,
                 on_background=False, identifiers=None):
+    """
+    @param harvester_id: id of the harvester configuration (OAIHarvesterConfig) object
+    @param start_from: datestamp (either YYYY-MM-DD or YYYY-MM-DDThh:mm:ss,
+           depends on the OAI endpoint), inclusive
+    @param load_from: if set, a path to the directory on the filesystem where
+           the OAI-PMH data are present (in *.json.gz files)
+    @param dump_to: if set, harvested metadata will be parsed from xml to json
+           and stored into this directory, not to the repository
+    @param on_background: if True, transformation and storage will be started in celery tasks and can run in parallel.
+           If false, they will run sequentially inside this task
+    @param identifiers: if load_from is set, it is a list of file names within the directory.
+           If load_from is not set, these are oai identifiers for GetRecord. If not set at all, all records from
+           start_from are harvested
+    """
     harvester = Harvester(harvester_id, on_background, load_from, dump_to)
     harvester.harvest(start_from, identifiers)
 

@@ -36,6 +36,21 @@ its url, oai set and metadata prefix. Records from this
 harvester will be transformed by the NuslTransformer before
 they are written to the repository.
 
+Options:
+
+```bash
+Usage: invenio oaiharvester add [OPTIONS]
+
+Options:
+  --code TEXT         OAI server code  [required]
+  --name TEXT         OAI server name  [required]
+  --url TEXT          OAI base url  [required]
+  --set TEXT          OAI set  [required]
+  --prefix TEXT       OAI metadata prefix  [required]
+  --parser TEXT       OAI metadata parser. If not passed, a prefix-based default is used
+  --transformer TEXT  Transformer class  [required]
+```
+
 ## Usage
 
 ### Command-line
@@ -43,7 +58,7 @@ they are written to the repository.
 On command line, invoke
 
 ```bash
-oaiharvester harvest nusl
+oaiharvester harvest nusl <optional list of oai identifiers to harvest>
 ```
 
 Options:
@@ -59,8 +74,79 @@ Options:
 
 ### Celery task
 
+```python3
+@shared_task
+def oai_harvest(
+        harvester_id: str, 
+        start_from: str, 
+        load_from: str = None, 
+        dump_to: str = None,
+        on_background=False, 
+        identifiers=None):
+    """
+    @param harvester_id: id of the harvester configuration (OAIHarvesterConfig) object
+    @param start_from: datestamp (either YYYY-MM-DD or YYYY-MM-DDThh:mm:ss, 
+           depends on the OAI endpoint), inclusive
+    @param load_from: if set, a path to the directory on the filesystem where 
+           the OAI-PMH data are present (in *.json.gz files)
+    @param dump_to: if set, harvested metadata will be parsed from xml to json 
+           and stored into this directory, not to the repository
+    @param on_background: if True, transformation and storage will be started in celery tasks and can run in parallel.
+           If false, they will run sequentially inside this task
+    @param identifiers: if load_from is set, it is a list of file names within the directory. 
+           If load_from is not set, these are oai identifiers for GetRecord. If not set at all, all records from 
+           start_from are harvested 
+    """
+```
+
 ## Custom parsers and transformers
+
+The input OAI xml is at first parsed via parsers into
+a json format.
+
+MARC-XML and DC parsers are supported out of the box.
+See the section below if you need a different parser
+
+The JSON is then transformed into an invenio record
+via a transformer class. As different repositories
+use different semantic of fields (even in MARC),
+this step can not be generic and implementor is required
+to provide his/her own transformer class.
 
 ### Transformer
 
+A simple transformer, that transforms just the title from MARC-XML
+input might look like:
+
+```python3
+from typing import List
+from oarepo_oaipmh_harvester import OAITransformer, OAIRecord, OAIHarvestRunBatch
+
+from my_record.proxies import current_service
+from my_record.records.api import MyRecord
+
+class NuslTransformer(OAITransformer):
+    oaiidentifier_search_property = 'metadata_systemIdentifiers_identifier'
+    oaiidentifier_search_path = ('metadata', 'systemIdentifiers', 'identifier')
+
+    # invenio service that will be used to create/update the record
+    record_service = current_service
+    # invenio record for this record
+    record_model = MyRecord 
+    
+
+    def transform_single(self, rec: OAIRecord):
+        # add all your transformations here
+        rec.transformed.update({
+            'metadata': {
+                'title': rec['24500a']
+            }
+        })
+```
+
 ### Parser
+
+A parser is responsible for transforming the XML document
+into an intermediary JSON.
+
+For implementation details see [MarcxmlParser](./oarepo_oaipmh_harvester/parsers).

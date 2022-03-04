@@ -73,6 +73,8 @@ class OAIRecord:
 class OAITransformer:
     oaiidentifier_search_property = None
     oaiidentifier_search_path = None
+    record_service = None
+    record_model = None
 
     def __init__(self, harvester_config: OAIHarvesterConfig, harvester_run: OAIHarvestRun):
         self.harvester_config = harvester_config
@@ -86,7 +88,15 @@ class OAITransformer:
         :param oai_records:         a list of oai-pmh records
         :param harvest_batch:       a harvester batch, for example for reporting errors etc.
         """
-        raise NotImplementedError()
+        for rec in oai_records:
+            try:
+                self.transform_single(rec)
+            except Exception as e:
+                harvest_batch.record_exception(rec.identifier, e)
+                continue
+
+            rec.service = self.get_record_service(rec)
+            rec.model = self.get_record_model(rec)
 
     def transform_deleted(self, oai_records: List[OAIRecord], harvest_batch: OAIHarvestRunBatch):
         """
@@ -95,6 +105,17 @@ class OAITransformer:
         :param oai_records:         a list of oai-pmh records
         :param harvest_batch:       a harvester batch, for example for reporting errors etc.
         """
+        for rec in oai_records:
+            rec.service = self.get_record_service(rec)
+            rec.model = self.get_record_model(rec)
+
+    def get_record_service(self, rec: OAIRecord):
+        return self.record_service
+
+    def get_record_model(self, rec: OAIRecord):
+        return self.record_model
+
+    def transform_single(self, rec: OAIRecord):
         raise NotImplementedError()
 
     def save(self, oai_records: List[OAIRecord], harvest_batch: OAIHarvestRunBatch, uow):
