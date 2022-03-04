@@ -165,4 +165,4 @@ class NuslTransformer(OAITransformer):
 A parser is responsible for transforming the XML document
 into an intermediary JSON.
 
-For implementation details see [MarcxmlParser](./oarepo_oaipmh_harvester/parsers).
+For implementation details see [MarcxmlParser](./oarepo_oaipmh_harvester/parsers.py).
