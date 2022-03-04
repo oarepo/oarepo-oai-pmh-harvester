@@ -3,6 +3,7 @@ name = "oarepo-oaipmh-harvester"
 version = "3.0.0"
 description = "OAIPMH harvester library for Invenio. Development only, not for production."
 authors = ["Mirek Simek <miroslav.simek@gmail.com>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
