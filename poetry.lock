@@ -44,6 +44,14 @@ python-versions = ">=3.6"
 python-dateutil = ">=2.7.0"
 
 [[package]]
+name = "atomicwrites"
+version = "1.4.0"
+description = "Atomic file writes."
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
 name = "attrs"
 version = "21.4.0"
 description = "Classes Without Boilerplate"
@@ -744,6 +752,14 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [[package]]
+name = "iniconfig"
+version = "1.1.1"
+description = "iniconfig: brain-dead simple config-ini parsing"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "invenio-access"
 version = "1.4.2"
 description = "Invenio module for common role based access control."
@@ -760,9 +776,9 @@ invenio-i18n = ">=1.2.0"
 [package.extras]
 all = ["Sphinx (>=3)", "cachelib (>=0.1)", "pytest-invenio (>=1.4.1)", "redis (>=2.10.5)"]
 docs = ["Sphinx (>=3)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.8)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.8)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.8)"]
-sqlite = ["invenio-db[sqlite,versioning] (>=1.0.8)"]
+sqlite = ["invenio-db[versioning,sqlite] (>=1.0.8)"]
 tests = ["cachelib (>=0.1)", "pytest-invenio (>=1.4.1)", "redis (>=2.10.5)"]
 
 [[package]]
@@ -799,7 +815,7 @@ ua-parser = ">=0.7.3"
 admin = ["invenio-admin (>=1.2.1)"]
 all = ["invenio-admin (>=1.2.1)", "Sphinx (==4.2.0)", "pytest-invenio (>=1.4.2)"]
 docs = ["Sphinx (==4.2.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.9)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.9)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.9)"]
 sqlite = ["invenio-db[versioning] (>=1.0.9)"]
 tests = ["pytest-invenio (>=1.4.2)"]
@@ -932,7 +948,7 @@ WTForms = ">=2.0"
 [package.extras]
 all = ["Sphinx (>=4.2.0)", "sphinxcontrib-httpdomain (>=1.4.0)", "Flask-BabelEx (>=0.9.4)", "Flask-Menu (>=0.5.0)", "invenio-access (>=1.2.0)", "invenio-accounts (>=1.4.0)", "invenio-admin (>=1.2.0)", "mock (>=1.3.0)", "pytest-invenio (>=1.4.2)"]
 docs = ["Sphinx (>=4.2.0)", "sphinxcontrib-httpdomain (>=1.4.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.9)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.9)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.9)"]
 sqlite = ["invenio-db[versioning] (>=1.0.9)"]
 tests = ["Flask-BabelEx (>=0.9.4)", "Flask-Menu (>=0.5.0)", "invenio-access (>=1.2.0)", "invenio-accounts (>=1.4.0)", "invenio-admin (>=1.2.0)", "mock (>=1.3.0)", "pytest-invenio (>=1.4.2)"]
@@ -1044,7 +1060,7 @@ jsonschema = ">=3.0.0,<5.0.0"
 admin = ["invenio-admin (>=1.2.1)"]
 all = ["Sphinx (==4.2.0)", "invenio-admin (>=1.2.1)", "pytest-invenio (>=1.4.1)"]
 docs = ["Sphinx (==4.2.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.9,<1.1.0)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.9,<1.1.0)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.9,<1.1.0)"]
 sqlite = ["invenio-db[versioning] (>=1.0.9,<1.1.0)"]
 tests = ["pytest-invenio (>=1.4.1)"]
@@ -1067,7 +1083,7 @@ all = ["Sphinx (>=3)", "pytest-mock (>=1.6.0)", "pytest-invenio (>=1.4.1)", "inv
 docs = ["Sphinx (>=3)"]
 elasticsearch6 = ["invenio-search[elasticsearch6] (>=1.4.1,<2.0.0)"]
 elasticsearch7 = ["invenio-search[elasticsearch7] (>=1.4.1,<2.0.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.9,<2.0.0)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.9,<2.0.0)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.9,<2.0.0)"]
 sqlite = ["invenio-db[versioning] (>=1.0.9,<2.0.0)"]
 tests = ["pytest-mock (>=1.6.0)", "pytest-invenio (>=1.4.1)", "invenio-accounts (>=1.4.3)", "invenio-app (>=1.3.0)", "Sphinx (>=3)"]
@@ -1098,11 +1114,11 @@ wand = ">=0.6.6,<0.7.0"
 xmltodict = ">=0.12.0,<0.13.0"
 
 [package.extras]
-all = ["Sphinx (==4.2.0)", "invenio-db[mysql,versioning] (>=1.0.12,<2.0.0)", "invenio-db[postgresql,versioning] (>=1.0.12,<2.0.0)", "invenio-db[versioning] (>=1.0.12,<2.0.0)", "invenio-app (>=1.3.1)", "pytest-invenio (>=1.4.3)"]
+all = ["Sphinx (==4.2.0)", "invenio-db[versioning,mysql] (>=1.0.12,<2.0.0)", "invenio-db[postgresql,versioning] (>=1.0.12,<2.0.0)", "invenio-db[versioning] (>=1.0.12,<2.0.0)", "invenio-app (>=1.3.1)", "pytest-invenio (>=1.4.3)"]
 docs = ["Sphinx (==4.2.0)"]
 elasticsearch6 = ["invenio-search[elasticsearch6] (>=1.4.2,<2.0.0)"]
 elasticsearch7 = ["invenio-search[elasticsearch7] (>=1.4.2,<2.0.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.12,<2.0.0)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.12,<2.0.0)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.12,<2.0.0)"]
 sqlite = ["invenio-db[versioning] (>=1.0.12,<2.0.0)"]
 tests = ["invenio-app (>=1.3.1)", "pytest-invenio (>=1.4.3)"]
@@ -1476,6 +1492,14 @@ python-versions = ">=3.6.2"
 wcwidth = "*"
 
 [[package]]
+name = "py"
+version = "1.11.0"
+description = "library with cross-python path, ini-parsing, io, code, log facilities"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[[package]]
 name = "pycountry"
 version = "22.1.10"
 description = "ISO country, subdivision, language, currency and script definitions and their translations"
@@ -1536,6 +1560,27 @@ description = "Persistent/Functional/Immutable data structures"
 category = "main"
 optional = false
 python-versions = ">=3.7"
+
+[[package]]
+name = "pytest"
+version = "7.0.1"
+description = "pytest: simple powerful testing with Python"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+atomicwrites = {version = ">=1.0", markers = "sys_platform == \"win32\""}
+attrs = ">=19.2.0"
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+iniconfig = "*"
+packaging = "*"
+pluggy = ">=0.12,<2.0"
+py = ">=1.8.2"
+tomli = ">=1.0.0"
+
+[package.extras]
+testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
 name = "python-dateutil"
@@ -1700,6 +1745,14 @@ timezone = ["python-dateutil"]
 url = ["furl (>=0.4.1)"]
 
 [[package]]
+name = "tomli"
+version = "2.0.1"
+description = "A lil' TOML parser"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "tqdm"
 version = "4.63.0"
 description = "Fast, Extensible Progress Meter"
@@ -1855,7 +1908,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "7acd182320642ed232800833e03981786d1ccfe5bff767bb642bd00fe7442eda"
+content-hash = "0100af3cf29d746201c899613ad9927e871b14ff7d5604635a38b9844108eab1"
 
 [metadata.files]
 alembic = [
@@ -1873,6 +1926,10 @@ appdirs = [
 arrow = [
     {file = "arrow-1.2.2-py3-none-any.whl", hash = "sha256:d622c46ca681b5b3e3574fcb60a04e5cc81b9625112d5fb2b44220c36c892177"},
     {file = "arrow-1.2.2.tar.gz", hash = "sha256:05caf1fd3d9a11a1135b2b6f09887421153b94558e5ef4d090b567b47173ac2b"},
+]
+atomicwrites = [
+    {file = "atomicwrites-1.4.0-py2.py3-none-any.whl", hash = "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197"},
+    {file = "atomicwrites-1.4.0.tar.gz", hash = "sha256:ae70396ad1a434f9c7046fd2dd196fc04b12f9e91ffb859164193be8b6168a7a"},
 ]
 attrs = [
     {file = "attrs-21.4.0-py2.py3-none-any.whl", hash = "sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4"},
@@ -2124,6 +2181,10 @@ importlib-metadata = [
 importlib-resources = [
     {file = "importlib_resources-5.4.0-py3-none-any.whl", hash = "sha256:33a95faed5fc19b4bc16b29a6eeae248a3fe69dd55d4d229d2b480e23eeaad45"},
     {file = "importlib_resources-5.4.0.tar.gz", hash = "sha256:d756e2f85dd4de2ba89be0b21dba2a3bbec2e871a42a3a16719258a11f87506b"},
+]
+iniconfig = [
+    {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
+    {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 invenio-access = [
     {file = "invenio-access-1.4.2.tar.gz", hash = "sha256:7eb70182bd4ff1ea3a3caa1f8b029aafb49c42e573c0c6497ca9cfaf1c97dc80"},
@@ -2422,6 +2483,10 @@ prompt-toolkit = [
     {file = "prompt_toolkit-3.0.28-py3-none-any.whl", hash = "sha256:30129d870dcb0b3b6a53efdc9d0a83ea96162ffd28ffe077e94215b233dc670c"},
     {file = "prompt_toolkit-3.0.28.tar.gz", hash = "sha256:9f1cd16b1e86c2968f2519d7fb31dd9d669916f515612c269d14e9ed52b51650"},
 ]
+py = [
+    {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
+    {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
+]
 pycountry = [
     {file = "pycountry-22.1.10.tar.gz", hash = "sha256:b9a6d9cdbf53f81ccdf73f6f5de01b0d8493cab2213a230af3e34458de85ea32"},
 ]
@@ -2463,6 +2528,10 @@ pyrsistent = [
     {file = "pyrsistent-0.18.1-cp39-cp39-win32.whl", hash = "sha256:1b34eedd6812bf4d33814fca1b66005805d3640ce53140ab8bbb1e2651b0d9bc"},
     {file = "pyrsistent-0.18.1-cp39-cp39-win_amd64.whl", hash = "sha256:e24a828f57e0c337c8d8bb9f6b12f09dfdf0273da25fda9e314f0b684b415a07"},
     {file = "pyrsistent-0.18.1.tar.gz", hash = "sha256:d4d61f8b993a7255ba714df3aca52700f8125289f84f704cf80916517c46eb96"},
+]
+pytest = [
+    {file = "pytest-7.0.1-py3-none-any.whl", hash = "sha256:9ce3ff477af913ecf6321fe337b93a2c0dcf2a0a1439c43f5452112c1e4280db"},
+    {file = "pytest-7.0.1.tar.gz", hash = "sha256:e30905a0c131d3d94b89624a1cc5afec3e0ba2fbdb151867d8e0ebd49850f171"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
@@ -2601,6 +2670,10 @@ sqlalchemy = [
 ]
 sqlalchemy-utils = [
     {file = "SQLAlchemy-Utils-0.35.0.tar.gz", hash = "sha256:01f0f0ebed696386bc7bf9231cd6894087baba374dd60f40eb1b07512d6b1a5e"},
+]
+tomli = [
+    {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
+    {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
 tqdm = [
     {file = "tqdm-4.63.0-py2.py3-none-any.whl", hash = "sha256:e643e071046f17139dea55b880dc9b33822ce21613b4a4f5ea57f202833dbc29"},
