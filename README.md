@@ -141,7 +141,9 @@ from my_record.records.api import MyRecord
 
 class NuslTransformer(OAITransformer):
     oaiidentifier_search_property = 'metadata_systemIdentifiers_identifier'
+    # the name of service filter that accesses the record's OAI identifier
     oaiidentifier_search_path = ('metadata', 'systemIdentifiers', 'identifier')
+    # path to the oai record identifier inside the record
 
     # invenio service that will be used to create/update the record
     record_service = current_service

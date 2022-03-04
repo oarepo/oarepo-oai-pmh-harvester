@@ -42,10 +42,10 @@ class OAIHarvesterConfig(db.Model):
     transformer = db.Column(db.Text, nullable=False)
     """A python class that transforms the intermediary json representation into a record."""
 
-    max_records = db.Column(db.Integer, default=5000)
+    max_records = db.Column(db.Integer, default=50000000)
     """In one round, fetch at most this number of records"""
 
-    batch_size = db.Column(db.Integer, default=50)
+    batch_size = db.Column(db.Integer, default=500)
     """Group records for processing, depends on memory size"""
 
     runs = db.relationship("OAIHarvestRun", back_populates="harvester")
