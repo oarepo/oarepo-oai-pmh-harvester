@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "oarepo-oaipmh-harvester"
+version = "3.0.0"
+description = "OAIPMH harvester library for Invenio. Development only, not for production."
+authors = ["Mirek Simek <miroslav.simek@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+invenio-records-resources = ">=0.19.0"
+Sickle = "^0.7.0"
+tqdm = "^4.63.0"
+dojson = "^1.4.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins.'invenio_db.alembic']
+oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester:alembic"
+
+[tool.poetry.plugins.'invenio_db.models']
+oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.models"
+
+[tool.poetry.plugins.'invenio_base.api_apps']
+oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.ext:OARepoOAIHarvesterExt"
+
+[tool.poetry.plugins.'invenio_base.apps']
+oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.ext:OARepoOAIHarvesterExt"
+
+[tool.poetry.plugins.'oarepo_oaipmh_harvester.parsers']
+marcxml = "oarepo_oaipmh_harvester.parsers:marcxml_parser"
