@@ -99,6 +99,20 @@ def oai_harvest(
     """
 ```
 
+## Harvest status
+
+Each harvest creates a row in `OAIHarvestRun` database
+table containing first and last datestamps and harvest
+status (running, completed, errored, ...)
+
+A run is split into a chunk of records and each chunk
+is represented in `OAIHarvestRunBatch` database table.
+It contains a chunk status (running, completed, warning,
+failed, ...) and a list of identifiers harvested and 
+their status (ok, warning during harvesting the identifier,
+harvesting the identifier failed). The table also contains
+details of the warnings/errors.
+
 ## Custom parsers and transformers
 
 The input OAI xml is at first parsed via parsers into
