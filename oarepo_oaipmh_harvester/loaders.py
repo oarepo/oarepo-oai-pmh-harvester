@@ -10,15 +10,8 @@ from tqdm import tqdm
 from oarepo_oaipmh_harvester.models import OAIHarvesterConfig
 
 
-def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: Union[List[str], None] = None,
-                  unsafe=False):
-    if unsafe:
-        print("!!! Not verifying SSL certificate !!!")
-        request = Sickle(harvester.baseurl, encoding='utf-8',
-                         verify=False
-                         )
-    else:
-        request = Sickle(harvester.baseurl, encoding='utf-8')
+def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: Union[List[str], None] = None):
+    request = Sickle(harvester.baseurl, encoding='utf-8')
 
     dates = {
         'from': start_from,

@@ -23,7 +23,7 @@ class OARepoOAIHarvesterExt(object):
         app.extensions["oarepo_oaipmh_harvester"] = self
 
     def run(self, harvester_or_code: Union[str, OAIHarvesterConfig], all_records=False,
-            on_background=False, dump_to=None, load_from=None, identifiers=None, unsafe=False):
+            on_background=False, dump_to=None, load_from=None, identifiers=None):
         harvester: OAIHarvesterConfig
         if isinstance(harvester_or_code, str):
             try:
@@ -41,12 +41,12 @@ class OARepoOAIHarvesterExt(object):
         if on_background:
             oai_harvest.delay(harvester.id, start_date,
                               load_from=load_from, dump_to=dump_to, on_background=on_background,
-                              identifiers=identifiers, unsafe=unsafe)
+                              identifiers=identifiers)
         else:
             oai_harvest.apply(
                 args=(harvester.id, start_date),
                 kwargs=dict(load_from=load_from, dump_to=dump_to, on_background=on_background,
-                            identifiers=identifiers, unsafe=unsafe))
+                            identifiers=identifiers))
 
     @cached_property
     def oai_parsers(self):

@@ -21,17 +21,12 @@ def oaiharvester():
               help="Do not import records, just dump (cache) them to this directory (mostly for debugging)")
 @click.option('--load-from',
               help="Do not contact oai-pmh server but load the records from this directory (created by dump-to option)")
-@click.option('--unsafe', is_flag=True, default=False, help="Do not verify certificates")
 @click.argument('harvester_code')
 @click.argument('identifiers', nargs=-1)
 @with_appcontext
-def harvest(harvester_code, all_records, background, dump_to, load_from, unsafe, identifiers):
-    if unsafe:
-        import ssl
-        ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
-
+def harvest(harvester_code, all_records, background, dump_to, load_from, identifiers):
     current_harvester.run(harvester_code, all_records=all_records, on_background=background,
-                          load_from=load_from, dump_to=dump_to, identifiers=identifiers, unsafe=unsafe)
+                          load_from=load_from, dump_to=dump_to, identifiers=identifiers)
 
 
 @oaiharvester.command()

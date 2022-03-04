@@ -36,9 +36,9 @@ except ImportError:
 
 @shared_task
 def oai_harvest(harvester_id: str, start_from: str, load_from: str = None, dump_to: str = None,
-                on_background=False, identifiers=None, unsafe=False):
+                on_background=False, identifiers=None):
     harvester = Harvester(harvester_id, on_background, load_from, dump_to)
-    harvester.harvest(start_from, identifiers, unsafe=unsafe)
+    harvester.harvest(start_from, identifiers)
 
 
 class Harvester:
@@ -52,7 +52,7 @@ class Harvester:
         self.loading_task_thread = threading.Thread(target=lambda self: self.loading_task(), args=[self])
         self.loader = None
 
-    def harvest(self, start_from: str, identifiers: Union[List[str], None] = None, unsafe=False):
+    def harvest(self, start_from: str, identifiers: Union[List[str], None] = None):
         print(f'harvesting {self.harvester.code} from {start_from}, identifiers {identifiers}')
 
         self.run = OAIHarvestRun(harvester_id=self.harvester.id,
@@ -62,7 +62,7 @@ class Harvester:
         db.session.commit()
 
         try:
-            self.loader = self.get_loader(start_from, identifiers, unsafe)
+            self.loader = self.get_loader(start_from, identifiers)
             self.loading_task_thread.start()
 
             first = True
@@ -157,11 +157,11 @@ class Harvester:
         else:
             oaipmh_update_records_task.apply(args=(self.harvester.id, self.run.id, batch_idx, updated_records))
 
-    def get_loader(self, start_from: str, identifiers: Union[List[str], None] = None, unsafe=False):
+    def get_loader(self, start_from: str, identifiers: Union[List[str], None] = None):
         if self.load_from:
             return filesystem_loader(self.load_from, identifiers)
         else:
-            return sickle_loader(self.harvester, start_from, identifiers, unsafe)
+            return sickle_loader(self.harvester, start_from, identifiers)
 
     def get_parser(self):
         if self.load_from:
