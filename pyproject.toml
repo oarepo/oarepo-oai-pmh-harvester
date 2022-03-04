@@ -1,9 +1,12 @@
 [tool.poetry]
-name = "oarepo-oaipmh-harvester"
+name = "oarepo-oai-pmh-harvester"
 version = "3.0.0"
 description = "OAIPMH harvester library for Invenio. Development only, not for production."
 authors = ["Mirek Simek <miroslav.simek@gmail.com>"]
 readme = "README.md"
+packages = [
+    { include = "oarepo_oaipmh_harvester" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
