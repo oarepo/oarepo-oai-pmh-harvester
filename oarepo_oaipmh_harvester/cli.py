@@ -1,6 +1,8 @@
+from collections import defaultdict
+
 import click
 
-from oarepo_oaipmh_harvester.models import OAIHarvesterConfig
+from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OAIHarvestRunBatch, HarvestStatus
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from flask.cli import with_appcontext
 
@@ -53,3 +55,69 @@ def add(code, name, url, set, prefix, parser, transformer):
         transformer=transformer
     ))
     db.session.commit()
+
+
+@oaiharvester.command()
+@click.argument('code', required=True)
+@click.option('--run-id', required=False)
+@click.option('--details', default=False, is_flag=True)
+@with_appcontext
+def warnings(code, run_id=None, details=False):
+    cfg = OAIHarvesterConfig.query.filter_by(code=code).one()
+    if run_id is not None:
+        run_query = OAIHarvestRun.query.filter_by(id=run_id, harvester_id=cfg.id)
+    else:
+        run_query = OAIHarvestRun.query.filter_by(harvester_id=cfg.id).order_by(OAIHarvestRun.started.desc())
+    run = run_query.first()
+    if not run:
+        print("No run to display")
+        return
+    batches = OAIHarvestRunBatch.query.filter_by(run_id=run.id).filter(OAIHarvestRunBatch.status.in_([
+        HarvestStatus.WARNING, HarvestStatus.FAILED
+    ]))
+    by_message = defaultdict(list)
+    for batch in batches:
+        if batch.warning_records:
+            for k, vv in batch.warning_records.items():
+                for v in vv:
+                    if details:
+                        by_message[v['message']].append(k)
+                    else:
+                        by_message[v['message'][:80]].append(k)
+    for msg, records in sorted(list(by_message.items()), key=lambda x: -len(x[1])):
+        if details:
+            print(f'{msg:80s} || {", ".join(records)}')
+        else:
+            print(f'{msg:80s} || {len(records):10d} || {", ".join(records[:3])}')
+
+
+@oaiharvester.command()
+@click.argument('code', required=True)
+@click.option('--run-id', required=False)
+@click.option('--details', default=False, is_flag=True)
+@with_appcontext
+def errors(code, run_id=None, details=False):
+    cfg = OAIHarvesterConfig.query.filter_by(code=code).one()
+    if run_id is not None:
+        run_query = OAIHarvestRun.query.filter_by(id=run_id, harvester_id=cfg.id)
+    else:
+        run_query = OAIHarvestRun.query.filter_by(harvester_id=cfg.id).order_by(OAIHarvestRun.started.desc())
+    run = run_query.first()
+    if not run:
+        print("No run to display")
+        return
+    batches = OAIHarvestRunBatch.query.filter_by(run_id=run.id, status=HarvestStatus.FAILED)
+    by_message = defaultdict(list)
+    for batch in batches:
+        if batch.failed_records:
+            for k, vv in batch.failed_records.items():
+                for v in vv:
+                    if details:
+                        by_message[v['message']].append(k)
+                    else:
+                        by_message[v['message'][:80].replace('\n', ' ')].append(k)
+    for msg, records in sorted(list(by_message.items()), key=lambda x: -len(x[1])):
+        if details:
+            print(f'{msg:80s} || {", ".join(records)}')
+        else:
+            print(f'{msg:80s} || {len(records):10d} || {", ".join(records[:3])}')

@@ -45,6 +45,10 @@ class OAIRecord:
         return list(sorted(ret))
 
     @property
+    def data(self):
+        return self._data
+
+    @property
     def transformed(self):
         return self._transformed
 
@@ -241,18 +245,19 @@ def matches(*args, first_only=False, paired=False, unique=False):
             if paired:
                 vals = []
                 for arg in args:
-                    if arg not in rec:
-                        return
-                    vals.append(rec[arg])
-                if isinstance(vals[0], (tuple, list)):
-                    # zip longest
-                    items = set()
-                    for v in itertools.zip_longest(*vals):
-                        if not unique or tuple(v) not in items:
-                            f(md, rec, v)
-                            items.add(tuple(v))
-                else:
-                    f(md, rec, vals)
+                    val = rec.get(arg)
+                    if val is None:
+                        val = []
+                    elif not isinstance(val, (list, tuple)):
+                        val = [val]
+                    vals.append(val)
+
+                # zip longest
+                items = set()
+                for v in itertools.zip_longest(*vals):
+                    if not unique or tuple(v) not in items:
+                        f(md, rec, v)
+                        items.add(tuple(v))
                 return
 
             items = set()

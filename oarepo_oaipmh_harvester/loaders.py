@@ -5,7 +5,6 @@ from typing import Union, List
 
 from sickle import Sickle
 from sickle.oaiexceptions import NoRecordsMatch
-from tqdm import tqdm
 
 from oarepo_oaipmh_harvester.models import OAIHarvesterConfig
 
@@ -34,7 +33,7 @@ def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: U
 
         if identifiers:
             def record_getter():
-                for identifier in tqdm(identifiers):
+                for identifier in identifiers:
                     yield request.GetRecord(identifier=identifier, metadataPrefix=metadata_prefix)
         else:
             def record_getter():
@@ -42,12 +41,12 @@ def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: U
 
         try:
             first_real_datestamp = None
-            for record in tqdm(record_getter()):
+            for record in record_getter():
                 if first_real_datestamp is None:
                     first_real_datestamp = record.header.datestamp
                 records.append(record)
                 count += 1
-                if count > harvester.max_records and record.header.datestamp != first_real_datestamp:
+                if count > max_records and record.header.datestamp != first_real_datestamp:
                     break
                 if len(records) >= harvester.batch_size:
                     yield records
@@ -60,9 +59,10 @@ def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: U
             yield records
 
 
-def filesystem_loader(path, identifiers=None):
+def filesystem_loader(harvester: OAIHarvesterConfig, path, identifiers=None):
     path = pathlib.Path(path)
     files = list(sorted(set(path.glob("*.json.gz"))))
+    records = []
     for fpath in files:
         if identifiers:
             for ident in identifiers:
@@ -71,4 +71,10 @@ def filesystem_loader(path, identifiers=None):
             else:
                 continue
         with gzip.open(fpath, 'rt') as f:
-            yield json.load(f)
+            for rec in json.load(f):
+                records.append(rec)
+                if len(records) >= harvester.batch_size:
+                    yield records
+                    records = []
+    if records:
+        yield records

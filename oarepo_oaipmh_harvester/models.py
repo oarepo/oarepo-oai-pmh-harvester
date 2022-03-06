@@ -1,5 +1,6 @@
 from __future__ import absolute_import, print_function
 
+import json
 import traceback
 from enum import Enum
 
@@ -7,6 +8,10 @@ from invenio_db import db
 import sqlalchemy_utils
 
 from sqlalchemy.orm.attributes import flag_modified
+
+import logging
+
+log = logging.getLogger('oarepo_oaipmh_harvester')
 
 
 class OAIHarvesterConfig(db.Model):
@@ -45,8 +50,9 @@ class OAIHarvesterConfig(db.Model):
     max_records = db.Column(db.Integer, default=50000000)
     """In one round, fetch at most this number of records"""
 
-    batch_size = db.Column(db.Integer, default=500)
-    """Group records for processing, depends on memory size"""
+    batch_size = db.Column(db.Integer, default=50)
+    """Group records for processing, depends on memory size. SQLite gets progressively slow as this number increases,
+    so it is a compromise between database speed on bigger transactions and elasticsearch indexing/searching speed"""
 
     runs = db.relationship("OAIHarvestRun", back_populates="harvester")
     """Reference to runs of this harvester"""
@@ -164,10 +170,11 @@ class OAIHarvestRunBatch(db.Model):
     def record_warning(self, oai_identifier, warning_type, warning_message, record=None, **kwargs):
         self.warning_records.setdefault(oai_identifier, []).append({
             'type': warning_type,
-            'message': warning_message,
-            'record': record.transformed if record else None,
+            'message': (warning_message or '')[:256],
+            'record': record.identifier if record else None,
             **kwargs
         })
+        self._log_error_to_terminal(record)
         if self.status != HarvestStatus.FAILED:
             self.status = HarvestStatus.WARNING
         flag_modified(self, 'warning_records')
@@ -175,23 +182,35 @@ class OAIHarvestRunBatch(db.Model):
     def record_error(self, oai_identifier, error_type, error_message, record=None, **kwargs):
         self.failed_records.setdefault(oai_identifier, []).append({
             'type': error_type,
-            'message': error_message,
-            'record': record.transformed if record else None,
+            'message': (error_message or '')[:256],
+            'record': record.identifier if record else None,
             **kwargs
         })
+        self._log_error_to_terminal(record)
         self.status = HarvestStatus.FAILED
         flag_modified(self, 'failed_records')
 
     def record_exception(self, oai_identifier, exception, record=None, **kwargs):
         self.failed_records.setdefault(oai_identifier, []).append({
             'type': 'exception',
-            'message': str(exception),
-            'stacktrace': ''.join(traceback.TracebackException.from_exception(exception, capture_locals=False).format()),
-            'record': record.transformed if record else None,
+            'message': str(exception)[:256],
+            'stacktrace': ''.join(
+                traceback.TracebackException.from_exception(exception, capture_locals=False).format()),
+            'record': record.identifier if record else None,
             **kwargs
         })
+        self._log_error_to_terminal(record, exception)
         self.status = HarvestStatus.FAILED
         flag_modified(self, 'failed_records')
+
+    def _log_error_to_terminal(self, record, exception=None):
+        if record:
+            log.error("Failed record with identifier %s:\n\n----- parsed ----\n%s\n\n---- transformed ------\n%s\n\n-------",
+                      record.identifier,
+                      json.dumps(record.data, ensure_ascii=False, indent=4, default=lambda x: str(x)),
+                      json.dumps(record.transformed, ensure_ascii=False, indent=4, default=lambda x: str(x)))
+        if exception:
+            log.exception('%s', str(exception))
 
     def add_exception(self, exception):
         message = ''.join(traceback.TracebackException.from_exception(exception, capture_locals=False).format())
