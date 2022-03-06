@@ -213,11 +213,12 @@ def in_batch(run_id):
         db.session.commit()
 
 
-@shared_task()
+@shared_task
 def oaipmh_delete_records_task(harvester_id, run_id, batch_id, records):
     with in_batch(run_id) as batch:
         harvester = OAIHarvesterConfig.query.get(harvester_id)
         run = OAIHarvestRun.query.get(run_id)
+        records = [OAIRecord(x) for x in records]
         transformer = import_string(harvester.transformer)
         transformer_instance = transformer(harvester, run)
         transformer_instance.transform_deleted(records, batch)
@@ -231,7 +232,7 @@ def oaipmh_delete_records_task(harvester_id, run_id, batch_id, records):
             batch.add_exception(e)
 
 
-@shared_task()
+@shared_task
 def oaipmh_update_records_task(harvester_id, run_id, batch_id, records):
     with in_batch(run_id) as batch:
         harvester = OAIHarvesterConfig.query.get(harvester_id)

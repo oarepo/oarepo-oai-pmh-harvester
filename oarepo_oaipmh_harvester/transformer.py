@@ -30,6 +30,9 @@ class OAIRecord:
         except KeyError:
             return default
 
+    def ignore(self, key):
+        self.get(key)
+
     def __contains__(self, key):
         return key in self._data
 
@@ -71,10 +74,25 @@ class OAIRecord:
 
 
 class OAITransformer:
-    oaiidentifier_search_property = None
-    oaiidentifier_search_path = None
-    record_service = None
-    record_model = None
+    @property
+    def oaiidentifier_search_property(self):
+        raise NotImplementedError(
+            'Add oaiidentifier_search_property property with the name of the filter for oai identifier')
+
+    @property
+    def oaiidentifier_search_path(self):
+        raise NotImplementedError(
+            'Add oaiidentifier_search_path property returning tuple of path within the record to oai identifier')
+
+    @property
+    def record_service(self):
+        raise NotImplementedError(
+            'Add record_service property returning the service to be used for creating/updating/deleting records')
+
+    @property
+    def record_model(self):
+        raise NotImplementedError(
+            'Add record_model property returning the record class')
 
     def __init__(self, harvester_config: OAIHarvesterConfig, harvester_run: OAIHarvestRun):
         self.harvester_config = harvester_config
