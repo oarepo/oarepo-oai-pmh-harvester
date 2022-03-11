@@ -46,7 +46,7 @@ def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: U
                     first_real_datestamp = record.header.datestamp
                 records.append(record)
                 count += 1
-                if count > max_records and record.header.datestamp != first_real_datestamp:
+                if count > harvester.max_records and record.header.datestamp != first_real_datestamp:
                     break
                 if len(records) >= harvester.batch_size:
                     yield records
