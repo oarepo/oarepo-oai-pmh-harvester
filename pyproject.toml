@@ -49,13 +49,13 @@ marcxml = "oarepo_oaipmh_harvester.parsers:MarcxmlParser"
 oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.harvester"
 
 [tool.poetry.plugins.'invenio_jsonschemas.schemas']
-'oarepo_oaipmh_harvester_batch_metadata' = 'oarepo_oaipmh_harvester.oaipmh_batch.record.jsonschemas'
-'oarepo_oaipmh_harvester_config_metadata' = 'oarepo_oaipmh_harvester.oaipmh_config.record.jsonschemas'
-'oarepo_oaipmh_harvester_record_metadata' = 'oarepo_oaipmh_harvester.oaipmh_record.record.jsonschemas'
-'oarepo_oaipmh_harvester_run_metadata' = 'oarepo_oaipmh_harvester.oaipmh_run.record.jsonschemas'
+oaipmh_batch = 'oarepo_oaipmh_harvester.oaipmh_batch.records.jsonschemas'
+oaipmh_config = 'oarepo_oaipmh_harvester.oaipmh_config.records.jsonschemas'
+oaipmh_record = 'oarepo_oaipmh_harvester.oaipmh_record.records.jsonschemas'
+oaipmh_run = 'oarepo_oaipmh_harvester.oaipmh_run.records.jsonschemas'
 
 [tool.poetry.plugins.'invenio_search.mappings']
-'oarepo_oaipmh_harvester_batch_mapping' = 'oarepo_oaipmh_harvester.oaipmh_batch.record.mappings'
-'oarepo_oaipmh_harvester_config_mapping' = 'oarepo_oaipmh_harvester.oaipmh_config.record.mappings'
-'oarepo_oaipmh_harvester_record_mapping' = 'oarepo_oaipmh_harvester.oaipmh_record.record.mappings'
-'oarepo_oaipmh_harvester_run_mapping' = 'oarepo_oaipmh_harvester.oaipmh_run.record.mappings'
+oaipmh_batch = 'oarepo_oaipmh_harvester.oaipmh_batch.records.mappings'
+oaipmh_config = 'oarepo_oaipmh_harvester.oaipmh_config.records.mappings'
+oaipmh_record = 'oarepo_oaipmh_harvester.oaipmh_record.records.mappings'
+oaipmh_run = 'oarepo_oaipmh_harvester.oaipmh_run.records.mappings'
