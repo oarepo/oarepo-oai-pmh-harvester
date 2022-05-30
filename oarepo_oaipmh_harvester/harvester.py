@@ -19,7 +19,7 @@ from invenio_db import db
 from werkzeug.utils import import_string
 
 from oarepo_oaipmh_harvester.oaipmh_config.proxies import current_service as config_service
-from oarepo_oaipmh_harvester.oaipmh_run import current_service as run_service
+from oarepo_oaipmh_harvester.oaipmh_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.loaders import sickle_loader, filesystem_loader
 from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OAIHarvestRunBatch
 from oarepo_oaipmh_harvester.parsers import IdentityParser
