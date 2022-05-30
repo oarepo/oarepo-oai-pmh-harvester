@@ -1,4 +1,4 @@
-from oaipmh_config import config as config
+from oarepo_oaipmh_harvester.oaipmh_config import config as config
 
 
 class OaipmhConfigExt(object):

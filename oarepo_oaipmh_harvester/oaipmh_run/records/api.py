@@ -4,8 +4,8 @@ from invenio_records_resources.records.api import Record as InvenioBaseRecord
 from invenio_records_resources.records.systemfields import IndexField
 from invenio_records_resources.records.systemfields.pid import (
     PIDField, PIDFieldContext)
-from oaipmh_run.records.dumper import OaipmhRunDumper
-from oaipmh_run.records.models import OaipmhRunMetadata
+from oarepo_oaipmh_harvester.oaipmh_run.records.dumper import OaipmhRunDumper
+from oarepo_oaipmh_harvester.oaipmh_run.records.models import OaipmhRunMetadata
 
 
 class OaipmhRunRecord(InvenioBaseRecord):

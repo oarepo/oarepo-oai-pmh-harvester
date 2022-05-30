@@ -1,0 +1,9 @@
+from oarepo_oaipmh_harvester.oaipmh_record.resources.config import OaipmhRecordResourceConfig
+from oarepo_oaipmh_harvester.oaipmh_record.resources.resource import OaipmhRecordResource
+from oarepo_oaipmh_harvester.oaipmh_record.services.config import OaipmhRecordServiceConfig
+from oarepo_oaipmh_harvester.oaipmh_record.services.service import OaipmhRecordService
+
+OAIPMH_RECORD_RESOURCE_CONFIG = OaipmhRecordResourceConfig
+OAIPMH_RECORD_RESOURCE_CLASS = OaipmhRecordResource
+OAIPMH_RECORD_SERVICE_CONFIG = OaipmhRecordServiceConfig
+OAIPMH_RECORD_SERVICE_CLASS = OaipmhRecordService
