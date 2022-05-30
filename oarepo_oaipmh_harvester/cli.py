@@ -45,9 +45,12 @@ def add(code, name, url, set, prefix, parser, transformer):
     if harvester:
         print(f"Harvester with code {code} already exists")
         return
+    metadata = {'code': code, 'name': name, 'baseurl': url, 'metadataprefix': prefix, 'setspecs': set,
+                'transformer': transformer}
+    if parser:
+        metadata['parser'] = parser
     config_service.create(system_identity,
-                                  {'metadata': {'code': code, 'name': name,
-                                                'baseurl': url, 'metadataprefix': prefix, 'setspecs': set, 'parser': parser, 'transformer': transformer}})
+                          {'metadata': metadata})
     # db.session.add(OAIHarvesterConfig(
     #     code=code,
     #     name=name,
