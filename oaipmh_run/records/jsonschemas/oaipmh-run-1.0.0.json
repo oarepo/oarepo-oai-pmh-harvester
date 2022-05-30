@@ -1,0 +1,57 @@
+{
+    "properties": {
+        "metadata": {
+            "properties": {
+                "harvester_id": {
+                    "type": "string"
+                },
+                "started": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "finished": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "first_datastamp": {
+                    "type": "string"
+                },
+                "last_datastamp": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "R",
+                        "F",
+                        "W",
+                        "F",
+                        "I"
+                    ]
+                },
+                "exception": {
+                    "type": "string"
+                }
+            },
+            "type": "object",
+            "required": [
+                "status"
+            ]
+        },
+        "id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

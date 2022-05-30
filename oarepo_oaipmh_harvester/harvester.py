@@ -8,17 +8,21 @@ import sys
 import threading
 import time
 import traceback
+from enum import Enum
 from queue import Queue
 from typing import Union, List
 
 from celery import shared_task
 from celery.result import allow_join_result
 from flask import current_app
+from invenio_access.permissions import system_identity
 from invenio_db import db
 from werkzeug.utils import import_string
 
+from oaipmh_config.proxies import current_service as config_service
+from oaipmh_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.loaders import sickle_loader, filesystem_loader
-from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, HarvestStatus, OAIHarvestRunBatch
+from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OAIHarvestRunBatch
 from oarepo_oaipmh_harvester.parsers import IdentityParser
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.transformer import OAIRecord
@@ -50,10 +54,18 @@ def oai_harvest(harvester_id: str, start_from: str, load_from: str = None, dump_
     harvester = Harvester(harvester_id, on_background, load_from, dump_to)
     harvester.harvest(start_from, identifiers)
 
+class HarvestStatus(Enum):
+    RUNNING = 'R'
+    FINISHED = 'O'
+    WARNING = 'W'
+    FAILED = 'E'
+    INTERRUPTED = 'I'
+
 
 class Harvester:
     def __init__(self, harvester_id: str, on_background=False, load_from: str = None, dump_to: str = None):
-        self.harvester = OAIHarvesterConfig.query.get(harvester_id)
+        # self.harvester = OAIHarvesterConfig.query.get(harvester_id)
+        self.harvester = config_service.read(system_identity, harvester_id).data
         self.harvester_id = harvester_id
         self.on_background = on_background
         self.load_from = load_from
@@ -67,12 +79,13 @@ class Harvester:
 
     def harvest(self, start_from: str, identifiers: Union[List[str], None] = None):
         print(f'harvesting {self.harvester.code} from {start_from}, identifiers {identifiers}')
-
-        self.run = OAIHarvestRun(harvester_id=self.harvester_id,
-                                 started=datetime.datetime.now(),
-                                 status=HarvestStatus.RUNNING)
-        db.session.add(self.run)
-        db.session.commit()
+        self.run = run_service.create(system_identity, {'metadata': {'harvested_id': self.harvester_id, 'started':datetime.datetime.now(),
+                                                                     'status': HarvestStatus.RUNNING}})
+        # self.run = OAIHarvestRun(harvester_id=self.harvester_id,
+        #                          started=datetime.datetime.now(),
+        #                          status=HarvestStatus.RUNNING)
+        # db.session.add(self.run)
+        # db.session.commit()
         self.run_id = self.run.id
 
         try:
@@ -96,7 +109,7 @@ class Harvester:
                         first = False
                         self.run.first_datestamp = first_record_datestamp
                         db.session.add(self.run)
-                        db.session.commit()
+                        db.session.commit() #update?
                     q.update(len(oai_records))
 
             self.run.last_datestamp = last_record_timestamp

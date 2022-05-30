@@ -5,7 +5,8 @@ import click
 from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OAIHarvestRunBatch, HarvestStatus
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from flask.cli import with_appcontext
-
+from invenio_access.permissions import system_identity
+from oaipmh_config.proxies import current_service as config_service
 from invenio_db import db
 
 
@@ -45,16 +46,19 @@ def add(code, name, url, set, prefix, parser, transformer):
     if harvester:
         print(f"Harvester with code {code} already exists")
         return
-    db.session.add(OAIHarvesterConfig(
-        code=code,
-        name=name,
-        baseurl=url,
-        metadataprefix=prefix,
-        setspecs=set,
-        parser=parser,
-        transformer=transformer
-    ))
-    db.session.commit()
+    config_service.create(system_identity,
+                                  {'metadata': {'code': code, 'name': name,
+                                                'baseurl': url, 'metadataprefix': prefix, 'setspecs': set, 'parser': parser, 'transformer': transformer}})
+    # db.session.add(OAIHarvesterConfig(
+    #     code=code,
+    #     name=name,
+    #     baseurl=url,
+    #     metadataprefix=prefix,
+    #     setspecs=set,
+    #     parser=parser,
+    #     transformer=transformer
+    # ))
+    # db.session.commit()
 
 
 @oaiharvester.command()

@@ -30,9 +30,12 @@ oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.models"
 
 [tool.poetry.plugins.'invenio_base.api_apps']
 oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.ext:OARepoOAIHarvesterExt"
+oarepo_oaipmh_harvester_config="oarepo_oaipmh_harvester.oaipmh_config.ext:OaipmhConfigExt"
 
 [tool.poetry.plugins.'invenio_base.apps']
 oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.ext:OARepoOAIHarvesterExt"
+oarepo_oaipmh_harvester_config="oarepo_oaipmh_harvester.oaipmh_config.ext:OaipmhConfigExt"
+
 
 [tool.poetry.plugins.'oarepo_oaipmh_harvester.parsers']
 marcxml = "oarepo_oaipmh_harvester.parsers:MarcxmlParser"

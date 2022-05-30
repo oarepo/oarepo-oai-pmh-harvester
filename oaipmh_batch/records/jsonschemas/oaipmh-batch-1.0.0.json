@@ -1,0 +1,52 @@
+{
+    "properties": {
+        "metadata": {
+            "properties": {
+                "run_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "R",
+                        "F",
+                        "W",
+                        "F",
+                        "I"
+                    ]
+                },
+                "exception": {
+                    "type": "string"
+                },
+                "started": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "finished": {
+                    "type": "string",
+                    "format": "date"
+                }
+            },
+            "type": "object",
+            "required": [
+                "run_id",
+                "status"
+            ]
+        },
+        "id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

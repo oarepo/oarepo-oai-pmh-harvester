@@ -1,0 +1,42 @@
+{
+    "properties": {
+        "metadata": {
+            "properties": {
+                "batch_id": {
+                    "type": "string"
+                },
+                "warnings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "type": "object",
+            "required": [
+                "batch_id"
+            ]
+        },
+        "id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
