@@ -1,0 +1,64 @@
+{
+    "properties": {
+        "metadata": {
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "baseurl": {
+                    "type": "string"
+                },
+                "metadataprefix": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "setspecs": {
+                    "type": "string"
+                },
+                "parser": {
+                    "type": "string"
+                },
+                "transformer": {
+                    "type": "string"
+                },
+                "max_records": {
+                    "type": "integer"
+                },
+                "batch_size": {
+                    "type": "integer"
+                }
+            },
+            "type": "object",
+            "required": [
+                "baseurl",
+                "batch_size",
+                "code",
+                "max_records",
+                "metadataprefix",
+                "name",
+                "setspecs",
+                "transformer"
+            ]
+        },
+        "id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

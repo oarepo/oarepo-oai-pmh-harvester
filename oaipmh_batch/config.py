@@ -1,0 +1,9 @@
+from oaipmh_batch.resources.config import OaipmhBatchResourceConfig
+from oaipmh_batch.resources.resource import OaipmhBatchResource
+from oaipmh_batch.services.config import OaipmhBatchServiceConfig
+from oaipmh_batch.services.service import OaipmhBatchService
+
+OAIPMH_BATCH_RESOURCE_CONFIG = OaipmhBatchResourceConfig
+OAIPMH_BATCH_RESOURCE_CLASS = OaipmhBatchResource
+OAIPMH_BATCH_SERVICE_CONFIG = OaipmhBatchServiceConfig
+OAIPMH_BATCH_SERVICE_CLASS = OaipmhBatchService

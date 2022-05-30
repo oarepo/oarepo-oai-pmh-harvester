@@ -1,0 +1,59 @@
+{
+    "mappings": {
+        "properties": {
+            "metadata": {
+                "properties": {
+                    "code": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "baseurl": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "metadataprefix": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "comment": {
+                        "type": "text"
+                    },
+                    "name": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "setspecs": {
+                        "type": "text"
+                    },
+                    "parser": {
+                        "type": "text"
+                    },
+                    "transformer": {
+                        "type": "text"
+                    },
+                    "max_records": {
+                        "type": "integer"
+                    },
+                    "batch_size": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "id": {
+                "type": "keyword",
+                "ignore_above": 50
+            },
+            "created": {
+                "type": "date"
+            },
+            "updated": {
+                "type": "date"
+            },
+            "$schema": {
+                "type": "keyword",
+                "ignore_above": 50
+            }
+        }
+    }
+}
