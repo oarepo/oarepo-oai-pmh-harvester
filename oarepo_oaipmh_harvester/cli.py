@@ -67,6 +67,7 @@ def add(code, name, url, set, prefix, parser, transformer):
 @click.option('--details', default=False, is_flag=True)
 @with_appcontext
 def warnings(code, run_id=None, details=False):
+    #zmenit
     cfg = OAIHarvesterConfig.query.filter_by(code=code).one()
     if run_id is not None:
         run_query = OAIHarvestRun.query.filter_by(id=run_id, harvester_id=cfg.id)
@@ -76,6 +77,7 @@ def warnings(code, run_id=None, details=False):
     if not run:
         print("No run to display")
         return
+    #zmenit
     batches = OAIHarvestRunBatch.query.filter_by(run_id=run.id).filter(OAIHarvestRunBatch.status.in_([
         HarvestStatus.WARNING, HarvestStatus.FAILED
     ]))
@@ -101,6 +103,7 @@ def warnings(code, run_id=None, details=False):
 @click.option('--details', default=False, is_flag=True)
 @with_appcontext
 def errors(code, run_id=None, details=False):
+    #zmenit
     cfg = OAIHarvesterConfig.query.filter_by(code=code).one()
     if run_id is not None:
         run_query = OAIHarvestRun.query.filter_by(id=run_id, harvester_id=cfg.id)

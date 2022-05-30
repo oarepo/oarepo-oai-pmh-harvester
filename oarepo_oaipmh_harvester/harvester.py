@@ -108,11 +108,12 @@ class Harvester:
                     if first:
                         first = False
                         self.run.first_datestamp = first_record_datestamp
-                        db.session.add(self.run)
-                        db.session.commit() #update?
+                        # db.session.add(self.run)
+                        # db.session.commit() #update?
                     q.update(len(oai_records))
 
             self.run.last_datestamp = last_record_timestamp
+            #zmenit 1
             error_count = OAIHarvestRunBatch.query.filter_by(run_id=self.run_id, status=HarvestStatus.FAILED).count()
             self.run.status = HarvestStatus.FAILED if error_count else HarvestStatus.FINISHED
             self.run.finished = datetime.datetime.now()
@@ -128,6 +129,7 @@ class Harvester:
             log.exception("Generic error in harvest, saving it to Run object")
             traceback.print_exc()
             # TODO: check transaction and fix any problem before saving
+            #todo co s timto
             db.session.merge(self.run)
             self.run.status = HarvestStatus.FAILED
             self.run.finished = datetime.datetime.now()
@@ -207,6 +209,8 @@ class Harvester:
 
     def get_loader(self, start_from: str, identifiers: Union[List[str], None] = None):
         # need to get the harvester as we are in a different thread
+
+        #zmenit 2
         harvester = OAIHarvesterConfig.query.get(self.harvester_id)
         # terminate the session - sqlite3 problem with locking
         db.session.expunge(harvester)
@@ -229,6 +233,7 @@ class Harvester:
 
 @contextlib.contextmanager
 def in_batch(run_id):
+    #zmenit 3
     batch = OAIHarvestRunBatch(run_id=run_id,
                                started=datetime.datetime.now(),
                                status=HarvestStatus.RUNNING)
@@ -255,6 +260,7 @@ def in_batch(run_id):
 @shared_task
 def oaipmh_delete_records_task(harvester_id, run_id, batch_id, records):
     with in_batch(run_id) as batch:
+        #zmenit
         harvester = OAIHarvesterConfig.query.get(harvester_id)
         run = OAIHarvestRun.query.get(run_id)
         records = [OAIRecord(x) for x in records]
@@ -274,10 +280,12 @@ def oaipmh_delete_records_task(harvester_id, run_id, batch_id, records):
 @shared_task
 def oaipmh_update_records_task(harvester_id, run_id, batch_id, records):
     with in_batch(run_id) as batch:
+        #zmenit
         harvester = OAIHarvesterConfig.query.get(harvester_id)
         run = OAIHarvestRun.query.get(run_id)
         transformer = import_string(harvester.transformer)
         transformer_instance = transformer(harvester, run)
+        #zmenit
         records = [OAIRecord(x) for x in records]
         transformer_instance.transform(records, batch)
         ok_records = []
@@ -294,6 +302,7 @@ def oaipmh_update_records_task(harvester_id, run_id, batch_id, records):
                 else:
                     batch.record_harvested(rec.identifier)
         try:
+            #co s timto
             nested = db.session.begin_nested()
             uow = BulkUnitOfWork(session=nested)
             transformer_instance.save(ok_records, batch, uow)
