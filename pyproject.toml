@@ -30,12 +30,17 @@ oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.models"
 
 [tool.poetry.plugins.'invenio_base.api_apps']
 oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.ext:OARepoOAIHarvesterExt"
+oarepo_oaipmh_harvester_batch="oarepo_oaipmh_harvester.oaipmh_batch.ext:OaipmhBatchExt"
 oarepo_oaipmh_harvester_config="oarepo_oaipmh_harvester.oaipmh_config.ext:OaipmhConfigExt"
+oarepo_oaipmh_harvester_record="oarepo_oaipmh_harvester.oaipmh_record.ext:OaipmhRecordExt"
+oarepo_oaipmh_harvester_run="oarepo_oaipmh_harvester.oaipmh_run.ext:OaipmhRunExt"
 
 [tool.poetry.plugins.'invenio_base.apps']
 oarepo_oaipmh_harvester = "oarepo_oaipmh_harvester.ext:OARepoOAIHarvesterExt"
+oarepo_oaipmh_harvester_batch="oarepo_oaipmh_harvester.oaipmh_batch.ext:OaipmhBatchExt"
 oarepo_oaipmh_harvester_config="oarepo_oaipmh_harvester.oaipmh_config.ext:OaipmhConfigExt"
-
+oarepo_oaipmh_harvester_record="oarepo_oaipmh_harvester.oaipmh_record.ext:OaipmhRecordExt"
+oarepo_oaipmh_harvester_run="oarepo_oaipmh_harvester.oaipmh_run.ext:OaipmhRunExt"
 
 [tool.poetry.plugins.'oarepo_oaipmh_harvester.parsers']
 marcxml = "oarepo_oaipmh_harvester.parsers:MarcxmlParser"
