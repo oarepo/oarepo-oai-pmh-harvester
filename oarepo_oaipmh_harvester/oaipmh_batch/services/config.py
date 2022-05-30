@@ -2,12 +2,10 @@ from invenio_records_resources.services import RecordLink
 from invenio_records_resources.services import \
     RecordServiceConfig as InvenioRecordServiceConfig
 from invenio_records_resources.services import pagination_links
-from invenio_records_resources.services.records.components import (
-    DataComponent, MetadataComponent)
-from oaipmh_batch.records.api import OaipmhBatchRecord
-from oaipmh_batch.services.permissions import OaipmhBatchPermissionPolicy
-from oaipmh_batch.services.schema import OaipmhBatchSchema
-from oaipmh_batch.services.search import OaipmhBatchSearchOptions
+from oarepo_oaipmh_harvester.oaipmh_batch.records.api import OaipmhBatchRecord
+from oarepo_oaipmh_harvester.oaipmh_batch.services.permissions import OaipmhBatchPermissionPolicy
+from oarepo_oaipmh_harvester.oaipmh_batch.services.schema import OaipmhBatchSchema
+from oarepo_oaipmh_harvester.oaipmh_batch.services.search import OaipmhBatchSearchOptions
 
 
 class OaipmhBatchServiceConfig(InvenioRecordServiceConfig):

@@ -1,4 +1,4 @@
-from oaipmh_run import config as config
+from oarepo_oaipmh_harvester.oaipmh_run import config as config
 
 
 class OaipmhRunExt(object):

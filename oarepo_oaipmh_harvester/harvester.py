@@ -4,7 +4,6 @@ import gzip
 import json
 import logging
 import pathlib
-import sys
 import threading
 import time
 import traceback
@@ -19,15 +18,14 @@ from invenio_access.permissions import system_identity
 from invenio_db import db
 from werkzeug.utils import import_string
 
-from oaipmh_config.proxies import current_service as config_service
-from oaipmh_run.proxies import current_service as run_service
+from oarepo_oaipmh_harvester.oaipmh_config.proxies import current_service as config_service
+from oarepo_oaipmh_harvester.oaipmh_run import current_service as run_service
 from oarepo_oaipmh_harvester.loaders import sickle_loader, filesystem_loader
 from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OAIHarvestRunBatch
 from oarepo_oaipmh_harvester.parsers import IdentityParser
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.transformer import OAIRecord
 from .uow import BulkUnitOfWork
-from .utils import timeit
 
 log = logging.getLogger('oarepo.oai.harvester')
 

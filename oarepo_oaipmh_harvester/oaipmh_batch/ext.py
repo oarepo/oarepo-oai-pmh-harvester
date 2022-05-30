@@ -1,4 +1,4 @@
-from oaipmh_batch import config as config
+from oarepo_oaipmh_harvester.oaipmh_batch import config as config
 
 
 class OaipmhBatchExt(object):

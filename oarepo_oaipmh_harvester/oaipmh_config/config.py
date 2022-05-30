@@ -1,0 +1,9 @@
+from oarepo_oaipmh_harvester.oaipmh_config.resources.config import OaipmhConfigResourceConfig
+from oarepo_oaipmh_harvester.oaipmh_config.resources.resource import OaipmhConfigResource
+from oarepo_oaipmh_harvester.oaipmh_config.services.config import OaipmhConfigServiceConfig
+from oarepo_oaipmh_harvester.oaipmh_config.services.service import OaipmhConfigService
+
+OAIPMH_CONFIG_RESOURCE_CONFIG = OaipmhConfigResourceConfig
+OAIPMH_CONFIG_RESOURCE_CLASS = OaipmhConfigResource
+OAIPMH_CONFIG_SERVICE_CONFIG = OaipmhConfigServiceConfig
+OAIPMH_CONFIG_SERVICE_CLASS = OaipmhConfigService

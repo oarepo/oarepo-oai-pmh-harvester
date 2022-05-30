@@ -4,18 +4,18 @@ from invenio_records_resources.records.api import Record as InvenioBaseRecord
 from invenio_records_resources.records.systemfields import IndexField
 from invenio_records_resources.records.systemfields.pid import (
     PIDField, PIDFieldContext)
-from oaipmh_record.records.dumper import OaipmhRecordDumper
-from oaipmh_record.records.models import OaipmhRecordMetadata
+from oarepo_oaipmh_harvester.oaipmh_config.records.dumper import OaipmhConfigDumper
+from oarepo_oaipmh_harvester.oaipmh_config.records.models import OaipmhConfigMetadata
 
 
-class OaipmhRecordRecord(InvenioBaseRecord):
-    model_cls = OaipmhRecordMetadata
-    schema = ConstantField("$schema", "http://localhost/schemas/oaipmh-record-1.0.0.json")
-    index = IndexField("oaipmh_record-oaipmh-record-1.0.0")
+class OaipmhConfigRecord(InvenioBaseRecord):
+    model_cls = OaipmhConfigMetadata
+    schema = ConstantField("$schema", "http://localhost/schemas/oaipmh-config-1.0.0.json")
+    index = IndexField("oaipmh_config-oaipmh-config-1.0.0")
     pid = PIDField(
         create=True,
         provider=RecordIdProviderV2,
         context_cls = PIDFieldContext
     )
     dumper_extensions = []
-    dumper = OaipmhRecordDumper(extensions=dumper_extensions)
+    dumper = OaipmhConfigDumper(extensions=dumper_extensions)

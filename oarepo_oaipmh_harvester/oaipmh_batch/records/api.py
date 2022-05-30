@@ -4,8 +4,8 @@ from invenio_records_resources.records.api import Record as InvenioBaseRecord
 from invenio_records_resources.records.systemfields import IndexField
 from invenio_records_resources.records.systemfields.pid import (
     PIDField, PIDFieldContext)
-from oaipmh_batch.records.dumper import OaipmhBatchDumper
-from oaipmh_batch.records.models import OaipmhBatchMetadata
+from oarepo_oaipmh_harvester.oaipmh_batch.records.dumper import OaipmhBatchDumper
+from oarepo_oaipmh_harvester.oaipmh_batch.records.models import OaipmhBatchMetadata
 
 
 class OaipmhBatchRecord(InvenioBaseRecord):

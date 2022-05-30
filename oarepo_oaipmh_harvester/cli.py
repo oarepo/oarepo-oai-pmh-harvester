@@ -6,8 +6,7 @@ from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OA
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
-from oaipmh_config.proxies import current_service as config_service
-from invenio_db import db
+from oarepo_oaipmh_harvester.oaipmh_config.proxies import current_service as config_service
 
 
 @click.group(name='oaiharvester')

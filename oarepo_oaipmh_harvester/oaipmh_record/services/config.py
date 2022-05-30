@@ -2,12 +2,10 @@ from invenio_records_resources.services import RecordLink
 from invenio_records_resources.services import \
     RecordServiceConfig as InvenioRecordServiceConfig
 from invenio_records_resources.services import pagination_links
-from invenio_records_resources.services.records.components import (
-    DataComponent, MetadataComponent)
-from oaipmh_record.records.api import OaipmhRecordRecord
-from oaipmh_record.services.permissions import OaipmhRecordPermissionPolicy
-from oaipmh_record.services.schema import OaipmhRecordSchema
-from oaipmh_record.services.search import OaipmhRecordSearchOptions
+from oarepo_oaipmh_harvester.oaipmh_record.records.api import OaipmhRecordRecord
+from oarepo_oaipmh_harvester.oaipmh_record.services.permissions import OaipmhRecordPermissionPolicy
+from oarepo_oaipmh_harvester.oaipmh_record.services.schema import OaipmhRecordSchema
+from oarepo_oaipmh_harvester.oaipmh_record.services.search import OaipmhRecordSearchOptions
 
 
 class OaipmhRecordServiceConfig(InvenioRecordServiceConfig):

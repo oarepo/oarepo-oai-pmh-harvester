@@ -1,9 +1,0 @@
-from oaipmh_config.resources.config import OaipmhConfigResourceConfig
-from oaipmh_config.resources.resource import OaipmhConfigResource
-from oaipmh_config.services.config import OaipmhConfigServiceConfig
-from oaipmh_config.services.service import OaipmhConfigService
-
-OAIPMH_CONFIG_RESOURCE_CONFIG = OaipmhConfigResourceConfig
-OAIPMH_CONFIG_RESOURCE_CLASS = OaipmhConfigResource
-OAIPMH_CONFIG_SERVICE_CONFIG = OaipmhConfigServiceConfig
-OAIPMH_CONFIG_SERVICE_CLASS = OaipmhConfigService

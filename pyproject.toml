@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "oarepo-oai-pmh-harvester"
-version = "3.0.5"
+version = "3.0.6"
 description = "OAIPMH harvester library for Invenio. Development only, not for production."
 authors = ["Mirek Simek <miroslav.simek@gmail.com>"]
 readme = "README.md"
