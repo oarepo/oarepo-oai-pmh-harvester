@@ -41,7 +41,16 @@ def harvest(harvester_code, all_records, background, dump_to, load_from, identif
 @click.option('--transformer', help="Transformer class", required=True)
 @with_appcontext
 def add(code, name, url, set, prefix, parser, transformer):
-    harvester = OAIHarvesterConfig.query.filter_by(code=code).one_or_none()
+    #zmenit
+    harvester = False
+
+    for hit in (config_service.read_all(system_identity, ['metadata.code']).to_dict())['hits']['hits']:
+        print(hit)
+        if hit['metadata']['code'] == code:
+            harvester = True
+            break
+
+    # harvester = OAIHarvesterConfig.query.filter_by(code=code).one_or_none()
     if harvester:
         print(f"Harvester with code {code} already exists")
         return
