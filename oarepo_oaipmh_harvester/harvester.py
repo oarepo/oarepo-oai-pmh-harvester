@@ -119,14 +119,14 @@ class Harvester:
                     if first:
                         first = False
                         # first_record_datestamp = first_record_datestamp[0:10]
-                        self.run['metadata']['first_datastamp'] = first_record_datestamp
-                        # self.run['metadata']['first_datastamp'] = json.dumps(first_record_datestamp, default= default)
+                        self.run['metadata']['first_datestamp'] = first_record_datestamp
+                        # self.run['metadata']['first_datestamp'] = json.dumps(first_record_datestamp, default= default)
                         # db.session.add(self.run)
                         # db.session.commit() #update!!
                         run_service.update(system_identity, self.run_id, {'metadata': self.run['metadata']})
                     q.update(len(oai_records))
             # last_record_datestamp = last_record_datestamp[0:10]
-            self.run['metadata']['last_datastamp'] = last_record_datestamp
+            self.run['metadata']['last_datestamp'] = last_record_datestamp
 
             error = False
 

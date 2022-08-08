@@ -7,6 +7,12 @@ import pkg_resources
 from .cli import oaiharvester as oaiharvester_cmd
 from .harvester import oai_harvest
 from .models import OAIHarvesterConfig
+from .oaipmh_config.records.api import OaipmhConfigRecord
+from .oaipmh_config.records.models import OaipmhConfigMetadata
+from oarepo_oaipmh_harvester.oaipmh_config.proxies import current_service as config_service
+from oarepo_oaipmh_harvester.oaipmh_run.proxies import current_service as run_service
+from invenio_access.permissions import system_identity
+from invenio_pidstore.resolver import Resolver
 
 
 class OARepoOAIHarvesterExt(object):
@@ -22,29 +28,54 @@ class OARepoOAIHarvesterExt(object):
         app.cli.add_command(oaiharvester_cmd)
         app.extensions["oarepo_oaipmh_harvester"] = self
 
-    def run(self, harvester_or_code: Union[str, OAIHarvesterConfig], all_records=False,
+    def run(self, harvester_or_code: Union[str, OaipmhConfigRecord], all_records=False,
             on_background=False, dump_to=None, load_from=None, identifiers=None):
-        harvester: OAIHarvesterConfig
+
+        harvester:  OaipmhConfigRecord
+
         if isinstance(harvester_or_code, str):
+            harvesters = config_service.scan(system_identity, params={'facets': {'metadata_code': [harvester_or_code]}})
+            # harvesters = OaipmhConfigMetadata.query.all()
+
+            # for h in harvesters:
+            #     if h.json['metadata']['code'] == harvester_or_code:
+            #         harvester_id = h.json['id']
+            #         break
+
             try:
-                harvester = OAIHarvesterConfig.query.filter_by(code=harvester_or_code).one()
+                harvester_id = list(harvesters.hits)[0]['id']
+                harvester = config_service.read(system_identity, harvester_id).data
+                # harvester = OaipmhConfigMetadata.query.filter_by(code=harvester_or_code).one()
             except:
                 raise ValueError(f'No OAIHarvester was found for code "{harvester_or_code}"')
         else:
             harvester = harvester_or_code
 
         start_date = '1970-01-01'
-
         if not all_records and not identifiers:
-            start_date = harvester.get_last_record_date() or start_date
+            harvest_runs = []
+            for hit in (run_service.read_all(system_identity, ['metadata']).to_dict())['hits']['hits']:
+                if hit['metadata']['harvester_id'] == harvester['id'] and 'last_datestamp' in hit['metadata']:
+                    harvest_runs.append(hit['metadata']['last_datestamp'])
 
+            harvest_runs = list(filter(('null').__ne__, harvest_runs))
+
+            sorted_runs = sorted(harvest_runs)
+            if len(sorted_runs) == 0:
+                start_date_from_run = None
+            else:
+                start_date_from_run = sorted_runs[-1]
+
+            start_date = start_date_from_run or start_date
+            if start_date == 'null':
+                start_date = None
         if on_background:
-            oai_harvest.delay(harvester.id, start_date,
+            oai_harvest.delay(harvester['id'], start_date,
                               load_from=load_from, dump_to=dump_to, on_background=on_background,
                               identifiers=identifiers)
         else:
             oai_harvest.apply(
-                args=(harvester.id, start_date),
+                args=(harvester['id'], start_date),
                 kwargs=dict(load_from=load_from, dump_to=dump_to, on_background=on_background,
                             identifiers=identifiers))
 
