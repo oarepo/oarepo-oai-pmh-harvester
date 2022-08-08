@@ -5,7 +5,10 @@ from typing import List, Any, Dict
 
 from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OAIHarvestRunBatch
 from invenio_access.permissions import system_identity
-
+from oarepo_oaipmh_harvester.oaipmh_config.proxies import current_service as config_service
+from oarepo_oaipmh_harvester.oaipmh_record.proxies import current_service as record_service
+from .oaipmh_run.proxies import current_service as run_service
+from .oaipmh_batch.proxies import current_service as batch_service
 
 class OAIRecord:
     def __init__(self, record, current=None, prefix=None):
@@ -98,11 +101,11 @@ class OAITransformer:
         raise NotImplementedError(
             'Add record_model property returning the record class')
 
-    def __init__(self, harvester_config: OAIHarvesterConfig, harvester_run: OAIHarvestRun):
+    def __init__(self, harvester_config, harvester_run):
         self.harvester_config = harvester_config
         self.harvest_run = harvester_run
 
-    def transform(self, oai_records: List[OAIRecord], harvest_batch: OAIHarvestRunBatch):
+    def transform(self, oai_records: List[OAIRecord], harvest_batch):
         """
         Transforms records from oai_record["..."] into oai_record.transformed and fills in
         oai_record.service and oai_record.model
@@ -114,13 +117,21 @@ class OAITransformer:
             try:
                 self.transform_single(rec)
             except Exception as e:
-                harvest_batch.record_exception(rec.identifier, e)
+                harvest_batch['metadata']['status'] = 'E'
+                batch_service.update(system_identity, harvest_batch['id'],
+                                     {'metadata': harvest_batch['metadata']})
+
+                record_service.create(system_identity,
+                                      {'metadata': {'identifier': rec.identifier,
+                                                    'batch_id': harvest_batch['id'], 'status': 'E', 'error': str(e)}})
+                # harvest_batch.record_exception(rec.identifier, e)
+
                 continue
 
             rec.service = self.get_record_service(rec)
             rec.model = self.get_record_model(rec)
 
-    def transform_deleted(self, oai_records: List[OAIRecord], harvest_batch: OAIHarvestRunBatch):
+    def transform_deleted(self, oai_records: List[OAIRecord], harvest_batch):
         """
         Fills in oai_record.service and oai_record.model
 
@@ -140,7 +151,7 @@ class OAITransformer:
     def transform_single(self, rec: OAIRecord):
         raise NotImplementedError()
 
-    def save(self, oai_records: List[OAIRecord], harvest_batch: OAIHarvestRunBatch, uow):
+    def save(self, oai_records: List[OAIRecord], harvest_batch, uow):
         services = {}
         for rec in oai_records:
             sid = id(rec.service)
@@ -158,20 +169,41 @@ class OAITransformer:
                             service.update(system_identity, found_id, r.transformed, uow=uow)
                         except Exception as e:
                             traceback.print_exc()
-                            harvest_batch.record_exception(r.identifier, e, record=r)
+
+                            # harvest_batch.record_exception(r.identifier, e, record=r)
+                            harvest_batch['metadata']['status'] = 'E'
+                            batch_service.update(system_identity, harvest_batch['id'],
+                                                 {'metadata': harvest_batch['metadata']})
+
+                            record_service.create(system_identity,
+                                                  {'metadata': {'identifier': r.identifier,
+                                                                'batch_id': harvest_batch['id'],'status': 'E', 'error': str(e)}})
                 # save extra always
                 for r in extra:
                     try:
                         service.create(system_identity, r.transformed, uow=uow)
                     except Exception as e:
                         traceback.print_exc()
-                        harvest_batch.record_exception(r.identifier, e, record=r)
+                        # harvest_batch.record_exception(r.identifier, e, record=r)
+                        harvest_batch['metadata']['status'] = 'E'
+                        batch_service.update(system_identity, harvest_batch['id'],
+                                             {'metadata': harvest_batch['metadata']})
+
+                        record_service.create(system_identity,
+                                              {'metadata': {'identifier': r.identifier, 'batch_id': harvest_batch['id'],'status': 'E',
+                                                            'error': str(e)}})
             except Exception as e:
                 traceback.print_exc()
                 for r in records_to_save:
-                    harvest_batch.record_exception(r.identifier, e, record=r)
+                    harvest_batch['metadata']['status'] = 'E'
+                    batch_service.update(system_identity, harvest_batch['id'], {'metadata': harvest_batch['metadata']})
 
-    def delete(self, oai_records: List[OAIRecord], harvest_batch: OAIHarvestRunBatch, uow):
+                    record_service.create(system_identity,
+                                          {'metadata': {'identifier': r.identifier, 'batch_id': harvest_batch['id'],'status': 'E',
+                                                        'error': str(e)}})
+                    # harvest_batch.record_exception(r.identifier, e, record=r)
+
+    def delete(self, oai_records: List[OAIRecord], harvest_batch, uow):
         services = {}
         for rec in oai_records:
             sid = id(rec.service)
@@ -188,11 +220,22 @@ class OAITransformer:
                         service.delete(system_identity, found_id, uow=uow)
                     except Exception as e:
                         traceback.print_exc()
-                        harvest_batch.record_exception(r.identifier, e, record=r)
+                        harvest_batch['metadata']['status'] = 'E'
+                        batch_service.update(system_identity, harvest_batch['id'], {'metadata': harvest_batch['metadata']})
+
+                        record_service.create(system_identity,
+                                              {'metadata': {'identifier': r.identifier, 'batch_id': harvest_batch['id'],'status': 'E', 'error': str(e)}})
+                        # harvest_batch.record_exception(r.identifier, e, record=r)
+
             except Exception as e:
                 traceback.print_exc()
                 for r in records_to_delete:
-                    harvest_batch.record_exception(r.identifier, e, record=r)
+                    harvest_batch['metadata']['status'] = 'E'
+                    batch_service.update(system_identity, harvest_batch['id'], {'metadata': harvest_batch['metadata']})
+                    record_service.create(system_identity,
+                                          {'metadata': {'identifier': r.identifier, 'batch_id': harvest_batch['id'],'status': 'E',
+                                                        'error': str(e)}})
+                    # harvest_batch.record_exception(r.identifier, e, record=r)
 
     def categorize(self, service, records):
         found_items = service.search(system_identity, params={

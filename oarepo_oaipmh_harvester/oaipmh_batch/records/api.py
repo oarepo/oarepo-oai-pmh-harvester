@@ -10,7 +10,7 @@ from oarepo_oaipmh_harvester.oaipmh_batch.records.models import OaipmhBatchMetad
 
 class OaipmhBatchRecord(InvenioBaseRecord):
     model_cls = OaipmhBatchMetadata
-    schema = ConstantField("$schema", "http://localhost/schemas/oaipmh-batch-1.0.0.json")
+    schema = ConstantField("$schema", "local://oaipmh-batch-1.0.0.json")
     index = IndexField("oaipmh_batch-oaipmh-batch-1.0.0")
     pid = PIDField(
         create=True,

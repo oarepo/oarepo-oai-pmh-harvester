@@ -28,11 +28,11 @@ class OaipmhRunSearchOptions(InvenioSearchOptions):
 
 
 
-    'metadata_first_datastamp': facets.metadata_first_datastamp,
+    'metadata_first_datestamp': facets.metadata_first_datestamp,
 
 
 
-    'metadata_last_datastamp': facets.metadata_last_datastamp,
+    'metadata_last_datestamp': facets.metadata_last_datestamp,
 
 
 

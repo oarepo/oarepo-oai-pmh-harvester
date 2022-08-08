@@ -10,7 +10,7 @@ from oarepo_oaipmh_harvester.oaipmh_run.records.models import OaipmhRunMetadata
 
 class OaipmhRunRecord(InvenioBaseRecord):
     model_cls = OaipmhRunMetadata
-    schema = ConstantField("$schema", "http://localhost/schemas/oaipmh-run-1.0.0.json")
+    schema = ConstantField("$schema", "local://oaipmh-run-1.0.0.json")
     index = IndexField("oaipmh_run-oaipmh-run-1.0.0")
     pid = PIDField(
         create=True,

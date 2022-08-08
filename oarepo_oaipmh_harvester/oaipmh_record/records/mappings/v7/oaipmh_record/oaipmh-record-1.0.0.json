@@ -7,23 +7,22 @@
                         "type": "keyword",
                         "ignore_above": 50
                     },
-                    "warnings": {
-                        "type": "text",
-                        "fields": {
-                            "keyword": {
-                                "type": "keyword",
-                                "ignore_above": 50
-                            }
-                        }
+                    "identifier": {
+                        "type": "keyword",
+                        "ignore_above": 50
                     },
-                    "errors": {
-                        "type": "text",
-                        "fields": {
-                            "keyword": {
-                                "type": "keyword",
-                                "ignore_above": 50
-                            }
-                        }
+                    "status": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "warning": {
+                        "type": "keyword",
+                        "ignore_above": 50
+
+                    },
+                    "error": {
+                        "type": "keyword",
+                        "ignore_above": 50
                     }
                 },
                 "type": "object"

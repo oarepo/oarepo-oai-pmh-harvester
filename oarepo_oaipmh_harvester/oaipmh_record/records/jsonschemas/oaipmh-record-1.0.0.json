@@ -5,17 +5,24 @@
                 "batch_id": {
                     "type": "string"
                 },
-                "warnings": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "identifier": {
+                    "type": "string"
                 },
-                "errors": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "R",
+                        "O",
+                        "W",
+                        "E",
+                        "I"
+                    ]
+                },
+                "warning": {
+                   "type": "string"
+                },
+                "error": {
+                    "type": "string"
                 }
             },
             "type": "object",

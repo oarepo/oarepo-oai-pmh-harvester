@@ -46,11 +46,11 @@ metadata_finished = TermsFacet(field = "metadata.finished")
 
 
 
-metadata_first_datastamp = TermsFacet(field = "metadata.first_datastamp")
+metadata_first_datestamp = TermsFacet(field = "metadata.first_datestamp")
 
 
 
-metadata_last_datastamp = TermsFacet(field = "metadata.last_datastamp")
+metadata_last_datestamp = TermsFacet(field = "metadata.last_datestamp")
 
 
 

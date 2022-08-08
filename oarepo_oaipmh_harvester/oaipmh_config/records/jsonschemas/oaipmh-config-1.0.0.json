@@ -36,9 +36,7 @@
             "type": "object",
             "required": [
                 "baseurl",
-                "batch_size",
                 "code",
-                "max_records",
                 "metadataprefix",
                 "name",
                 "setspecs",

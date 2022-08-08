@@ -1,9 +1,4 @@
 
-
-
-
-
-
 import marshmallow as ma
 import marshmallow.fields as ma_fields
 import marshmallow.validate as ma_valid
@@ -15,18 +10,18 @@ from marshmallow import validates as ma_validates
 
 class OaipmhBatchMetadataSchema(ma.Schema, ):
     """OaipmhBatchMetadataSchema schema."""
-    
+
     run_id = ma_fields.String()
-    
-    status = ma_fields.String(validate=[ma_valid.OneOf(["R", "F", "W", "F", "I"])])
-    
+
+    status = ma_fields.String(validate=[ma_valid.OneOf(["R", "O", "W", "E", "I"])])
+
     exception = ma_fields.String()
-    
-    started = ma_fields.Date()
-    
-    finished = ma_fields.Date()
-    
-    
+
+    started = ma_fields.Raw()
+
+    finished = ma_fields.Raw()
+
+
 
 
 
@@ -36,15 +31,14 @@ class OaipmhBatchMetadataSchema(ma.Schema, ):
 
 class OaipmhBatchSchema(ma.Schema, ):
     """OaipmhBatchSchema schema."""
-    
+
     metadata = ma_fields.Nested(lambda: OaipmhBatchMetadataSchema())
-    
+    # metadata = ma_fields.Raw()
     id = ma_fields.String()
-    
-    created = ma_fields.Date()
-    
-    updated = ma_fields.Date()
-    
+
+    created = ma_fields.Raw()
+
+    updated = ma_fields.Raw()
+
     _schema = ma_fields.String(data_key='$schema')
-    
-    
+

@@ -13,11 +13,12 @@
                     "finished": {
                         "type": "date"
                     },
-                    "first_datastamp": {
+                    "first_datestamp": {
                         "type": "keyword",
                         "ignore_above": 50
+
                     },
-                    "last_datastamp": {
+                    "last_datestamp": {
                         "type": "keyword",
                         "ignore_above": 50
                     },

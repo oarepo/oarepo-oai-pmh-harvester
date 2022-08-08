@@ -13,19 +13,21 @@
                     "type": "string",
                     "format": "date"
                 },
-                "first_datastamp": {
-                    "type": "string"
+                "first_datestamp": {
+                     "type": "string",
+                    "format": "date"
                 },
-                "last_datastamp": {
-                    "type": "string"
+                "last_datestamp": {
+                     "type": "string",
+                    "format": "date"
                 },
                 "status": {
                     "type": "string",
                     "enum": [
                         "R",
-                        "F",
+                        "O",
                         "W",
-                        "F",
+                        "E",
                         "I"
                     ]
                 },
@@ -42,12 +44,12 @@
             "type": "string"
         },
         "created": {
-            "type": "string",
-            "format": "date"
+             "type": "string",
+                    "format": "date"
         },
         "updated": {
-            "type": "string",
-            "format": "date"
+             "type": "string",
+                    "format": "date"
         },
         "$schema": {
             "type": "string"

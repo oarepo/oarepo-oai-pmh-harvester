@@ -10,19 +10,19 @@ from oarepo_oaipmh_harvester.models import OAIHarvesterConfig
 
 
 def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: Union[List[str], None] = None):
-    request = Sickle(harvester.baseurl, encoding='utf-8')
+    request = Sickle(harvester['metadata']['baseurl'], encoding='utf-8')
 
     dates = {
         'from': start_from,
         'until': None
     }
-    setspecs = (harvester.setspecs or '').split() or [None]
+    setspecs = (harvester['metadata']['setspecs'] or '').split() or [None]
 
     for spec in setspecs:
         count = 0
         records = []
 
-        metadata_prefix = harvester.metadataprefix or "oai_dc"
+        metadata_prefix = harvester['metadata']['metadataprefix'] or "oai_dc"
         params = {
             'metadataPrefix': metadata_prefix
         }
@@ -46,9 +46,9 @@ def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: U
                     first_real_datestamp = record.header.datestamp
                 records.append(record)
                 count += 1
-                if count > harvester.max_records and record.header.datestamp != first_real_datestamp:
+                if count > harvester['metadata']['max_records'] and record.header.datestamp != first_real_datestamp:
                     break
-                if len(records) >= harvester.batch_size:
+                if len(records) >= harvester['metadata']['batch_size']:
                     yield records
                     records = []
 
@@ -59,7 +59,7 @@ def sickle_loader(harvester: OAIHarvesterConfig, start_from: str, identifiers: U
             yield records
 
 
-def filesystem_loader(harvester: OAIHarvesterConfig, path, identifiers=None):
+def filesystem_loader(harvester, path, identifiers=None):
     path = pathlib.Path(path)
     files = list(sorted(set(path.glob("*.json.gz"))))
     records = []
@@ -73,7 +73,7 @@ def filesystem_loader(harvester: OAIHarvesterConfig, path, identifiers=None):
         with gzip.open(fpath, 'rt') as f:
             for rec in json.load(f):
                 records.append(rec)
-                if len(records) >= harvester.batch_size:
+                if len(records) >= harvester['metadata']['batch_size']:
                     yield records
                     records = []
     if records:
