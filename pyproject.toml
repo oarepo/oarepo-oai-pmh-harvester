@@ -21,7 +21,6 @@ elasticsearch-dsl = "^7.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
-[tool.poetry.test-dependencies]
 pytest-invenio= '>=1.4.11'
 
 [build-system]
