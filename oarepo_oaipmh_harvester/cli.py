@@ -112,94 +112,14 @@ def warnings(code, run_id=None, details=False):
                     by_message[record['metadata']['warning']].append(k)
                 else:
                     by_message[record['metadata']['warning'][:80].replace('\n', ' ')].append(k)
-        # if batch.failed_records:
-        #     # todo zmena
-        #     for k, vv in batch.failed_records.items():
-        #         for v in vv:
-        #             if details:
-        #                 by_message[v['message']].append(k)
-        #             else:
-        #                 by_message[v['message'][:80].replace('\n', ' ')].append(k)
+
     for msg, records in sorted(list(by_message.items()), key=lambda x: -len(x[1])):
         if details:
             print(f'{msg:80s} || {", ".join(records)}')
         else:
             print(f'{msg:80s} || {len(records):10d} || {", ".join(records[:3])}')
-    # cfg = config_service.scan(system_identity, params={'facets': {'metadata_code': [code]}})
-    # try:
-    #     cfg = list(cfg.hits)[0]
-    # except:
-    #     print(f"Harvester with code {code} does not exist")
-    #     return
-    # # cfg = OAIHarvesterConfig.query.filter_by(code=code).one()
-    # # zmenit
-    # if run_id is not None:
-    #     # run_query = OAIHarvestRun.query.filter_by(id=run_id, harvester_id=cfg.id)
-    #     run_query = run_service.scan(system_identity, params = {'facets': {'_id': [run_id]}})
-    #     try:
-    #         run_query = list(run_query.hits)[0]
-    #     except:
-    #         print(f"Run with code {run_id} does not exist")
-    #         return
-    # else:
-    #     # run_query = OAIHarvestRun.query.filter_by(harvester_id=cfg.id).order_by(OAIHarvestRun.started.desc())
-    #     run_query = run_service.scan(system_identity,  params = {'facets': {'metadata_harvester_id': [cfg['id']]}})
-    #     run_query = list(run_query.hits)[0]
-    # # run = run_query.first()
-    # run = run_query[0]
-    # if not run:
-    #     print("No run to display")
-    #     return
-    #
-    # batches_query = batch_service.scan( system_identity, {'facets': {'metadata_run_id': [run_id]}})
-    # batches_query = list(batches_query.hits)[0]
-    # batches = []
-    # for batch in batches:
-    #     if batch['metadata']['status'] == 'W' or batch['metadata']['status'] == 'E':
-    #         batches.append(batch)
-    # # batches = OAIHarvestRunBatch.query.filter_by(run_id=run.id).filter(OAIHarvestRunBatch.status.in_([
-    # #     'W', 'E'
-    # # ]))
-    #
-    # by_message = defaultdict(list)
-    # for batch in batches:
-    #     # todo zmena
-    #     if batch.warning_records:
-    #         # todo zmena
-    #         for k, vv in batch.warning_records.items():
-    #             for v in vv:
-    #                 if details:
-    #                     by_message[v['message']].append(k)
-    #                 else:
-    #                     by_message[v['message'][:80]].append(k)
-    # for msg, records in sorted(list(by_message.items()), key=lambda x: -len(x[1])):
-    #     if details:
-    #         print(f'{msg:80s} || {", ".join(records)}')
-    #     else:
-    #         print(f'{msg:80s} || {len(records):10d} || {", ".join(records[:3])}')
 
-# je potreba udelat ui model pro yaml
-# ui je ted dvoji - jinja a react
-# search veci jsou react
-# detail je jinja kvuli SEO
-# je potreba mit jeden jazyk ve kerem clovek nadefinuje layout ui co jinja i react umi interpretovat
-# ten jazyk je popsany v ty dokumentaci
-# model yaml definuje nejake datove typy - treba tam mam author a to mam nekde zejo a odkazuju se na to pak kde mam osobu
-# pak mam treba author yaml a krom toho ze o bude rikat strukturu autora tak aj to jak to bude zvizualizovany
-# tzn bude tam ui sekce co rekne jak se uikuje autor
-# a ten se muze ale jeste v kazdem kontextu chovat jinak zejo
-# takze pod ui by bylo slovo (to ui je jakoze v ramci definice treba autora)
-    # a tam bude nejaka role treba search a jak se v ni ma zobrazit, nebo detail
-    # takze tam bude ze to ma byt horizontalne, jaky separator nebo tak
-    # component = row (zobrazuje se to v radce)
-    # items jsou neco neco
-    # komponenta vypada vzdycky nejakym nazvem atp (treba ikona) pak tam muzou byt data a to jsou pak teckovou notaci to co se ma zobrazit za data, pak tam muze byt class a style atribut
-    # v ramci ui na root urovni je pak jak se ty veci tridi do sebe
-    #takze tam bude detail a nejdriv ma byt ten title, pak autor atp
-    # je potreba vzit ty jednotlive veci a zjistit ze ty data odkazuji na autora a zmergnout to dohromady a tim pak vytvorit json a odreferencovat z python zdrojaku
-    # kdyz mam nekde data tak se pohybuju pak vzdy pod temi daty
 
-    #pokracovani priste
 
 
 @oaiharvester.command()
@@ -254,14 +174,7 @@ def errors(code, run_id=None, details=False):
                     by_message[record['metadata']['error']].append(k)
                 else:
                     by_message[record['metadata']['error'][:80].replace('\n', ' ')].append(k)
-        # if batch.failed_records:
-        #     # todo zmena
-        #     for k, vv in batch.failed_records.items():
-        #         for v in vv:
-        #             if details:
-        #                 by_message[v['message']].append(k)
-        #             else:
-        #                 by_message[v['message'][:80].replace('\n', ' ')].append(k)
+
     for msg, records in sorted(list(by_message.items()), key=lambda x: -len(x[1])):
         if details:
             print(f'{msg:80s} || {", ".join(records)}')
