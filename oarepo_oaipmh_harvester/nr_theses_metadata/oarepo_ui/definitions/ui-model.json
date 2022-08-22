@@ -1,0 +1,135 @@
+[
+    {
+        "component": "columns",
+        "items": [
+            {
+                "component": "column",
+                "props": {
+                    "textAlign": "center",
+                    "stretched": true,
+                    "width": "1",
+                    "class": "result-item-aside"
+                },
+                "items": [
+                    {
+                        "component": "icon",
+                        "props": {
+                            "size": "large"
+                        },
+                        "data": {
+                            "props": {
+                                "name": "access_status"
+                            }
+                        }
+                    },
+                    {
+                        "component": "icon",
+                        "props": {
+                            "size": "huge"
+                        },
+                        "data": {
+                            "props": {
+                                "name": "rights"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "component": "column",
+                "items": [
+                    {
+                        "component": "header",
+                        "data": "title",
+                        "props": {
+                            "size": "medium"
+                        }
+                    },
+                    {
+                        "component": "row",
+                        "props": {
+                            "separator": "‖"
+                        },
+                        "items": [
+                            {
+                                "component": "horizontal-list",
+                                "data": "creators",
+                                "props": {
+                                    "separator": "|",
+                                    "item": {
+                                        "component": "authority"
+                                    }
+                                }
+                            },
+                            {
+                                "component": "horizontal-list",
+                                "data": "contributors",
+                                "props": {
+                                    "separator": "|",
+                                    "item": {
+                                        "component": "authority",
+                                        "props": {
+                                            "class": "text-gray"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "component": "row",
+                        "props": {
+                            "separator": "‖"
+                        },
+                        "items": [
+                            {
+                                "component": "label",
+                                "data": "publication_year",
+                                "props": {
+                                    "basic": true
+                                }
+                            },
+                            {
+                                "component": "label",
+                                "data": "language",
+                                "props": {
+                                    "basic": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "component": "row",
+                        "items": [
+                            {
+                                "component": "label",
+                                "data": "resource_type"
+                            },
+                            {
+                                "component": "label",
+                                "data": "defended"
+                            }
+                        ]
+                    },
+                    {
+                        "component": "row",
+                        "props": {
+                            "separator": "|",
+                            "data": "keywords",
+                            "item": {
+                                "component": "label"
+                            }
+                        }
+                    },
+                    {
+                        "component": "shortened-text",
+                        "props": {
+                            "data": "abstract",
+                            "length": 350
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

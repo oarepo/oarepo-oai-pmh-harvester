@@ -19,6 +19,7 @@ from werkzeug.utils import import_string
 
 from oarepo_oaipmh_harvester.oaipmh_config.proxies import current_service as config_service
 from oarepo_oaipmh_harvester.oaipmh_record.proxies import current_service as record_service
+from .oaipmh_batch.records.api import OaipmhBatchRecord
 from .oaipmh_run.proxies import current_service as run_service
 from .oaipmh_batch.proxies import current_service as batch_service
 from oarepo_oaipmh_harvester.loaders import sickle_loader, filesystem_loader
@@ -26,8 +27,9 @@ from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OA
 from oarepo_oaipmh_harvester.parsers import IdentityParser
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.transformer import OAIRecord
+from .oaipmh_run.records.api import OaipmhRunRecord
 from .uow import BulkUnitOfWork
-
+from .nusl_oai.transformer import NuslTransformer
 log = logging.getLogger('oarepo.oai.harvester')
 
 from tqdm import tqdm
@@ -89,8 +91,15 @@ class Harvester:
         self.max_harvested_processes = 10
 
     def harvest(self, start_from: str, identifiers: Union[List[str], None] = None):
+
         print(f'harvesting {self.harvester["metadata"]["code"]} from {start_from}, identifiers {identifiers}')
-        self.run = run_service.create(system_identity, {"metadata": {"harvester_id": self.harvester_id, "started":json.dumps(datetime.datetime.now(), default=default), "status": "R"}})
+
+
+
+        try:
+            self.run = run_service.create(system_identity, {"metadata": {"harvester_id": self.harvester_id, "started":json.dumps(datetime.datetime.now(), default=default), "status": "R"}})
+        except Exception as e:
+            print(e)
         # self.run = OAIHarvestRun(harvester_id=self.harvester_id,
         #                          started=datetime.datetime.now(),
         #                          status=HarvestStatus.RUNNING)
@@ -108,13 +117,24 @@ class Harvester:
 
             def yielder():
                 while True:
+                    db.session.commit()
                     batch_idx, oai_records = self.loading_queue.get()
                     if batch_idx is None:
                         break
                     yield batch_idx, oai_records
 
             with tqdm(unit=' records') as q:
+
                 for batch_idx, oai_records in yielder():
+                    #!!!#
+                    try:
+                        batch = batch_service.create(system_identity, {
+                            'metadata': {'run_id': self.run_id,
+                                         'started': json.dumps(datetime.datetime.now(), default=default),
+                                         'status': 'R'}})
+                    except:
+                        traceback.print_exc()
+                        raise
                     first_record_datestamp, last_record_datestamp = self.parse_and_save_records(batch_idx, oai_records)
                     if first:
                         first = False
@@ -213,6 +233,7 @@ class Harvester:
         self.register_harvested_process(res)
 
     def update_records(self, batch_idx, updated_records):
+
         if self.on_background:
             res = oaipmh_update_records_task.delay(self.harvester_id, self.run_id, batch_idx, updated_records)
         else:
@@ -235,6 +256,7 @@ class Harvester:
 
     def get_loader(self, start_from: str, identifiers: Union[List[str], None] = None):
         # need to get the harvester as we are in a different thread
+
 
         harvester = config_service.read(system_identity, self.harvester_id).data
         # harvester = OAIHarvesterConfig.query.get(self.harvester_id)
@@ -261,11 +283,20 @@ class Harvester:
         return parser_class(self.harvester)
 
 
+class OaipmhBatchBatch:
+    pass
+
+
 @contextlib.contextmanager
 def in_batch(run_id):
 
-    batch = batch_service.create(system_identity, {'metadata' : {'run_id': run_id, 'started':json.dumps(datetime.datetime.now(), default=default),
+    try:
+        batch = batch_service.create(system_identity, {'metadata' : {'run_id': run_id, 'started':json.dumps(datetime.datetime.now(), default=default),
                                                                  'status':'R' }})
+    except:
+        traceback.print_exc()
+        raise
+    OaipmhBatchRecord.index.refresh()
     # batch = OAIHarvestRunBatch(run_id=run_id,
     #                            started=datetime.datetime.now(),
     #                            status=HarvestStatus.RUNNING)
@@ -283,7 +314,7 @@ def in_batch(run_id):
         batch['metadata']['finished'] = json.dumps(datetime.datetime.now(), default=default)
 
         # db.session.add(batch)
-        # db.session.commit()
+        db.session.commit()
 
         batch_service.update(system_identity, batch['id'], {'metadata': batch['metadata']})
 
@@ -308,6 +339,7 @@ def in_batch(run_id):
 
 @shared_task
 def oaipmh_delete_records_task(harvester_id, run_id, batch_id, records):
+
     with in_batch(run_id) as batch:
 
         # harvester = OAIHarvesterConfig.query.get(harvester_id)
@@ -340,6 +372,7 @@ def oaipmh_delete_records_task(harvester_id, run_id, batch_id, records):
 
 @shared_task
 def oaipmh_update_records_task(harvester_id, run_id, batch_id, records):
+
     with in_batch(run_id) as batch:
 
         # harvester = OAIHarvesterConfig.query.get(harvester_id)
@@ -349,6 +382,7 @@ def oaipmh_update_records_task(harvester_id, run_id, batch_id, records):
         run = run_service.read(system_identity, run_id).data
 
         transformer = import_string(harvester['metadata']['transformer'])
+
         transformer_instance = transformer(harvester, run)
 
         records = [OAIRecord(x) for x in records]
@@ -381,8 +415,11 @@ def oaipmh_update_records_task(harvester_id, run_id, batch_id, records):
 
 
                 else:
-                    record_service.create(system_identity, {'metadata': {'identifier': rec.identifier,'batch_id': batch['id'],'status': 'O'}})
-
+                    try:
+                        record_service.create(system_identity, {'metadata': {'identifier': rec.identifier,'batch_id': batch['id'],'status': 'O'}})
+                    except:
+                        traceback.print_exc()
+                        raise
         try:
             nested = db.session.begin_nested()
             uow = BulkUnitOfWork(session=nested)

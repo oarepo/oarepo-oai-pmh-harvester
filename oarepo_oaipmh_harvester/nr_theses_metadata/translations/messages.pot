@@ -1,0 +1,472 @@
+# Translations template for PROJECT.
+# Copyright (C) 2022 CESNET
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: info@oarepo.org\n"
+"POT-Creation-Date: 2022-03-17 12:37+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: nr_theses_metadata/records_ui/templates/semantic-ui/nr_theses_metadata/records/detail.html:37
+msgid "Record title"
+msgstr ""
+
+#: nr_theses_metadata/records_ui/templates/semantic-ui/nr_theses_metadata/records/detail.html:279
+msgid "Record details"
+msgstr ""
+
+#: nr_theses_metadata/records_ui/templates/semantic-ui/nr_theses_metadata/records/search.html:2
+msgid "Search results"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:40
+msgid "Date defended"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:43
+msgid "Status of defence"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:43
+msgid "Defended"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:43
+msgid "Not defended"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:45
+msgid "Collection"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:47
+msgid "Resource type"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:49
+msgid "Date issued"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:51
+msgid "Date available"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:53
+msgid "Date modified"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:55
+msgid "Abstract"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:57
+msgid "Methods"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:59
+msgid "Technical info"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:61
+msgid "Access rights"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:63
+msgid "Version"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:65
+msgid "Accessibility"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:69
+msgid "External location URL"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:72
+msgid "Extent"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:74
+msgid "Original record"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:76
+msgid "Degree grantor"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:78
+msgid "Study field"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:80
+msgid "Title"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:84
+msgid "Title type"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:87
+msgid "Additional title"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:89
+msgid "Creator"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:91
+msgid "Creator type"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:95
+msgid "Creator identifier"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:100
+msgid "Creator identifier scheme"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:105
+msgid "Creator identifiers"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:108
+msgid "Affiliation"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:110
+msgid "Creators"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:112
+msgid "Contributor role"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:114
+msgid "Contributor"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:116
+msgid "Contributor type"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:120
+msgid "Contributor identifier"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:125
+msgid "Contributor identifier scheme"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:130
+msgid "Contributor identifiers"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:135
+msgid "Contributor affiliation"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:138
+msgid "Contributors"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:140
+msgid "Subject scheme"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:142
+msgid "Subject"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:144
+msgid "Subject URI"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:148
+msgid "Subject code"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:151
+msgid "Subjects"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:153
+msgid "Subject category"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:155
+msgid "Language"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:157
+msgid "License"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:159
+msgid "Related item URL"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:162
+msgid "Related item year"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:164
+msgid "Related item volume"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:166
+msgid "Related item issue"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:170
+msgid "Related item start page"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:175
+msgid "Related item end page"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:180
+msgid "Related item publisher"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:185
+msgid "Related item relation"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:190
+msgid "Related item type"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:195
+msgid "Related item creator"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:200
+msgid "Related item creator type"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:205
+msgid "Related item creator identifier"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:210
+msgid "Related item creator identifier scheme"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:215
+#: nr_theses_metadata/services/facets.py:220
+msgid "Related item creator identifiers"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:225
+msgid "Related item creators"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:230
+msgid "Related item contributor role"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:235
+msgid "Related item contributor"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:240
+msgid "Related item contributor type"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:245
+msgid "Related item contributor identifier"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:250
+msgid "Related item contributor identifier scheme"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:255
+msgid "Related item contributor identifiers"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:260
+msgid "Related item contributor affiliation"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:265
+msgid "Related item contributors"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:270
+msgid "Related item PID"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:275
+msgid "Related item PID scheme"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:279
+msgid "Related item PIDs"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:281
+msgid "Related items"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:285
+msgid "Project"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:290
+msgid "Funder"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:293
+msgid "Funding"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:297
+msgid "Location"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:303
+msgid "Location (Lon)"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:309
+msgid "Location (Lat)"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:312
+msgid "Locations"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:314
+msgid "Series title"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:316
+msgid "Series volume"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:318
+msgid "Series"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:322
+msgid "Identifier"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:327
+msgid "Identifier scheme"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:330
+msgid "Identifiers"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:334
+msgid "System identifier"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:339
+msgid "System identifier scheme"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:343
+msgid "System identifiers"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:345
+msgid "Event date"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:349
+msgid "Event place"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:354
+msgid "Event country"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:357
+msgid "Events"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:359
+msgid "Collections"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:361
+msgid "ID"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:363
+msgid "Created"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:365
+msgid "Updated"
+msgstr ""
+
+#: nr_theses_metadata/services/facets.py:367
+msgid "Schema"
+msgstr ""
+
+#: nr_theses_metadata/services/search.py:150
+msgid "Best match"
+msgstr ""
+
+#: nr_theses_metadata/services/search.py:154
+msgid "Newest"
+msgstr ""
+
+#: nr_theses_metadata/services/search.py:158
+msgid "Oldest"
+msgstr ""
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/footer.html:12
+msgid "Contact"
+msgstr ""
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/footer.html:35
+#, python-format
+msgid ""
+"Powered by <a\n"
+"              href=\"%(invenio_rdm)s\">InvenioRDM</a>"
+msgstr ""
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/frontpage.html:30
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/frontpage.html:31
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header.html:35
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header.html:36
+msgid "Search"
+msgstr ""
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header_login.html:8
+msgid "Log in"
+msgstr ""
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header_login.html:12
+msgid "Sign up"
+msgstr ""
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header_login.html:55
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header_login.html:63
+msgid "Log out"
+msgstr ""
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/help/search.de.html:2
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/help/search.en.html:2
+msgid "Search guide"
+msgstr ""
+

@@ -1,0 +1,473 @@
+# Czech translations for PROJECT.
+# Copyright (C) 2022 CESNET
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: info@oarepo.org\n"
+"POT-Creation-Date: 2022-03-17 12:37+0100\n"
+"PO-Revision-Date: 2022-03-17 13:41+0100\n"
+"Last-Translator: \n"
+"Language: cs\n"
+"Language-Team: cs <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: nr_theses_metadata/records_ui/templates/semantic-ui/nr_theses_metadata/records/detail.html:37
+msgid "Record title"
+msgstr "Název záznamu"
+
+#: nr_theses_metadata/records_ui/templates/semantic-ui/nr_theses_metadata/records/detail.html:279
+msgid "Record details"
+msgstr "Podrobnosti o záznamu"
+
+#: nr_theses_metadata/records_ui/templates/semantic-ui/nr_theses_metadata/records/search.html:2
+msgid "Search results"
+msgstr "Výsledky vyhledávání"
+
+#: nr_theses_metadata/services/facets.py:40
+msgid "Date defended"
+msgstr "Datum obhajoby"
+
+#: nr_theses_metadata/services/facets.py:43
+msgid "Status of defence"
+msgstr "Stav obhajoby"
+
+#: nr_theses_metadata/services/facets.py:43
+msgid "Defended"
+msgstr "Obhájeno"
+
+#: nr_theses_metadata/services/facets.py:43
+msgid "Not defended"
+msgstr "Neobhájeno"
+
+#: nr_theses_metadata/services/facets.py:45
+msgid "Collection"
+msgstr "Kolekce"
+
+#: nr_theses_metadata/services/facets.py:47
+msgid "Resource type"
+msgstr "Druh záznamu"
+
+#: nr_theses_metadata/services/facets.py:49
+msgid "Date issued"
+msgstr "Datum vydání"
+
+#: nr_theses_metadata/services/facets.py:51
+msgid "Date available"
+msgstr "Datum zpřístupnění"
+
+#: nr_theses_metadata/services/facets.py:53
+msgid "Date modified"
+msgstr "Datum poslední úpravy"
+
+#: nr_theses_metadata/services/facets.py:55
+msgid "Abstract"
+msgstr "Abstrakt"
+
+#: nr_theses_metadata/services/facets.py:57
+msgid "Methods"
+msgstr "Metody"
+
+#: nr_theses_metadata/services/facets.py:59
+msgid "Technical info"
+msgstr "Technický popis"
+
+#: nr_theses_metadata/services/facets.py:61
+msgid "Access rights"
+msgstr "Přístupová práva"
+
+#: nr_theses_metadata/services/facets.py:63
+msgid "Version"
+msgstr "Verze"
+
+#: nr_theses_metadata/services/facets.py:65
+msgid "Accessibility"
+msgstr "Dostupné z"
+
+#: nr_theses_metadata/services/facets.py:69
+msgid "External location URL"
+msgstr "URL adresa externího umístění"
+
+#: nr_theses_metadata/services/facets.py:72
+msgid "Extent"
+msgstr "Rozsah"
+
+#: nr_theses_metadata/services/facets.py:74
+msgid "Original record"
+msgstr "Původní záznam"
+
+#: nr_theses_metadata/services/facets.py:76
+msgid "Degree grantor"
+msgstr "Udělitel diplomu"
+
+#: nr_theses_metadata/services/facets.py:78
+msgid "Study field"
+msgstr "Studijní obor"
+
+#: nr_theses_metadata/services/facets.py:80
+msgid "Title"
+msgstr "Název"
+
+#: nr_theses_metadata/services/facets.py:84
+msgid "Title type"
+msgstr "Druh názvu"
+
+#: nr_theses_metadata/services/facets.py:87
+msgid "Additional title"
+msgstr "Další název"
+
+#: nr_theses_metadata/services/facets.py:89
+msgid "Creator"
+msgstr "Autor"
+
+#: nr_theses_metadata/services/facets.py:91
+msgid "Creator type"
+msgstr "Druh autora"
+
+#: nr_theses_metadata/services/facets.py:95
+msgid "Creator identifier"
+msgstr "Identifikátor autora"
+
+#: nr_theses_metadata/services/facets.py:100
+msgid "Creator identifier scheme"
+msgstr "Schema identifikátoru autora"
+
+#: nr_theses_metadata/services/facets.py:105
+msgid "Creator identifiers"
+msgstr "Identifikátory autora"
+
+#: nr_theses_metadata/services/facets.py:108
+msgid "Affiliation"
+msgstr "Afiliace"
+
+#: nr_theses_metadata/services/facets.py:110
+msgid "Creators"
+msgstr "Autoři"
+
+#: nr_theses_metadata/services/facets.py:112
+msgid "Contributor role"
+msgstr "Role přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:114
+msgid "Contributor"
+msgstr "Přispěvatel"
+
+#: nr_theses_metadata/services/facets.py:116
+msgid "Contributor type"
+msgstr "Druh přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:120
+msgid "Contributor identifier"
+msgstr "Identifikátor přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:125
+msgid "Contributor identifier scheme"
+msgstr "Schema identifikátoru přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:130
+msgid "Contributor identifiers"
+msgstr "Identifikátory přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:135
+msgid "Contributor affiliation"
+msgstr "Afiliace přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:138
+msgid "Contributors"
+msgstr "Přispěvatelé"
+
+#: nr_theses_metadata/services/facets.py:140
+msgid "Subject scheme"
+msgstr "Schema předmětu"
+
+#: nr_theses_metadata/services/facets.py:142
+msgid "Subject"
+msgstr "Předmět"
+
+#: nr_theses_metadata/services/facets.py:144
+msgid "Subject URI"
+msgstr "URI adresa předmětu"
+
+#: nr_theses_metadata/services/facets.py:148
+msgid "Subject code"
+msgstr "Kód předmětu"
+
+#: nr_theses_metadata/services/facets.py:151
+msgid "Subjects"
+msgstr "Předměty"
+
+#: nr_theses_metadata/services/facets.py:153
+msgid "Subject category"
+msgstr "Kategorie předmětu"
+
+#: nr_theses_metadata/services/facets.py:155
+msgid "Language"
+msgstr "Jazyk"
+
+#: nr_theses_metadata/services/facets.py:157
+msgid "License"
+msgstr "Licence"
+
+#: nr_theses_metadata/services/facets.py:159
+msgid "Related item URL"
+msgstr "Související položka - URL adresa"
+
+#: nr_theses_metadata/services/facets.py:162
+msgid "Related item year"
+msgstr "Související položka - rok vydání"
+
+#: nr_theses_metadata/services/facets.py:164
+msgid "Related item volume"
+msgstr "Související položka - svazek"
+
+#: nr_theses_metadata/services/facets.py:166
+msgid "Related item issue"
+msgstr "Související položka - vydání"
+
+#: nr_theses_metadata/services/facets.py:170
+msgid "Related item start page"
+msgstr "Související položka - úvodní strana"
+
+#: nr_theses_metadata/services/facets.py:175
+msgid "Related item end page"
+msgstr "Související položka - koncová strana"
+
+#: nr_theses_metadata/services/facets.py:180
+msgid "Related item publisher"
+msgstr "Související položka - vydavatel"
+
+#: nr_theses_metadata/services/facets.py:185
+msgid "Related item relation"
+msgstr "Související položka - vztah"
+
+#: nr_theses_metadata/services/facets.py:190
+msgid "Related item type"
+msgstr "Související položka - druh"
+
+#: nr_theses_metadata/services/facets.py:195
+msgid "Related item creator"
+msgstr "Související položka - autor"
+
+#: nr_theses_metadata/services/facets.py:200
+msgid "Related item creator type"
+msgstr "Související položka - druh autora"
+
+#: nr_theses_metadata/services/facets.py:205
+msgid "Related item creator identifier"
+msgstr "Související položka - identifikátor autora"
+
+#: nr_theses_metadata/services/facets.py:210
+msgid "Related item creator identifier scheme"
+msgstr "Související položka - schema identifikátoru autora"
+
+#: nr_theses_metadata/services/facets.py:215
+#: nr_theses_metadata/services/facets.py:220
+msgid "Related item creator identifiers"
+msgstr "Související položka - identifikátory autora"
+
+#: nr_theses_metadata/services/facets.py:225
+msgid "Related item creators"
+msgstr "Související položka - autoři"
+
+#: nr_theses_metadata/services/facets.py:230
+msgid "Related item contributor role"
+msgstr "Související položka - role přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:235
+msgid "Related item contributor"
+msgstr "Související položka - přispěvatel"
+
+#: nr_theses_metadata/services/facets.py:240
+msgid "Related item contributor type"
+msgstr "Související položka - druh přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:245
+msgid "Related item contributor identifier"
+msgstr "Související položka - identifikátor přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:250
+msgid "Related item contributor identifier scheme"
+msgstr "Související položka - schema identifikátoru přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:255
+msgid "Related item contributor identifiers"
+msgstr "Související položka - identifikátory přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:260
+msgid "Related item contributor affiliation"
+msgstr "Související položka - afiliace přispěvatele"
+
+#: nr_theses_metadata/services/facets.py:265
+msgid "Related item contributors"
+msgstr "Související položka - přispevatelé"
+
+#: nr_theses_metadata/services/facets.py:270
+msgid "Related item PID"
+msgstr "Související položka - PID identifikátor"
+
+#: nr_theses_metadata/services/facets.py:275
+msgid "Related item PID scheme"
+msgstr "Související položka - schema PID identifikátoru"
+
+#: nr_theses_metadata/services/facets.py:279
+msgid "Related item PIDs"
+msgstr "Související položka - PID identifikátory"
+
+#: nr_theses_metadata/services/facets.py:281
+msgid "Related items"
+msgstr "Související položky"
+
+#: nr_theses_metadata/services/facets.py:285
+msgid "Project"
+msgstr "Projekt"
+
+#: nr_theses_metadata/services/facets.py:290
+msgid "Funder"
+msgstr "Poskytovatel financování"
+
+#: nr_theses_metadata/services/facets.py:293
+msgid "Funding"
+msgstr "Financování"
+
+#: nr_theses_metadata/services/facets.py:297
+msgid "Location"
+msgstr "Konkrétní umístění"
+
+#: nr_theses_metadata/services/facets.py:303
+msgid "Location (Lon)"
+msgstr "GPS pozce (Lon)"
+
+#: nr_theses_metadata/services/facets.py:309
+msgid "Location (Lat)"
+msgstr "GPS pozice (Lat)"
+
+#: nr_theses_metadata/services/facets.py:312
+msgid "Locations"
+msgstr "Umístění"
+
+#: nr_theses_metadata/services/facets.py:314
+msgid "Series title"
+msgstr "Název série"
+
+#: nr_theses_metadata/services/facets.py:316
+msgid "Series volume"
+msgstr "Svazek série"
+
+#: nr_theses_metadata/services/facets.py:318
+msgid "Series"
+msgstr "Série"
+
+#: nr_theses_metadata/services/facets.py:322
+msgid "Identifier"
+msgstr "Identifikátor"
+
+#: nr_theses_metadata/services/facets.py:327
+msgid "Identifier scheme"
+msgstr "Schema identifikátoru"
+
+#: nr_theses_metadata/services/facets.py:330
+msgid "Identifiers"
+msgstr "Identifikátory"
+
+#: nr_theses_metadata/services/facets.py:334
+msgid "System identifier"
+msgstr "Systémový identifikátor"
+
+#: nr_theses_metadata/services/facets.py:339
+msgid "System identifier scheme"
+msgstr "Schema systémového identifikátoru"
+
+#: nr_theses_metadata/services/facets.py:343
+msgid "System identifiers"
+msgstr "Systémové identifikátory"
+
+#: nr_theses_metadata/services/facets.py:345
+msgid "Event date"
+msgstr "Datum události"
+
+#: nr_theses_metadata/services/facets.py:349
+msgid "Event place"
+msgstr "Místo události"
+
+#: nr_theses_metadata/services/facets.py:354
+msgid "Event country"
+msgstr "Země události"
+
+#: nr_theses_metadata/services/facets.py:357
+msgid "Events"
+msgstr "Události"
+
+#: nr_theses_metadata/services/facets.py:359
+msgid "Collections"
+msgstr "Kolekce"
+
+#: nr_theses_metadata/services/facets.py:361
+msgid "ID"
+msgstr "ID"
+
+#: nr_theses_metadata/services/facets.py:363
+msgid "Created"
+msgstr "Vytvořeno"
+
+#: nr_theses_metadata/services/facets.py:365
+msgid "Updated"
+msgstr "Aktualizováno"
+
+#: nr_theses_metadata/services/facets.py:367
+msgid "Schema"
+msgstr "Schema"
+
+#: nr_theses_metadata/services/search.py:150
+msgid "Best match"
+msgstr "Nejlepší shoda"
+
+#: nr_theses_metadata/services/search.py:154
+msgid "Newest"
+msgstr "Nejnovější"
+
+#: nr_theses_metadata/services/search.py:158
+msgid "Oldest"
+msgstr "Nejstarší"
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/footer.html:12
+msgid "Contact"
+msgstr "Kontakt"
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/footer.html:35
+#, python-format
+msgid ""
+"Powered by <a\n"
+"              href=\"%(invenio_rdm)s\">InvenioRDM</a>"
+msgstr "Vytvořeno pomocí <a href=\"%(invenio_rdm)s\">InvenioRDM</a>"
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/frontpage.html:30
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/frontpage.html:31
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header.html:35
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header.html:36
+msgid "Search"
+msgstr "Hledat"
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header_login.html:8
+msgid "Log in"
+msgstr "Přihlášení"
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header_login.html:12
+msgid "Sign up"
+msgstr "Registrace"
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header_login.html:55
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/header_login.html:63
+msgid "Log out"
+msgstr "Odhlášení"
+
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/help/search.de.html:2
+#: nr_theses_metadata/theme/templates/semantic-ui/nr_theses_metadata/help/search.en.html:2
+msgid "Search guide"
+msgstr "Průvodce vyhledáváním"
+

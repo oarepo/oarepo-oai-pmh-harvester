@@ -1,0 +1,24 @@
+{
+    "properties": {
+        "metadata": {
+            "properties": {
+
+            }
+        },
+        "id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

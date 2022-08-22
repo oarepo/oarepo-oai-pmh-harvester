@@ -31,8 +31,8 @@ class OARepoOAIHarvesterExt(object):
     def run(self, harvester_or_code: Union[str, OaipmhConfigRecord], all_records=False,
             on_background=False, dump_to=None, load_from=None, identifiers=None):
 
-        harvester:  OaipmhConfigRecord
-
+        # harvester:  OaipmhConfigRecord
+        harvester = None
         if isinstance(harvester_or_code, str):
             harvesters = config_service.scan(system_identity, params={'facets': {'metadata_code': [harvester_or_code]}})
             # harvesters = OaipmhConfigMetadata.query.all()
@@ -43,11 +43,17 @@ class OARepoOAIHarvesterExt(object):
             #         break
 
             try:
-                harvester_id = list(harvesters.hits)[0]['id']
+
+                # print(list(harvesters.hits)[0]['id'])
+                # print('jej')
+                hits = list(harvesters.hits)
+                harvester_id = hits[0]['id']
+                print(harvester_id)
                 harvester = config_service.read(system_identity, harvester_id).data
                 # harvester = OaipmhConfigMetadata.query.filter_by(code=harvester_or_code).one()
-            except:
-                raise ValueError(f'No OAIHarvester was found for code "{harvester_or_code}"')
+            except Exception as e:
+                print(e)
+                # raise ValueError(f'No OAIHarvester was found for code "{harvester_or_code}"')
         else:
             harvester = harvester_or_code
 

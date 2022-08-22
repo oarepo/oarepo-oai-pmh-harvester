@@ -75,10 +75,11 @@ def extra_entry_points():
     return {
         "invenio_db.models": [
             "oaipmh_config = oarepo_oaipmh_harvester.oaipmh_config.records.models",
-
+            "oaipmh_run = oarepo_oaipmh_harvester.oaipmh_run.records.models",
         ],
         "invenio_jsonschemas.schemas": [
-            "oaipmh_config = oarepo_oaipmh_harvester.oaipmh_config.records.jsonschemas"
+            "oaipmh_config = oarepo_oaipmh_harvester.oaipmh_config.records.jsonschemas",
+            "oaipmh_run = oarepo_oaipmh_harvester.oaipmh_run.records.jsonschemas"
         ],
         "invenio_search.mappings": [
 
@@ -102,6 +103,8 @@ def app_config(app_config):
     app_config[
         "RECORDS_REFRESOLVER_STORE"
     ] = "invenio_jsonschemas.proxies.current_refresolver_store"
+    # to avoid problems with multiple threads in harvester
+    app_config['SQLALCHEMY_DATABASE_URI'] = app_config['SQLALCHEMY_DATABASE_URI']+'?check_same_thread=False'
     return app_config
 
 

@@ -1,0 +1,609 @@
+{
+    "mappings": {
+        "properties": {
+            "metadata": {
+                "properties": {
+                    "dateDefended": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "defended": {
+                        "type": "boolean"
+                    },
+                    "collection": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "title": {
+                        "type": "text"
+                    },
+                    "resourceType": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "dateIssued": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "dateAvailable": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "dateModified": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "abstract": {
+                        "type": "object",
+                        "properties": {
+                            "lang": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "value": {
+                                "type": "text"
+                            }
+                        }
+                    },
+                    "abstract_cs": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        }
+                    },
+                    "abstract_en": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        }
+                    },
+                    "methods": {
+                        "type": "object",
+                        "properties": {
+                            "lang": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "value": {
+                                "type": "text"
+                            }
+                        }
+                    },
+                    "methods_cs": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        }
+                    },
+                    "methods_en": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        }
+                    },
+                    "technicalInfo": {
+                        "type": "object",
+                        "properties": {
+                            "lang": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "value": {
+                                "type": "text"
+                            }
+                        }
+                    },
+                    "technicalInfo_cs": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        }
+                    },
+                    "technicalInfo_en": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        }
+                    },
+                    "accessRights": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "version": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "accessibility": {
+                        "type": "object",
+                        "properties": {
+                            "lang": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "value": {
+                                "type": "text"
+                            }
+                        }
+                    },
+                    "accessibility_cs": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        }
+                    },
+                    "accessibility_en": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        }
+                    },
+                    "externalLocation": {
+                        "properties": {
+                            "externalLocationURL": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "externalLocationNote": {
+                                "type": "text"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "extent": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "originalRecord": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "degreeGrantor": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "studyFields": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "additionalTitles": {
+                        "properties": {
+                            "title": {
+                                "type": "object",
+                                "properties": {
+                                    "lang": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "value": {
+                                        "type": "text"
+                                    }
+                                }
+                            },
+                            "title_cs": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                }
+                            },
+                            "title_en": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                }
+                            },
+                            "titleType": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "creators": {
+                        "properties": {
+                            "fullName": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "nameType": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "authorityIdentifiers": {
+                                "properties": {
+                                    "identifier": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "scheme": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "affiliations": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "contributors": {
+                        "properties": {
+                            "role": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "fullName": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "nameType": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "authorityIdentifiers": {
+                                "properties": {
+                                    "identifier": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "scheme": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "affiliations": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "subjects": {
+                        "properties": {
+                            "subjectScheme": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "subject": {
+                                "type": "object",
+                                "properties": {
+                                    "lang": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "value": {
+                                        "type": "text"
+                                    }
+                                }
+                            },
+                            "subject_cs": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                }
+                            },
+                            "subject_en": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                }
+                            },
+                            "valueURI": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "classificationCode": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "publishers": {
+                        "type": "text"
+                    },
+                    "subjectCategories": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "languages": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "notes": {
+                        "type": "text"
+                    },
+                    "rights": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    },
+                    "relatedItems": {
+                        "properties": {
+                            "itemTitle": {
+                                "type": "text"
+                            },
+                            "itemURL": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "itemYear": {
+                                "type": "integer"
+                            },
+                            "itemVolume": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "itemIssue": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "itemStartPage": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "itemEndPage": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "itemPublisher": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "itemRelationType": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "itemResourceType": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "itemCreators": {
+                                "properties": {
+                                    "fullName": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "nameType": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "authorityIdentifiers": {
+                                        "properties": {
+                                            "identifier": {
+                                                "type": "keyword",
+                                                "ignore_above": 50
+                                            },
+                                            "scheme": {
+                                                "type": "keyword",
+                                                "ignore_above": 50
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "affiliations": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "itemContributors": {
+                                "properties": {
+                                    "role": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "fullName": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "nameType": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "authorityIdentifiers": {
+                                        "properties": {
+                                            "identifier": {
+                                                "type": "keyword",
+                                                "ignore_above": 50
+                                            },
+                                            "scheme": {
+                                                "type": "keyword",
+                                                "ignore_above": 50
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "affiliations": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "itemPIDs": {
+                                "properties": {
+                                    "identifier": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "scheme": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "fundingReferences": {
+                        "properties": {
+                            "projectID": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "projectName": {
+                                "type": "text"
+                            },
+                            "fundingProgram": {
+                                "type": "text"
+                            },
+                            "funder": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "geoLocations": {
+                        "properties": {
+                            "geoLocationPlace": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "geoLocationPoint": {
+                                "properties": {
+                                    "pointLongitude": {
+                                        "type": "double"
+                                    },
+                                    "pointLatitude": {
+                                        "type": "double"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "series": {
+                        "properties": {
+                            "seriesTitle": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "seriesVolume": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "objectIdentifiers": {
+                        "properties": {
+                            "identifier": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "scheme": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "systemIdentifiers": {
+                        "properties": {
+                            "identifier": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "scheme": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "events": {
+                        "properties": {
+                            "eventNameOriginal": {
+                                "type": "text"
+                            },
+                            "eventDate": {
+                                "type": "keyword",
+                                "ignore_above": 50
+                            },
+                            "eventLocation": {
+                                "properties": {
+                                    "place": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    },
+                                    "country": {
+                                        "type": "keyword",
+                                        "ignore_above": 50
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "eventNameAlternate": {
+                                "type": "text"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "collections": {
+                        "type": "keyword",
+                        "ignore_above": 50
+                    }
+                },
+                "type": "object"
+            },
+            "id": {
+                "type": "keyword",
+                "ignore_above": 50
+            },
+            "created": {
+                "type": "date"
+            },
+            "updated": {
+                "type": "date"
+            },
+            "$schema": {
+                "type": "keyword",
+                "ignore_above": 50
+            }
+        }
+    }
+}

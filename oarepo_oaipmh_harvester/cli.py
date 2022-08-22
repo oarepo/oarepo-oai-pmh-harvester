@@ -1,8 +1,9 @@
 from collections import defaultdict
-
+import traceback
 import click
 
 from oarepo_oaipmh_harvester.models import OAIHarvesterConfig, OAIHarvestRun, OAIHarvestRunBatch, HarvestStatus
+from oarepo_oaipmh_harvester.oaipmh_config.records.api import OaipmhConfigRecord
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
@@ -13,6 +14,11 @@ from oarepo_oaipmh_harvester.oaipmh_record.proxies import current_service as rec
 @click.group(name='oaiharvester')
 def oaiharvester():
     """Classifier commands."""
+
+# @oaiharvester.command()
+# @with_appcontext
+# def t_comm():
+#     print('jej')
 
 
 @oaiharvester.command()
@@ -28,9 +34,13 @@ def oaiharvester():
 @click.argument('identifiers', nargs=-1)
 @with_appcontext
 def harvest(harvester_code, all_records, background, dump_to, load_from, identifiers):
+    _harvest(harvester_code, all_records, background, dump_to, load_from, identifiers)
+    # current_harvester.run(harvester_code, all_records=all_records, on_background=background,
+    #                       load_from=load_from, dump_to=dump_to, identifiers=identifiers)
+
+def _harvest(harvester_code, all_records, background, dump_to, load_from, identifiers):
     current_harvester.run(harvester_code, all_records=all_records, on_background=background,
                           load_from=load_from, dump_to=dump_to, identifiers=identifiers)
-
 
 @oaiharvester.command()
 @click.option('--code', help="OAI server code", required=True)
@@ -42,7 +52,9 @@ def harvest(harvester_code, all_records, background, dump_to, load_from, identif
 @click.option('--transformer', help="Transformer class", required=True)
 @with_appcontext
 def add(code, name, url, set, prefix, parser, transformer):
+    _add(code, name, url, set, prefix, parser, transformer)
 
+def _add(code, name, url, set, prefix, parser, transformer):
     harvester = False
     harvesters = config_service.scan(system_identity, params={'facets': {'metadata_code': [code]}})
 
@@ -56,8 +68,14 @@ def add(code, name, url, set, prefix, parser, transformer):
                 'transformer': transformer}
     if parser:
         metadata['parser'] = parser
-    config_service.create(system_identity,
+    try:
+        config_service.create(system_identity,
                           {'metadata': metadata})
+    except:
+        # print(e)
+        traceback.print_exc()
+        raise
+    OaipmhConfigRecord.index.refresh()
 
 
 @oaiharvester.command()
