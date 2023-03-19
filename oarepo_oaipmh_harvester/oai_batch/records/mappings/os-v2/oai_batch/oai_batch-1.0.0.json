@@ -1,0 +1,57 @@
+{
+    "mappings": {
+        "properties": {
+            "run": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "@v": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "status": {
+                "type": "keyword"
+            },
+            "identifiers": {
+                "type": "keyword"
+            },
+            "errors": {
+                "type": "object",
+                "properties": {
+                    "oai_identifier": {
+                        "type": "keyword"
+                    },
+                    "error": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            },
+            "started": {
+                "type": "date"
+            },
+            "finished": {
+                "type": "date"
+            },
+            "id": {
+                "type": "keyword"
+            },
+            "created": {
+                "type": "date"
+            },
+            "updated": {
+                "type": "date"
+            },
+            "$schema": {
+                "type": "keyword"
+            }
+        }
+    }
+}

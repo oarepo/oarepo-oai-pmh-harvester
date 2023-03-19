@@ -1,0 +1,55 @@
+model:
+  use: [ invenio ]
+  package: oarepo_oaipmh_harvester.oai_record
+  flask-extension-name: oarepo-oaipmh-record
+  record-service-config-components:
+    - invenio_records_resources.services.records.components.DataComponent
+  schema-server: 'local://'
+
+  properties:
+    batch: 
+      # batch in which the record has been modified the last time
+      type: relation
+      model: oaipmh-batch
+      keys:
+      - key: id
+        model:
+          type: keyword
+      required: true
+    
+    local_identifier:
+      type: keyword
+    
+    oai_identifier:
+        type: keyword
+
+    datestamp:
+      type: datetime
+
+    status: 
+        # O: ok, W: warning, S: skipped, E: error
+        type: keyword
+        enum: [ O, W, E, S ]
+    
+    warnings[]: 
+        type: fulltext+keyword
+    
+    errors[]: 
+        type: fulltext+keyword
+
+    entry:
+      type: flattened
+
+    context:
+      type: flattened
+
+  plugins:
+    builder:
+      disable: 
+      - invenio_cli_setup_cfg
+      - invenio_cli
+      - script_sample_data
+      - invenio_record_metadata_alembic_setup_cfg
+  permissions:
+    presets:
+    - oai_harvester

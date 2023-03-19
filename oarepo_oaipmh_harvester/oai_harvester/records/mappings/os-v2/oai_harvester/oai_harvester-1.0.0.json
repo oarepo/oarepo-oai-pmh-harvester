@@ -1,0 +1,51 @@
+{
+    "mappings": {
+        "properties": {
+            "code": {
+                "type": "keyword"
+            },
+            "baseurl": {
+                "type": "keyword"
+            },
+            "metadataprefix": {
+                "type": "keyword"
+            },
+            "comment": {
+                "type": "text"
+            },
+            "name": {
+                "type": "keyword"
+            },
+            "setspecs": {
+                "type": "keyword"
+            },
+            "loader": {
+                "type": "keyword"
+            },
+            "transformers": {
+                "type": "keyword"
+            },
+            "writer": {
+                "type": "keyword"
+            },
+            "max_records": {
+                "type": "integer"
+            },
+            "batch_size": {
+                "type": "integer"
+            },
+            "id": {
+                "type": "keyword"
+            },
+            "created": {
+                "type": "date"
+            },
+            "updated": {
+                "type": "date"
+            },
+            "$schema": {
+                "type": "keyword"
+            }
+        }
+    }
+}

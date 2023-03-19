@@ -1,0 +1,104 @@
+{
+    "type": "object",
+    "properties": {
+        "harvester": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "baseurl": {
+                    "type": "string"
+                },
+                "metadataprefix": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "setspecs": {
+                    "type": "string"
+                },
+                "loader": {
+                    "type": "string"
+                },
+                "transformers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "writer": {
+                    "type": "string"
+                },
+                "max_records": {
+                    "type": "integer"
+                },
+                "batch_size": {
+                    "type": "integer"
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "updated": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "$schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "batches": {
+            "type": "integer"
+        },
+        "status": {
+            "enum": [
+                "R",
+                "O",
+                "W",
+                "E",
+                "I"
+            ],
+            "type": "string"
+        },
+        "warning": {
+            "type": "string"
+        },
+        "error": {
+            "type": "string"
+        },
+        "started": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "finished": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "duration": {
+            "type": "number"
+        },
+        "id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    }
+}

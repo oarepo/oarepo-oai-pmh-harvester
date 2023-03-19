@@ -1,0 +1,61 @@
+model:
+  use: [ invenio ]
+  package: oarepo_oaipmh_harvester.oai_harvester
+  flask-extension-name: oarepo-oaipmh-harvester
+  record-service-config-components:
+    - invenio_records_resources.services.records.components.DataComponent
+  schema-server: 'local://'
+
+  properties:
+    code: 
+      type: keyword
+      required: true
+
+    baseurl:
+      type: url
+      required: true
+
+    metadataprefix: 
+      type: keyword
+      required: true
+
+    comment:
+      type: fulltext
+
+    name:
+      type: keyword
+      required: true
+
+    setspecs: 
+      type: keyword
+      required: true
+
+    # the loader is a string in format loader_name{optional_yaml_dict_of_parameters}
+    loader:
+      type: keyword
+      
+    # the transformer is a string in format transformer_name{optional_yaml_dict_of_parameters}
+    transformers[]:
+      type: keyword
+      ^required: true
+
+    # the writer is a string in format writer_name{optional_yaml_dict_of_parameters}
+    writer:
+      type: keyword
+
+    max_records:
+      type: integer
+
+    batch_size:
+      type: integer
+
+  plugins:
+    builder:
+      disable: 
+      - script_sample_data
+      - invenio_cli_setup_cfg
+      - invenio_cli
+      - invenio_record_metadata_alembic_setup_cfg
+  permissions:
+    presets:
+    - oai_harvester

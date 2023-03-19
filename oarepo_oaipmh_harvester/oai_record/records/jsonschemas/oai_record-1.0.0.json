@@ -1,0 +1,67 @@
+{
+    "type": "object",
+    "properties": {
+        "batch": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "@v": {
+                    "type": "string"
+                }
+            }
+        },
+        "local_identifier": {
+            "type": "string"
+        },
+        "oai_identifier": {
+            "type": "string"
+        },
+        "datestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "O",
+                "W",
+                "E",
+                "S"
+            ]
+        },
+        "warnings": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "errors": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "entry": {
+            "type": "object"
+        },
+        "context": {
+            "type": "object"
+        },
+        "id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    }
+}
