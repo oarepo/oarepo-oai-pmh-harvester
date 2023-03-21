@@ -79,7 +79,7 @@ class SickleReader(BaseReader):
                                 "metadata": record.metadata
                                 if hasattr(record, "metadata")
                                 else {},
-                                "datestamp": record.header.datestamp,
+                                "datestamp": datestamp,
                                 "deleted": record.header.deleted,
                                 "identifier": record.header.identifier,
                                 "setSpecs": record.header.setSpecs,
