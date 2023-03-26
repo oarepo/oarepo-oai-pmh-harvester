@@ -44,11 +44,13 @@ class OAIWriter(BatchWriter):
                     run_service.update(self._identity, oai_run["id"], dict(oai_run))
 
             uow.commit()
+        db.session.expunge_all()
 
         # if the run already has number of batches, we might have been the latest batch.
         # check if all batches have already finished and if so, set the run as finished
         if oai_run["batches"]:
             self.set_run_status(batch, oai_run)
+        db.session.expunge_all()
 
         return batch
 
