@@ -4,9 +4,11 @@ import json
 from abc import abstractmethod
 from collections import defaultdict
 from typing import List
+import traceback
 
 from oarepo_runtime.datastreams import StreamEntry
 from oarepo_runtime.datastreams.transformers import BatchTransformer, StreamBatch
+from oarepo_runtime.datastreams.errors import TransformerError
 
 
 class OAIRuleTransformer(BatchTransformer):
@@ -21,7 +23,14 @@ class OAIRuleTransformer(BatchTransformer):
         for entry in batch.entries:
             entry.transformed = {}
             entry.processed = set()
-            self.transform(entry)
+            try:
+                self.transform(entry)
+            except TransformerError as e:
+                stack = "\n".join(traceback.format_stack())
+                entry.errors.append(f"Transformer error: {e}: {stack}")
+            except Exception as e:
+                stack = "\n".join(traceback.format_stack())
+                entry.errors.append(f"Transformer unhandled error: {e}: {stack}")
 
         self.finish_transformation(batch.entries)
         return batch
