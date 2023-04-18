@@ -3,6 +3,8 @@ from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
 from opensearchpy.helpers import bulk
 from opensearchpy.helpers import expand_action as default_expand_action
 
+from oarepo_runtime.relations.uow import CachingUnitOfWork
+
 
 class BulkRecordCommitOp(RecordCommitOp):
     def __init__(self, rc: RecordCommitOp):
@@ -33,7 +35,7 @@ class BulkRecordCommitOp(RecordCommitOp):
         return action
 
 
-class BulkUnitOfWork(UnitOfWork):
+class BulkUnitOfWork(CachingUnitOfWork):
     def register(self, op):
         if isinstance(op, RecordCommitOp):
             op = BulkRecordCommitOp(op)
