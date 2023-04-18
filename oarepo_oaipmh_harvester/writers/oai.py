@@ -117,9 +117,11 @@ class OAIWriter(BatchWriter):
                 record_service.scan(
                     self._identity,
                     params={
-                        "oai_identifier": [
-                            e.context["oai"]["identifier"] for e in batch.entries
-                        ]
+                        "facets": {
+                            "oai_identifier": [
+                                e.context["oai"]["identifier"] for e in batch.entries
+                            ]
+                        }
                     },
                 )
             )
@@ -139,9 +141,11 @@ class OAIWriter(BatchWriter):
                 record_service.scan(
                     self._identity,
                     params={
-                        "oai_identifier": [
-                            e.context["oai"]["identifier"] for e in batch.entries
-                        ]
+                        "facets": {
+                            "oai_identifier": [
+                                e.context["oai"]["identifier"] for e in batch.entries
+                            ]
+                        }
                     },
                 )
             )
@@ -235,7 +239,7 @@ class OAIWriter(BatchWriter):
         oai_record = list(
             record_service.scan(
                 self._identity,
-                params={"oai_identifier": [entry.context["oai"]["identifier"]]},
+                params={"facets": {"oai_identifier": [entry.context["oai"]["identifier"]]}},
             )
         )
         if oai_record and "local_identifier" in oai_record[0]:
