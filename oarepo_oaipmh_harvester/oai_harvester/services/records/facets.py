@@ -1,46 +1,46 @@
 """Facet definitions."""
 
+from flask_babelex import lazy_gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
-from invenio_search.engine import dsl
-from oarepo_runtime.facets.nested_facet import NestedLabeledFacet
+from oarepo_runtime.facets.date import DateTimeFacet
 
-code = TermsFacet(field="code")
-
-
-baseurl = TermsFacet(field="baseurl")
+code = TermsFacet(field="code", label=_("code.label"))
 
 
-metadataprefix = TermsFacet(field="metadataprefix")
+baseurl = TermsFacet(field="baseurl", label=_("baseurl.label"))
 
 
-name = TermsFacet(field="name")
+metadataprefix = TermsFacet(field="metadataprefix", label=_("metadataprefix.label"))
 
 
-setspecs = TermsFacet(field="setspecs")
+name = TermsFacet(field="name", label=_("name.label"))
 
 
-loader = TermsFacet(field="loader")
+setspecs = TermsFacet(field="setspecs", label=_("setspecs.label"))
 
 
-transformers = TermsFacet(field="transformers")
+loader = TermsFacet(field="loader", label=_("loader.label"))
 
 
-writer = TermsFacet(field="writer")
+transformers = TermsFacet(field="transformers", label=_("transformers.label"))
 
 
-max_records = TermsFacet(field="max_records")
+writer = TermsFacet(field="writer", label=_("writer.label"))
 
 
-batch_size = TermsFacet(field="batch_size")
+max_records = TermsFacet(field="max_records", label=_("max_records.label"))
 
 
-_id = TermsFacet(field="id")
+batch_size = TermsFacet(field="batch_size", label=_("batch_size.label"))
 
 
-created = TermsFacet(field="created")
+_id = TermsFacet(field="id", label=_("id.label"))
 
 
-updated = TermsFacet(field="updated")
+created = DateTimeFacet(field="created", label=_("created.label"))
 
 
-_schema = TermsFacet(field="$schema")
+updated = DateTimeFacet(field="updated", label=_("updated.label"))
+
+
+_schema = TermsFacet(field="$schema", label=_("$schema.label"))

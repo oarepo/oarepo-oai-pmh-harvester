@@ -1,32 +1,55 @@
 {
     "model": {
         "type": "object",
-        "config-package": "oarepo_oaipmh_harvester.oai_batch.config",
-        "package-path": "oarepo_oaipmh_harvester/oai_batch",
-        "generate-record-pid-field": true,
-        "record-metadata-table-name": "oaibatch_metadata",
-        "record-service-config-bases": [
-            "invenio_records_resources.services.RecordServiceConfig"
+        "record-service-class": "oarepo_oaipmh_harvester.oai_batch.services.records.service.OaiBatchService",
+        "invenio-record-resource-extra-code": "",
+        "invenio-record-schema-extra-code": "",
+        "config-service-class-key": "OAI_BATCH_SERVICE_CLASS_OAI_BATCH",
+        "invenio-record-permissions-extra-code": "",
+        "record-pid-provider-bases": [
+            "invenio_pidstore.providers.recordid_v2.RecordIdProviderV2"
         ],
+        "invenio-record-search-options-extra-code": "",
+        "record-resource-blueprint-name": "OaiBatch",
+        "package-base": "oai_batch",
+        "package-path": "oarepo_oaipmh_harvester/oai_batch",
+        "ext-class": "oarepo_oaipmh_harvester.oai_batch.ext.OaiBatchExt",
+        "invenio-ext-extra-code": "",
+        "config-resource-config-key": "OAI_BATCH_RESOURCE_CONFIG_OAI_BATCH",
+        "record-facets-class": "oarepo_oaipmh_harvester.oai_batch.services.records.facets.Test",
+        "record-jsonschemas-setup-cfg": "oai_batch",
+        "profile-package": "records",
+        "pid-field-provider": "RecordIdProviderV2",
+        "kebap-package": "oarepo-oaipmh-harvester.oai-batch",
+        "ui": {
+            "marshmallow": {
+                "imports": [
+                    {
+                        "import": "oarepo_runtime.ui.marshmallow.InvenioUISchema"
+                    }
+                ],
+                "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.OaiBatchUISchema",
+                "base-classes": [
+                    "InvenioUISchema"
+                ],
+                "generate": true
+            }
+        },
         "properties": {
             "run": {
                 "marshmallow": {
                     "validators": [],
-                    "field-class": "ma_fields.Nested",
                     "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.RunSchema",
+                    "field-class": "ma_fields.Nested",
                     "imports": []
                 },
-                "keys": [
-                    {
-                        "model": {
-                            "type": "keyword"
-                        },
-                        "key": "id",
-                        "target": "id"
+                "relation-class": "PIDRelation",
+                "ui": {
+                    "marshmallow": {
+                        "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.RunUISchema",
+                        "field-class": "ma_fields.Nested"
                     }
-                ],
-                "required": true,
-                "type": "relation",
+                },
                 "properties": {
                     "id": {
                         "marshmallow": {
@@ -43,8 +66,8 @@
                     },
                     "@v": {
                         "marshmallow": {
-                            "field-name": "_version",
                             "validators": [],
+                            "field-name": "_version",
                             "field-class": "ma_fields.String",
                             "imports": []
                         },
@@ -57,6 +80,7 @@
                         "type": "keyword"
                     }
                 },
+                "pid-field": "OaiRunRecord.pid",
                 "imports": [
                     {
                         "import": "oarepo_runtime.relations.RelationsField"
@@ -71,22 +95,25 @@
                         "import": "oarepo_oaipmh_harvester.oai_run.records.api.OaiRunRecord"
                     }
                 ],
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.Nested",
-                        "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.RunUISchema"
-                    }
-                },
+                "model-class": "OaiRunRecord",
+                "schema-prefix": "Run",
+                "name": "run",
+                "required": true,
+                "model": "oaipmh-run",
+                "type": "relation",
                 "relation-args": {
                     "keys": "['id']",
                     "pid_field": "OaiRunRecord.pid"
                 },
-                "model": "oaipmh-run",
-                "model-class": "OaiRunRecord",
-                "relation-class": "PIDRelation",
-                "schema-prefix": "Run",
-                "name": "run",
-                "pid-field": "OaiRunRecord.pid"
+                "keys": [
+                    {
+                        "model": {
+                            "type": "keyword"
+                        },
+                        "key": "id",
+                        "target": "id"
+                    }
+                ]
             },
             "status": {
                 "marshmallow": {
@@ -113,15 +140,15 @@
                         ]
                     }
                 },
+                "required": true,
+                "type": "keyword",
                 "enum": [
                     "R",
                     "O",
                     "W",
                     "E",
                     "I"
-                ],
-                "required": true,
-                "type": "keyword"
+                ]
             },
             "identifiers": {
                 "marshmallow": {
@@ -134,6 +161,7 @@
                         "field-class": "ma_fields.List"
                     }
                 },
+                "type": "array",
                 "items": {
                     "marshmallow": {
                         "validators": [],
@@ -146,8 +174,7 @@
                         }
                     },
                     "type": "keyword"
-                },
-                "type": "array"
+                }
             },
             "errors": {
                 "marshmallow": {
@@ -160,20 +187,20 @@
                         "field-class": "ma_fields.List"
                     }
                 },
+                "type": "array",
                 "items": {
                     "marshmallow": {
                         "validators": [],
-                        "field-class": "ma_fields.Nested",
                         "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.ErrorsItemSchema",
+                        "field-class": "ma_fields.Nested",
                         "imports": []
                     },
                     "ui": {
                         "marshmallow": {
-                            "field-class": "ma_fields.Nested",
-                            "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.ErrorsItemUISchema"
+                            "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.ErrorsItemUISchema",
+                            "field-class": "ma_fields.Nested"
                         }
                     },
-                    "type": "object",
                     "properties": {
                         "oai_identifier": {
                             "marshmallow": {
@@ -201,9 +228,9 @@
                             },
                             "type": "fulltext+keyword"
                         }
-                    }
-                },
-                "type": "array"
+                    },
+                    "type": "object"
+                }
             },
             "started": {
                 "marshmallow": {
@@ -267,43 +294,45 @@
             },
             "id": {
                 "marshmallow": {
-                    "write": false,
                     "validators": [],
                     "read": false,
+                    "write": false,
                     "field-class": "ma_fields.String",
                     "imports": []
                 },
                 "ui": {
                     "marshmallow": {
+                        "read": false,
+                        "write": false,
                         "field-class": "ma_fields.String"
                     }
                 },
-                "sample": {
-                    "skip": true
-                },
                 "facets": {
                     "searchable": true
+                },
+                "sample": {
+                    "skip": true
                 },
                 "type": "keyword"
             },
             "created": {
                 "marshmallow": {
-                    "write": false,
                     "validators": [
-                        "validate_date('%Y-%m-%d')"
+                        "validate_datetime"
                     ],
-                    "read": true,
+                    "read": false,
+                    "write": false,
                     "field-class": "ma_fields.String",
                     "imports": [
                         {
-                            "import": "oarepo_runtime.validation.validate_date"
+                            "import": "oarepo_runtime.validation.validate_datetime"
                         },
                         {
                             "import": "oarepo_runtime.ui.marshmallow",
                             "alias": "l10n"
                         },
                         {
-                            "import": "oarepo_runtime.validation.validate_date"
+                            "import": "oarepo_runtime.validation.validate_datetime"
                         },
                         {
                             "import": "oarepo_runtime.ui.marshmallow",
@@ -313,35 +342,37 @@
                 },
                 "ui": {
                     "marshmallow": {
-                        "field-class": "l10n.LocalizedDate"
+                        "read": false,
+                        "write": false,
+                        "field-class": "l10n.LocalizedDateTime"
                     }
-                },
-                "sample": {
-                    "skip": true
                 },
                 "facets": {
                     "searchable": true
                 },
-                "type": "date"
+                "sample": {
+                    "skip": true
+                },
+                "type": "datetime"
             },
             "updated": {
                 "marshmallow": {
-                    "write": false,
                     "validators": [
-                        "validate_date('%Y-%m-%d')"
+                        "validate_datetime"
                     ],
-                    "read": true,
+                    "read": false,
+                    "write": false,
                     "field-class": "ma_fields.String",
                     "imports": [
                         {
-                            "import": "oarepo_runtime.validation.validate_date"
+                            "import": "oarepo_runtime.validation.validate_datetime"
                         },
                         {
                             "import": "oarepo_runtime.ui.marshmallow",
                             "alias": "l10n"
                         },
                         {
-                            "import": "oarepo_runtime.validation.validate_date"
+                            "import": "oarepo_runtime.validation.validate_datetime"
                         },
                         {
                             "import": "oarepo_runtime.ui.marshmallow",
@@ -351,59 +382,131 @@
                 },
                 "ui": {
                     "marshmallow": {
-                        "field-class": "l10n.LocalizedDate"
+                        "read": false,
+                        "write": false,
+                        "field-class": "l10n.LocalizedDateTime"
                     }
-                },
-                "sample": {
-                    "skip": true
                 },
                 "facets": {
                     "searchable": true
                 },
-                "type": "date"
+                "sample": {
+                    "skip": true
+                },
+                "type": "datetime"
             },
             "$schema": {
                 "marshmallow": {
-                    "write": false,
                     "validators": [],
                     "read": false,
+                    "write": false,
                     "field-class": "ma_fields.String",
                     "imports": []
                 },
                 "ui": {
                     "marshmallow": {
+                        "read": false,
+                        "write": false,
                         "field-class": "ma_fields.String"
                     }
-                },
-                "sample": {
-                    "skip": true
                 },
                 "facets": {
                     "searchable": true
                 },
+                "sample": {
+                    "skip": true
+                },
                 "type": "keyword"
             }
         },
+        "record-search-options-class": "oarepo_oaipmh_harvester.oai_batch.services.records.search.OaiBatchSearchOptions",
+        "record-resource-config-class": "oarepo_oaipmh_harvester.oai_batch.resources.records.config.OaiBatchResourceConfig",
+        "record-ui-schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.OaiBatchUISchema",
+        "invenio-proxies-extra-code": "",
+        "invenio-version-extra-code": "",
+        "record-service-config-class": "oarepo_oaipmh_harvester.oai_batch.services.records.config.OaiBatchServiceConfig",
+        "record-api-blueprints-setup-cfg": "oai_batch",
+        "record-schema-metadata-setup-cfg": "oai_batch",
+        "flask-commands-setup-cfg": "oai_batch",
+        "schema-version": "1.0.0",
+        "record-resource-class": "oarepo_oaipmh_harvester.oai_batch.resources.records.resource.OaiBatchResource",
         "config-resource-class-key": "OAI_BATCH_RESOURCE_CLASS_OAI_BATCH",
-        "invenio-record-object-schema-extra-code": "",
-        "record-facets-class": "oarepo_oaipmh_harvester.oai_batch.services.records.facets.Test",
-        "record-class": "oarepo_oaipmh_harvester.oai_batch.records.api.OaiBatchRecord",
-        "record-prefix-snake": "oai_batch",
-        "record-schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.OaiBatchSchema",
-        "config-resource-config-key": "OAI_BATCH_RESOURCE_CONFIG_OAI_BATCH",
-        "record-resource-config-bases": [
-            "invenio_records_resources.resources.RecordResourceConfig"
+        "record-bases": [
+            "invenio_records_resources.records.api.Record"
         ],
+        "marshmallow": {
+            "generate": true,
+            "base-classes": [
+                "InvenioBaseRecordSchema"
+            ],
+            "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.OaiBatchSchema"
+        },
+        "record-dumper-class": "oarepo_oaipmh_harvester.oai_batch.records.dumper.OaiBatchDumper",
+        "service-id": "oarepo-oaipmh-batch",
+        "record-service-config-bases": [
+            "invenio_records_resources.services.RecordServiceConfig"
+        ],
+        "record-ui-schema-metadata-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.OaiBatchMetadataUISchema",
+        "flask-extension-name": "oarepo-oaipmh-batch",
+        "schema-server": "local://",
+        "config-resource-register-blueprint-key": "OAI_BATCH_REGISTER_BLUEPRINT",
+        "record-schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.OaiBatchSchema",
+        "package-base-upper": "OAI_BATCH",
+        "config-package": "oarepo_oaipmh_harvester.oai_batch.config",
+        "pid-field-context": "PIDFieldContext",
+        "record-services-package": "oarepo_oaipmh_harvester.oai_batch.services.records",
+        "record-prefix-snake": "oai_batch",
         "permissions": {
             "presets": [
                 "oai_harvester"
             ]
         },
-        "schema-file": "oarepo_oaipmh_harvester/oai_batch/records/jsonschemas/oai_batch-1.0.0.json",
-        "invenio-version-extra-code": "",
-        "record-services-package": "oarepo_oaipmh_harvester.oai_batch.services.records",
-        "invenio-record-resource-config-extra-code": "",
+        "create-blueprint-from-app": "oarepo_oaipmh_harvester.oai_batch.views.create_blueprint_from_app_oai_batch",
+        "config-dummy-class": "oarepo_oaipmh_harvester.oai_batch.config.DummyClass",
+        "record-ui-serializer-class": "oarepo_oaipmh_harvester.oai_batch.resources.records.ui.OaiBatchUIJSONSerializer",
+        "jsonschemas-package": "oarepo_oaipmh_harvester.oai_batch.records.jsonschemas",
+        "pid-field-cls": "PIDField",
+        "collection-url": "/oarepo-oaipmh-harvester.oai-batch/",
+        "invenio-record-object-schema-extra-code": "",
         "record-permissions-class": "oarepo_oaipmh_harvester.oai_batch.services.records.permissions.OaiBatchPermissionPolicy",
+        "cli-function": "oarepo_oaipmh_harvester.oai_batch.cli.group",
+        "record-dumper-extensions": [],
+        "proxies-current-service": "oarepo_oaipmh_harvester.oai_batch.proxies.current_service",
+        "record-service-config-generate-links": true,
+        "model-name": "oai_batch",
+        "record-class": "oarepo_oaipmh_harvester.oai_batch.records.api.OaiBatchRecord",
+        "record-prefix": "OaiBatch",
+        "script-import-sample-data": "data/sample_data.yaml",
+        "record-schema-metadata-alembic": "oai_batch",
+        "saved-model-file": "oarepo_oaipmh_harvester/oai_batch/models/model.json",
+        "record-resource-bases": [
+            "invenio_records_resources.resources.RecordResource"
+        ],
+        "invenio-config-extra-code": "",
+        "mapping-file": "oarepo_oaipmh_harvester/oai_batch/records/mappings/os-v2/oai_batch/oai_batch-1.0.0.json",
+        "record-blueprints-setup-cfg": "oai_batch",
+        "record-service-config-components": [
+            "invenio_records_resources.services.records.components.DataComponent",
+            "oarepo_runtime.relations.components.CachingRelationsComponent"
+        ],
+        "invenio-record-dumper-extra-code": "",
+        "invenio-record-extra-code": "",
+        "record-records-package": "oarepo_oaipmh_harvester.oai_batch.records",
+        "invenio-record-service-extra-code": "",
+        "pid-type": "_btch",
+        "schema-name": "oai_batch-1.0.0.json",
+        "generate-record-pid-field": true,
+        "schema-file": "oarepo_oaipmh_harvester/oai_batch/records/jsonschemas/oai_batch-1.0.0.json",
+        "record-service-bases": [
+            "invenio_records_resources.services.RecordService"
+        ],
+        "invenio-record-service-config-extra-code": "",
+        "proxies-current-resource": "oarepo_oaipmh_harvester.oai_batch.proxies.current_resource",
+        "pid-field-args": [
+            "create=True"
+        ],
+        "package": "oarepo_oaipmh_harvester.oai_batch",
+        "record-pid-provider-class": "oarepo_oaipmh_harvester.oai_batch.records.api.OaiBatchIdProvider",
         "plugins": {
             "builder": {
                 "disable": [
@@ -414,100 +517,38 @@
                 ]
             }
         },
-        "record-api-blueprints-setup-cfg": "oai_batch",
-        "proxies-current-service": "oarepo_oaipmh_harvester.oai_batch.proxies.current_service",
-        "proxies-current-resource": "oarepo_oaipmh_harvester.oai_batch.proxies.current_resource",
-        "config-service-config-key": "OAI_BATCH_SERVICE_CONFIG_OAI_BATCH",
-        "record-jsonschemas-setup-cfg": "oai_batch",
-        "mapping-file": "oarepo_oaipmh_harvester/oai_batch/records/mappings/os-v2/oai_batch/oai_batch-1.0.0.json",
-        "invenio-record-search-options-extra-code": "",
-        "record-dumper-extensions": [],
-        "invenio-record-schema-extra-code": "",
-        "jsonschemas-package": "oarepo_oaipmh_harvester.oai_batch.records.jsonschemas",
-        "record-metadata-class": "oarepo_oaipmh_harvester.oai_batch.records.models.OaiBatchMetadata",
-        "record-service-bases": [
-            "invenio_records_resources.services.RecordService"
-        ],
-        "schema-server": "local://",
-        "config-resource-register-blueprint-key": "OAI_BATCH_REGISTER_BLUEPRINT",
-        "record-service-config-components": [
-            "invenio_records_resources.services.records.components.DataComponent"
-        ],
-        "schema-name": "oai_batch-1.0.0.json",
-        "invenio-record-extra-code": "",
-        "record-ui-schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.OaiBatchUISchema",
-        "invenio-proxies-extra-code": "",
-        "record-bases": [
-            "invenio_records_resources.records.api.Record"
-        ],
-        "model-name": "oai_batch",
-        "oarepo-models-setup-cfg": "oai_batch",
-        "record-records-package": "oarepo_oaipmh_harvester.oai_batch.records",
-        "schema-version": "1.0.0",
-        "index-name": "oai_batch-oai_batch-1.0.0",
-        "package": "oarepo_oaipmh_harvester.oai_batch",
-        "record-blueprints-setup-cfg": "oai_batch",
-        "record-resources-package": "oarepo_oaipmh_harvester.oai_batch.resources.records",
-        "invenio-record-service-config-extra-code": "",
-        "invenio-views-extra-code": "",
-        "record-search-options-class": "oarepo_oaipmh_harvester.oai_batch.services.records.search.OaiBatchSearchOptions",
-        "record-ui-schema-metadata-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.OaiBatchMetadataUISchema",
-        "saved-model-file": "oarepo_oaipmh_harvester/oai_batch/models/model.json",
-        "extension-suffix": "oai_batch",
-        "invenio-record-service-extra-code": "",
-        "invenio-record-metadata-extra-code": "",
-        "record-schema-metadata-alembic": "oai_batch",
-        "cli-function": "oarepo_oaipmh_harvester.oai_batch.cli.group",
-        "service-id": "oarepo-oaipmh-batch",
         "mapping-package": "oarepo_oaipmh_harvester.oai_batch.records.mappings",
-        "record-resource-class": "oarepo_oaipmh_harvester.oai_batch.resources.records.resource.OaiBatchResource",
-        "flask-commands-setup-cfg": "oai_batch",
-        "invenio-record-facets-extra-code": "",
-        "package-base": "oai_batch",
-        "record-mapping-setup-cfg": "oai_batch",
-        "ui": {
-            "marshmallow": {
-                "base-classes": [
-                    "ma.Schema"
-                ],
-                "generate": true,
-                "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.OaiBatchUISchema"
+        "config-service-config-key": "OAI_BATCH_SERVICE_CONFIG_OAI_BATCH",
+        "extension-suffix": "oai_batch",
+        "index-name": "oai_batch-oai_batch-1.0.0",
+        "pid-field-imports": [
+            {
+                "import": "invenio_records_resources.records.systemfields.pid.PIDField"
+            },
+            {
+                "import": "invenio_records_resources.records.systemfields.pid.PIDFieldContext"
+            },
+            {
+                "import": "invenio_pidstore.providers.recordid_v2.RecordIdProviderV2"
             }
-        },
-        "marshmallow": {
-            "base-classes": [
-                "InvenioBaseRecordSchema"
-            ],
-            "generate": true,
-            "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.OaiBatchSchema"
-        },
-        "invenio-ext-extra-code": "",
-        "record-schema-metadata-setup-cfg": "oai_batch",
-        "record-resource-blueprint-name": "OaiBatch",
-        "collection-url": "/oarepo-oaipmh-harvester.oai-batch/",
-        "script-import-sample-data": "data/sample_data.yaml",
-        "invenio-record-dumper-extra-code": "",
-        "record-ui-serializer-class": "oarepo_oaipmh_harvester.oai_batch.resources.records.ui.OaiBatchUIJSONSerializer",
-        "invenio-record-permissions-extra-code": "",
-        "config-service-class-key": "OAI_BATCH_SERVICE_CLASS_OAI_BATCH",
-        "record-service-class": "oarepo_oaipmh_harvester.oai_batch.services.records.service.OaiBatchService",
-        "record-schema-metadata-class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.OaiBatchMetadataSchema",
-        "record-service-config-class": "oarepo_oaipmh_harvester.oai_batch.services.records.config.OaiBatchServiceConfig",
-        "record-prefix": "OaiBatch",
-        "create-blueprint-from-app": "oarepo_oaipmh_harvester.oai_batch.views.create_blueprint_from_app_oai_batch",
-        "config-dummy-class": "oarepo_oaipmh_harvester.oai_batch.config.DummyClass",
-        "record-resource-bases": [
-            "invenio_records_resources.resources.RecordResource"
         ],
-        "package-base-upper": "OAI_BATCH",
-        "kebap-package": "oarepo-oaipmh-harvester.oai-batch",
-        "invenio-record-resource-extra-code": "",
-        "record-dumper-class": "oarepo_oaipmh_harvester.oai_batch.records.dumper.OaiBatchDumper",
-        "record-resource-config-class": "oarepo_oaipmh_harvester.oai_batch.resources.records.config.OaiBatchResourceConfig",
-        "profile-package": "records",
-        "flask-extension-name": "oarepo-oaipmh-batch",
-        "record-service-config-generate-links": true,
-        "ext-class": "oarepo_oaipmh_harvester.oai_batch.ext.OaiBatchExt",
-        "invenio-config-extra-code": ""
+        "invenio-record-resource-config-extra-code": "",
+        "oarepo-models-setup-cfg": "oai_batch",
+        "invenio-views-extra-code": "",
+        "invenio-record-facets-extra-code": "",
+        "record-mapping-setup-cfg": "oai_batch",
+        "record-schema-metadata-class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.OaiBatchMetadataSchema",
+        "ui-layout": "oarepo_oaipmh_harvester/oai_batch/models/ui.json",
+        "record-metadata-table-name": "oaibatch_metadata",
+        "record-metadata-bases": [
+            "invenio_records.models.RecordMetadataBase"
+        ],
+        "record-resource-config-bases": [
+            "invenio_records_resources.resources.RecordResourceConfig"
+        ],
+        "record-metadata-class": "oarepo_oaipmh_harvester.oai_batch.records.models.OaiBatchMetadata",
+        "translations-setup-cfg": "oarepo_oaipmh_harvester.oai_batch",
+        "record-resources-package": "oarepo_oaipmh_harvester.oai_batch.resources.records",
+        "invenio-record-metadata-extra-code": ""
     }
 }

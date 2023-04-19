@@ -1,0 +1,9 @@
+{% extends "oarepo_ui/detail.html" %} 
+{%- block head_links %} 
+    {{ super() }} 
+    {{webpack['oai_batch_ui_components.js']}}
+    {{ webpack['oai_batch_ui_components.css']}}
+{%- endblock %}
+
+
+

@@ -2,7 +2,6 @@
     "type": "object",
     "properties": {
         "batch": {
-            "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
@@ -10,7 +9,8 @@
                 "@v": {
                     "type": "string"
                 }
-            }
+            },
+            "type": "object"
         },
         "local_identifier": {
             "type": "string"
@@ -54,11 +54,11 @@
         },
         "created": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
         },
         "updated": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
         },
         "$schema": {
             "type": "string"

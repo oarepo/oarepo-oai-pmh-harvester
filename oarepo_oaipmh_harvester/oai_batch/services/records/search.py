@@ -3,11 +3,6 @@ from invenio_records_resources.services import SearchOptions as InvenioSearchOpt
 from . import facets
 
 
-def _(x):
-    """Identity function for string extraction."""
-    return x
-
-
 class OaiBatchSearchOptions(InvenioSearchOptions):
     """OaiBatchRecord search options."""
 

@@ -1,0 +1,15 @@
+{%- set title = _("Document search results") %}
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['oai_run_ui_components.js']}}
+  {{ webpack['oai_run_search.js'] }}
+{%- endblock %}
+{%- block page_body %}
+<div class="ui container">
+  <div
+    data-invenio-search-config='{{ search_app_config(app_id="OaiRun.Search") | tojson }}'
+  ></div>
+</div>
+{%- endblock page_body %}

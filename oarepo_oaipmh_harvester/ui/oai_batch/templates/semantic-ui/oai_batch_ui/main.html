@@ -1,0 +1,37 @@
+<!-- place your record detail main content in here ... -->
+{% from './semantic-ui/oai_harvester_ui/status.html' import get_status %}
+
+<h1 style="margin-bottom: 1em">{{ data.id }}</h1>
+<dl class="ui very basic table">
+    <dt>{{ _('status.label') }}</dt>
+  <dd>
+    {{ get_status(data.status[-1]) }}
+  </dd>
+  <dt>{{ _('started.label') }}</dt>
+  <dd>
+    {{ data.started}}
+  </dd>
+  <dt>{{ _('finished.label') }}</dt>
+  <dd>
+    {{ data.finished }}
+  </dd>
+  {% field "created" %}
+  {% field "updated" %}
+  <dt>{{ _('run.label') }}</dt>
+    <dd>
+    <a href="/oairun/{{data.run.id}}">{{ data.run.id }}</a>
+  </dd>
+    <dt>{{ _('records_batch.label') }}</dt>
+    <dd>
+    <a href="/oairecord/?q=&f=batch_id%3A{{data.id}}&l=list&p=1&s=10&sort=newest">{{_('records.label')}}</a>
+  </dd>
+  <dt>{{ _('identifiers.label') }}</dt>
+    <dd>
+    {% for i in (data.identifiers or []) %}
+         {{ i }},
+    {% endfor %}
+    </dd>
+
+
+</dl>
+

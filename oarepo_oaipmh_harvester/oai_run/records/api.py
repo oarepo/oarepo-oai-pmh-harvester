@@ -8,6 +8,10 @@ from oarepo_oaipmh_harvester.oai_run.records.dumper import OaiRunDumper
 from oarepo_oaipmh_harvester.oai_run.records.models import OaiRunMetadata
 
 
+class OaiRunIdProvider(RecordIdProviderV2):
+    pid_type = "_rn"
+
+
 class OaiRunRecord(Record):
     model_cls = OaiRunMetadata
 
@@ -15,9 +19,7 @@ class OaiRunRecord(Record):
 
     index = IndexField("oai_run-oai_run-1.0.0")
 
-    pid = PIDField(
-        create=True, provider=RecordIdProviderV2, context_cls=PIDFieldContext
-    )
+    pid = PIDField(provider=OaiRunIdProvider, context_cls=PIDFieldContext, create=True)
 
     dumper_extensions = []
     dumper = OaiRunDumper(extensions=dumper_extensions)

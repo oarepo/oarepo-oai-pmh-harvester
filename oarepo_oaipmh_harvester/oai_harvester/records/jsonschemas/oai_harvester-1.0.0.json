@@ -42,11 +42,11 @@
         },
         "created": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
         },
         "updated": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
         },
         "$schema": {
             "type": "string"

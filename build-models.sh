@@ -1,10 +1,10 @@
 set -e
 
 rm -rf .venv-builder
-/usr/bin/python3 -m venv .venv-builder
+/usr/bin/python3.9 -m venv .venv-builder
 
 .venv-builder/bin/pip install -U pip setuptools wheel
-.venv-builder/bin/pip install oarepo-model-builder oarepo-model-builder-relations
+.venv-builder/bin/pip install oarepo-model-builder oarepo-model-builder-relations oarepo-model-builder-ui
 
 rm -rf oarepo_oaipmh_harvester/oai_harvester
 rm -rf oarepo_oaipmh_harvester/oai_run

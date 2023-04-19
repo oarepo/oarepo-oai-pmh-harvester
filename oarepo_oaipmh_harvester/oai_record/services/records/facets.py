@@ -1,40 +1,45 @@
 """Facet definitions."""
 
+from flask_babelex import lazy_gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
-from invenio_search.engine import dsl
-from oarepo_runtime.facets.nested_facet import NestedLabeledFacet
+from oarepo_runtime.facets.date import DateTimeFacet
+from oarepo_runtime.facets.enum import EnumTermsFacet
 
-batch_id = TermsFacet(field="batch.id")
-
-
-batch__version = TermsFacet(field="batch.@v")
+batch_id = TermsFacet(field="batch.id", label=_("batch/id.label"))
 
 
-local_identifier = TermsFacet(field="local_identifier")
+batch__version = TermsFacet(field="batch.@v", label=_("batch/@v.label"))
 
 
-oai_identifier = TermsFacet(field="oai_identifier")
+local_identifier = TermsFacet(
+    field="local_identifier", label=_("local_identifier.label")
+)
 
 
-datestamp = TermsFacet(field="datestamp")
+oai_identifier = TermsFacet(field="oai_identifier", label=_("oai_identifier.label"))
 
 
-status = TermsFacet(field="status")
+datestamp = DateTimeFacet(field="datestamp", label=_("datestamp.label"))
 
 
-warnings_keyword = TermsFacet(field="warnings.keyword")
+status = EnumTermsFacet(field="status", label=_("status.label"))
 
 
-errors_keyword = TermsFacet(field="errors.keyword")
+warnings_keyword = TermsFacet(
+    field="warnings.keyword", label=_("warnings/keyword.label")
+)
 
 
-_id = TermsFacet(field="id")
+errors_keyword = TermsFacet(field="errors.keyword", label=_("errors/keyword.label"))
 
 
-created = TermsFacet(field="created")
+_id = TermsFacet(field="id", label=_("id.label"))
 
 
-updated = TermsFacet(field="updated")
+created = DateTimeFacet(field="created", label=_("created.label"))
 
 
-_schema = TermsFacet(field="$schema")
+updated = DateTimeFacet(field="updated", label=_("updated.label"))
+
+
+_schema = TermsFacet(field="$schema", label=_("$schema.label"))

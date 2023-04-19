@@ -1,0 +1,150 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2023-04-19T10:33:47.819089\n"
+"PO-Revision-Date: 2023-04-19T10:33:47.819093\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "run.help"
+msgstr ""
+
+msgid "run.label"
+msgstr ""
+
+msgid "run.hint"
+msgstr ""
+
+msgid "run/id.help"
+msgstr ""
+
+msgid "run/id.label"
+msgstr ""
+
+msgid "run/id.hint"
+msgstr ""
+
+msgid "run/@v.help"
+msgstr ""
+
+msgid "run/@v.label"
+msgstr ""
+
+msgid "run/@v.hint"
+msgstr ""
+
+msgid "status.help"
+msgstr ""
+
+msgid "status.label"
+msgstr ""
+
+msgid "status.hint"
+msgstr ""
+
+msgid "status.enum.R"
+msgstr ""
+
+msgid "status.enum.O"
+msgstr ""
+
+msgid "status.enum.W"
+msgstr ""
+
+msgid "status.enum.E"
+msgstr ""
+
+msgid "status.enum.I"
+msgstr ""
+
+msgid "identifiers.help"
+msgstr ""
+
+msgid "identifiers.label"
+msgstr ""
+
+msgid "identifiers.hint"
+msgstr ""
+
+msgid "errors.help"
+msgstr ""
+
+msgid "errors.label"
+msgstr ""
+
+msgid "errors.hint"
+msgstr ""
+
+msgid "errors/oai_identifier.help"
+msgstr ""
+
+msgid "errors/oai_identifier.label"
+msgstr ""
+
+msgid "errors/oai_identifier.hint"
+msgstr ""
+
+msgid "errors/error.help"
+msgstr ""
+
+msgid "errors/error.label"
+msgstr ""
+
+msgid "errors/error.hint"
+msgstr ""
+
+msgid "started.help"
+msgstr ""
+
+msgid "started.label"
+msgstr ""
+
+msgid "started.hint"
+msgstr ""
+
+msgid "finished.help"
+msgstr ""
+
+msgid "finished.label"
+msgstr ""
+
+msgid "finished.hint"
+msgstr ""
+
+msgid "id.help"
+msgstr ""
+
+msgid "id.label"
+msgstr ""
+
+msgid "id.hint"
+msgstr ""
+
+msgid "created.help"
+msgstr ""
+
+msgid "created.label"
+msgstr ""
+
+msgid "created.hint"
+msgstr ""
+
+msgid "updated.help"
+msgstr ""
+
+msgid "updated.label"
+msgstr ""
+
+msgid "updated.hint"
+msgstr ""
+
+msgid "$schema.help"
+msgstr ""
+
+msgid "$schema.label"
+msgstr ""
+
+msgid "$schema.hint"
+msgstr ""

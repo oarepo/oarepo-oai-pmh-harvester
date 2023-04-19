@@ -1,0 +1,26 @@
+<!-- place your record detail main content in here ... -->
+<h1 style="margin-bottom: 1em">{%- value "name" -%}</h1>
+<dl class="ui very basic table">
+  <dt>{{ _('code.label') }}</dt>
+  <dd>
+    {{ data.code }}
+  </dd>
+
+  <dt>{{ _('loader.label') }}</dt>
+  <dd>
+    {{ data.loader }}
+  </dd>
+  {% field "created" %}
+  {% field "updated" %}
+    <dt>{{_('runs_harvester.label')}}</dt>
+    <dd>
+    <a href="/oairun/?q=&f=harvester_id%3A{{data.id}}&l=list&p=1&s=10&sort=newest">{{_('runs.label')}}</a>
+  </dd>
+  <dt>{{ _('transformers.label') }}</dt>
+    <ul style="list-style-type: none;">
+  {% for i in (data.transformers or []) %}
+      <li>{{ i }}</li>
+  {% endfor %}
+    </ul>
+</dl>
+

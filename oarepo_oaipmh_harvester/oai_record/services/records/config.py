@@ -1,16 +1,11 @@
 from invenio_records_resources.services import RecordLink
 from invenio_records_resources.services import RecordServiceConfig
-from invenio_records_resources.services import (
-    RecordServiceConfig as InvenioRecordServiceConfig,
-)
 from invenio_records_resources.services import pagination_links
 from invenio_records_resources.services.records.components import DataComponent
 from oarepo_runtime.config.service import PermissionsPresetsConfigMixin
+from oarepo_runtime.relations.components import CachingRelationsComponent
 
 from oarepo_oaipmh_harvester.oai_record.records.api import OaiRecordRecord
-from oarepo_oaipmh_harvester.oai_record.services.records.permissions import (
-    OaiRecordPermissionPolicy,
-)
 from oarepo_oaipmh_harvester.oai_record.services.records.schema import OaiRecordSchema
 from oarepo_oaipmh_harvester.oai_record.services.records.search import (
     OaiRecordSearchOptions,
@@ -29,10 +24,13 @@ class OaiRecordServiceConfig(PermissionsPresetsConfigMixin, RecordServiceConfig)
     search = OaiRecordSearchOptions
 
     record_cls = OaiRecordRecord
-    # todo should i leave this here?
     service_id = "oarepo-oaipmh-record"
 
-    components = [*RecordServiceConfig.components, DataComponent]
+    components = [
+        *RecordServiceConfig.components,
+        DataComponent,
+        CachingRelationsComponent,
+    ]
 
     model = "oai_record"
 

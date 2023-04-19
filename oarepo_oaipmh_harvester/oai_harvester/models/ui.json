@@ -1,0 +1,182 @@
+{
+    "children": {
+        "code": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "code.help",
+            "label": "code.label",
+            "hint": "code.hint",
+            "facet": "code"
+        },
+        "baseurl": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "url",
+            "input": "url",
+            "help": "baseurl.help",
+            "label": "baseurl.label",
+            "hint": "baseurl.hint",
+            "facet": "baseurl"
+        },
+        "metadataprefix": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "metadataprefix.help",
+            "label": "metadataprefix.label",
+            "hint": "metadataprefix.hint",
+            "facet": "metadataprefix"
+        },
+        "comment": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "fulltext",
+            "input": "fulltext",
+            "help": "comment.help",
+            "label": "comment.label",
+            "hint": "comment.hint"
+        },
+        "name": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "name.help",
+            "label": "name.label",
+            "hint": "name.hint",
+            "facet": "name"
+        },
+        "setspecs": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "setspecs.help",
+            "label": "setspecs.label",
+            "hint": "setspecs.hint",
+            "facet": "setspecs"
+        },
+        "loader": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "loader.help",
+            "label": "loader.label",
+            "hint": "loader.hint",
+            "facet": "loader"
+        },
+        "transformers": {
+            "marshmallow": {
+                "field-class": "ma_fields.List"
+            },
+            "detail": "array",
+            "input": "array",
+            "help": "transformers.help",
+            "label": "transformers.label",
+            "hint": "transformers.hint",
+            "child": {
+                "marshmallow": {
+                    "field-class": "ma_fields.String"
+                },
+                "detail": "keyword",
+                "input": "keyword"
+            }
+        },
+        "writer": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "writer.help",
+            "label": "writer.label",
+            "hint": "writer.hint",
+            "facet": "writer"
+        },
+        "max_records": {
+            "marshmallow": {
+                "field-class": "ma_fields.Integer"
+            },
+            "detail": "integer",
+            "input": "integer",
+            "help": "max_records.help",
+            "label": "max_records.label",
+            "hint": "max_records.hint",
+            "facet": "max_records"
+        },
+        "batch_size": {
+            "marshmallow": {
+                "field-class": "ma_fields.Integer"
+            },
+            "detail": "integer",
+            "input": "integer",
+            "help": "batch_size.help",
+            "label": "batch_size.label",
+            "hint": "batch_size.hint",
+            "facet": "batch_size"
+        },
+        "id": {
+            "marshmallow": {
+                "write": false,
+                "read": false,
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "id.help",
+            "label": "id.label",
+            "hint": "id.hint",
+            "facet": "_id"
+        },
+        "created": {
+            "marshmallow": {
+                "write": false,
+                "read": false,
+                "field-class": "l10n.LocalizedDateTime"
+            },
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "created.help",
+            "label": "created.label",
+            "hint": "created.hint",
+            "facet": "created"
+        },
+        "updated": {
+            "marshmallow": {
+                "write": false,
+                "read": false,
+                "field-class": "l10n.LocalizedDateTime"
+            },
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "updated.help",
+            "label": "updated.label",
+            "hint": "updated.hint",
+            "facet": "updated"
+        },
+        "$schema": {
+            "marshmallow": {
+                "write": false,
+                "read": false,
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "$schema.help",
+            "label": "$schema.label",
+            "hint": "$schema.hint",
+            "facet": "_schema"
+        }
+    }
+}
