@@ -8,6 +8,10 @@ from oarepo_oaipmh_harvester.oai_harvester.records.dumper import OaiHarvesterDum
 from oarepo_oaipmh_harvester.oai_harvester.records.models import OaiHarvesterMetadata
 
 
+class OaiHarvesterIdProvider(RecordIdProviderV2):
+    pid_type = "_hrstr"
+
+
 class OaiHarvesterRecord(Record):
     model_cls = OaiHarvesterMetadata
 
@@ -16,7 +20,7 @@ class OaiHarvesterRecord(Record):
     index = IndexField("oai_harvester-oai_harvester-1.0.0")
 
     pid = PIDField(
-        create=True, provider=RecordIdProviderV2, context_cls=PIDFieldContext
+        provider=OaiHarvesterIdProvider, context_cls=PIDFieldContext, create=True
     )
 
     dumper_extensions = []

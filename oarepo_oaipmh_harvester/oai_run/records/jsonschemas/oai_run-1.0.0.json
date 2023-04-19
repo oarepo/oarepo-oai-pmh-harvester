@@ -2,7 +2,6 @@
     "type": "object",
     "properties": {
         "harvester": {
-            "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
@@ -45,16 +44,17 @@
                 },
                 "created": {
                     "type": "string",
-                    "format": "date"
+                    "format": "date-time"
                 },
                 "updated": {
                     "type": "string",
-                    "format": "date"
+                    "format": "date-time"
                 },
                 "$schema": {
                     "type": "string"
                 }
-            }
+            },
+            "type": "object"
         },
         "batches": {
             "type": "integer"
@@ -91,11 +91,11 @@
         },
         "created": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
         },
         "updated": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
         },
         "$schema": {
             "type": "string"

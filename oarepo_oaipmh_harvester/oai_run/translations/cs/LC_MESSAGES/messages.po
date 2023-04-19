@@ -1,0 +1,274 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2023-04-19T10:33:34.392895\n"
+"PO-Revision-Date: 2023-04-19 13:43+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
+
+msgid "harvester.help"
+msgstr ""
+
+msgid "harvester.label"
+msgstr "Harvester"
+
+msgid "harvester.hint"
+msgstr ""
+
+msgid "harvester/id.help"
+msgstr ""
+
+msgid "harvester/id.label"
+msgstr "Harvester ID"
+
+msgid "harvester/id.hint"
+msgstr ""
+
+msgid "harvester/code.help"
+msgstr ""
+
+msgid "harvester/code.label"
+msgstr "Kód harvesteru"
+
+msgid "harvester/code.hint"
+msgstr ""
+
+msgid "harvester/baseurl.help"
+msgstr ""
+
+msgid "harvester/baseurl.label"
+msgstr "Základní URL harvesteru"
+
+msgid "harvester/baseurl.hint"
+msgstr ""
+
+msgid "harvester/metadataprefix.help"
+msgstr ""
+
+msgid "harvester/metadataprefix.label"
+msgstr "Prefix metadat harvesteru"
+
+msgid "harvester/metadataprefix.hint"
+msgstr ""
+
+msgid "harvester/comment.help"
+msgstr ""
+
+msgid "harvester/comment.label"
+msgstr "Komentář harvesteru"
+
+msgid "harvester/comment.hint"
+msgstr ""
+
+msgid "harvester/name.help"
+msgstr ""
+
+msgid "harvester/name.label"
+msgstr "Jméno harvesteru"
+
+msgid "harvester/name.hint"
+msgstr ""
+
+msgid "harvester/setspecs.help"
+msgstr ""
+
+msgid "harvester/setspecs.label"
+msgstr "Specifikace množiny záznamů harvesteru"
+
+msgid "harvester/setspecs.hint"
+msgstr ""
+
+msgid "harvester/loader.help"
+msgstr ""
+
+msgid "harvester/loader.label"
+msgstr "Načítač dat harvesteru"
+
+msgid "harvester/loader.hint"
+msgstr ""
+
+msgid "harvester/transformers.help"
+msgstr ""
+
+msgid "harvester/transformers.label"
+msgstr "Transformátory harvesteru"
+
+msgid "harvester/transformers.hint"
+msgstr ""
+
+msgid "harvester/writer.help"
+msgstr ""
+
+msgid "harvester/writer.label"
+msgstr "Zapisovač harvesteru"
+
+msgid "harvester/writer.hint"
+msgstr ""
+
+msgid "harvester/max_records.help"
+msgstr ""
+
+msgid "harvester/max_records.label"
+msgstr "Maximální počet záznamů harvesteru"
+
+msgid "harvester/max_records.hint"
+msgstr ""
+
+msgid "harvester/batch_size.help"
+msgstr ""
+
+msgid "harvester/batch_size.label"
+msgstr "Velikost dávky harvesteru"
+
+msgid "harvester/batch_size.hint"
+msgstr ""
+
+msgid "harvester/created.help"
+msgstr ""
+
+msgid "harvester/created.label"
+msgstr "Datum vytvoření harvesteru"
+
+msgid "harvester/created.hint"
+msgstr ""
+
+msgid "harvester/updated.help"
+msgstr ""
+
+msgid "harvester/updated.label"
+msgstr "Datum aktualizování harvesteru"
+
+msgid "harvester/updated.hint"
+msgstr ""
+
+msgid "harvester/$schema.help"
+msgstr ""
+
+msgid "harvester/$schema.label"
+msgstr "Schéma harvesteru"
+
+msgid "harvester/$schema.hint"
+msgstr ""
+
+msgid "batches.help"
+msgstr ""
+
+msgid "batches.label"
+msgstr "Dávky"
+
+msgid "batches.hint"
+msgstr ""
+
+msgid "status.help"
+msgstr ""
+
+msgid "status.label"
+msgstr "Status"
+
+msgid "status.hint"
+msgstr ""
+
+msgid "status.enum.R"
+msgstr "Běžící"
+
+msgid "status.enum.O"
+msgstr "OK"
+
+msgid "status.enum.W"
+msgstr "S varováním"
+
+msgid "status.enum.E"
+msgstr "S chybou"
+
+msgid "status.enum.I"
+msgstr "Přerušeno"
+
+msgid "warning.help"
+msgstr ""
+
+msgid "warning.label"
+msgstr "Varování"
+
+msgid "warning.hint"
+msgstr ""
+
+msgid "error.help"
+msgstr ""
+
+msgid "error.label"
+msgstr "Chyba"
+
+msgid "error.hint"
+msgstr ""
+
+msgid "started.help"
+msgstr ""
+
+msgid "started.label"
+msgstr "Spuštěno"
+
+msgid "started.hint"
+msgstr ""
+
+msgid "finished.help"
+msgstr ""
+
+msgid "finished.label"
+msgstr "Ukončeno"
+
+msgid "finished.hint"
+msgstr ""
+
+msgid "duration.help"
+msgstr ""
+
+msgid "duration.label"
+msgstr "Trvání"
+
+msgid "duration.hint"
+msgstr ""
+
+msgid "id.help"
+msgstr ""
+
+msgid "id.label"
+msgstr "ID"
+
+msgid "id.hint"
+msgstr ""
+
+msgid "created.help"
+msgstr ""
+
+msgid "created.label"
+msgstr "Vytvořeno"
+
+msgid "created.hint"
+msgstr ""
+
+msgid "updated.help"
+msgstr ""
+
+msgid "updated.label"
+msgstr "Aktualizováno"
+
+msgid "updated.hint"
+msgstr ""
+
+msgid "$schema.help"
+msgstr ""
+
+msgid "$schema.label"
+msgstr "Schéma"
+
+msgid "$schema.hint"
+msgstr ""
+
+msgid "batches_run.label"
+msgstr "Dávky v rámci běhu"

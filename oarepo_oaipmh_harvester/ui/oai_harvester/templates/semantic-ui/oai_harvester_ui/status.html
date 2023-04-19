@@ -1,0 +1,15 @@
+{%- macro get_status(arg) -%}
+    {% if arg == 'O' %}
+        {{ _('status.enum.O') }}
+    {% elif arg == 'E' %}
+        {{ _('status.enum.E') }}
+    {% elif arg == 'W' %}
+        {{ _('status.enum.W') }}
+    {% elif arg == 'R' %}
+        {{ _('status.enum.R') }}
+    {% elif arg == 'I' %}
+        {{ _('status.enum.I') }}
+    {% elif arg == 'S' %}
+        {{ _('status.enum.S') }}
+    {% endif %}
+{%- endmacro -%}

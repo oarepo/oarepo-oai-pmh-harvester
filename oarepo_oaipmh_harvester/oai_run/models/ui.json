@@ -1,0 +1,325 @@
+{
+    "children": {
+        "harvester": {
+            "marshmallow": {
+                "schema-class": "oarepo_oaipmh_harvester.oai_run.services.records.ui_schema.HarvesterUISchema",
+                "field-class": "ma_fields.Nested"
+            },
+            "detail": false,
+            "input": false,
+            "help": "harvester.help",
+            "label": "harvester.label",
+            "hint": "harvester.hint",
+            "children": {
+                "id": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/id.help",
+                    "label": "harvester/id.label",
+                    "hint": "harvester/id.hint",
+                    "facet": "harvester_id"
+                },
+                "code": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/code.help",
+                    "label": "harvester/code.label",
+                    "hint": "harvester/code.hint",
+                    "facet": "harvester_code"
+                },
+                "baseurl": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "url",
+                    "input": "url",
+                    "help": "harvester/baseurl.help",
+                    "label": "harvester/baseurl.label",
+                    "hint": "harvester/baseurl.hint",
+                    "facet": "harvester_baseurl"
+                },
+                "metadataprefix": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/metadataprefix.help",
+                    "label": "harvester/metadataprefix.label",
+                    "hint": "harvester/metadataprefix.hint",
+                    "facet": "harvester_metadataprefix"
+                },
+                "comment": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "fulltext",
+                    "input": "fulltext",
+                    "help": "harvester/comment.help",
+                    "label": "harvester/comment.label",
+                    "hint": "harvester/comment.hint"
+                },
+                "name": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/name.help",
+                    "label": "harvester/name.label",
+                    "hint": "harvester/name.hint",
+                    "facet": "harvester_name"
+                },
+                "setspecs": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/setspecs.help",
+                    "label": "harvester/setspecs.label",
+                    "hint": "harvester/setspecs.hint",
+                    "facet": "harvester_setspecs"
+                },
+                "loader": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/loader.help",
+                    "label": "harvester/loader.label",
+                    "hint": "harvester/loader.hint",
+                    "facet": "harvester_loader"
+                },
+                "transformers": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.List"
+                    },
+                    "detail": "array",
+                    "input": "array",
+                    "help": "harvester/transformers.help",
+                    "label": "harvester/transformers.label",
+                    "hint": "harvester/transformers.hint",
+                    "child": {
+                        "marshmallow": {
+                            "field-class": "ma_fields.String"
+                        },
+                        "detail": "keyword",
+                        "input": "keyword"
+                    }
+                },
+                "writer": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/writer.help",
+                    "label": "harvester/writer.label",
+                    "hint": "harvester/writer.hint",
+                    "facet": "harvester_writer"
+                },
+                "max_records": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.Integer"
+                    },
+                    "detail": "integer",
+                    "input": "integer",
+                    "help": "harvester/max_records.help",
+                    "label": "harvester/max_records.label",
+                    "hint": "harvester/max_records.hint",
+                    "facet": "harvester_max_records"
+                },
+                "batch_size": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.Integer"
+                    },
+                    "detail": "integer",
+                    "input": "integer",
+                    "help": "harvester/batch_size.help",
+                    "label": "harvester/batch_size.label",
+                    "hint": "harvester/batch_size.hint",
+                    "facet": "harvester_batch_size"
+                },
+                "created": {
+                    "marshmallow": {
+                        "write": false,
+                        "field-class": "l10n.LocalizedDateTime",
+                        "read": false
+                    },
+                    "detail": "datetime",
+                    "input": "datetime",
+                    "help": "harvester/created.help",
+                    "label": "harvester/created.label",
+                    "hint": "harvester/created.hint",
+                    "facet": "harvester_created"
+                },
+                "updated": {
+                    "marshmallow": {
+                        "write": false,
+                        "field-class": "l10n.LocalizedDateTime",
+                        "read": false
+                    },
+                    "detail": "datetime",
+                    "input": "datetime",
+                    "help": "harvester/updated.help",
+                    "label": "harvester/updated.label",
+                    "hint": "harvester/updated.hint",
+                    "facet": "harvester_updated"
+                },
+                "$schema": {
+                    "marshmallow": {
+                        "write": false,
+                        "field-class": "ma_fields.String",
+                        "read": false
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/$schema.help",
+                    "label": "harvester/$schema.label",
+                    "hint": "harvester/$schema.hint",
+                    "facet": "harvester__schema"
+                }
+            }
+        },
+        "batches": {
+            "marshmallow": {
+                "field-class": "ma_fields.Integer"
+            },
+            "detail": "integer",
+            "input": "integer",
+            "help": "batches.help",
+            "label": "batches.label",
+            "hint": "batches.hint",
+            "facet": "batches"
+        },
+        "status": {
+            "marshmallow": {
+                "field-class": "l10n.LocalizedEnum",
+                "arguments": [
+                    "value_prefix=\"oarepo_oaipmh_harvester.oai_run\""
+                ]
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "status.help",
+            "label": "status.label",
+            "hint": "status.hint",
+            "facet": "status"
+        },
+        "warning": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "warning.help",
+            "label": "warning.label",
+            "hint": "warning.hint",
+            "facet": "warning"
+        },
+        "error": {
+            "marshmallow": {
+                "field-class": "ma_fields.String"
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "error.help",
+            "label": "error.label",
+            "hint": "error.hint",
+            "facet": "error"
+        },
+        "started": {
+            "marshmallow": {
+                "field-class": "l10n.LocalizedDateTime"
+            },
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "started.help",
+            "label": "started.label",
+            "hint": "started.hint",
+            "facet": "started"
+        },
+        "finished": {
+            "marshmallow": {
+                "field-class": "l10n.LocalizedDateTime"
+            },
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "finished.help",
+            "label": "finished.label",
+            "hint": "finished.hint",
+            "facet": "finished"
+        },
+        "duration": {
+            "marshmallow": {
+                "field-class": "ma_fields.Float"
+            },
+            "detail": "double",
+            "input": "double",
+            "help": "duration.help",
+            "label": "duration.label",
+            "hint": "duration.hint",
+            "facet": "duration"
+        },
+        "id": {
+            "marshmallow": {
+                "write": false,
+                "field-class": "ma_fields.String",
+                "read": false
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "id.help",
+            "label": "id.label",
+            "hint": "id.hint",
+            "facet": "_id"
+        },
+        "created": {
+            "marshmallow": {
+                "write": false,
+                "field-class": "l10n.LocalizedDateTime",
+                "read": false
+            },
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "created.help",
+            "label": "created.label",
+            "hint": "created.hint",
+            "facet": "created"
+        },
+        "updated": {
+            "marshmallow": {
+                "write": false,
+                "field-class": "l10n.LocalizedDateTime",
+                "read": false
+            },
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "updated.help",
+            "label": "updated.label",
+            "hint": "updated.hint",
+            "facet": "updated"
+        },
+        "$schema": {
+            "marshmallow": {
+                "write": false,
+                "field-class": "ma_fields.String",
+                "read": false
+            },
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "$schema.help",
+            "label": "$schema.label",
+            "hint": "$schema.hint",
+            "facet": "_schema"
+        }
+    }
+}

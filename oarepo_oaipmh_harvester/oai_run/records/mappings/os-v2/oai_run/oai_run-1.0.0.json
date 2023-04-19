@@ -2,7 +2,6 @@
     "mappings": {
         "properties": {
             "harvester": {
-                "type": "object",
                 "properties": {
                     "id": {
                         "type": "keyword"
@@ -49,7 +48,8 @@
                     "$schema": {
                         "type": "keyword"
                     }
-                }
+                },
+                "type": "object"
             },
             "batches": {
                 "type": "integer"

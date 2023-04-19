@@ -2,7 +2,6 @@
     "type": "object",
     "properties": {
         "run": {
-            "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
@@ -10,27 +9,28 @@
                 "@v": {
                     "type": "string"
                 }
-            }
+            },
+            "type": "object"
         },
         "status": {
+            "type": "string",
             "enum": [
                 "R",
                 "O",
                 "W",
                 "E",
                 "I"
-            ],
-            "type": "string"
+            ]
         },
         "identifiers": {
+            "type": "array",
             "items": {
                 "type": "string"
-            },
-            "type": "array"
+            }
         },
         "errors": {
+            "type": "array",
             "items": {
-                "type": "object",
                 "properties": {
                     "oai_identifier": {
                         "type": "string"
@@ -38,9 +38,9 @@
                     "error": {
                         "type": "string"
                     }
-                }
-            },
-            "type": "array"
+                },
+                "type": "object"
+            }
         },
         "started": {
             "type": "string",
@@ -55,11 +55,11 @@
         },
         "created": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
         },
         "updated": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
         },
         "$schema": {
             "type": "string"
