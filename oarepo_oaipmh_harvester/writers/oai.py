@@ -187,11 +187,13 @@ class OAIWriter(BatchWriter):
 
     def write_entries(self, batch: StreamBatch, args, kwargs, uow):
         # TODO: write only if the entry has been modified
+
+        persisted_entries = []
+        skipped_entries = []
+        deleted_entries = []
+
         if hasattr(self.writer, "write_batch"):
             # split the batch do deleted and normal items
-            persisted_entries = []
-            skipped_entries = []
-            deleted_entries = []
             for e in batch.entries:
                 if not e.ok:
                     skipped_entries.append(e)
@@ -215,16 +217,15 @@ class OAIWriter(BatchWriter):
                         entry.errors.append(
                             f"Writer {self.writer} unhandled error: {e}: {stack}"
                         )
-            batch.entries = persisted_entries + skipped_entries + deleted_entries
-            return batch
         else:
             for entry in batch.entries:
                 if entry.ok:
                     try:
                         if entry.context["oai"]["deleted"]:
                             self.delete_entry(entry, uow)
+                            deleted_entries.append(entry)
                         else:
-                            self.writer.write(entry, uow=uow)
+                            persisted_entries.append(self.writer.write(entry, uow=uow))
                     except WriterError as e:
                         stack = traceback.format_exc()
                         entry.errors.append(f"Writer {self.writer} error: {e}: {stack}")
@@ -233,13 +234,18 @@ class OAIWriter(BatchWriter):
                         entry.errors.append(
                             f"Writer {self.writer} unhandled error: {e}: {stack}"
                         )
+                else:
+                    skipped_entries.append(entry)
+        batch.entries = persisted_entries + skipped_entries + deleted_entries
         return batch
 
     def delete_entry(self, entry, uow):
         oai_record = list(
             record_service.scan(
                 self._identity,
-                params={"facets": {"oai_identifier": [entry.context["oai"]["identifier"]]}},
+                params={
+                    "facets": {"oai_identifier": [entry.context["oai"]["identifier"]]}
+                },
             )
         )
         if oai_record and "local_identifier" in oai_record[0]:
