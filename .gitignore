@@ -61,7 +61,7 @@ venv/
 .envrc
 .venv/
 .venv-builder/
-messages.mo
+
 
 .DS_Store
 
