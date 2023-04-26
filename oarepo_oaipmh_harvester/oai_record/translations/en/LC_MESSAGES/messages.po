@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "POT-Creation-Date: 2023-04-19T10:34:00.950399\n"
-"PO-Revision-Date: 2023-04-19 13:36+0200\n"
+"PO-Revision-Date: 2023-04-26 13:01+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -158,3 +158,9 @@ msgstr "Schema"
 
 msgid "$schema.hint"
 msgstr ""
+
+msgid "record_data.label"
+msgstr "Record data"
+
+msgid "record.label"
+msgstr "Record"
