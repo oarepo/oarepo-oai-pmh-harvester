@@ -59,8 +59,10 @@ class OAIWriter(BatchWriter):
             batch_service.scan(
                 self._identity,
                 params={
-                    "status": ["O", "W", "E", "I"],
-                    "run_id": [batch.context["run_id"]],
+                    "facets": {
+                        "status": ["O", "W", "E", "I"],
+                        "run_id": [batch.context["run_id"]],
+                    }
                 },
             )
         )
@@ -86,7 +88,7 @@ class OAIWriter(BatchWriter):
                 oai_run["duration"] = (
                     datetime.datetime.fromisoformat(oai_run["finished"])
                     - datetime.datetime.fromisoformat(oai_run["started"])
-                ).total_seconds
+                ).total_seconds()
                 run_service.update(self._identity, oai_run["id"], oai_run)
 
     def set_batch_status(self, batch, uow):
