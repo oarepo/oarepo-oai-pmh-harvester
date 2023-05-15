@@ -4,6 +4,6 @@
 
 from .ext import OaiBatchExt
 
-__version__ = '1.0.0'
+__version__ = "1.0.0"
 
-__all__ = ('__version__', 'OaiBatchExt')
+__all__ = ("__version__", "OaiBatchExt")

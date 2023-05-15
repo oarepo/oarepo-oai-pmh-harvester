@@ -27,3 +27,4 @@ class OaiBatchUISchema(InvenioUISchema):
     errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
     started = l10n.LocalizedDateTime()
     finished = l10n.LocalizedDateTime()
+    manual = ma_fields.Boolean()

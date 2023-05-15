@@ -1,10 +1,10 @@
 import datetime
 from typing import Iterator
 
+import pytz
 from oarepo_runtime.datastreams import BaseReader, StreamEntry
 from sickle import Sickle
 from sickle.oaiexceptions import NoRecordsMatch
-import pytz
 
 
 class SickleReader(BaseReader):
@@ -18,6 +18,8 @@ class SickleReader(BaseReader):
         start_from=None,
         base_path=None,
         oai_run=None,
+        oai_harvester_id=None,
+        manual=False,
         **kwargs,
     ):
         # we are handling url, so ignore the base path
@@ -27,6 +29,8 @@ class SickleReader(BaseReader):
         self.config = config
         self.start_from = start_from
         self.oai_run = oai_run
+        self.oai_harvester_id = oai_harvester_id
+        self.manual = manual
 
     def __iter__(self) -> Iterator[StreamEntry]:
         request = Sickle(self.source, encoding="utf-8")
@@ -85,6 +89,8 @@ class SickleReader(BaseReader):
                                 "setSpecs": record.header.setSpecs,
                             },
                             "oai_run": self.oai_run,
+                            "oai_harvester_id": self.oai_harvester_id,
+                            "manual": self.manual,
                         },
                     )
 

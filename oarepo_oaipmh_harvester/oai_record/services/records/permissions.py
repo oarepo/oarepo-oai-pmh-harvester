@@ -3,7 +3,7 @@ from invenio_records_permissions.generators import AnyUser, SystemProcess
 
 
 class OaiRecordPermissionPolicy(RecordPermissionPolicy):
-    """oarepo_oaipmh_harvester.oai_record.records.api.OaiRecordRecord permissions."""
+    """oarepo_oaipmh_harvester.oai_record.records.api.OaiRecord permissions."""
 
     can_search = [SystemProcess(), AnyUser()]
     can_read = [SystemProcess(), AnyUser()]

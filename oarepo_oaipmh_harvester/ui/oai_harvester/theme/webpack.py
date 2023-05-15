@@ -8,14 +8,11 @@ theme = WebpackThemeBundle(
         "semantic-ui": dict(
             entry={
                 "oai_harvester_ui_components": "./js/oai_harvester_ui/custom-components.js",
-                "oai_harvester_search": "./js/oai_harvester_ui/search/index.js"
+                "oai_harvester_search": "./js/oai_harvester_ui/search/index.js",
             },
-            dependencies={
-            },
-            devDependencies={
-            },
-            aliases={
-            }
+            dependencies={},
+            devDependencies={},
+            aliases={},
         )
     },
 )

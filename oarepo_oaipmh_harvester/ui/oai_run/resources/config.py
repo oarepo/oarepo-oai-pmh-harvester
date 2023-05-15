@@ -1,7 +1,6 @@
 from oarepo_ui.resources.config import RecordsUIResourceConfig
 
 
-
 class OaiRunUIResourceConfig(RecordsUIResourceConfig):
     template_folder = "../templates"
     url_prefix = "/oairun/"
@@ -31,6 +30,3 @@ class OaiRunUIResourceConfig(RecordsUIResourceConfig):
 
     def search_active_facets(self, api_config, identity):
         return list(self.search_available_facets(api_config, identity).keys())
-
-
-

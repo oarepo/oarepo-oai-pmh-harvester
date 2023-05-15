@@ -28,6 +28,7 @@ class OaiRunSearchOptions(InvenioSearchOptions):
         "started": facets.started,
         "finished": facets.finished,
         "duration": facets.duration,
+        "manual": facets.manual,
         "_id": facets._id,
         "created": facets.created,
         "updated": facets.updated,

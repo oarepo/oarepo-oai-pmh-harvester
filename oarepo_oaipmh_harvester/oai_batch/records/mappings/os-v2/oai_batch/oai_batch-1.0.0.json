@@ -40,6 +40,9 @@
             "finished": {
                 "type": "date"
             },
+            "manual": {
+                "type": "boolean"
+            },
             "id": {
                 "type": "keyword"
             },

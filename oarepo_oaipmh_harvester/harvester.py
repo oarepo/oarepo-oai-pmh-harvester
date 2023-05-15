@@ -3,6 +3,8 @@ from typing import Dict, Union
 
 import celery
 from invenio_access.permissions import system_identity
+from invenio_search import current_search_client
+from invenio_search.utils import build_alias_name
 from oarepo_runtime.datastreams import StreamEntry
 from oarepo_runtime.tasks.datastreams import AsyncDataStream
 
@@ -10,8 +12,36 @@ from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
+from oarepo_oaipmh_harvester.oai_record.records.api import OaiRecord
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.proxies import current_harvester
+
+
+def _get_max_datestamp_query(harvester):
+    max_datestamp_query = {
+        "query": {
+            "bool": {
+                "filter": [
+                    {"term": {"harvester.id": harvester}},
+                    {"term": {"manual": False}},
+                ]
+            }
+        },
+        "size": 0,
+        "aggs": {"max_datestamp": {"max": {"field": "datestamp"}}},
+    }
+    return max_datestamp_query
+
+
+def _get_latest_oai_datestamp(harvester_id):
+    index = build_alias_name(OaiRecord.index.search_alias)
+    result = current_search_client.search(
+        index=index,
+        body=_get_max_datestamp_query(harvester_id),
+    )
+    result = result["aggregations"]["max_datestamp"]["value"]
+    ret = datetime.datetime.utcfromtimestamp(result / 1000).date() if result else None
+    return ret
 
 
 def harvest(
@@ -38,6 +68,7 @@ def harvest(
     harvester.pop("updated", None)
     harvester.pop("revision_id", None)
 
+    run_manual = True if identifiers else False
     run = run_service.create(
         system_identity,
         {
@@ -45,9 +76,12 @@ def harvest(
             "status": "R",
             "batches": 0,
             "started": datetime.datetime.utcnow().isoformat(),
+            "manual": run_manual,
         },
     )
     run_id = run["id"]
+    start_from = _get_latest_oai_datestamp(harvester["id"]) if not run_manual else None
+    print(f"STARTING FROM: {start_from}")
 
     reader_config = current_harvester.get_parser_config(harvester["loader"])
     reader_config = {
@@ -57,6 +91,8 @@ def harvest(
         "identifiers": identifiers,
         "config": dict(harvester),
         "oai_run": run_id,
+        "start_from": start_from,
+        "oai_harvester_id": harvester["id"],
     }
 
     transformers_config = [
@@ -64,6 +100,7 @@ def harvest(
             **current_harvester.get_transformer_config("oai_batch"),
             "config": dict(harvester),
             "oai_run": run_id,
+            "manual": run_manual,
         }
     ]
     transformers_config.extend(

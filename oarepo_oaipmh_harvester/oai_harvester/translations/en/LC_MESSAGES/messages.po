@@ -2,21 +2,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-04-05T12:56:23.571354\n"
-"PO-Revision-Date: 2023-04-19 14:33+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: en\n"
+"POT-Creation-Date: 2023-05-12T13:58:55.988678\n"
+"PO-Revision-Date: 2023-05-12T13:58:55.988689\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
 
 msgid "code.help"
 msgstr ""
 
 msgid "code.label"
-msgstr "Code"
+msgstr ""
 
 msgid "code.hint"
 msgstr ""
@@ -25,7 +21,7 @@ msgid "baseurl.help"
 msgstr ""
 
 msgid "baseurl.label"
-msgstr "Base URL"
+msgstr ""
 
 msgid "baseurl.hint"
 msgstr ""
@@ -34,7 +30,7 @@ msgid "metadataprefix.help"
 msgstr ""
 
 msgid "metadataprefix.label"
-msgstr "Metadata prefix"
+msgstr ""
 
 msgid "metadataprefix.hint"
 msgstr ""
@@ -43,7 +39,7 @@ msgid "comment.help"
 msgstr ""
 
 msgid "comment.label"
-msgstr "Comment"
+msgstr ""
 
 msgid "comment.hint"
 msgstr ""
@@ -52,7 +48,7 @@ msgid "name.help"
 msgstr ""
 
 msgid "name.label"
-msgstr "Name"
+msgstr ""
 
 msgid "name.hint"
 msgstr ""
@@ -61,7 +57,7 @@ msgid "setspecs.help"
 msgstr ""
 
 msgid "setspecs.label"
-msgstr "Set specs"
+msgstr ""
 
 msgid "setspecs.hint"
 msgstr ""
@@ -70,7 +66,7 @@ msgid "loader.help"
 msgstr ""
 
 msgid "loader.label"
-msgstr "Loader"
+msgstr ""
 
 msgid "loader.hint"
 msgstr ""
@@ -79,7 +75,7 @@ msgid "transformers.help"
 msgstr ""
 
 msgid "transformers.label"
-msgstr "Tranformers"
+msgstr ""
 
 msgid "transformers.hint"
 msgstr ""
@@ -88,7 +84,7 @@ msgid "writer.help"
 msgstr ""
 
 msgid "writer.label"
-msgstr "Writer"
+msgstr ""
 
 msgid "writer.hint"
 msgstr ""
@@ -97,7 +93,7 @@ msgid "max_records.help"
 msgstr ""
 
 msgid "max_records.label"
-msgstr "Maximum number of records"
+msgstr ""
 
 msgid "max_records.hint"
 msgstr ""
@@ -106,7 +102,7 @@ msgid "batch_size.help"
 msgstr ""
 
 msgid "batch_size.label"
-msgstr "Batch size"
+msgstr ""
 
 msgid "batch_size.hint"
 msgstr ""
@@ -115,7 +111,7 @@ msgid "id.help"
 msgstr ""
 
 msgid "id.label"
-msgstr "ID"
+msgstr ""
 
 msgid "id.hint"
 msgstr ""
@@ -124,7 +120,7 @@ msgid "created.help"
 msgstr ""
 
 msgid "created.label"
-msgstr "Created"
+msgstr ""
 
 msgid "created.hint"
 msgstr ""
@@ -133,7 +129,7 @@ msgid "updated.help"
 msgstr ""
 
 msgid "updated.label"
-msgstr "Updated"
+msgstr ""
 
 msgid "updated.hint"
 msgstr ""
@@ -142,13 +138,7 @@ msgid "$schema.help"
 msgstr ""
 
 msgid "$schema.label"
-msgstr "Schema"
+msgstr ""
 
 msgid "$schema.hint"
 msgstr ""
-
-msgid "runs_harvester.label"
-msgstr "Runs within harvester"
-
-msgid "runs.label"
-msgstr "Runs"

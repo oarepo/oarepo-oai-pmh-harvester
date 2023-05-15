@@ -182,6 +182,8 @@ class OAIWriter(BatchWriter):
             oai_rec["entry"] = e.entry
             oai_rec["context"] = e.context
             oai_rec["batch"] = {"id": batch.context["batch_id"]}
+            oai_rec["manual"] = e.context["manual"]
+            oai_rec["harvester"] = {"id": e.context["oai_harvester_id"]}
             if update:
                 record_service.update(self._identity, oai_rec["id"], oai_rec, uow=uow)
             else:

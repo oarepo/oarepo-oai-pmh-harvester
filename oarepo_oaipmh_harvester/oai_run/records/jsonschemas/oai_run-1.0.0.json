@@ -2,6 +2,7 @@
     "type": "object",
     "properties": {
         "harvester": {
+            "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
@@ -28,10 +29,10 @@
                     "type": "string"
                 },
                 "transformers": {
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "type": "array"
                 },
                 "writer": {
                     "type": "string"
@@ -53,21 +54,20 @@
                 "$schema": {
                     "type": "string"
                 }
-            },
-            "type": "object"
+            }
         },
         "batches": {
             "type": "integer"
         },
         "status": {
+            "type": "string",
             "enum": [
                 "R",
                 "O",
                 "W",
                 "E",
                 "I"
-            ],
-            "type": "string"
+            ]
         },
         "warning": {
             "type": "string"
@@ -85,6 +85,9 @@
         },
         "duration": {
             "type": "number"
+        },
+        "manual": {
+            "type": "boolean"
         },
         "id": {
             "type": "string"

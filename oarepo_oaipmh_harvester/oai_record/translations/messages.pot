@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-04-19T10:34:00.950470\n"
-"PO-Revision-Date: 2023-04-19T10:34:00.950475\n"
+"POT-Creation-Date: 2023-05-12T13:59:18.864015\n"
+"PO-Revision-Date: 2023-05-12T13:59:18.864018\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,6 +33,33 @@ msgid "batch/@v.label"
 msgstr ""
 
 msgid "batch/@v.hint"
+msgstr ""
+
+msgid "harvester.help"
+msgstr ""
+
+msgid "harvester.label"
+msgstr ""
+
+msgid "harvester.hint"
+msgstr ""
+
+msgid "harvester/id.help"
+msgstr ""
+
+msgid "harvester/id.label"
+msgstr ""
+
+msgid "harvester/id.hint"
+msgstr ""
+
+msgid "harvester/@v.help"
+msgstr ""
+
+msgid "harvester/@v.label"
+msgstr ""
+
+msgid "harvester/@v.hint"
 msgstr ""
 
 msgid "local_identifier.help"
@@ -117,6 +144,15 @@ msgid "context.label"
 msgstr ""
 
 msgid "context.hint"
+msgstr ""
+
+msgid "manual.help"
+msgstr ""
+
+msgid "manual.label"
+msgstr ""
+
+msgid "manual.hint"
 msgstr ""
 
 msgid "id.help"

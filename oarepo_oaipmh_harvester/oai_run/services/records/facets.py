@@ -90,6 +90,9 @@ finished = DateTimeFacet(field="finished", label=_("finished.label"))
 duration = TermsFacet(field="duration", label=_("duration.label"))
 
 
+manual = TermsFacet(field="manual", label=_("manual.label"))
+
+
 _id = TermsFacet(field="id", label=_("id.label"))
 
 

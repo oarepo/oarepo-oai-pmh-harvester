@@ -15,6 +15,7 @@ class OaiBatchSearchOptions(InvenioSearchOptions):
         "errors_error_keyword": facets.errors_error_keyword,
         "started": facets.started,
         "finished": facets.finished,
+        "manual": facets.manual,
         "_id": facets._id,
         "created": facets.created,
         "updated": facets.updated,

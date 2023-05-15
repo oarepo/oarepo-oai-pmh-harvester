@@ -1,8 +1,6 @@
 from invenio_records_permissions import RecordPermissionPolicy
-from invenio_records_permissions.generators import SystemProcess
+from invenio_records_permissions.generators import AnyUser, SystemProcess
 
-
-from invenio_records_permissions.generators import AnyUser
 
 class OAIHarvesterPermissions(RecordPermissionPolicy):
     """record policy for read only repository"""

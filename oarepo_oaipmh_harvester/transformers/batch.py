@@ -8,11 +8,12 @@ from oarepo_oaipmh_harvester.oai_batch.proxies import current_service as batch_s
 
 
 class OAIBatchTransformer(BatchTransformer):
-    def __init__(self, config, oai_run, identity) -> None:
+    def __init__(self, config, oai_run, identity, manual) -> None:
         super().__init__()
         self.config = config
         self.oai_run = oai_run
         self.identity = identity
+        self.manual = manual
 
     def apply_batch(self, batch: StreamBatch, *args, **kwargs) -> StreamBatch:
         batch_el = batch_service.create(
@@ -22,6 +23,7 @@ class OAIBatchTransformer(BatchTransformer):
                 "status": "R",
                 "identifiers": [x.context["oai"]["identifier"] for x in batch.entries],
                 "started": datetime.datetime.utcnow().isoformat(),
+                "manual": self.manual,
             },
         )
         batch.context["run_id"] = self.oai_run

@@ -32,3 +32,4 @@ class OaiRunUISchema(InvenioUISchema):
     started = l10n.LocalizedDateTime()
     finished = l10n.LocalizedDateTime()
     duration = ma_fields.Float()
+    manual = ma_fields.Boolean()

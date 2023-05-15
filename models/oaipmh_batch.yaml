@@ -34,6 +34,10 @@ model:
     
     finished: 
         type: datetime
+
+    manual:
+        type: boolean
+
   plugins:
     builder:
       disable: 

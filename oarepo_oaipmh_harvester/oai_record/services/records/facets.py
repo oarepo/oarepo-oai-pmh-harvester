@@ -11,6 +11,12 @@ batch_id = TermsFacet(field="batch.id", label=_("batch/id.label"))
 batch__version = TermsFacet(field="batch.@v", label=_("batch/@v.label"))
 
 
+harvester_id = TermsFacet(field="harvester.id", label=_("harvester/id.label"))
+
+
+harvester__version = TermsFacet(field="harvester.@v", label=_("harvester/@v.label"))
+
+
 local_identifier = TermsFacet(
     field="local_identifier", label=_("local_identifier.label")
 )
@@ -31,6 +37,9 @@ warnings_keyword = TermsFacet(
 
 
 errors_keyword = TermsFacet(field="errors.keyword", label=_("errors/keyword.label"))
+
+
+manual = TermsFacet(field="manual", label=_("manual.label"))
 
 
 _id = TermsFacet(field="id", label=_("id.label"))

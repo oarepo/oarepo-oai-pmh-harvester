@@ -1,14 +1,11 @@
 from oarepo_ui.resources.config import RecordsUIResourceConfig
-import marshmallow as ma
 
 
 class OAIBatchUIResourceConfig(RecordsUIResourceConfig):
     template_folder = "../templates"
     url_prefix = "/oaibatch/"
     blueprint_name = "oai-batch-ui"
-    ui_serializer_class = (
-        "oarepo_oaipmh_harvester.oai_batch.resources.records.ui.OaiBatchUIJSONSerializer"
-    )
+    ui_serializer_class = "oarepo_oaipmh_harvester.oai_batch.resources.records.ui.OaiBatchUIJSONSerializer"
     api_service = "oarepo-oaipmh-batch"
     layout = "oarepo_oaipmh_harvester.oai_batch"
 
@@ -31,5 +28,3 @@ class OAIBatchUIResourceConfig(RecordsUIResourceConfig):
 
     def search_active_facets(self, api_config, identity):
         return list(self.search_available_facets(api_config, identity).keys())
-
-

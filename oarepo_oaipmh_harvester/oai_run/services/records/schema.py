@@ -35,3 +35,4 @@ class OaiRunSchema(InvenioBaseRecordSchema):
     started = ma_fields.String(validate=[validate_datetime])
     finished = ma_fields.String(validate=[validate_datetime])
     duration = ma_fields.Float()
+    manual = ma_fields.Boolean()

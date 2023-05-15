@@ -8,14 +8,11 @@ theme = WebpackThemeBundle(
         "semantic-ui": dict(
             entry={
                 "oai_batch_ui_components": "./js/oai_batch_ui/custom-components.js",
-                "oai_batch_search": "./js/oai_batch_ui/search/index.js"
+                "oai_batch_search": "./js/oai_batch_ui/search/index.js",
             },
-            dependencies={
-            },
-            devDependencies={
-            },
-            aliases={
-            }
+            dependencies={},
+            devDependencies={},
+            aliases={},
         )
     },
 )

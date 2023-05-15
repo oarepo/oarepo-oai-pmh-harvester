@@ -30,3 +30,4 @@ class OaiBatchSchema(InvenioBaseRecordSchema):
     errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemSchema()))
     started = ma_fields.String(validate=[validate_datetime])
     finished = ma_fields.String(validate=[validate_datetime])
+    manual = ma_fields.Boolean()

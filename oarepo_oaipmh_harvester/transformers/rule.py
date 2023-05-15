@@ -1,14 +1,14 @@
 import functools
 import itertools
 import json
+import traceback
 from abc import abstractmethod
 from collections import defaultdict
 from typing import List
-import traceback
 
 from oarepo_runtime.datastreams import StreamEntry
-from oarepo_runtime.datastreams.transformers import BatchTransformer, StreamBatch
 from oarepo_runtime.datastreams.errors import TransformerError
+from oarepo_runtime.datastreams.transformers import BatchTransformer, StreamBatch
 
 
 class OAIRuleTransformer(BatchTransformer):

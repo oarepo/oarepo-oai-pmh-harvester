@@ -8,7 +8,7 @@ from oarepo_oaipmh_harvester.oai_record.resources.records.ui import (
 
 
 class OaiRecordResourceConfig(RecordResourceConfig):
-    """OaiRecordRecord resource config."""
+    """OaiRecord resource config."""
 
     blueprint_name = "OaiRecord"
     url_prefix = "/oarepo-oaipmh-harvester.oai-record/"

@@ -3,9 +3,11 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-from oarepo_oaipmh_harvester.ui.oai_batch import config as config
-from invenio_base.utils import obj_or_import_string
 import re
+
+from invenio_base.utils import obj_or_import_string
+
+from oarepo_oaipmh_harvester.ui.oai_batch import config as config
 
 
 class OaiBatchExt:
@@ -20,14 +22,9 @@ class OaiBatchExt:
 
     def init_resource(self, app):
         """Initialize vocabulary resources."""
-        self.resource = obj_or_import_string(
-            app.config["OAI_BATCH_UI_RESOURCE"]
-        )(
-            config=obj_or_import_string(
-                app.config["OAI_BATCH_UI_RESOURCE_CONFIG"]
-            )(),
+        self.resource = obj_or_import_string(app.config["OAI_BATCH_UI_RESOURCE"])(
+            config=obj_or_import_string(app.config["OAI_BATCH_UI_RESOURCE_CONFIG"])(),
         )
-        pass
 
     def init_config(self, app):
         """Initialize configuration."""

@@ -3,9 +3,11 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-from oarepo_oaipmh_harvester.ui.oai_harvester import config as config
-from invenio_base.utils import obj_or_import_string
 import re
+
+from invenio_base.utils import obj_or_import_string
+
+from oarepo_oaipmh_harvester.ui.oai_harvester import config as config
 
 
 class OaiHarvesterExt:
@@ -20,14 +22,11 @@ class OaiHarvesterExt:
 
     def init_resource(self, app):
         """Initialize vocabulary resources."""
-        self.resource = obj_or_import_string(
-            app.config["OAI_HARVESTER_UI_RESOURCE"]
-        )(
+        self.resource = obj_or_import_string(app.config["OAI_HARVESTER_UI_RESOURCE"])(
             config=obj_or_import_string(
                 app.config["OAI_HARVESTER_UI_RESOURCE_CONFIG"]
             )(),
         )
-        pass
 
     def init_config(self, app):
         """Initialize configuration."""

@@ -14,10 +14,18 @@ class BatchSchema(ma.Schema):
     _version = ma_fields.String(data_key="@v", attribute="@v")
 
 
+class HarvesterSchema(ma.Schema):
+    """HarvesterSchema schema."""
+
+    _id = ma_fields.String(data_key="id", attribute="id")
+    _version = ma_fields.String(data_key="@v", attribute="@v")
+
+
 class OaiRecordSchema(InvenioBaseRecordSchema):
     """OaiRecordSchema schema."""
 
     batch = ma_fields.Nested(lambda: BatchSchema())
+    harvester = ma_fields.Nested(lambda: HarvesterSchema())
     local_identifier = ma_fields.String()
     oai_identifier = ma_fields.String()
     datestamp = ma_fields.String(validate=[validate_datetime])
@@ -26,3 +34,4 @@ class OaiRecordSchema(InvenioBaseRecordSchema):
     errors = ma_fields.List(ma_fields.String())
     entry = ma_fields.Raw()
     context = ma_fields.Raw()
+    manual = ma_fields.Boolean()

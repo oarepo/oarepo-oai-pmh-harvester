@@ -3,7 +3,7 @@ from invenio_records.models import RecordMetadataBase
 
 
 class OaiRecordMetadata(db.Model, RecordMetadataBase):
-    """Model for OaiRecordRecord metadata."""
+    """Model for OaiRecord metadata."""
 
     __tablename__ = "oairecord_metadata"
 

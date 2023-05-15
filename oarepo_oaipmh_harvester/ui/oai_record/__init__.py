@@ -4,6 +4,6 @@
 
 from .ext import OaiRecordExt
 
-__version__ = '1.0.0'
+__version__ = "1.0.0"
 
-__all__ = ('__version__', 'OaiRecordExt')
+__all__ = ("__version__", "OaiRecordExt")

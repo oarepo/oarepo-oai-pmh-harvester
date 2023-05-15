@@ -5,6 +5,7 @@ model:
   record-service-config-components:
     - invenio_records_resources.services.records.components.DataComponent
   schema-server: 'local://'
+  record-class: oarepo_oaipmh_harvester.oai_record.records.api.OaiRecord
 
   properties:
     batch: 
@@ -16,7 +17,16 @@ model:
         model:
           type: keyword
       required: true
-    
+
+    harvester:
+      type: relation
+      model: oaipmh-harvester
+      keys:
+      - key: id
+        model:
+          type: keyword
+      required: true
+
     local_identifier:
       type: keyword
     
@@ -42,6 +52,9 @@ model:
 
     context:
       type: flattened
+
+    manual:
+      type: boolean
 
   plugins:
     builder:

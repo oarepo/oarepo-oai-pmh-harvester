@@ -12,6 +12,17 @@
             },
             "type": "object"
         },
+        "harvester": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "@v": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "local_identifier": {
             "type": "string"
         },
@@ -48,6 +59,9 @@
         },
         "context": {
             "type": "object"
+        },
+        "manual": {
+            "type": "boolean"
         },
         "id": {
             "type": "string"

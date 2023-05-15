@@ -150,9 +150,9 @@
                 },
                 "created": {
                     "marshmallow": {
+                        "read": false,
                         "write": false,
-                        "field-class": "l10n.LocalizedDateTime",
-                        "read": false
+                        "field-class": "l10n.LocalizedDateTime"
                     },
                     "detail": "datetime",
                     "input": "datetime",
@@ -163,9 +163,9 @@
                 },
                 "updated": {
                     "marshmallow": {
+                        "read": false,
                         "write": false,
-                        "field-class": "l10n.LocalizedDateTime",
-                        "read": false
+                        "field-class": "l10n.LocalizedDateTime"
                     },
                     "detail": "datetime",
                     "input": "datetime",
@@ -176,9 +176,9 @@
                 },
                 "$schema": {
                     "marshmallow": {
+                        "read": false,
                         "write": false,
-                        "field-class": "ma_fields.String",
-                        "read": false
+                        "field-class": "ma_fields.String"
                     },
                     "detail": "keyword",
                     "input": "keyword",
@@ -269,11 +269,22 @@
             "hint": "duration.hint",
             "facet": "duration"
         },
+        "manual": {
+            "marshmallow": {
+                "field-class": "ma_fields.Boolean"
+            },
+            "detail": "boolean",
+            "input": "boolean",
+            "help": "manual.help",
+            "label": "manual.label",
+            "hint": "manual.hint",
+            "facet": "manual"
+        },
         "id": {
             "marshmallow": {
+                "read": false,
                 "write": false,
-                "field-class": "ma_fields.String",
-                "read": false
+                "field-class": "ma_fields.String"
             },
             "detail": "keyword",
             "input": "keyword",
@@ -284,9 +295,9 @@
         },
         "created": {
             "marshmallow": {
+                "read": false,
                 "write": false,
-                "field-class": "l10n.LocalizedDateTime",
-                "read": false
+                "field-class": "l10n.LocalizedDateTime"
             },
             "detail": "datetime",
             "input": "datetime",
@@ -297,9 +308,9 @@
         },
         "updated": {
             "marshmallow": {
+                "read": false,
                 "write": false,
-                "field-class": "l10n.LocalizedDateTime",
-                "read": false
+                "field-class": "l10n.LocalizedDateTime"
             },
             "detail": "datetime",
             "input": "datetime",
@@ -310,9 +321,9 @@
         },
         "$schema": {
             "marshmallow": {
+                "read": false,
                 "write": false,
-                "field-class": "ma_fields.String",
-                "read": false
+                "field-class": "ma_fields.String"
             },
             "detail": "keyword",
             "input": "keyword",

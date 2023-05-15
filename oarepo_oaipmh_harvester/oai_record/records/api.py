@@ -6,6 +6,7 @@ from invenio_records_resources.records.systemfields.pid import PIDField, PIDFiel
 from oarepo_runtime.relations import PIDRelation, RelationsField
 
 from oarepo_oaipmh_harvester.oai_batch.records.api import OaiBatchRecord
+from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
 from oarepo_oaipmh_harvester.oai_record.records.dumper import OaiRecordDumper
 from oarepo_oaipmh_harvester.oai_record.records.models import OaiRecordMetadata
 
@@ -14,7 +15,7 @@ class OaiRecordIdProvider(RecordIdProviderV2):
     pid_type = "_rcrd"
 
 
-class OaiRecordRecord(Record):
+class OaiRecord(Record):
     model_cls = OaiRecordMetadata
 
     schema = ConstantField("$schema", "local://oai_record-1.0.0.json")
@@ -33,5 +34,10 @@ class OaiRecordRecord(Record):
             "batch",
             keys=["id"],
             pid_field=OaiBatchRecord.pid,
+        ),
+        harvester=PIDRelation(
+            "harvester",
+            keys=["id"],
+            pid_field=OaiHarvesterRecord.pid,
         ),
     )

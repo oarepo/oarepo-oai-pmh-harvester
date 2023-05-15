@@ -2,21 +2,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-04-19T10:33:47.819015\n"
-"PO-Revision-Date: 2023-04-19 14:56+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: en\n"
+"POT-Creation-Date: 2023-05-12T13:59:11.124292\n"
+"PO-Revision-Date: 2023-05-12T13:59:11.124301\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
 
 msgid "run.help"
 msgstr ""
 
 msgid "run.label"
-msgstr "Run"
+msgstr ""
 
 msgid "run.hint"
 msgstr ""
@@ -25,7 +21,7 @@ msgid "run/id.help"
 msgstr ""
 
 msgid "run/id.label"
-msgstr "Run ID"
+msgstr ""
 
 msgid "run/id.hint"
 msgstr ""
@@ -34,7 +30,7 @@ msgid "run/@v.help"
 msgstr ""
 
 msgid "run/@v.label"
-msgstr "Run version"
+msgstr ""
 
 msgid "run/@v.hint"
 msgstr ""
@@ -43,31 +39,31 @@ msgid "status.help"
 msgstr ""
 
 msgid "status.label"
-msgstr "Statuts"
+msgstr ""
 
 msgid "status.hint"
 msgstr ""
 
 msgid "status.enum.R"
-msgstr "Running"
+msgstr ""
 
 msgid "status.enum.O"
-msgstr "OK"
+msgstr ""
 
 msgid "status.enum.W"
-msgstr "With warning"
+msgstr ""
 
 msgid "status.enum.E"
-msgstr "With error"
+msgstr ""
 
 msgid "status.enum.I"
-msgstr "Interrupted"
+msgstr ""
 
 msgid "identifiers.help"
 msgstr ""
 
 msgid "identifiers.label"
-msgstr "Identifiers"
+msgstr ""
 
 msgid "identifiers.hint"
 msgstr ""
@@ -76,7 +72,7 @@ msgid "errors.help"
 msgstr ""
 
 msgid "errors.label"
-msgstr "Errors"
+msgstr ""
 
 msgid "errors.hint"
 msgstr ""
@@ -85,7 +81,7 @@ msgid "errors/oai_identifier.help"
 msgstr ""
 
 msgid "errors/oai_identifier.label"
-msgstr "OAI-PHM IDs with errors"
+msgstr ""
 
 msgid "errors/oai_identifier.hint"
 msgstr ""
@@ -94,7 +90,7 @@ msgid "errors/error.help"
 msgstr ""
 
 msgid "errors/error.label"
-msgstr "Errors"
+msgstr ""
 
 msgid "errors/error.hint"
 msgstr ""
@@ -103,7 +99,7 @@ msgid "started.help"
 msgstr ""
 
 msgid "started.label"
-msgstr "Started"
+msgstr ""
 
 msgid "started.hint"
 msgstr ""
@@ -112,16 +108,25 @@ msgid "finished.help"
 msgstr ""
 
 msgid "finished.label"
-msgstr "Finished"
+msgstr ""
 
 msgid "finished.hint"
+msgstr ""
+
+msgid "manual.help"
+msgstr ""
+
+msgid "manual.label"
+msgstr ""
+
+msgid "manual.hint"
 msgstr ""
 
 msgid "id.help"
 msgstr ""
 
 msgid "id.label"
-msgstr "ID"
+msgstr ""
 
 msgid "id.hint"
 msgstr ""
@@ -130,7 +135,7 @@ msgid "created.help"
 msgstr ""
 
 msgid "created.label"
-msgstr "Created"
+msgstr ""
 
 msgid "created.hint"
 msgstr ""
@@ -139,7 +144,7 @@ msgid "updated.help"
 msgstr ""
 
 msgid "updated.label"
-msgstr "Updated"
+msgstr ""
 
 msgid "updated.hint"
 msgstr ""
@@ -148,13 +153,7 @@ msgid "$schema.help"
 msgstr ""
 
 msgid "$schema.label"
-msgstr "Schema"
+msgstr ""
 
 msgid "$schema.hint"
 msgstr ""
-
-msgid "records_batch.label"
-msgstr "Records within batch"
-
-msgid "records.label"
-msgstr "Records"

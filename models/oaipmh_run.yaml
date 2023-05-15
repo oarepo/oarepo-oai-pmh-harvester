@@ -37,6 +37,9 @@ model:
     duration:
        type: double
 
+    manual:
+      type: boolean
+
   plugins:
     builder:
       disable: 

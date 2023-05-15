@@ -1,9 +1,8 @@
 from flask import current_app
-from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
+from invenio_records_resources.services.uow import RecordCommitOp
+from oarepo_runtime.relations.uow import CachingUnitOfWork
 from opensearchpy.helpers import bulk
 from opensearchpy.helpers import expand_action as default_expand_action
-
-from oarepo_runtime.relations.uow import CachingUnitOfWork
 
 
 class BulkRecordCommitOp(RecordCommitOp):

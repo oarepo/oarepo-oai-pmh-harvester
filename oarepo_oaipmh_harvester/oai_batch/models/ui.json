@@ -2,8 +2,8 @@
     "children": {
         "run": {
             "marshmallow": {
-                "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.RunUISchema",
-                "field-class": "ma_fields.Nested"
+                "field-class": "ma_fields.Nested",
+                "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.RunUISchema"
             },
             "detail": "relation",
             "input": "relation",
@@ -24,8 +24,8 @@
                 },
                 "@v": {
                     "marshmallow": {
-                        "field-name": "_version",
-                        "field-class": "ma_fields.String"
+                        "field-class": "ma_fields.String",
+                        "field-name": "_version"
                     },
                     "detail": "keyword",
                     "input": "keyword",
@@ -78,8 +78,8 @@
             "hint": "errors.hint",
             "child": {
                 "marshmallow": {
-                    "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.ErrorsItemUISchema",
-                    "field-class": "ma_fields.Nested"
+                    "field-class": "ma_fields.Nested",
+                    "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.ErrorsItemUISchema"
                 },
                 "detail": "error",
                 "input": "error",
@@ -131,11 +131,22 @@
             "hint": "finished.hint",
             "facet": "finished"
         },
+        "manual": {
+            "marshmallow": {
+                "field-class": "ma_fields.Boolean"
+            },
+            "detail": "boolean",
+            "input": "boolean",
+            "help": "manual.help",
+            "label": "manual.label",
+            "hint": "manual.hint",
+            "facet": "manual"
+        },
         "id": {
             "marshmallow": {
+                "field-class": "ma_fields.String",
                 "read": false,
-                "write": false,
-                "field-class": "ma_fields.String"
+                "write": false
             },
             "detail": "keyword",
             "input": "keyword",
@@ -146,9 +157,9 @@
         },
         "created": {
             "marshmallow": {
+                "field-class": "l10n.LocalizedDateTime",
                 "read": false,
-                "write": false,
-                "field-class": "l10n.LocalizedDateTime"
+                "write": false
             },
             "detail": "datetime",
             "input": "datetime",
@@ -159,9 +170,9 @@
         },
         "updated": {
             "marshmallow": {
+                "field-class": "l10n.LocalizedDateTime",
                 "read": false,
-                "write": false,
-                "field-class": "l10n.LocalizedDateTime"
+                "write": false
             },
             "detail": "datetime",
             "input": "datetime",
@@ -172,9 +183,9 @@
         },
         "$schema": {
             "marshmallow": {
+                "field-class": "ma_fields.String",
                 "read": false,
-                "write": false,
-                "field-class": "ma_fields.String"
+                "write": false
             },
             "detail": "keyword",
             "input": "keyword",

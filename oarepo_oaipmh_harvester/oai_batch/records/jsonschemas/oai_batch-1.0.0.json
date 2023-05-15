@@ -13,23 +13,22 @@
             "type": "object"
         },
         "status": {
-            "type": "string",
             "enum": [
                 "R",
                 "O",
                 "W",
                 "E",
                 "I"
-            ]
+            ],
+            "type": "string"
         },
         "identifiers": {
-            "type": "array",
             "items": {
                 "type": "string"
-            }
+            },
+            "type": "array"
         },
         "errors": {
-            "type": "array",
             "items": {
                 "properties": {
                     "oai_identifier": {
@@ -40,7 +39,8 @@
                     }
                 },
                 "type": "object"
-            }
+            },
+            "type": "array"
         },
         "started": {
             "type": "string",
@@ -49,6 +49,9 @@
         "finished": {
             "type": "string",
             "format": "date-time"
+        },
+        "manual": {
+            "type": "boolean"
         },
         "id": {
             "type": "string"

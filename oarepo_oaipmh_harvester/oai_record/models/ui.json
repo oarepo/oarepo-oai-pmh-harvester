@@ -24,8 +24,8 @@
                 },
                 "@v": {
                     "marshmallow": {
-                        "field-class": "ma_fields.String",
-                        "field-name": "_version"
+                        "field-name": "_version",
+                        "field-class": "ma_fields.String"
                     },
                     "detail": "keyword",
                     "input": "keyword",
@@ -33,6 +33,42 @@
                     "label": "batch/@v.label",
                     "hint": "batch/@v.hint",
                     "facet": "batch__version"
+                }
+            }
+        },
+        "harvester": {
+            "marshmallow": {
+                "schema-class": "oarepo_oaipmh_harvester.oai_record.services.records.ui_schema.HarvesterUISchema",
+                "field-class": "ma_fields.Nested"
+            },
+            "detail": "relation",
+            "input": "relation",
+            "help": "harvester.help",
+            "label": "harvester.label",
+            "hint": "harvester.hint",
+            "children": {
+                "id": {
+                    "marshmallow": {
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/id.help",
+                    "label": "harvester/id.label",
+                    "hint": "harvester/id.hint",
+                    "facet": "harvester_id"
+                },
+                "@v": {
+                    "marshmallow": {
+                        "field-name": "_version",
+                        "field-class": "ma_fields.String"
+                    },
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/@v.help",
+                    "label": "harvester/@v.label",
+                    "hint": "harvester/@v.hint",
+                    "facet": "harvester__version"
                 }
             }
         },
@@ -136,6 +172,17 @@
             "help": "context.help",
             "label": "context.label",
             "hint": "context.hint"
+        },
+        "manual": {
+            "marshmallow": {
+                "field-class": "ma_fields.Boolean"
+            },
+            "detail": "boolean",
+            "input": "boolean",
+            "help": "manual.help",
+            "label": "manual.label",
+            "hint": "manual.hint",
+            "facet": "manual"
         },
         "id": {
             "marshmallow": {
