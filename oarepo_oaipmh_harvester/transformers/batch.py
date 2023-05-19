@@ -30,4 +30,5 @@ class OAIBatchTransformer(BatchTransformer):
         batch.context["batch_id"] = batch_el["id"]
         for e in batch.entries:
             e.context["oai_batch"] = batch_el["id"]
+            e.context["manual"] = self.manual
         return batch
