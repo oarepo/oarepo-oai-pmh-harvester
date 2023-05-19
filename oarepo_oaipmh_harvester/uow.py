@@ -1,7 +1,7 @@
 from flask import current_app
 from invenio_records_resources.services.uow import RecordCommitOp
 from oarepo_runtime.relations.uow import CachingUnitOfWork
-from opensearchpy.helpers import bulk
+from opensearchpy.helpers import BulkIndexError, bulk
 from opensearchpy.helpers import expand_action as default_expand_action
 
 
@@ -51,14 +51,17 @@ class BulkUnitOfWork(CachingUnitOfWork):
                 bulk_data.append(op.get_index_action())
         if indexer:
             req_timeout = current_app.config["INDEXER_BULK_REQUEST_TIMEOUT"]
-            resp = bulk(
-                indexer.client,
-                bulk_data,
-                stats_only=True,
-                request_timeout=req_timeout,
-                expand_action_callback=default_expand_action,
-                refresh=True,
-            )
+            try:
+                resp = bulk(
+                    indexer.client,
+                    bulk_data,
+                    stats_only=True,
+                    request_timeout=req_timeout,
+                    expand_action_callback=default_expand_action,
+                    refresh=True,
+                )
+            except BulkIndexError as e:
+                raise e
 
 
 __all__ = ["BulkUnitOfWork"]

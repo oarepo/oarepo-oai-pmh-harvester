@@ -5,6 +5,7 @@ from invenio_db import db
 from oarepo_runtime.datastreams.config import DATASTREAMS_WRITERS, get_instance
 from oarepo_runtime.datastreams.errors import WriterError
 from oarepo_runtime.datastreams.writers import BatchWriter, StreamBatch
+from opensearchpy.helpers import BulkIndexError
 
 from oarepo_oaipmh_harvester.oai_batch.proxies import current_service as batch_service
 from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
@@ -27,11 +28,25 @@ class OAIWriter(BatchWriter):
         self._identity = identity
 
     def write_batch(self, batch: StreamBatch, *args, **kwargs):
+        if batch.entries:
+            with BulkUnitOfWork() as uow:
+                with db.session.begin_nested():
+                    self.read_oai_records(batch)
+                    batch = self.write_entries(batch, args, kwargs, uow)
+                try:
+                    uow.commit()
+                except BulkIndexError as e:
+                    indexing_error_map = {
+                        err["index"]["data"]["id"]: err for err in e.errors
+                    }
+                    # there is no access by id to batch entries
+                    for entry in batch.entries:
+                        if entry.entry["id"] in indexing_error_map:
+                            entry.errors.append(indexing_error_map[entry.entry["id"]]["index"]["error"])
+
         with BulkUnitOfWork() as uow:
             with db.session.begin_nested():
                 if batch.entries:
-                    self.read_oai_records(batch)
-                    batch = self.write_entries(batch, args, kwargs, uow)
                     self.create_oai_records(batch, uow)
 
                 self.set_batch_status(batch, uow)
@@ -42,8 +57,8 @@ class OAIWriter(BatchWriter):
                 if batch.last:
                     oai_run["batches"] = batch.seq
                     run_service.update(self._identity, oai_run["id"], dict(oai_run))
-
             uow.commit()
+
         db.session.expunge_all()
 
         # if the run already has number of batches, we might have been the latest batch.
@@ -102,7 +117,10 @@ class OAIWriter(BatchWriter):
                 status = "E"
                 for err in e.errors:
                     errors.append(
-                        {"oai_identifier": e.context["oai"]["identifier"], "error": err}
+                        {
+                            "oai_identifier": e.context["oai"]["identifier"],
+                            "error": str(err),
+                        }
                     )
             identifiers.append(e.context["oai"]["identifier"])
         batch_data["status"] = status
@@ -132,7 +150,10 @@ class OAIWriter(BatchWriter):
             oai_rec = oai_records.get(e.context["oai"]["identifier"])
             if oai_rec and oai_rec.get("local_identifier"):
                 e.entry["id"] = oai_rec["local_identifier"]
-                if oai_rec["datestamp"] == e.context["oai"]["datestamp"]:
+                if (
+                    oai_rec["status"] == "O"
+                    and oai_rec["datestamp"] == e.context["oai"]["datestamp"]
+                ):
                     # do not save the item as it has the same datestamp
                     e.filtered = True
 
