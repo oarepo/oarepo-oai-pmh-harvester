@@ -5,7 +5,31 @@
   <dd>
     {{ data.code }}
   </dd>
+    <dt>{{ _('baseurl.label') }}</dt>
+  <dd>
+    {{ data.baseurl }}
+  </dd>
+ <dt>{{ _('metadataprefix.label') }}</dt>
+  <dd>
+    {{ data.metadataprefix }}
+  </dd>
 
+<dt>{{ _('setspecs.label') }}</dt>
+  <dd>
+    {{ data.setspecs }}
+  </dd>
+<dt>{{ _('writer.label') }}</dt>
+  <dd>
+    {{ data.writer }}
+  </dd>
+<dt>{{ _('max_records.label') }}</dt>
+  <dd>
+    {{ data.max_records }}
+  </dd>
+<dt>{{ _('batch_size.label') }}</dt>
+  <dd>
+    {{ data.batch_size }}
+  </dd>
   <dt>{{ _('loader.label') }}</dt>
   <dd>
     {{ data.loader }}
@@ -16,11 +40,18 @@
     <dd>
     <a href="/oairun/?q=&f=harvester_id%3A{{data.id}}&l=list&p=1&s=10&sort=newest">{{_('runs.label')}}</a>
   </dd>
+<dt>{{ _('comment.label') }}</dt>
+  <dd>
+    {{ data.comment }}
+  </dd>
   <dt>{{ _('transformers.label') }}</dt>
     <ul style="list-style-type: none;">
   {% for i in (data.transformers or []) %}
       <li>{{ i }}</li>
   {% endfor %}
     </ul>
+
+
 </dl>
+
 
