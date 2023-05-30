@@ -12,6 +12,7 @@ from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.uow import BulkUnitOfWork
+from oarepo_oaipmh_harvester.utils import get_error_item_from_exception
 
 
 class OAIWriter(BatchWriter):
@@ -42,7 +43,13 @@ class OAIWriter(BatchWriter):
                     # there is no access by id to batch entries
                     for entry in batch.entries:
                         if entry.entry["id"] in indexing_error_map:
-                            entry.errors.append(indexing_error_map[entry.entry["id"]]["index"]["error"])
+                            entry.errors.append(
+                                {
+                                    'error_type': 'indexer',
+                                    'error_message': 'indexer error',   # TODO: is it possible to have a better error message?
+                                    'error_info': indexing_error_map[entry.entry["id"]]["index"]["error"]
+                                }
+                            )
 
         with BulkUnitOfWork() as uow:
             with db.session.begin_nested():
@@ -116,10 +123,14 @@ class OAIWriter(BatchWriter):
             if e.errors:
                 status = "E"
                 for err in e.errors:
+                    err = {
+                        **err
+                    }
+                    err.pop('error_info', None)
                     errors.append(
                         {
                             "oai_identifier": e.context["oai"]["identifier"],
-                            "error": str(err),
+                            "error": err
                         }
                     )
             identifiers.append(e.context["oai"]["identifier"])
@@ -194,9 +205,8 @@ class OAIWriter(BatchWriter):
                 oai_rec["status"] = "E"
             elif e.filtered:
                 oai_rec["status"] = "S"
-            # TODO: warnings
             if e.errors:
-                oai_rec["errors"] = [str(x) for x in e.errors]
+                oai_rec["errors"] = e.errors
             elif "errors" in oai_rec:
                 del oai_rec["errors"]
             oai_rec["datestamp"] = e.context["oai"]["datestamp"]
@@ -234,14 +244,8 @@ class OAIWriter(BatchWriter):
                 for entry in deleted_entries:
                     try:
                         self.delete_entry(entry, uow)
-                    except WriterError as e:
-                        stack = "\n".join(traceback.format_stack())
-                        entry.errors.append(f"Writer {self.writer} error: {e}: {stack}")
                     except Exception as e:
-                        stack = "\n".join(traceback.format_stack())
-                        entry.errors.append(
-                            f"Writer {self.writer} unhandled error: {e}: {stack}"
-                        )
+                        entry.errors.append(get_error_item_from_exception(e))
         else:
             for entry in batch.entries:
                 if entry.ok:
@@ -251,14 +255,8 @@ class OAIWriter(BatchWriter):
                             deleted_entries.append(entry)
                         else:
                             persisted_entries.append(self.writer.write(entry, uow=uow))
-                    except WriterError as e:
-                        stack = traceback.format_exc()
-                        entry.errors.append(f"Writer {self.writer} error: {e}: {stack}")
                     except Exception as e:
-                        stack = traceback.format_exc()
-                        entry.errors.append(
-                            f"Writer {self.writer} unhandled error: {e}: {stack}"
-                        )
+                        entry.errors.append(get_error_item_from_exception(e))
                 else:
                     skipped_entries.append(entry)
         batch.entries = persisted_entries + skipped_entries + deleted_entries

@@ -10,6 +10,8 @@ from oarepo_runtime.datastreams import StreamEntry
 from oarepo_runtime.datastreams.errors import TransformerError
 from oarepo_runtime.datastreams.transformers import BatchTransformer, StreamBatch
 
+from oarepo_oaipmh_harvester.utils import get_error_item_from_exception
+
 
 class OAIRuleTransformer(BatchTransformer):
     def __init__(self, identity, **kwargs) -> None:
@@ -25,12 +27,8 @@ class OAIRuleTransformer(BatchTransformer):
             entry.processed = set()
             try:
                 self.transform(entry)
-            except TransformerError as e:
-                stack = "\n".join(traceback.format_stack())
-                entry.errors.append(f"Transformer error: {e}: {stack}")
             except Exception as e:
-                stack = "\n".join(traceback.format_stack())
-                entry.errors.append(f"Transformer unhandled error: {e}: {stack}")
+                entry.errors.append(get_error_item_from_exception(e))
 
         self.finish_transformation(batch.entries)
         return batch
