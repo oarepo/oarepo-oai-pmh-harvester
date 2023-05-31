@@ -7,7 +7,7 @@ class OAIBatchUIResourceConfig(RecordsUIResourceConfig):
     blueprint_name = "oai-batch-ui"
     ui_serializer_class = "oarepo_oaipmh_harvester.oai_batch.resources.records.ui.OaiBatchUIJSONSerializer"
     api_service = "oarepo-oaipmh-batch"
-    layout = "oarepo_oaipmh_harvester.oai_batch"
+    layout = "oarepo-oaipmh-batch"
 
     templates = {
         "detail": {

@@ -1,16 +1,13 @@
 import functools
 import itertools
 import json
-import traceback
 from abc import abstractmethod
 from collections import defaultdict
 from typing import List
 
-from oarepo_runtime.datastreams import StreamEntry
-from oarepo_runtime.datastreams.errors import TransformerError
+from oarepo_runtime.datastreams.datastreams import StreamEntry, StreamEntryError
 from oarepo_runtime.datastreams.transformers import BatchTransformer, StreamBatch
 
-from oarepo_oaipmh_harvester.utils import get_error_item_from_exception
 
 
 class OAIRuleTransformer(BatchTransformer):
@@ -28,7 +25,7 @@ class OAIRuleTransformer(BatchTransformer):
             try:
                 self.transform(entry)
             except Exception as e:
-                entry.errors.append(get_error_item_from_exception(e))
+                entry.errors.append(StreamEntryError.from_exception(e))
 
         self.finish_transformation(batch.entries)
         return batch

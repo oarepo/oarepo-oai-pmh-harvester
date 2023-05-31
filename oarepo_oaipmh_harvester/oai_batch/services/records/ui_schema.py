@@ -1,30 +1,44 @@
 import marshmallow as ma
 from marshmallow import fields as ma_fields
+from marshmallow import validate as ma_validate
 from oarepo_runtime.ui import marshmallow as l10n
 from oarepo_runtime.ui.marshmallow import InvenioUISchema
 
 
-class RunUISchema(ma.Schema):
-    """RunUISchema schema."""
+class OaiBatchUISchema(InvenioUISchema):
+    class Meta:
+        unknown = ma.RAISE
 
-    _id = ma_fields.String(data_key="id", attribute="id")
-    _version = ma_fields.String(data_key="@v", attribute="@v")
+    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
+
+    finished = l10n.LocalizedDateTime()
+
+    identifiers = ma_fields.List(ma_fields.String())
+
+    manual = ma_fields.Boolean()
+
+    run = ma_fields.Nested(lambda: RunUISchema())
+
+    started = l10n.LocalizedDateTime()
+
+    status = ma_fields.String(validate=[ma_validate.OneOf(["R", "O", "W", "E", "I"])])
 
 
 class ErrorsItemUISchema(ma.Schema):
-    """ErrorsItemUISchema schema."""
+    class Meta:
+        unknown = ma.RAISE
+
+    error_message = ma_fields.String()
+
+    error_type = ma_fields.String()
 
     oai_identifier = ma_fields.String()
-    error = ma_fields.String()
 
 
-class OaiBatchUISchema(InvenioUISchema):
-    """OaiBatchUISchema schema."""
+class RunUISchema(ma.Schema):
+    class Meta:
+        unknown = ma.RAISE
 
-    run = ma_fields.Nested(lambda: RunUISchema())
-    status = l10n.LocalizedEnum(value_prefix="oarepo_oaipmh_harvester.oai_batch")
-    identifiers = ma_fields.List(ma_fields.String())
-    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
-    started = l10n.LocalizedDateTime()
-    finished = l10n.LocalizedDateTime()
-    manual = ma_fields.Boolean()
+    _id = ma_fields.String(data_key="id", attribute="id")
+
+    _version = ma_fields.String(data_key="@v", attribute="@v")

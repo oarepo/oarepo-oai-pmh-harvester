@@ -2,8 +2,8 @@ import datetime
 import traceback
 
 from invenio_db import db
+from oarepo_runtime.datastreams.datastreams import StreamEntryError
 from oarepo_runtime.datastreams.config import DATASTREAMS_WRITERS, get_instance
-from oarepo_runtime.datastreams.errors import WriterError
 from oarepo_runtime.datastreams.writers import BatchWriter, StreamBatch
 from opensearchpy.helpers import BulkIndexError
 
@@ -12,7 +12,6 @@ from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.uow import BulkUnitOfWork
-from oarepo_oaipmh_harvester.utils import get_error_item_from_exception
 
 
 class OAIWriter(BatchWriter):
@@ -106,7 +105,7 @@ class OAIWriter(BatchWriter):
                     break
             if status != "R":
                 oai_run["status"] = status
-                oai_run["finished"] = datetime.datetime.utcnow().isoformat()
+                oai_run["finished"] = datetime.datetime.utcnow().isoformat() + "+00:00"
                 oai_run["duration"] = (
                     datetime.datetime.fromisoformat(oai_run["finished"])
                     - datetime.datetime.fromisoformat(oai_run["started"])
@@ -123,20 +122,18 @@ class OAIWriter(BatchWriter):
             if e.errors:
                 status = "E"
                 for err in e.errors:
-                    err = {
-                        **err
-                    }
+                    err = err.json
                     err.pop('error_info', None)
                     errors.append(
                         {
                             "oai_identifier": e.context["oai"]["identifier"],
-                            "error": err
+                            **err
                         }
                     )
             identifiers.append(e.context["oai"]["identifier"])
         batch_data["status"] = status
         batch_data["identifiers"] = identifiers
-        batch_data["finished"] = datetime.datetime.utcnow().isoformat()
+        batch_data["finished"] = datetime.datetime.utcnow().isoformat() + "+00:00"
         if errors:
             batch_data["errors"] = errors
         batch_service.update(self._identity, batch_id, batch_data, uow=uow)
@@ -206,7 +203,7 @@ class OAIWriter(BatchWriter):
             elif e.filtered:
                 oai_rec["status"] = "S"
             if e.errors:
-                oai_rec["errors"] = e.errors
+                oai_rec["errors"] = [err.json for err in e.errors]
             elif "errors" in oai_rec:
                 del oai_rec["errors"]
             oai_rec["datestamp"] = e.context["oai"]["datestamp"]
@@ -245,7 +242,7 @@ class OAIWriter(BatchWriter):
                     try:
                         self.delete_entry(entry, uow)
                     except Exception as e:
-                        entry.errors.append(get_error_item_from_exception(e))
+                        entry.errors.append(StreamEntryError.from_exception(e))
         else:
             for entry in batch.entries:
                 if entry.ok:
@@ -256,7 +253,7 @@ class OAIWriter(BatchWriter):
                         else:
                             persisted_entries.append(self.writer.write(entry, uow=uow))
                     except Exception as e:
-                        entry.errors.append(get_error_item_from_exception(e))
+                        entry.errors.append(StreamEntryError.from_exception(e))
                 else:
                     skipped_entries.append(entry)
         batch.entries = persisted_entries + skipped_entries + deleted_entries

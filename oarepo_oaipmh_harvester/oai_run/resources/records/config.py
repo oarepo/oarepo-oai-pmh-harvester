@@ -8,8 +8,8 @@ from oarepo_oaipmh_harvester.oai_run.resources.records.ui import OaiRunUIJSONSer
 class OaiRunResourceConfig(RecordResourceConfig):
     """OaiRunRecord resource config."""
 
-    blueprint_name = "OaiRun"
-    url_prefix = "/oarepo-oaipmh-harvester.oai-run/"
+    blueprint_name = "oarepo-oaipmh-run"
+    url_prefix = "/oarepo-oaipmh-harvester-oai-run/"
 
     @property
     def response_handlers(self):

@@ -11,7 +11,13 @@ from oarepo_oaipmh_harvester.oai_harvester.services.records.service import (
     OaiHarvesterService,
 )
 
-OAI_HARVESTER_RESOURCE_CONFIG_OAI_HARVESTER = OaiHarvesterResourceConfig
-OAI_HARVESTER_RESOURCE_CLASS_OAI_HARVESTER = OaiHarvesterResource
-OAI_HARVESTER_SERVICE_CONFIG_OAI_HARVESTER = OaiHarvesterServiceConfig
-OAI_HARVESTER_SERVICE_CLASS_OAI_HARVESTER = OaiHarvesterService
+OAI_HARVESTER_RECORD_RESOURCE_CONFIG = OaiHarvesterResourceConfig
+
+
+OAI_HARVESTER_RECORD_RESOURCE_CLASS = OaiHarvesterResource
+
+
+OAI_HARVESTER_RECORD_SERVICE_CONFIG = OaiHarvesterServiceConfig
+
+
+OAI_HARVESTER_RECORD_SERVICE_CLASS = OaiHarvesterService

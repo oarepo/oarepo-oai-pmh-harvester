@@ -1,13 +1,16 @@
-model:
+record:
   use: [ invenio ]
-  package: oarepo_oaipmh_harvester.oai_batch
-  flask-extension-name: oarepo-oaipmh-batch
-  record-service-config-components:
-    - invenio_records_resources.services.records.components.DataComponent
-  schema-server: 'local://'
+  module:
+    qualified: oarepo_oaipmh_harvester.oai_batch
+    alias: oarepo-oaipmh-batch
+  service-config:
+    components:
+      - invenio_records_resources.services.records.components.DataComponent
 
   properties:
     run:
+      label.cs: Běh harvestru
+      label.en: Harvester run
       type: relation
       model: oaipmh-run
       keys:
@@ -17,26 +20,58 @@ model:
       required: true
 
     status: 
-        type: keyword
-        enum: [ R, O, W, E, I ]
-        required: true
+      label.cs: Stav běhu
+      label.en: Status
+      enum.R.cs: Běží
+      enum.O.cs: Skončeno OK
+      enum.W.cs: Varování
+      enum.E.cs: Chyba
+      enum.I.cs: Přerušeno
+      enum.R.en: Running
+      enum.O.en: Finished
+      enum.W.en: Warning
+      enum.E.en: Error
+      enum.I.en: Interrupted
+      type: keyword
+      enum: [ R, O, W, E, I ]
+      required: true
     
     identifiers[]:
+      label.cs: OAI Identifikátory
+      label.en: OAI Identifiers
       type: keyword
 
     errors[]: 
+      label.cs: Chyby
+      label.en: Errors
       properties:
-        oai_identifier: keyword
-        error: fulltext+keyword
+        oai_identifier:
+          label.cs: OAI identifikátor
+          label.en: OAI identifier
+          type: keyword
+        error_type:
+          label.cs: Typ chyby
+          label.en: Error type
+          type: keyword
+        error_message:
+          label.cs: Chybová hodnota
+          label.en: Error message
+          type: fulltext+keyword
 
-    started: 
-        type: datetime
+    started:
+      label.cs: Začátek běhu
+      label.en: Start time
+      type: datetime
     
-    finished: 
-        type: datetime
+    finished:
+      label.cs: Konec běhu
+      label.en: End time
+      type: datetime
 
     manual:
-        type: boolean
+      label.cs: Manuálně spuštěno?
+      label.en: Manual?
+      type: boolean
 
   plugins:
     builder:
@@ -48,3 +83,7 @@ model:
   permissions:
     presets:
     - oai_harvester
+
+settings:
+  schema-server: 'local://'
+  i18n-languages: ['cs', 'en']

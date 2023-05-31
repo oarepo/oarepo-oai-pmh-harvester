@@ -1,14 +1,18 @@
-model:
+record:
   use: [ invenio ]
-  package: oarepo_oaipmh_harvester.oai_record
-  flask-extension-name: oarepo-oaipmh-record
-  record-service-config-components:
-    - invenio_records_resources.services.records.components.DataComponent
-  schema-server: 'local://'
-  record-class: oarepo_oaipmh_harvester.oai_record.records.api.OaiRecord
+  module:
+    qualified: oarepo_oaipmh_harvester.oai_record
+    alias: oarepo-oaipmh-record
+  service-config:
+    components:
+      - invenio_records_resources.services.records.components.DataComponent
+  record:
+    class: oarepo_oaipmh_harvester.oai_record.records.api.OaiRecord
 
   properties:
     batch: 
+      label.cs: Dávka záznamu
+      label.en: Harvester batch
       # batch in which the record has been modified the last time
       type: relation
       model: oaipmh-batch
@@ -19,6 +23,8 @@ model:
       required: true
 
     harvester:
+      label.cs: Harvestr záznamu
+      label.en: Harvester
       type: relation
       model: oaipmh-harvester
       keys:
@@ -28,32 +34,62 @@ model:
       required: true
 
     local_identifier:
+      label.cs: Místní PID
+      label.en: Local PID
       type: keyword
     
     oai_identifier:
-        type: keyword
+      label.cs: Cizí OAI identifikátor
+      label.en: Remote OAI identifier
+      type: keyword
 
     datestamp:
+      label.cs: OAI datum
+      label.en: OAI date
       type: datetime
 
     status: 
-        # O: ok, W: warning, S: skipped, E: error
-        type: keyword
-        enum: [ O, W, E, S ]
+      label.cs: Stav zpracování
+      label.en: Processing State
+      enum.O.cs: Skončeno OK
+      enum.W.cs: Varování
+      enum.E.cs: Chyba
+      enum.S.cs: Přeskočeno
+      enum.O.en: Finished
+      enum.W.en: Warning
+      enum.E.en: Error
+      enum.S.en: Skipped
+      type: keyword
+      enum: [ O, W, E, S ]
     
     warnings[]: 
-        type: fulltext+keyword
+      ^label.cs: Varování
+      ^label.en: Warnings
+      type: fulltext+keyword
     
-    errors[]: 
-        type: fulltext+keyword
+    errors[]:
+      ^label.cs: Chyby zpracování
+      ^label.en: Processing errors
+      type: object
+      properties:
+        error_type: keyword
+        error_message: fulltext+keyword
+        error_info: fulltext
+
 
     entry:
+      label.cs: Položka
+      label.en: Entry
       type: flattened
 
     context:
+      label.cs: Kontext
+      label.en: Context
       type: flattened
 
     manual:
+      label.cs: Ručně vyžádána
+      label.en: Initiated manually
       type: boolean
 
   plugins:
@@ -66,3 +102,7 @@ model:
   permissions:
     presets:
     - oai_harvester
+
+settings:
+  schema-server: 'local://'
+  i18n-languages: ['cs', 'en']

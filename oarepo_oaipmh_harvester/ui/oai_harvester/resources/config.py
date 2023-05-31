@@ -7,7 +7,7 @@ class OAIHarvesterUIResourceConfig(RecordsUIResourceConfig):
     blueprint_name = "oai-harvester-ui"
     ui_serializer_class = "oarepo_oaipmh_harvester.oai_harvester.resources.records.ui.OaiHarvesterUIJSONSerializer"
     api_service = "oarepo-oaipmh-harvester"
-    layout = "oarepo_oaipmh_harvester.oai_harvester"
+    layout = "oarepo-oaipmh-harvester"
 
     templates = {
         "detail": {

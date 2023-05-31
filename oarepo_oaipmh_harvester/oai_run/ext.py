@@ -4,8 +4,6 @@ from oarepo_oaipmh_harvester.oai_run import config as config
 
 
 class OaiRunExt:
-    """oarepo_oaipmh_harvester.oai_run extension."""
-
     def __init__(self, app=None):
         """Extension initialization."""
         self.resource = None
@@ -27,12 +25,14 @@ class OaiRunExt:
 
     def init_resource(self, app):
         """Initialize vocabulary resources."""
-        self.service = app.config["OAI_RUN_SERVICE_CLASS_OAI_RUN"](
-            config=app.config["OAI_RUN_SERVICE_CONFIG_OAI_RUN"](),
+
+        self.service = app.config["OAI_RUN_RECORD_SERVICE_CLASS"](
+            config=app.config["OAI_RUN_RECORD_SERVICE_CONFIG"](),
         )
-        self.resource = app.config["OAI_RUN_RESOURCE_CLASS_OAI_RUN"](
+
+        self.resource = app.config["OAI_RUN_RECORD_RESOURCE_CLASS"](
             service=self.service,
-            config=app.config["OAI_RUN_RESOURCE_CONFIG_OAI_RUN"](),
+            config=app.config["OAI_RUN_RECORD_RESOURCE_CONFIG"](),
         )
 
     def init_config(self, app):

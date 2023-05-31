@@ -7,21 +7,22 @@ class OaiRecordSearchOptions(InvenioSearchOptions):
     """OaiRecord search options."""
 
     facets = {
+        "_schema": facets._schema,
         "batch_id": facets.batch_id,
         "batch__version": facets.batch__version,
+        "created": facets.created,
+        "datestamp": facets.datestamp,
+        "errors_error_message": facets.errors_error_message,
+        "errors_error_type": facets.errors_error_type,
         "harvester_id": facets.harvester_id,
         "harvester__version": facets.harvester__version,
-        "local_identifier": facets.local_identifier,
-        "oai_identifier": facets.oai_identifier,
-        "datestamp": facets.datestamp,
-        "status": facets.status,
-        "warnings_keyword": facets.warnings_keyword,
-        "errors_keyword": facets.errors_keyword,
-        "manual": facets.manual,
         "_id": facets._id,
-        "created": facets.created,
+        "local_identifier": facets.local_identifier,
+        "manual": facets.manual,
+        "oai_identifier": facets.oai_identifier,
+        "status": facets.status,
         "updated": facets.updated,
-        "_schema": facets._schema,
+        "warnings": facets.warnings,
     }
     sort_options = {
         **InvenioSearchOptions.sort_options,

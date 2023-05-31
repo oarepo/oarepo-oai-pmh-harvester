@@ -2,16 +2,70 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-05-12T13:59:03.670807\n"
-"PO-Revision-Date: 2023-05-12T13:59:03.670810\n"
+"POT-Creation-Date: 2023-05-31T10:49:27.258881\n"
+"PO-Revision-Date: 2023-05-31T10:49:27.258882\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "harvester.help"
+msgid "$schema.help"
+msgstr ""
+
+msgid "$schema.label"
+msgstr ""
+
+msgid "$schema.hint"
+msgstr ""
+
+msgid "batches.label"
+msgstr ""
+
+msgid "batches.help"
+msgstr ""
+
+msgid "batches.hint"
+msgstr ""
+
+msgid "created.help"
+msgstr ""
+
+msgid "created.label"
+msgstr ""
+
+msgid "created.hint"
+msgstr ""
+
+msgid "duration.label"
+msgstr ""
+
+msgid "duration.help"
+msgstr ""
+
+msgid "duration.hint"
+msgstr ""
+
+msgid "error.label"
+msgstr ""
+
+msgid "error.help"
+msgstr ""
+
+msgid "error.hint"
+msgstr ""
+
+msgid "finished.label"
+msgstr ""
+
+msgid "finished.help"
+msgstr ""
+
+msgid "finished.hint"
 msgstr ""
 
 msgid "harvester.label"
+msgstr ""
+
+msgid "harvester.help"
 msgstr ""
 
 msgid "harvester.hint"
@@ -35,139 +89,43 @@ msgstr ""
 msgid "harvester/code.hint"
 msgstr ""
 
-msgid "harvester/baseurl.help"
+msgid "harvester/@v.help"
 msgstr ""
 
-msgid "harvester/baseurl.label"
+msgid "harvester/@v.label"
 msgstr ""
 
-msgid "harvester/baseurl.hint"
+msgid "harvester/@v.hint"
 msgstr ""
 
-msgid "harvester/metadataprefix.help"
+msgid "id.help"
 msgstr ""
 
-msgid "harvester/metadataprefix.label"
+msgid "id.label"
 msgstr ""
 
-msgid "harvester/metadataprefix.hint"
+msgid "id.hint"
 msgstr ""
 
-msgid "harvester/comment.help"
+msgid "manual.label"
 msgstr ""
 
-msgid "harvester/comment.label"
+msgid "manual.help"
 msgstr ""
 
-msgid "harvester/comment.hint"
+msgid "manual.hint"
 msgstr ""
 
-msgid "harvester/name.help"
+msgid "started.label"
 msgstr ""
 
-msgid "harvester/name.label"
+msgid "started.help"
 msgstr ""
 
-msgid "harvester/name.hint"
-msgstr ""
-
-msgid "harvester/setspecs.help"
-msgstr ""
-
-msgid "harvester/setspecs.label"
-msgstr ""
-
-msgid "harvester/setspecs.hint"
-msgstr ""
-
-msgid "harvester/loader.help"
-msgstr ""
-
-msgid "harvester/loader.label"
-msgstr ""
-
-msgid "harvester/loader.hint"
-msgstr ""
-
-msgid "harvester/transformers.help"
-msgstr ""
-
-msgid "harvester/transformers.label"
-msgstr ""
-
-msgid "harvester/transformers.hint"
-msgstr ""
-
-msgid "harvester/writer.help"
-msgstr ""
-
-msgid "harvester/writer.label"
-msgstr ""
-
-msgid "harvester/writer.hint"
-msgstr ""
-
-msgid "harvester/max_records.help"
-msgstr ""
-
-msgid "harvester/max_records.label"
-msgstr ""
-
-msgid "harvester/max_records.hint"
-msgstr ""
-
-msgid "harvester/batch_size.help"
-msgstr ""
-
-msgid "harvester/batch_size.label"
-msgstr ""
-
-msgid "harvester/batch_size.hint"
-msgstr ""
-
-msgid "harvester/created.help"
-msgstr ""
-
-msgid "harvester/created.label"
-msgstr ""
-
-msgid "harvester/created.hint"
-msgstr ""
-
-msgid "harvester/updated.help"
-msgstr ""
-
-msgid "harvester/updated.label"
-msgstr ""
-
-msgid "harvester/updated.hint"
-msgstr ""
-
-msgid "harvester/$schema.help"
-msgstr ""
-
-msgid "harvester/$schema.label"
-msgstr ""
-
-msgid "harvester/$schema.hint"
-msgstr ""
-
-msgid "batches.help"
-msgstr ""
-
-msgid "batches.label"
-msgstr ""
-
-msgid "batches.hint"
-msgstr ""
-
-msgid "status.help"
+msgid "started.hint"
 msgstr ""
 
 msgid "status.label"
-msgstr ""
-
-msgid "status.hint"
 msgstr ""
 
 msgid "status.enum.R"
@@ -185,76 +143,10 @@ msgstr ""
 msgid "status.enum.I"
 msgstr ""
 
-msgid "warning.help"
+msgid "status.help"
 msgstr ""
 
-msgid "warning.label"
-msgstr ""
-
-msgid "warning.hint"
-msgstr ""
-
-msgid "error.help"
-msgstr ""
-
-msgid "error.label"
-msgstr ""
-
-msgid "error.hint"
-msgstr ""
-
-msgid "started.help"
-msgstr ""
-
-msgid "started.label"
-msgstr ""
-
-msgid "started.hint"
-msgstr ""
-
-msgid "finished.help"
-msgstr ""
-
-msgid "finished.label"
-msgstr ""
-
-msgid "finished.hint"
-msgstr ""
-
-msgid "duration.help"
-msgstr ""
-
-msgid "duration.label"
-msgstr ""
-
-msgid "duration.hint"
-msgstr ""
-
-msgid "manual.help"
-msgstr ""
-
-msgid "manual.label"
-msgstr ""
-
-msgid "manual.hint"
-msgstr ""
-
-msgid "id.help"
-msgstr ""
-
-msgid "id.label"
-msgstr ""
-
-msgid "id.hint"
-msgstr ""
-
-msgid "created.help"
-msgstr ""
-
-msgid "created.label"
-msgstr ""
-
-msgid "created.hint"
+msgid "status.hint"
 msgstr ""
 
 msgid "updated.help"
@@ -266,11 +158,11 @@ msgstr ""
 msgid "updated.hint"
 msgstr ""
 
-msgid "$schema.help"
+msgid "warning.label"
 msgstr ""
 
-msgid "$schema.label"
+msgid "warning.help"
 msgstr ""
 
-msgid "$schema.hint"
+msgid "warning.hint"
 msgstr ""

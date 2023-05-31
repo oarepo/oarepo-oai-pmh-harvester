@@ -10,8 +10,8 @@ from oarepo_oaipmh_harvester.oai_batch.resources.records.ui import (
 class OaiBatchResourceConfig(RecordResourceConfig):
     """OaiBatchRecord resource config."""
 
-    blueprint_name = "OaiBatch"
-    url_prefix = "/oarepo-oaipmh-harvester.oai-batch/"
+    blueprint_name = "oarepo-oaipmh-batch"
+    url_prefix = "/oarepo-oaipmh-harvester-oai-batch/"
 
     @property
     def response_handlers(self):

@@ -22,7 +22,7 @@ class OAIBatchTransformer(BatchTransformer):
                 "run": {"id": self.oai_run},
                 "status": "R",
                 "identifiers": [x.context["oai"]["identifier"] for x in batch.entries],
-                "started": datetime.datetime.utcnow().isoformat(),
+                "started": datetime.datetime.utcnow().isoformat() + "+00:00",
                 "manual": self.manual,
             },
         )

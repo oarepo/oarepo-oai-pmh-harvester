@@ -72,10 +72,10 @@ def harvest(
     run = run_service.create(
         system_identity,
         {
-            "harvester": harvester,
+            "harvester": {'id': harvester['id']},
             "status": "R",
             "batches": 0,
-            "started": datetime.datetime.utcnow().isoformat(),
+            "started": datetime.datetime.utcnow().isoformat() + "+00:00",
             "manual": run_manual,
         },
     )

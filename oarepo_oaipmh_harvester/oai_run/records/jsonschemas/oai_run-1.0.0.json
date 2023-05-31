@@ -1,6 +1,26 @@
 {
     "type": "object",
     "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "batches": {
+            "type": "integer"
+        },
+        "created": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "duration": {
+            "type": "number"
+        },
+        "error": {
+            "type": "string"
+        },
+        "finished": {
+            "type": "string",
+            "format": "date-time"
+        },
         "harvester": {
             "type": "object",
             "properties": {
@@ -10,97 +30,29 @@
                 "code": {
                     "type": "string"
                 },
-                "baseurl": {
-                    "type": "string"
-                },
-                "metadataprefix": {
-                    "type": "string"
-                },
-                "comment": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "setspecs": {
-                    "type": "string"
-                },
-                "loader": {
-                    "type": "string"
-                },
-                "transformers": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "writer": {
-                    "type": "string"
-                },
-                "max_records": {
-                    "type": "integer"
-                },
-                "batch_size": {
-                    "type": "integer"
-                },
-                "created": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "updated": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "$schema": {
+                "@v": {
                     "type": "string"
                 }
             }
         },
-        "batches": {
-            "type": "integer"
-        },
-        "status": {
-            "type": "string",
-            "enum": [
-                "R",
-                "O",
-                "W",
-                "E",
-                "I"
-            ]
-        },
-        "warning": {
+        "id": {
             "type": "string"
         },
-        "error": {
-            "type": "string"
+        "manual": {
+            "type": "boolean"
         },
         "started": {
             "type": "string",
             "format": "date-time"
         },
-        "finished": {
-            "type": "string",
-            "format": "date-time"
-        },
-        "duration": {
-            "type": "number"
-        },
-        "manual": {
-            "type": "boolean"
-        },
-        "id": {
+        "status": {
             "type": "string"
-        },
-        "created": {
-            "type": "string",
-            "format": "date-time"
         },
         "updated": {
             "type": "string",
             "format": "date-time"
         },
-        "$schema": {
+        "warning": {
             "type": "string"
         }
     }

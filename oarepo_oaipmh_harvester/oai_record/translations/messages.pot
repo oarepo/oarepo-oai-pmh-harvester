@@ -2,16 +2,25 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-05-12T13:59:18.864015\n"
-"PO-Revision-Date: 2023-05-12T13:59:18.864018\n"
+"POT-Creation-Date: 2023-05-31T10:49:37.090675\n"
+"PO-Revision-Date: 2023-05-31T10:49:37.090676\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "batch.help"
+msgid "$schema.help"
+msgstr ""
+
+msgid "$schema.label"
+msgstr ""
+
+msgid "$schema.hint"
 msgstr ""
 
 msgid "batch.label"
+msgstr ""
+
+msgid "batch.help"
 msgstr ""
 
 msgid "batch.hint"
@@ -35,10 +44,82 @@ msgstr ""
 msgid "batch/@v.hint"
 msgstr ""
 
-msgid "harvester.help"
+msgid "context.label"
+msgstr ""
+
+msgid "context.help"
+msgstr ""
+
+msgid "context.hint"
+msgstr ""
+
+msgid "created.help"
+msgstr ""
+
+msgid "created.label"
+msgstr ""
+
+msgid "created.hint"
+msgstr ""
+
+msgid "datestamp.label"
+msgstr ""
+
+msgid "datestamp.help"
+msgstr ""
+
+msgid "datestamp.hint"
+msgstr ""
+
+msgid "entry.label"
+msgstr ""
+
+msgid "entry.help"
+msgstr ""
+
+msgid "entry.hint"
+msgstr ""
+
+msgid "errors.label"
+msgstr ""
+
+msgid "errors.help"
+msgstr ""
+
+msgid "errors.hint"
+msgstr ""
+
+msgid "errors/error_info.help"
+msgstr ""
+
+msgid "errors/error_info.label"
+msgstr ""
+
+msgid "errors/error_info.hint"
+msgstr ""
+
+msgid "errors/error_message.help"
+msgstr ""
+
+msgid "errors/error_message.label"
+msgstr ""
+
+msgid "errors/error_message.hint"
+msgstr ""
+
+msgid "errors/error_type.help"
+msgstr ""
+
+msgid "errors/error_type.label"
+msgstr ""
+
+msgid "errors/error_type.hint"
 msgstr ""
 
 msgid "harvester.label"
+msgstr ""
+
+msgid "harvester.help"
 msgstr ""
 
 msgid "harvester.hint"
@@ -62,40 +143,43 @@ msgstr ""
 msgid "harvester/@v.hint"
 msgstr ""
 
-msgid "local_identifier.help"
+msgid "id.help"
+msgstr ""
+
+msgid "id.label"
+msgstr ""
+
+msgid "id.hint"
 msgstr ""
 
 msgid "local_identifier.label"
 msgstr ""
 
+msgid "local_identifier.help"
+msgstr ""
+
 msgid "local_identifier.hint"
 msgstr ""
 
-msgid "oai_identifier.help"
+msgid "manual.label"
+msgstr ""
+
+msgid "manual.help"
+msgstr ""
+
+msgid "manual.hint"
 msgstr ""
 
 msgid "oai_identifier.label"
 msgstr ""
 
+msgid "oai_identifier.help"
+msgstr ""
+
 msgid "oai_identifier.hint"
 msgstr ""
 
-msgid "datestamp.help"
-msgstr ""
-
-msgid "datestamp.label"
-msgstr ""
-
-msgid "datestamp.hint"
-msgstr ""
-
-msgid "status.help"
-msgstr ""
-
 msgid "status.label"
-msgstr ""
-
-msgid "status.hint"
 msgstr ""
 
 msgid "status.enum.O"
@@ -110,67 +194,10 @@ msgstr ""
 msgid "status.enum.S"
 msgstr ""
 
-msgid "warnings.help"
+msgid "status.help"
 msgstr ""
 
-msgid "warnings.label"
-msgstr ""
-
-msgid "warnings.hint"
-msgstr ""
-
-msgid "errors.help"
-msgstr ""
-
-msgid "errors.label"
-msgstr ""
-
-msgid "errors.hint"
-msgstr ""
-
-msgid "entry.help"
-msgstr ""
-
-msgid "entry.label"
-msgstr ""
-
-msgid "entry.hint"
-msgstr ""
-
-msgid "context.help"
-msgstr ""
-
-msgid "context.label"
-msgstr ""
-
-msgid "context.hint"
-msgstr ""
-
-msgid "manual.help"
-msgstr ""
-
-msgid "manual.label"
-msgstr ""
-
-msgid "manual.hint"
-msgstr ""
-
-msgid "id.help"
-msgstr ""
-
-msgid "id.label"
-msgstr ""
-
-msgid "id.hint"
-msgstr ""
-
-msgid "created.help"
-msgstr ""
-
-msgid "created.label"
-msgstr ""
-
-msgid "created.hint"
+msgid "status.hint"
 msgstr ""
 
 msgid "updated.help"
@@ -182,11 +209,11 @@ msgstr ""
 msgid "updated.hint"
 msgstr ""
 
-msgid "$schema.help"
+msgid "warnings.label"
 msgstr ""
 
-msgid "$schema.label"
+msgid "warnings.help"
 msgstr ""
 
-msgid "$schema.hint"
+msgid "warnings.hint"
 msgstr ""

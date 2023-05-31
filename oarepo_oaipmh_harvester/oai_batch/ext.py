@@ -4,8 +4,6 @@ from oarepo_oaipmh_harvester.oai_batch import config as config
 
 
 class OaiBatchExt:
-    """oarepo_oaipmh_harvester.oai_batch extension."""
-
     def __init__(self, app=None):
         """Extension initialization."""
         self.resource = None
@@ -27,12 +25,14 @@ class OaiBatchExt:
 
     def init_resource(self, app):
         """Initialize vocabulary resources."""
-        self.service = app.config["OAI_BATCH_SERVICE_CLASS_OAI_BATCH"](
-            config=app.config["OAI_BATCH_SERVICE_CONFIG_OAI_BATCH"](),
+
+        self.service = app.config["OAI_BATCH_RECORD_SERVICE_CLASS"](
+            config=app.config["OAI_BATCH_RECORD_SERVICE_CONFIG"](),
         )
-        self.resource = app.config["OAI_BATCH_RESOURCE_CLASS_OAI_BATCH"](
+
+        self.resource = app.config["OAI_BATCH_RECORD_RESOURCE_CLASS"](
             service=self.service,
-            config=app.config["OAI_BATCH_RESOURCE_CONFIG_OAI_BATCH"](),
+            config=app.config["OAI_BATCH_RECORD_RESOURCE_CONFIG"](),
         )
 
     def init_config(self, app):

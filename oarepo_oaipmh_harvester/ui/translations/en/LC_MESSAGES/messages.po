@@ -1,0 +1,37 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2023-05-31T10:49:37.090661\n"
+"PO-Revision-Date: 2023-05-31 12:10+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.1\n"
+
+msgid "runs_harvester.label"
+msgstr "Harvester runs"
+
+msgid "runs_link.label"
+msgstr "List runs"
+
+msgid "batches_run.label"
+msgstr "Run batches"
+
+msgid "batches_link.label"
+msgstr "List batches"
+
+msgid "records_batch.label"
+msgstr "Batch records"
+
+msgid "records_link.label"
+msgstr "List records"
+
+msgid "record_data.label"
+msgstr "Imported record"
+
+msgid "record_link.label"
+msgstr "Show record"

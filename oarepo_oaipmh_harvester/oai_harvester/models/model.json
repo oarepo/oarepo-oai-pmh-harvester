@@ -1,15 +1,56 @@
 {
     "model": {
-        "type": "object",
-        "pid-field-provider": "RecordIdProviderV2",
+        "marshmallow": {
+            "imports": [
+                {
+                    "import": "oarepo_runtime.marshmallow.BaseRecordSchema"
+                }
+            ],
+            "base-classes": [
+                "BaseRecordSchema"
+            ],
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema.OaiHarvesterSchema",
+            "extra-code": ""
+        },
+        "ui": {
+            "marshmallow": {
+                "imports": [
+                    {
+                        "import": "oarepo_runtime.ui.marshmallow.InvenioUISchema"
+                    }
+                ],
+                "base-classes": [
+                    "InvenioUISchema"
+                ],
+                "generate": true,
+                "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.ui_schema",
+                "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.ui_schema.OaiHarvesterUISchema",
+                "extra-code": ""
+            },
+            "module": "oarepo_oaipmh_harvester.oai_harvester.models",
+            "file": "oarepo_oaipmh_harvester/oai_harvester/models/ui.json",
+            "alias": "oarepo-oaipmh-harvester"
+        },
+        "type": "model",
         "permissions": {
             "presets": [
                 "oai_harvester"
+            ],
+            "generate": true,
+            "extra-code": "",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.permissions",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.permissions.OaiHarvesterPermissionPolicy",
+            "base-classes": [
+                "RecordPermissionPolicy"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_permissions.RecordPermissionPolicy"
+                }
             ]
         },
-        "record-pid-provider-class": "oarepo_oaipmh_harvester.oai_harvester.records.api.OaiHarvesterIdProvider",
-        "invenio-record-metadata-extra-code": "",
-        "flask-commands-setup-cfg": "oai_harvester",
         "plugins": {
             "builder": {
                 "disable": [
@@ -20,441 +61,418 @@
                 ]
             }
         },
-        "config-resource-class-key": "OAI_HARVESTER_RESOURCE_CLASS_OAI_HARVESTER",
-        "record-dumper-class": "oarepo_oaipmh_harvester.oai_harvester.records.dumper.OaiHarvesterDumper",
-        "record-schema-metadata-setup-cfg": "oai_harvester",
-        "config-resource-config-key": "OAI_HARVESTER_RESOURCE_CONFIG_OAI_HARVESTER",
-        "invenio-version-extra-code": "",
-        "record-jsonschemas-setup-cfg": "oai_harvester",
-        "ui-layout": "oarepo_oaipmh_harvester/oai_harvester/models/ui.json",
-        "jsonschemas-package": "oarepo_oaipmh_harvester.oai_harvester.records.jsonschemas",
-        "config-service-class-key": "OAI_HARVESTER_SERVICE_CLASS_OAI_HARVESTER",
-        "mapping-file": "oarepo_oaipmh_harvester/oai_harvester/records/mappings/os-v2/oai_harvester/oai_harvester-1.0.0.json",
-        "record-schema-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema.OaiHarvesterSchema",
-        "record-search-options-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.search.OaiHarvesterSearchOptions",
-        "generate-record-pid-field": true,
-        "config-dummy-class": "oarepo_oaipmh_harvester.oai_harvester.config.DummyClass",
-        "package-base-upper": "OAI_HARVESTER",
-        "record-ui-schema-metadata-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.ui_schema.OaiHarvesterMetadataUISchema",
-        "pid-field-args": [
-            "create=True"
-        ],
-        "record-prefix-snake": "oai_harvester",
-        "proxies-current-resource": "oarepo_oaipmh_harvester.oai_harvester.proxies.current_resource",
-        "proxies-current-service": "oarepo_oaipmh_harvester.oai_harvester.proxies.current_service",
-        "invenio-record-search-options-extra-code": "",
-        "profile-package": "records",
-        "invenio-record-extra-code": "",
-        "config-resource-register-blueprint-key": "OAI_HARVESTER_REGISTER_BLUEPRINT",
-        "ext-class": "oarepo_oaipmh_harvester.oai_harvester.ext.OaiHarvesterExt",
-        "record-metadata-bases": [
-            "invenio_records.models.RecordMetadataBase"
-        ],
-        "record-records-package": "oarepo_oaipmh_harvester.oai_harvester.records",
-        "invenio-config-extra-code": "",
-        "extension-suffix": "oai_harvester",
-        "schema-version": "1.0.0",
-        "translations-setup-cfg": "oarepo_oaipmh_harvester.oai_harvester",
-        "record-ui-serializer-class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.ui.OaiHarvesterUIJSONSerializer",
-        "ui": {
-            "marshmallow": {
-                "base-classes": [
-                    "InvenioUISchema"
-                ],
-                "schema-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.ui_schema.OaiHarvesterUISchema",
-                "generate": true,
-                "imports": [
-                    {
-                        "import": "oarepo_runtime.ui.marshmallow.InvenioUISchema"
-                    }
-                ]
-            }
+        "searchable": true,
+        "module": {
+            "alias": "oarepo-oaipmh-harvester",
+            "qualified": "oarepo_oaipmh_harvester.oai_harvester",
+            "path": "oarepo_oaipmh_harvester/oai_harvester",
+            "base": "oai_harvester",
+            "base-upper": "OAI_HARVESTER",
+            "kebab-module": "oarepo-oaipmh-harvester-oai-harvester",
+            "prefix": "OaiHarvester",
+            "prefix-upper": "OAIHARVESTER",
+            "prefix-snake": "oai_harvester",
+            "suffix": "oai_harvester",
+            "suffix-upper": "OAI_HARVESTER",
+            "suffix-snake": "oai_harvester"
         },
-        "schema-name": "oai_harvester-1.0.0.json",
-        "invenio-views-extra-code": "",
-        "schema-file": "oarepo_oaipmh_harvester/oai_harvester/records/jsonschemas/oai_harvester-1.0.0.json",
-        "record-service-config-components": [
-            "invenio_records_resources.services.records.components.DataComponent",
-            "oarepo_runtime.relations.components.CachingRelationsComponent"
-        ],
-        "invenio-record-dumper-extra-code": "",
-        "pid-field-context": "PIDFieldContext",
-        "record-service-config-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.config.OaiHarvesterServiceConfig",
-        "kebap-package": "oarepo-oaipmh-harvester.oai-harvester",
-        "model-name": "oai_harvester",
-        "marshmallow": {
-            "base-classes": [
-                "InvenioBaseRecordSchema"
+        "service-config": {
+            "components": [
+                "invenio_records_resources.services.records.components.DataComponent",
+                "DataComponent"
             ],
-            "schema-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema.OaiHarvesterSchema",
+            "generate": true,
+            "config-key": "OAI_HARVESTER_RECORD_SERVICE_CONFIG",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.config",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.config.OaiHarvesterServiceConfig",
+            "extra-code": "",
+            "service-id": "oarepo-oaipmh-harvester",
+            "base-classes": [
+                "PermissionsPresetsConfigMixin",
+                "InvenioRecordServiceConfig"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_resources.services.RecordServiceConfig",
+                    "alias": "InvenioRecordServiceConfig"
+                },
+                {
+                    "import": "oarepo_runtime.config.service.PermissionsPresetsConfigMixin"
+                },
+                {
+                    "import": "invenio_records_resources.services.records.components.DataComponent"
+                }
+            ]
+        },
+        "sample": {
+            "file": "data/sample_data.yaml"
+        },
+        "model-name": "Oai_Harvester",
+        "search-options": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.search",
+            "extra-code": "",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.search.OaiHarvesterSearchOptions",
+            "base-classes": [
+                "InvenioSearchOptions"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_resources.services.SearchOptions",
+                    "alias": "InvenioSearchOptions"
+                }
+            ]
+        },
+        "config": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.config",
+            "extra_code": "",
+            "imports": []
+        },
+        "ext": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.ext",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.ext.OaiHarvesterExt",
+            "base-classes": [],
+            "extra_code": "",
+            "alias": "oarepo-oaipmh-harvester",
+            "imports": []
+        },
+        "api-blueprint": {
+            "generate": true,
+            "alias": "oarepo-oaipmh-harvester",
+            "extra_code": "",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.views.records.api",
+            "function": "oarepo_oaipmh_harvester.oai_harvester.views.records.api.create_api_blueprint",
+            "imports": []
+        },
+        "app-blueprint": {
+            "generate": true,
+            "alias": "oarepo-oaipmh-harvester",
+            "extra_code": "",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.views.records.app",
+            "function": "oarepo_oaipmh_harvester.oai_harvester.views.records.app.create_app_blueprint",
+            "imports": []
+        },
+        "facets": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.facets",
+            "extra-code": ""
+        },
+        "record": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.records.api",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.records.api.OaiHarvesterRecord",
+            "base-classes": [
+                "InvenioRecord"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_resources.records.api.Record",
+                    "alias": "InvenioRecord"
+                }
+            ],
+            "extra-code": ""
+        },
+        "resource": {
+            "generate": true,
+            "config-key": "OAI_HARVESTER_RECORD_RESOURCE_CLASS",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.resources.records.resource",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.resource.OaiHarvesterResource",
+            "proxy": "current_resource",
+            "extra-code": "",
+            "base-classes": [
+                "RecordResource"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_resources.resources.RecordResource"
+                }
+            ]
+        },
+        "resource-config": {
+            "generate": true,
+            "base-url": "/oarepo-oaipmh-harvester-oai-harvester/",
+            "config-key": "OAI_HARVESTER_RECORD_RESOURCE_CONFIG",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.resources.records.config",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.config.OaiHarvesterResourceConfig",
+            "extra-code": "",
+            "base-classes": [
+                "RecordResourceConfig"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_resources.resources.RecordResourceConfig"
+                }
+            ]
+        },
+        "saved-model": {
+            "file": "oarepo_oaipmh_harvester/oai_harvester/models/model.json",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.models",
+            "alias": "oarepo-oaipmh-harvester"
+        },
+        "proxy": {
+            "module": "oarepo_oaipmh_harvester.oai_harvester.proxies",
             "generate": true
         },
-        "pid-type": "_hrstr",
-        "record-resources-package": "oarepo_oaipmh_harvester.oai_harvester.resources.records",
-        "record-service-config-generate-links": true,
-        "record-mapping-setup-cfg": "oai_harvester",
-        "service-id": "oarepo-oaipmh-harvester",
-        "invenio-record-schema-extra-code": "",
-        "cli-function": "oarepo_oaipmh_harvester.oai_harvester.cli.group",
-        "record-resource-blueprint-name": "OaiHarvester",
-        "invenio-ext-extra-code": "",
-        "saved-model-file": "oarepo_oaipmh_harvester/oai_harvester/models/model.json",
-        "invenio-record-resource-extra-code": "",
-        "record-service-config-bases": [
-            "invenio_records_resources.services.RecordServiceConfig"
-        ],
-        "invenio-record-service-config-extra-code": "",
-        "record-metadata-class": "oarepo_oaipmh_harvester.oai_harvester.records.models.OaiHarvesterMetadata",
-        "pid-field-cls": "PIDField",
-        "record-services-package": "oarepo_oaipmh_harvester.oai_harvester.services.records",
-        "invenio-record-resource-config-extra-code": "",
-        "invenio-proxies-extra-code": "",
-        "record-resource-class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.resource.OaiHarvesterResource",
-        "record-class": "oarepo_oaipmh_harvester.oai_harvester.records.api.OaiHarvesterRecord",
-        "invenio-record-service-extra-code": "",
-        "package": "oarepo_oaipmh_harvester.oai_harvester",
-        "record-permissions-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.permissions.OaiHarvesterPermissionPolicy",
-        "collection-url": "/oarepo-oaipmh-harvester.oai-harvester/",
-        "pid-field-imports": [
-            {
-                "import": "invenio_records_resources.records.systemfields.pid.PIDField"
-            },
-            {
-                "import": "invenio_records_resources.records.systemfields.pid.PIDFieldContext"
-            },
-            {
-                "import": "invenio_pidstore.providers.recordid_v2.RecordIdProviderV2"
-            }
-        ],
-        "index-name": "oai_harvester-oai_harvester-1.0.0",
-        "record-facets-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.facets.Test",
-        "record-blueprints-setup-cfg": "oai_harvester",
-        "record-resource-config-class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.config.OaiHarvesterResourceConfig",
-        "record-resource-config-bases": [
-            "invenio_records_resources.resources.RecordResourceConfig"
-        ],
-        "config-package": "oarepo_oaipmh_harvester.oai_harvester.config",
-        "record-dumper-extensions": [],
-        "record-bases": [
-            "invenio_records_resources.records.api.Record"
-        ],
-        "oarepo-models-setup-cfg": "oai_harvester",
-        "record-ui-schema-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.ui_schema.OaiHarvesterUISchema",
-        "flask-extension-name": "oarepo-oaipmh-harvester",
-        "script-import-sample-data": "data/sample_data.yaml",
-        "record-pid-provider-bases": [
-            "invenio_pidstore.providers.recordid_v2.RecordIdProviderV2"
-        ],
-        "record-service-bases": [
-            "invenio_records_resources.services.RecordService"
-        ],
-        "record-prefix": "OaiHarvester",
-        "package-base": "oai_harvester",
-        "record-schema-metadata-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema.OaiHarvesterMetadataSchema",
-        "invenio-record-permissions-extra-code": "",
-        "record-metadata-table-name": "oaiharvester_metadata",
-        "package-path": "oarepo_oaipmh_harvester/oai_harvester",
-        "record-schema-metadata-alembic": "oai_harvester",
-        "schema-server": "local://",
-        "config-service-config-key": "OAI_HARVESTER_SERVICE_CONFIG_OAI_HARVESTER",
-        "record-service-class": "oarepo_oaipmh_harvester.oai_harvester.services.records.service.OaiHarvesterService",
-        "invenio-record-object-schema-extra-code": "",
-        "record-resource-bases": [
-            "invenio_records_resources.resources.RecordResource"
-        ],
-        "create-blueprint-from-app": "oarepo_oaipmh_harvester.oai_harvester.views.create_blueprint_from_app_oai_harvester",
+        "json-schema-settings": {
+            "generate": true,
+            "alias": "oarepo-oaipmh-harvester",
+            "version": "1.0.0",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.records.jsonschemas",
+            "name": "oai_harvester-1.0.0.json",
+            "file": "oarepo_oaipmh_harvester/oai_harvester/records/jsonschemas/oai_harvester-1.0.0.json"
+        },
+        "pid": {
+            "generate": true,
+            "type": "hrvstr",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.records.api",
+            "provider-class": "oarepo_oaipmh_harvester.oai_harvester.records.api.OaiHarvesterIdProvider",
+            "provider-base-classes": [
+                "RecordIdProviderV2"
+            ],
+            "field-class": "PIDField",
+            "context-class": "PIDFieldContext",
+            "field-args": [
+                "create=True"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_resources.records.systemfields.pid.PIDField"
+                },
+                {
+                    "import": "invenio_records_resources.records.systemfields.pid.PIDFieldContext"
+                },
+                {
+                    "import": "invenio_pidstore.providers.recordid_v2.RecordIdProviderV2"
+                }
+            ]
+        },
+        "record-dumper": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.records.dumper",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.records.dumper.OaiHarvesterDumper",
+            "base-classes": [
+                "SearchDumper"
+            ],
+            "extra-code": "",
+            "extensions": [],
+            "imports": [
+                {
+                    "import": "invenio_records.dumpers.SearchDumper"
+                }
+            ]
+        },
+        "record-metadata": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.records.models",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.records.models.OaiHarvesterMetadata",
+            "base-classes": [
+                "db.Model",
+                "RecordMetadataBase"
+            ],
+            "extra-code": "",
+            "imports": [
+                {
+                    "import": "invenio_records.models.RecordMetadataBase"
+                },
+                {
+                    "import": "invenio_db.db"
+                }
+            ],
+            "table": "oaiharvester_metadata",
+            "alembic": "oarepo_oaipmh_harvester.oai_harvester.records.alembic",
+            "alias": "oarepo-oaipmh-harvester"
+        },
+        "service": {
+            "generate": true,
+            "config-key": "OAI_HARVESTER_RECORD_SERVICE_CLASS",
+            "proxy": "current_service",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.service",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.service.OaiHarvesterService",
+            "extra-code": "",
+            "base-classes": [
+                "InvenioRecordService"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_resources.services.RecordService",
+                    "alias": "InvenioRecordService"
+                }
+            ]
+        },
+        "json-serializer": {
+            "module": "oarepo_oaipmh_harvester.oai_harvester.resources.records.ui",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.ui.OaiHarvesterUIJSONSerializer",
+            "base-classes": [
+                "MarshmallowSerializer"
+            ],
+            "imports": [
+                {
+                    "import": "flask_resources.BaseListSchema"
+                },
+                {
+                    "import": "flask_resources.MarshmallowSerializer"
+                },
+                {
+                    "import": "flask_resources.serializers.JSONSerializer"
+                }
+            ],
+            "extra-code": "",
+            "generate": true
+        },
+        "translations": {
+            "module": "oarepo_oaipmh_harvester.oai_harvester.translations",
+            "alias": "oarepo-oaipmh-harvester"
+        },
+        "mapping-settings": {
+            "generate": true,
+            "alias": "oarepo-oaipmh-harvester",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.records.mappings",
+            "index": "oarepo-oaipmh-harvester-oai_harvester-1.0.0",
+            "file": "oarepo_oaipmh_harvester/oai_harvester/records/mappings/os-v2/oarepo-oaipmh-harvester/oai_harvester-1.0.0.json"
+        },
         "properties": {
-            "code": {
+            "$schema": {
                 "marshmallow": {
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    }
-                },
-                "type": "keyword",
-                "required": true
-            },
-            "baseurl": {
-                "marshmallow": {
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    }
-                },
-                "type": "url",
-                "required": true
-            },
-            "metadataprefix": {
-                "marshmallow": {
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    }
-                },
-                "type": "keyword",
-                "required": true
-            },
-            "comment": {
-                "marshmallow": {
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    }
-                },
-                "type": "fulltext"
-            },
-            "name": {
-                "marshmallow": {
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    }
-                },
-                "type": "keyword",
-                "required": true
-            },
-            "setspecs": {
-                "marshmallow": {
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    }
-                },
-                "type": "keyword",
-                "required": true
-            },
-            "loader": {
-                "marshmallow": {
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    }
-                },
-                "type": "keyword"
-            },
-            "transformers": {
-                "marshmallow": {
-                    "field-class": "ma_fields.List",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.List"
-                    }
-                },
-                "items": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String",
-                        "validators": [],
-                        "imports": []
-                    },
-                    "ui": {
-                        "marshmallow": {
-                            "field-class": "ma_fields.String"
-                        }
-                    },
-                    "type": "keyword"
-                },
-                "type": "array",
-                "required": true
-            },
-            "writer": {
-                "marshmallow": {
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    }
-                },
-                "type": "keyword"
-            },
-            "max_records": {
-                "marshmallow": {
-                    "field-class": "ma_fields.Integer",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.Integer"
-                    }
-                },
-                "type": "integer"
-            },
-            "batch_size": {
-                "marshmallow": {
-                    "field-class": "ma_fields.Integer",
-                    "validators": [],
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.Integer"
-                    }
-                },
-                "type": "integer"
-            },
-            "id": {
-                "marshmallow": {
-                    "read": false,
-                    "field-class": "ma_fields.String",
-                    "validators": [],
                     "write": false,
-                    "imports": []
+                    "read": false
                 },
-                "ui": {
-                    "marshmallow": {
-                        "read": false,
-                        "field-class": "ma_fields.String",
-                        "write": false
-                    }
-                },
-                "type": "keyword",
                 "facets": {
                     "searchable": true
                 },
+                "ui": {
+                    "marshmallow": {
+                        "write": false,
+                        "read": false
+                    }
+                },
                 "sample": {
                     "skip": true
-                }
+                },
+                "type": "keyword"
+            },
+            "baseurl": {
+                "required": true,
+                "type": "url",
+                "label.cs": "Sklízené URL",
+                "label.en": "URL Harvested"
+            },
+            "batch_size": {
+                "type": "integer",
+                "label.cs": "Velikost dávky",
+                "label.en": "Batch size"
+            },
+            "code": {
+                "required": true,
+                "type": "keyword",
+                "label.cs": "Interní kód",
+                "label.en": "Internal code"
+            },
+            "comment": {
+                "type": "fulltext",
+                "label.cs": "Komentář",
+                "label.en": "Comment"
             },
             "created": {
                 "marshmallow": {
-                    "read": false,
-                    "field-class": "ma_fields.String",
-                    "validators": [
-                        "validate_datetime"
-                    ],
                     "write": false,
-                    "imports": [
-                        {
-                            "import": "oarepo_runtime.validation.validate_datetime"
-                        },
-                        {
-                            "import": "oarepo_runtime.ui.marshmallow",
-                            "alias": "l10n"
-                        },
-                        {
-                            "import": "oarepo_runtime.validation.validate_datetime"
-                        },
-                        {
-                            "import": "oarepo_runtime.ui.marshmallow",
-                            "alias": "l10n"
-                        }
-                    ]
-                },
-                "ui": {
-                    "marshmallow": {
-                        "read": false,
-                        "field-class": "l10n.LocalizedDateTime",
-                        "write": false
-                    }
-                },
-                "type": "datetime",
-                "facets": {
-                    "searchable": true
+                    "read": false
                 },
                 "sample": {
                     "skip": true
+                },
+                "facets": {
+                    "searchable": true
+                },
+                "ui": {
+                    "marshmallow": {
+                        "write": false,
+                        "read": false
+                    }
+                },
+                "type": "datetime"
+            },
+            "id": {
+                "marshmallow": {
+                    "write": false,
+                    "read": false
+                },
+                "facets": {
+                    "searchable": true
+                },
+                "ui": {
+                    "marshmallow": {
+                        "write": false,
+                        "read": false
+                    }
+                },
+                "sample": {
+                    "skip": true
+                },
+                "type": "keyword"
+            },
+            "loader": {
+                "type": "keyword",
+                "label.cs": "Přístupový protokol",
+                "label.en": "Access protocol"
+            },
+            "max_records": {
+                "type": "integer",
+                "label.cs": "Maximální počet záznamů per běh",
+                "label.en": "Max records in run"
+            },
+            "metadataprefix": {
+                "required": true,
+                "type": "keyword",
+                "label.cs": "OAI metadata prefix",
+                "label.en": "OAI metadata prefix"
+            },
+            "name": {
+                "required": true,
+                "type": "keyword",
+                "label.cs": "Název harvestru",
+                "label.en": "Harvester name"
+            },
+            "setspecs": {
+                "required": true,
+                "type": "keyword",
+                "label.cs": "OAI set",
+                "label.en": "OAI set"
+            },
+            "transformers": {
+                "required": true,
+                "type": "array",
+                "label.cs": "Transformátor hodnot",
+                "label.en": "Value transformer",
+                "items": {
+                    "type": "keyword"
                 }
             },
             "updated": {
                 "marshmallow": {
-                    "read": false,
-                    "field-class": "ma_fields.String",
-                    "validators": [
-                        "validate_datetime"
-                    ],
                     "write": false,
-                    "imports": [
-                        {
-                            "import": "oarepo_runtime.validation.validate_datetime"
-                        },
-                        {
-                            "import": "oarepo_runtime.ui.marshmallow",
-                            "alias": "l10n"
-                        },
-                        {
-                            "import": "oarepo_runtime.validation.validate_datetime"
-                        },
-                        {
-                            "import": "oarepo_runtime.ui.marshmallow",
-                            "alias": "l10n"
-                        }
-                    ]
-                },
-                "ui": {
-                    "marshmallow": {
-                        "read": false,
-                        "field-class": "l10n.LocalizedDateTime",
-                        "write": false
-                    }
-                },
-                "type": "datetime",
-                "facets": {
-                    "searchable": true
+                    "read": false
                 },
                 "sample": {
                     "skip": true
-                }
+                },
+                "facets": {
+                    "searchable": true
+                },
+                "ui": {
+                    "marshmallow": {
+                        "write": false,
+                        "read": false
+                    }
+                },
+                "type": "datetime"
             },
-            "$schema": {
-                "marshmallow": {
-                    "read": false,
-                    "field-class": "ma_fields.String",
-                    "validators": [],
-                    "write": false,
-                    "imports": []
-                },
-                "ui": {
-                    "marshmallow": {
-                        "read": false,
-                        "field-class": "ma_fields.String",
-                        "write": false
-                    }
-                },
+            "writer": {
                 "type": "keyword",
-                "facets": {
-                    "searchable": true
-                },
-                "sample": {
-                    "skip": true
-                }
+                "label.cs": "Cíl zápisu",
+                "label.en": "Write target"
             }
-        },
-        "invenio-record-facets-extra-code": "",
-        "record-api-blueprints-setup-cfg": "oai_harvester",
-        "mapping-package": "oarepo_oaipmh_harvester.oai_harvester.records.mappings"
+        }
     }
 }

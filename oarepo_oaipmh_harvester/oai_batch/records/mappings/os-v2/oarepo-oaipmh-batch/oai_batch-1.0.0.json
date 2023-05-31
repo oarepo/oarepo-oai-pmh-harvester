@@ -1,0 +1,67 @@
+{
+    "mappings": {
+        "properties": {
+            "$schema": {
+                "type": "keyword"
+            },
+            "created": {
+                "type": "date",
+                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date"
+            },
+            "errors": {
+                "type": "object",
+                "properties": {
+                    "error_message": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "error_type": {
+                        "type": "keyword"
+                    },
+                    "oai_identifier": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "finished": {
+                "type": "date",
+                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date"
+            },
+            "id": {
+                "type": "keyword"
+            },
+            "identifiers": {
+                "type": "keyword"
+            },
+            "manual": {
+                "type": "boolean"
+            },
+            "run": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "@v": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "started": {
+                "type": "date",
+                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date"
+            },
+            "status": {
+                "type": "keyword"
+            },
+            "updated": {
+                "type": "date",
+                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date"
+            }
+        }
+    }
+}

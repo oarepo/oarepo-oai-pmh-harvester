@@ -10,8 +10,8 @@ from oarepo_oaipmh_harvester.oai_harvester.resources.records.ui import (
 class OaiHarvesterResourceConfig(RecordResourceConfig):
     """OaiHarvesterRecord resource config."""
 
-    blueprint_name = "OaiHarvester"
-    url_prefix = "/oarepo-oaipmh-harvester.oai-harvester/"
+    blueprint_name = "oarepo-oaipmh-harvester"
+    url_prefix = "/oarepo-oaipmh-harvester-oai-harvester/"
 
     @property
     def response_handlers(self):

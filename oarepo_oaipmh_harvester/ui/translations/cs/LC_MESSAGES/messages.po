@@ -1,0 +1,37 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2023-05-31T10:49:37.090633\n"
+"PO-Revision-Date: 2023-05-31 12:09+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.1\n"
+
+msgid "runs_harvester.label"
+msgstr "Běhy harvesteru"
+
+msgid "runs_link.label"
+msgstr "Zobrazit běhy"
+
+msgid "batches_run.label"
+msgstr "Dávky běhu"
+
+msgid "batches_link.label"
+msgstr "Zobrazit dávky"
+
+msgid "records_batch.label"
+msgstr "Záznamy dávky"
+
+msgid "records_link.label"
+msgstr "Zobrazit záznamy"
+
+msgid "record_data.label"
+msgstr "Naimportovaný záznam"
+
+msgid "record_link.label"
+msgstr "Zobrazit záznam"

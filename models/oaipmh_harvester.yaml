@@ -1,52 +1,75 @@
-model:
+record:
   use: [ invenio ]
-  package: oarepo_oaipmh_harvester.oai_harvester
-  flask-extension-name: oarepo-oaipmh-harvester
-  record-service-config-components:
-    - invenio_records_resources.services.records.components.DataComponent
-  schema-server: 'local://'
+  module:
+    qualified: oarepo_oaipmh_harvester.oai_harvester
+    alias: oarepo-oaipmh-harvester
+  service-config:
+    components:
+      - invenio_records_resources.services.records.components.DataComponent
 
   properties:
     code: 
+      label.cs: Interní kód
+      label.en: Internal code
       type: keyword
       required: true
 
     baseurl:
+      label.cs: Sklízené URL
+      label.en: URL Harvested
       type: url
       required: true
 
     metadataprefix: 
+      label.cs: OAI metadata prefix
+      label.en: OAI metadata prefix
       type: keyword
       required: true
 
     comment:
+      label.cs: Komentář
+      label.en: Comment
       type: fulltext
 
     name:
+      label.cs: Název harvestru
+      label.en: Harvester name
       type: keyword
       required: true
 
     setspecs: 
+      label.cs: OAI set
+      label.en: OAI set
       type: keyword
       required: true
 
     # the loader is a string in format loader_name{optional_yaml_dict_of_parameters}
     loader:
+      label.cs: Přístupový protokol
+      label.en: Access protocol
       type: keyword
       
     # the transformer is a string in format transformer_name{optional_yaml_dict_of_parameters}
     transformers[]:
+      ^label.cs: Transformátor hodnot
+      ^label.en: Value transformer
       type: keyword
       ^required: true
 
     # the writer is a string in format writer_name{optional_yaml_dict_of_parameters}
     writer:
+      label.cs: Cíl zápisu
+      label.en: Write target
       type: keyword
 
     max_records:
+      label.cs: Maximální počet záznamů per běh
+      label.en: Max records in run
       type: integer
 
     batch_size:
+      label.cs: Velikost dávky
+      label.en: Batch size
       type: integer
 
   plugins:
@@ -59,3 +82,7 @@ model:
   permissions:
     presets:
     - oai_harvester
+
+settings:
+  schema-server: 'local://'
+  i18n-languages: ['cs', 'en']

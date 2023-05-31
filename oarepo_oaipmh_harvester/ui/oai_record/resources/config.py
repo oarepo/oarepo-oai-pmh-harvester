@@ -7,7 +7,7 @@ class OAIRecordUIResourceConfig(RecordsUIResourceConfig):
     blueprint_name = "oai-record-ui"
     ui_serializer_class = "oarepo_oaipmh_harvester.oai_record.resources.records.ui.OaiRecordUIJSONSerializer"
     api_service = "oarepo-oaipmh-record"
-    layout = "oarepo_oaipmh_harvester.oai_record"
+    layout = "oarepo-oaipmh-record"
 
     templates = {
         "detail": {

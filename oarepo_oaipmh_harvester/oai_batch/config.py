@@ -9,7 +9,13 @@ from oarepo_oaipmh_harvester.oai_batch.services.records.config import (
 )
 from oarepo_oaipmh_harvester.oai_batch.services.records.service import OaiBatchService
 
-OAI_BATCH_RESOURCE_CONFIG_OAI_BATCH = OaiBatchResourceConfig
-OAI_BATCH_RESOURCE_CLASS_OAI_BATCH = OaiBatchResource
-OAI_BATCH_SERVICE_CONFIG_OAI_BATCH = OaiBatchServiceConfig
-OAI_BATCH_SERVICE_CLASS_OAI_BATCH = OaiBatchService
+OAI_BATCH_RECORD_RESOURCE_CONFIG = OaiBatchResourceConfig
+
+
+OAI_BATCH_RECORD_RESOURCE_CLASS = OaiBatchResource
+
+
+OAI_BATCH_RECORD_SERVICE_CONFIG = OaiBatchServiceConfig
+
+
+OAI_BATCH_RECORD_SERVICE_CLASS = OaiBatchService

@@ -3,52 +3,41 @@
 from flask_babelex import lazy_gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
 from oarepo_runtime.facets.date import DateTimeFacet
-from oarepo_runtime.facets.enum import EnumTermsFacet
+
+_schema = TermsFacet(field="$schema", label=_("$schema.label"))
 
 batch_id = TermsFacet(field="batch.id", label=_("batch/id.label"))
 
-
 batch__version = TermsFacet(field="batch.@v", label=_("batch/@v.label"))
 
+created = DateTimeFacet(field="created", label=_("created.label"))
+
+datestamp = DateTimeFacet(field="datestamp", label=_("datestamp.label"))
+
+errors_error_message = TermsFacet(
+    field="errors.error_message.keyword", label=_("errors/error_message.label")
+)
+
+errors_error_type = TermsFacet(
+    field="errors.error_type", label=_("errors/error_type.label")
+)
 
 harvester_id = TermsFacet(field="harvester.id", label=_("harvester/id.label"))
 
-
 harvester__version = TermsFacet(field="harvester.@v", label=_("harvester/@v.label"))
 
+_id = TermsFacet(field="id", label=_("id.label"))
 
 local_identifier = TermsFacet(
     field="local_identifier", label=_("local_identifier.label")
 )
 
+manual = TermsFacet(field="manual", label=_("manual.label"))
 
 oai_identifier = TermsFacet(field="oai_identifier", label=_("oai_identifier.label"))
 
-
-datestamp = DateTimeFacet(field="datestamp", label=_("datestamp.label"))
-
-
-status = EnumTermsFacet(field="status", label=_("status.label"))
-
-
-warnings_keyword = TermsFacet(
-    field="warnings.keyword", label=_("warnings/keyword.label")
-)
-
-
-errors_keyword = TermsFacet(field="errors.keyword", label=_("errors/keyword.label"))
-
-
-manual = TermsFacet(field="manual", label=_("manual.label"))
-
-
-_id = TermsFacet(field="id", label=_("id.label"))
-
-
-created = DateTimeFacet(field="created", label=_("created.label"))
-
+status = TermsFacet(field="status", label=_("status.label"))
 
 updated = DateTimeFacet(field="updated", label=_("updated.label"))
 
-
-_schema = TermsFacet(field="$schema", label=_("$schema.label"))
+warnings = TermsFacet(field="warnings.keyword", label=_("warnings.label"))

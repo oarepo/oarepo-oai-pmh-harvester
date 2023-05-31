@@ -1,16 +1,35 @@
 {
     "type": "object",
     "properties": {
-        "code": {
+        "$schema": {
             "type": "string"
         },
         "baseurl": {
             "type": "string"
         },
-        "metadataprefix": {
+        "batch_size": {
+            "type": "integer"
+        },
+        "code": {
             "type": "string"
         },
         "comment": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "id": {
+            "type": "string"
+        },
+        "loader": {
+            "type": "string"
+        },
+        "max_records": {
+            "type": "integer"
+        },
+        "metadataprefix": {
             "type": "string"
         },
         "name": {
@@ -19,36 +38,17 @@
         "setspecs": {
             "type": "string"
         },
-        "loader": {
-            "type": "string"
-        },
         "transformers": {
+            "type": "array",
             "items": {
                 "type": "string"
-            },
-            "type": "array"
-        },
-        "writer": {
-            "type": "string"
-        },
-        "max_records": {
-            "type": "integer"
-        },
-        "batch_size": {
-            "type": "integer"
-        },
-        "id": {
-            "type": "string"
-        },
-        "created": {
-            "type": "string",
-            "format": "date-time"
+            }
         },
         "updated": {
             "type": "string",
             "format": "date-time"
         },
-        "$schema": {
+        "writer": {
             "type": "string"
         }
     }

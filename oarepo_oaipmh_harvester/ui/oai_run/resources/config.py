@@ -9,7 +9,7 @@ class OaiRunUIResourceConfig(RecordsUIResourceConfig):
         "oarepo_oaipmh_harvester.oai_run.resources.records.ui.OaiRunUIJSONSerializer"
     )
     api_service = "oarepo-oaipmh-run"
-    layout = "oarepo_oaipmh_harvester.oai_run"
+    layout = "oarepo-oaipmh-run"
 
     templates = {
         "detail": {

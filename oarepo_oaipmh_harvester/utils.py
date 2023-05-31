@@ -34,11 +34,3 @@ def timeit(f):
     # otherwise it is a context manager
     return TIM(f)
 
-
-def get_error_item_from_exception(exc):
-    stack = "\n".join(traceback.format_exception(limit=5))
-    return {
-            'error_type': getattr(exc, 'type', type(exc).__name__),
-            'error_message': str(exc),
-            'error_info': stack
-        }

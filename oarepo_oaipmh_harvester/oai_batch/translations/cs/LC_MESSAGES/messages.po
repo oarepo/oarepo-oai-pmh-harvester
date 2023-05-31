@@ -1,0 +1,168 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2023-05-31T10:49:32.051237\n"
+"PO-Revision-Date: 2023-05-31T10:49:32.051246\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "$schema.help"
+msgstr ""
+
+msgid "$schema.label"
+msgstr ""
+
+msgid "$schema.hint"
+msgstr ""
+
+msgid "created.help"
+msgstr ""
+
+msgid "created.label"
+msgstr ""
+
+msgid "created.hint"
+msgstr ""
+
+msgid "errors.help"
+msgstr ""
+
+msgid "errors.label"
+msgstr "Chyby"
+
+msgid "errors.hint"
+msgstr ""
+
+msgid "errors/error_message.label"
+msgstr "Chybová hodnota"
+
+msgid "errors/error_message.help"
+msgstr ""
+
+msgid "errors/error_message.hint"
+msgstr ""
+
+msgid "errors/error_type.label"
+msgstr "Typ chyby"
+
+msgid "errors/error_type.help"
+msgstr ""
+
+msgid "errors/error_type.hint"
+msgstr ""
+
+msgid "errors/oai_identifier.label"
+msgstr "OAI identifikátor"
+
+msgid "errors/oai_identifier.help"
+msgstr ""
+
+msgid "errors/oai_identifier.hint"
+msgstr ""
+
+msgid "finished.label"
+msgstr "Konec běhu"
+
+msgid "finished.help"
+msgstr ""
+
+msgid "finished.hint"
+msgstr ""
+
+msgid "id.help"
+msgstr ""
+
+msgid "id.label"
+msgstr ""
+
+msgid "id.hint"
+msgstr ""
+
+msgid "identifiers.help"
+msgstr ""
+
+msgid "identifiers.label"
+msgstr "OAI Identifikátory"
+
+msgid "identifiers.hint"
+msgstr ""
+
+msgid "manual.label"
+msgstr "Manuálně spuštěno?"
+
+msgid "manual.help"
+msgstr ""
+
+msgid "manual.hint"
+msgstr ""
+
+msgid "run.label"
+msgstr "Běh harvestru"
+
+msgid "run.help"
+msgstr ""
+
+msgid "run.hint"
+msgstr ""
+
+msgid "run/id.help"
+msgstr ""
+
+msgid "run/id.label"
+msgstr ""
+
+msgid "run/id.hint"
+msgstr ""
+
+msgid "run/@v.help"
+msgstr ""
+
+msgid "run/@v.label"
+msgstr ""
+
+msgid "run/@v.hint"
+msgstr ""
+
+msgid "started.label"
+msgstr "Začátek běhu"
+
+msgid "started.help"
+msgstr ""
+
+msgid "started.hint"
+msgstr ""
+
+msgid "status.label"
+msgstr "Stav běhu"
+
+msgid "status.enum.R"
+msgstr "Běží"
+
+msgid "status.enum.O"
+msgstr "Skončeno OK"
+
+msgid "status.enum.W"
+msgstr "Varování"
+
+msgid "status.enum.E"
+msgstr "Chyba"
+
+msgid "status.enum.I"
+msgstr "Přerušeno"
+
+msgid "status.help"
+msgstr ""
+
+msgid "status.hint"
+msgstr ""
+
+msgid "updated.help"
+msgstr ""
+
+msgid "updated.label"
+msgstr ""
+
+msgid "updated.hint"
+msgstr ""

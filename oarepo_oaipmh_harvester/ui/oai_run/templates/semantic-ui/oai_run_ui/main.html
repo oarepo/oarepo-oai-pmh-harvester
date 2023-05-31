@@ -35,11 +35,11 @@
   </dd>
   <dt>{{ _('harvester.label') }}</dt>
     <dd>
-    <a href="/oaiharvester/{{data.harvester.id}}">{{ data.harvester.name }}</a>
+    <a href="/oaiharvester/{{data.harvester.id}}">{{ data.harvester.code }}</a>
   </dd>
     <dt>{{ _('batches_run.label') }}</dt>
     <dd>
-    <a href="/oaibatch/?q=&f=run_id%3A{{data.id}}&l=list&p=1&s=10&sort=newest">{{ _('batches.label') }}</a>
+    <a href="/oaibatch/?q=&f=run_id%3A{{data.id}}&l=list&p=1&s=10&sort=newest">{{ _('batches_link.label') }}</a>
   </dd>
 
 

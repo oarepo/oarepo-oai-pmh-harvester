@@ -1,7 +1,11 @@
 {
     "type": "object",
     "properties": {
+        "$schema": {
+            "type": "string"
+        },
         "batch": {
+            "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
@@ -9,73 +13,74 @@
                 "@v": {
                     "type": "string"
                 }
-            },
+            }
+        },
+        "context": {
             "type": "object"
         },
-        "harvester": {
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "@v": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "local_identifier": {
-            "type": "string"
-        },
-        "oai_identifier": {
-            "type": "string"
+        "created": {
+            "type": "string",
+            "format": "date-time"
         },
         "datestamp": {
             "type": "string",
             "format": "date-time"
         },
+        "entry": {
+            "type": "object"
+        },
+        "errors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "error_info": {
+                        "type": "string"
+                    },
+                    "error_message": {
+                        "type": "string"
+                    },
+                    "error_type": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "harvester": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "@v": {
+                    "type": "string"
+                }
+            }
+        },
+        "id": {
+            "type": "string"
+        },
+        "local_identifier": {
+            "type": "string"
+        },
+        "manual": {
+            "type": "boolean"
+        },
+        "oai_identifier": {
+            "type": "string"
+        },
         "status": {
+            "type": "string"
+        },
+        "updated": {
             "type": "string",
-            "enum": [
-                "O",
-                "W",
-                "E",
-                "S"
-            ]
+            "format": "date-time"
         },
         "warnings": {
             "type": "array",
             "items": {
                 "type": "string"
             }
-        },
-        "errors": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "entry": {
-            "type": "object"
-        },
-        "context": {
-            "type": "object"
-        },
-        "manual": {
-            "type": "boolean"
-        },
-        "id": {
-            "type": "string"
-        },
-        "created": {
-            "type": "string",
-            "format": "date-time"
-        },
-        "updated": {
-            "type": "string",
-            "format": "date-time"
-        },
-        "$schema": {
-            "type": "string"
         }
     }
 }

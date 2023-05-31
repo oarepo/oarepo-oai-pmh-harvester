@@ -1,10 +1,109 @@
 {
+    "module": "oarepo_oaipmh_harvester.oai_batch.models",
+    "file": "oarepo_oaipmh_harvester/oai_batch/models/ui.json",
+    "alias": "oarepo-oaipmh-batch",
+    "detail": "model",
+    "input": "model",
+    "help": ".help",
+    "label": ".label",
+    "hint": ".hint",
     "children": {
+        "$schema": {
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "$schema.help",
+            "label": "$schema.label",
+            "hint": "$schema.hint",
+            "facet": "_schema"
+        },
+        "created": {
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "created.help",
+            "label": "created.label",
+            "hint": "created.hint",
+            "facet": "created"
+        },
+        "errors": {
+            "detail": "array",
+            "input": "array",
+            "help": "errors.help",
+            "label": "errors.label",
+            "hint": "errors.hint",
+            "child": {
+                "detail": "error",
+                "input": "error",
+                "help": "errors.help",
+                "label": "errors.label",
+                "hint": "errors.hint",
+                "children": {
+                    "error_message": {
+                        "detail": "fulltext+keyword",
+                        "input": "fulltext+keyword",
+                        "help": "errors/error_message.help",
+                        "label": "errors/error_message.label",
+                        "hint": "errors/error_message.hint",
+                        "facet": "errors_error_message"
+                    },
+                    "error_type": {
+                        "detail": "keyword",
+                        "input": "keyword",
+                        "help": "errors/error_type.help",
+                        "label": "errors/error_type.label",
+                        "hint": "errors/error_type.hint",
+                        "facet": "errors_error_type"
+                    },
+                    "oai_identifier": {
+                        "detail": "keyword",
+                        "input": "keyword",
+                        "help": "errors/oai_identifier.help",
+                        "label": "errors/oai_identifier.label",
+                        "hint": "errors/oai_identifier.hint",
+                        "facet": "errors_oai_identifier"
+                    }
+                }
+            }
+        },
+        "finished": {
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "finished.help",
+            "label": "finished.label",
+            "hint": "finished.hint",
+            "facet": "finished"
+        },
+        "id": {
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "id.help",
+            "label": "id.label",
+            "hint": "id.hint",
+            "facet": "_id"
+        },
+        "identifiers": {
+            "detail": "array",
+            "input": "array",
+            "help": "identifiers.help",
+            "label": "identifiers.label",
+            "hint": "identifiers.hint",
+            "child": {
+                "detail": "keyword",
+                "input": "keyword",
+                "help": "identifiers.help",
+                "label": "identifiers.label",
+                "hint": "identifiers.hint",
+                "facet": "identifiers"
+            }
+        },
+        "manual": {
+            "detail": "boolean",
+            "input": "boolean",
+            "help": "manual.help",
+            "label": "manual.label",
+            "hint": "manual.hint",
+            "facet": "manual"
+        },
         "run": {
-            "marshmallow": {
-                "field-class": "ma_fields.Nested",
-                "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.RunUISchema"
-            },
             "detail": "relation",
             "input": "relation",
             "help": "run.help",
@@ -12,9 +111,6 @@
             "hint": "run.hint",
             "children": {
                 "id": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String"
-                    },
                     "detail": "keyword",
                     "input": "keyword",
                     "help": "run/id.help",
@@ -23,10 +119,6 @@
                     "facet": "run_id"
                 },
                 "@v": {
-                    "marshmallow": {
-                        "field-class": "ma_fields.String",
-                        "field-name": "_version"
-                    },
                     "detail": "keyword",
                     "input": "keyword",
                     "help": "run/@v.help",
@@ -36,83 +128,7 @@
                 }
             }
         },
-        "status": {
-            "marshmallow": {
-                "field-class": "l10n.LocalizedEnum",
-                "arguments": [
-                    "value_prefix=\"oarepo_oaipmh_harvester.oai_batch\""
-                ]
-            },
-            "detail": "keyword",
-            "input": "keyword",
-            "help": "status.help",
-            "label": "status.label",
-            "hint": "status.hint",
-            "facet": "status"
-        },
-        "identifiers": {
-            "marshmallow": {
-                "field-class": "ma_fields.List"
-            },
-            "detail": "array",
-            "input": "array",
-            "help": "identifiers.help",
-            "label": "identifiers.label",
-            "hint": "identifiers.hint",
-            "child": {
-                "marshmallow": {
-                    "field-class": "ma_fields.String"
-                },
-                "detail": "keyword",
-                "input": "keyword"
-            }
-        },
-        "errors": {
-            "marshmallow": {
-                "field-class": "ma_fields.List"
-            },
-            "detail": "array",
-            "input": "array",
-            "help": "errors.help",
-            "label": "errors.label",
-            "hint": "errors.hint",
-            "child": {
-                "marshmallow": {
-                    "field-class": "ma_fields.Nested",
-                    "schema-class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.ErrorsItemUISchema"
-                },
-                "detail": "error",
-                "input": "error",
-                "children": {
-                    "oai_identifier": {
-                        "marshmallow": {
-                            "field-class": "ma_fields.String"
-                        },
-                        "detail": "keyword",
-                        "input": "keyword",
-                        "help": "errors/oai_identifier.help",
-                        "label": "errors/oai_identifier.label",
-                        "hint": "errors/oai_identifier.hint",
-                        "facet": "errors_oai_identifier"
-                    },
-                    "error": {
-                        "marshmallow": {
-                            "field-class": "ma_fields.String"
-                        },
-                        "detail": "fulltext+keyword",
-                        "input": "fulltext+keyword",
-                        "help": "errors/error.help",
-                        "label": "errors/error.label",
-                        "hint": "errors/error.hint",
-                        "facet": "errors_error_keyword"
-                    }
-                }
-            }
-        },
         "started": {
-            "marshmallow": {
-                "field-class": "l10n.LocalizedDateTime"
-            },
             "detail": "datetime",
             "input": "datetime",
             "help": "started.help",
@@ -120,79 +136,21 @@
             "hint": "started.hint",
             "facet": "started"
         },
-        "finished": {
-            "marshmallow": {
-                "field-class": "l10n.LocalizedDateTime"
-            },
-            "detail": "datetime",
-            "input": "datetime",
-            "help": "finished.help",
-            "label": "finished.label",
-            "hint": "finished.hint",
-            "facet": "finished"
-        },
-        "manual": {
-            "marshmallow": {
-                "field-class": "ma_fields.Boolean"
-            },
-            "detail": "boolean",
-            "input": "boolean",
-            "help": "manual.help",
-            "label": "manual.label",
-            "hint": "manual.hint",
-            "facet": "manual"
-        },
-        "id": {
-            "marshmallow": {
-                "field-class": "ma_fields.String",
-                "read": false,
-                "write": false
-            },
+        "status": {
             "detail": "keyword",
             "input": "keyword",
-            "help": "id.help",
-            "label": "id.label",
-            "hint": "id.hint",
-            "facet": "_id"
-        },
-        "created": {
-            "marshmallow": {
-                "field-class": "l10n.LocalizedDateTime",
-                "read": false,
-                "write": false
-            },
-            "detail": "datetime",
-            "input": "datetime",
-            "help": "created.help",
-            "label": "created.label",
-            "hint": "created.hint",
-            "facet": "created"
+            "help": "status.help",
+            "label": "status.label",
+            "hint": "status.hint",
+            "facet": "status"
         },
         "updated": {
-            "marshmallow": {
-                "field-class": "l10n.LocalizedDateTime",
-                "read": false,
-                "write": false
-            },
             "detail": "datetime",
             "input": "datetime",
             "help": "updated.help",
             "label": "updated.label",
             "hint": "updated.hint",
             "facet": "updated"
-        },
-        "$schema": {
-            "marshmallow": {
-                "field-class": "ma_fields.String",
-                "read": false,
-                "write": false
-            },
-            "detail": "keyword",
-            "input": "keyword",
-            "help": "$schema.help",
-            "label": "$schema.label",
-            "hint": "$schema.hint",
-            "facet": "_schema"
         }
     }
 }

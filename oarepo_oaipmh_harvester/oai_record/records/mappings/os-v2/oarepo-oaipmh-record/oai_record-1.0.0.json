@@ -1,0 +1,93 @@
+{
+    "mappings": {
+        "properties": {
+            "$schema": {
+                "type": "keyword"
+            },
+            "batch": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "@v": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "context": {
+                "enabled": false,
+                "type": "object"
+            },
+            "created": {
+                "type": "date",
+                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date"
+            },
+            "datestamp": {
+                "type": "date",
+                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date"
+            },
+            "entry": {
+                "enabled": false,
+                "type": "object"
+            },
+            "errors": {
+                "type": "object",
+                "properties": {
+                    "error_info": {
+                        "type": "text"
+                    },
+                    "error_message": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "error_type": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "harvester": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "@v": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "id": {
+                "type": "keyword"
+            },
+            "local_identifier": {
+                "type": "keyword"
+            },
+            "manual": {
+                "type": "boolean"
+            },
+            "oai_identifier": {
+                "type": "keyword"
+            },
+            "status": {
+                "type": "keyword"
+            },
+            "updated": {
+                "type": "date",
+                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date"
+            },
+            "warnings": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}

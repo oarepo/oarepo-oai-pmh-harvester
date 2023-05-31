@@ -1,5 +1,5 @@
-from invenio_records_resources.services import RecordService
+from invenio_records_resources.services import RecordService as InvenioRecordService
 
 
-class OaiRecordService(RecordService):
+class OaiRecordService(InvenioRecordService):
     """OaiRecord service."""
