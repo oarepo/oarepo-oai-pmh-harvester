@@ -251,7 +251,8 @@ class OAIWriter(BatchWriter):
                             self.delete_entry(entry, uow)
                             deleted_entries.append(entry)
                         else:
-                            persisted_entries.append(self.writer.write(entry, uow=uow))
+                            self.writer.write(entry, uow=uow)
+                            persisted_entries.append(entry)
                     except Exception as e:
                         entry.errors.append(StreamEntryError.from_exception(e))
                 else:
