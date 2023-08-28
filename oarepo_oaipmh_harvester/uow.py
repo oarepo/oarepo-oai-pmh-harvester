@@ -46,7 +46,7 @@ class BulkUnitOfWork(CachingUnitOfWork):
         bulk_data = []
         indexer = None
         for op in self._operations:
-            if isinstance(op, BulkRecordCommitOp):
+            if isinstance(op, BulkRecordCommitOp) and op._indexer:
                 indexer = op._indexer
                 bulk_data.append(op.get_index_action())
         if indexer:
