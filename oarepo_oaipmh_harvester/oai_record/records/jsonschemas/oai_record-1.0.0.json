@@ -34,13 +34,16 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "error_info": {
+                    "code": {
                         "type": "string"
                     },
-                    "error_message": {
+                    "info": {
+                        "type": "object"
+                    },
+                    "location": {
                         "type": "string"
                     },
-                    "error_type": {
+                    "message": {
                         "type": "string"
                     }
                 }

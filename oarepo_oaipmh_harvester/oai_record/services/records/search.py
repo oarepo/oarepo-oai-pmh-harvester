@@ -12,8 +12,9 @@ class OaiRecordSearchOptions(InvenioSearchOptions):
         "batch__version": facets.batch__version,
         "created": facets.created,
         "datestamp": facets.datestamp,
-        "errors_error_message": facets.errors_error_message,
-        "errors_error_type": facets.errors_error_type,
+        "errors_code": facets.errors_code,
+        "errors_location": facets.errors_location,
+        "errors_message": facets.errors_message,
         "harvester_id": facets.harvester_id,
         "harvester__version": facets.harvester__version,
         "_id": facets._id,
@@ -23,6 +24,7 @@ class OaiRecordSearchOptions(InvenioSearchOptions):
         "status": facets.status,
         "updated": facets.updated,
         "warnings": facets.warnings,
+        **getattr(InvenioSearchOptions, "facets", {}),
     }
     sort_options = {
         **InvenioSearchOptions.sort_options,

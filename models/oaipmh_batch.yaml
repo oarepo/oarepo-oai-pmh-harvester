@@ -49,14 +49,24 @@ record:
           label.cs: OAI identifikátor
           label.en: OAI identifier
           type: keyword
-        error_type:
+        code:
           label.cs: Typ chyby
           label.en: Error type
           type: keyword
-        error_message:
+        message:
           label.cs: Chybová hodnota
           label.en: Error message
           type: fulltext+keyword
+        location:
+          # dot-separated location in data (if applicable)
+          label.cs: Pozice chyby v datech
+          label.en: Error location in data
+          type: keyword
+        info:
+          label.cs: Další informace o chybě
+          label.en: Additional error information
+          type: flat_object
+
 
     started:
       label.cs: Začátek běhu
@@ -73,16 +83,17 @@ record:
       label.en: Manual?
       type: boolean
 
-  plugins:
-    builder:
-      disable: 
-      - script_sample_data
-      - invenio_cli_setup_cfg
-      - invenio_cli
-      - invenio_record_metadata_alembic_setup_cfg
   permissions:
     presets:
     - oai_harvester
+
+plugins:
+  builder:
+    disable:
+    - script_sample_data
+    - invenio_cli_setup_cfg
+    - invenio_cli
+    - invenio_record_metadata_alembic_setup_cfg
 
 settings:
   schema-server: 'local://'

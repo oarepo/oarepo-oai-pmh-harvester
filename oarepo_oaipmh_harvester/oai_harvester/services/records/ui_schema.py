@@ -1,5 +1,4 @@
 import marshmallow as ma
-from marshmallow import fields as ma_fields
 from oarepo_runtime.ui.marshmallow import InvenioUISchema
 
 
@@ -7,24 +6,24 @@ class OaiHarvesterUISchema(InvenioUISchema):
     class Meta:
         unknown = ma.RAISE
 
-    baseurl = ma_fields.String()
+    baseurl = ma.fields.String(required=True)
 
-    batch_size = ma_fields.Integer()
+    batch_size = ma.fields.Integer()
 
-    code = ma_fields.String()
+    code = ma.fields.String(required=True)
 
-    comment = ma_fields.String()
+    comment = ma.fields.String()
 
-    loader = ma_fields.String()
+    loader = ma.fields.String()
 
-    max_records = ma_fields.Integer()
+    max_records = ma.fields.Integer()
 
-    metadataprefix = ma_fields.String()
+    metadataprefix = ma.fields.String(required=True)
 
-    name = ma_fields.String()
+    name = ma.fields.String(required=True)
 
-    setspecs = ma_fields.String()
+    setspecs = ma.fields.String(required=True)
 
-    transformers = ma_fields.List(ma_fields.String())
+    transformers = ma.fields.List(ma.fields.String(), required=True)
 
-    writer = ma_fields.String()
+    writer = ma.fields.String()

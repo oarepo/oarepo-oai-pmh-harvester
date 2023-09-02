@@ -26,13 +26,18 @@ def create_app_blueprint(app):
 def init_create_app_blueprint(state):
     """Init app."""
     app = state.app
-    ext = app.extensions["oarepo-oaipmh-harvester"]
+    ext = app.extensions["oarepo_oaipmh_harvester.oai_harvester"]
 
     # register service
     sregistry = app.extensions["invenio-records-resources"].registry
-    sregistry.register(ext.service, service_id="oarepo-oaipmh-harvester")
+    sregistry.register(
+        ext.service_records, service_id=ext.service_records.config.service_id
+    )
 
     # Register indexer
-    if hasattr(ext.service, "indexer"):
+    if hasattr(ext.service_records, "indexer"):
         iregistry = app.extensions["invenio-indexer"].registry
-        iregistry.register(ext.service.indexer, indexer_id="oarepo-oaipmh-harvester")
+        iregistry.register(
+            ext.service_records.indexer,
+            indexer_id=ext.service_records.config.service_id,
+        )

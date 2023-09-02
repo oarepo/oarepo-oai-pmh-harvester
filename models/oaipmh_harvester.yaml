@@ -72,16 +72,18 @@ record:
       label.en: Batch size
       type: integer
 
-  plugins:
-    builder:
-      disable: 
-      - script_sample_data
-      - invenio_cli_setup_cfg
-      - invenio_cli
-      - invenio_record_metadata_alembic_setup_cfg
   permissions:
     presets:
     - oai_harvester
+
+plugins:
+  builder:
+    disable:
+    - script_sample_data
+    - invenio_cli_setup_cfg
+    - invenio_cli
+    - invenio_record_metadata_alembic_setup_cfg
+
 
 settings:
   schema-server: 'local://'

@@ -29,7 +29,7 @@ class OaiRunServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceCon
 
     record_cls = OaiRunRecord
 
-    service_id = "oarepo-oaipmh-run"
+    service_id = "oai_run"
 
     components = [
         *PermissionsPresetsConfigMixin.components,

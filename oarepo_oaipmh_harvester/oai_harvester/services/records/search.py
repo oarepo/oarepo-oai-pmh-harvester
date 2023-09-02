@@ -21,6 +21,7 @@ class OaiHarvesterSearchOptions(InvenioSearchOptions):
         "transformers": facets.transformers,
         "updated": facets.updated,
         "writer": facets.writer,
+        **getattr(InvenioSearchOptions, "facets", {}),
     }
     sort_options = {
         **InvenioSearchOptions.sort_options,

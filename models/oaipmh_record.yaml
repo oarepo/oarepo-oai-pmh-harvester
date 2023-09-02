@@ -72,36 +72,56 @@ record:
       ^label.en: Processing errors
       type: object
       properties:
-        error_type: keyword
-        error_message: fulltext+keyword
-        error_info: fulltext
-
+        code:
+          label.cs: Typ chyby
+          label.en: Error type
+          type: keyword
+        message:
+          label.cs: Chybová hodnota
+          label.en: Error message
+          type: fulltext+keyword
+        location:
+          # dot-separated location in data (if applicable)
+          label.cs: Pozice chyby v datech
+          label.en: Error location in data
+          type: keyword
+        info:
+          label.cs: Další informace o chybě
+          label.en: Additional error information
+          type: flat_object
 
     entry:
       label.cs: Položka
       label.en: Entry
-      type: flattened
+      type: flat_object
+      mapping:
+        type: object
+        enabled: false
 
     context:
       label.cs: Kontext
       label.en: Context
-      type: flattened
+      type: flat_object
+      mapping:
+        type: object
+        enabled: false
 
     manual:
       label.cs: Ručně vyžádána
       label.en: Initiated manually
       type: boolean
 
-  plugins:
-    builder:
-      disable: 
-      - invenio_cli_setup_cfg
-      - invenio_cli
-      - script_sample_data
-      - invenio_record_metadata_alembic_setup_cfg
   permissions:
     presets:
     - oai_harvester
+
+plugins:
+  builder:
+    disable:
+    - invenio_cli_setup_cfg
+    - invenio_cli
+    - script_sample_data
+    - invenio_record_metadata_alembic_setup_cfg
 
 settings:
   schema-server: 'local://'

@@ -14,12 +14,12 @@ created = DateTimeFacet(field="created", label=_("created.label"))
 
 datestamp = DateTimeFacet(field="datestamp", label=_("datestamp.label"))
 
-errors_error_message = TermsFacet(
-    field="errors.error_message.keyword", label=_("errors/error_message.label")
-)
+errors_code = TermsFacet(field="errors.code", label=_("errors/code.label"))
 
-errors_error_type = TermsFacet(
-    field="errors.error_type", label=_("errors/error_type.label")
+errors_location = TermsFacet(field="errors.location", label=_("errors/location.label"))
+
+errors_message = TermsFacet(
+    field="errors.message.keyword", label=_("errors/message.label")
 )
 
 harvester_id = TermsFacet(field="harvester.id", label=_("harvester/id.label"))

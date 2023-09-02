@@ -11,6 +11,7 @@ from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
+from invenio_db import db
 
 
 @oarepo.group(name="oai")

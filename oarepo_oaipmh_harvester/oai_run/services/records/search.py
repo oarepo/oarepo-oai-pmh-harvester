@@ -22,6 +22,7 @@ class OaiRunSearchOptions(InvenioSearchOptions):
         "status": facets.status,
         "updated": facets.updated,
         "warning": facets.warning,
+        **getattr(InvenioSearchOptions, "facets", {}),
     }
     sort_options = {
         **InvenioSearchOptions.sort_options,

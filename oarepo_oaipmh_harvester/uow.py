@@ -1,8 +1,13 @@
 from flask import current_app
-from invenio_records_resources.services.uow import RecordCommitOp
+from invenio_records_resources.services.uow import (
+    RecordCommitOp,
+    RecordDeleteOp,
+    Operation,
+)
 from oarepo_runtime.relations.uow import CachingUnitOfWork
 from opensearchpy.helpers import BulkIndexError, bulk
 from opensearchpy.helpers import expand_action as default_expand_action
+from invenio_db import db
 
 
 class BulkRecordCommitOp(RecordCommitOp):
@@ -14,7 +19,7 @@ class BulkRecordCommitOp(RecordCommitOp):
         self._previous.on_register(uow)
 
     def on_commit(self, uow):
-        """Run the operation."""
+        """Postponed."""
 
     def get_index_action(self):
         index = self._indexer.record_to_index(self._record)
@@ -34,19 +39,47 @@ class BulkRecordCommitOp(RecordCommitOp):
         return action
 
 
+class BulkRecordDeleteOp(RecordDeleteOp):
+    def __init__(self, rc: RecordDeleteOp):
+        super().__init__(rc._record, rc._indexer, rc._index_refresh)
+        self._previous = rc
+
+    def on_register(self, uow):
+        self._previous.on_register(uow)
+
+    def on_commit(self, uow):
+        """Postponed."""
+
+    def get_index_action(self):
+        index = self._indexer.record_to_index(self._record)
+        index = self._indexer._prepare_index(index)
+
+        action = {
+            "_op_type": "delete",
+            "_index": index,
+            "_id": str(self._record.id),
+        }
+        return action
+
+
 class BulkUnitOfWork(CachingUnitOfWork):
     def register(self, op):
         if isinstance(op, RecordCommitOp):
             op = BulkRecordCommitOp(op)
+        elif isinstance(op, RecordDeleteOp):
+            op = BulkRecordDeleteOp(op)
         return super().register(op)
 
     def commit(self):
-        super().commit()
+        # prevent session to extend outside of this call
+        with db.session.begin_nested():
+            super().commit()
+
         # do bulk indexing
         bulk_data = []
         indexer = None
         for op in self._operations:
-            if isinstance(op, BulkRecordCommitOp):
+            if isinstance(op, BulkRecordCommitOp) or isinstance(op, BulkRecordDeleteOp):
                 indexer = op._indexer
                 bulk_data.append(op.get_index_action())
         if indexer:

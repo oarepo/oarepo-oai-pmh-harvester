@@ -31,7 +31,7 @@ class OaiBatchServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceC
 
     record_cls = OaiBatchRecord
 
-    service_id = "oarepo-oaipmh-batch"
+    service_id = "oai_batch"
 
     components = [
         *PermissionsPresetsConfigMixin.components,

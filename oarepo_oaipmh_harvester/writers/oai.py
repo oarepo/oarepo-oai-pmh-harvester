@@ -1,4 +1,5 @@
 import datetime
+import time
 import traceback
 
 from invenio_db import db
@@ -44,9 +45,11 @@ class OAIWriter(BatchWriter):
                         if entry.entry["id"] in indexing_error_map:
                             entry.errors.append(
                                 {
-                                    'error_type': 'indexer',
-                                    'error_message': 'indexer error',   # TODO: is it possible to have a better error message?
-                                    'error_info': indexing_error_map[entry.entry["id"]]["index"]["error"]
+                                    "error_type": "indexer",
+                                    "error_message": "indexer error",  # TODO: is it possible to have a better error message?
+                                    "error_info": indexing_error_map[entry.entry["id"]][
+                                        "index"
+                                    ]["error"],
                                 }
                             )
 
@@ -71,8 +74,7 @@ class OAIWriter(BatchWriter):
         # check if all batches have already finished and if so, set the run as finished
         if oai_run["batches"]:
             self.set_run_status(batch, oai_run)
-        db.session.expunge_all()
-
+            db.session.expunge_all()
         return batch
 
     def set_run_status(self, batch, oai_run):
@@ -123,12 +125,9 @@ class OAIWriter(BatchWriter):
                 status = "E"
                 for err in e.errors:
                     err = err.json
-                    err.pop('error_info', None)
+                    err.pop("error_info", None)
                     errors.append(
-                        {
-                            "oai_identifier": e.context["oai"]["identifier"],
-                            **err
-                        }
+                        {"oai_identifier": e.context["oai"]["identifier"], **err}
                     )
             identifiers.append(e.context["oai"]["identifier"])
         batch_data["status"] = status
@@ -207,7 +206,10 @@ class OAIWriter(BatchWriter):
             elif "errors" in oai_rec:
                 del oai_rec["errors"]
             oai_rec["datestamp"] = e.context["oai"]["datestamp"]
-            oai_rec["entry"] = e.entry
+            # add entry only on errors, no need to add it on normal records as the entry has been stored
+            # and pid & version are in the context
+            if e.context["manual"] or e.errors:
+                oai_rec["entry"] = e.entry
             oai_rec["context"] = e.context
             oai_rec["batch"] = {"id": batch.context["batch_id"]}
             oai_rec["manual"] = e.context["manual"]
@@ -223,6 +225,7 @@ class OAIWriter(BatchWriter):
         persisted_entries = []
         skipped_entries = []
         deleted_entries = []
+        errored_entries = []
 
         if hasattr(self.writer, "write_batch"):
             # split the batch do deleted and normal items
@@ -243,6 +246,7 @@ class OAIWriter(BatchWriter):
                         self.delete_entry(entry, uow)
                     except Exception as e:
                         entry.errors.append(StreamEntryError.from_exception(e))
+                        errored_entries.append(entry)
         else:
             for entry in batch.entries:
                 if entry.ok:
@@ -251,12 +255,16 @@ class OAIWriter(BatchWriter):
                             self.delete_entry(entry, uow)
                             deleted_entries.append(entry)
                         else:
-                            persisted_entries.append(self.writer.write(entry, uow=uow))
+                            self.writer.write(entry, uow=uow)
+                            persisted_entries.append(entry)
                     except Exception as e:
                         entry.errors.append(StreamEntryError.from_exception(e))
+                        errored_entries.append(entry)
                 else:
                     skipped_entries.append(entry)
-        batch.entries = persisted_entries + skipped_entries + deleted_entries
+        batch.entries = (
+            persisted_entries + skipped_entries + deleted_entries + errored_entries
+        )
         return batch
 
     def delete_entry(self, entry, uow):
@@ -271,3 +279,12 @@ class OAIWriter(BatchWriter):
         if oai_record and "local_identifier" in oai_record[0]:
             entry.entry["id"] = oai_record[0]["local_identifier"]
             self.writer.delete(entry, uow=uow)
+        else:
+            # the record does not exist, try to create one with metadata
+            with db.session.begin_nested():
+                try:
+                    self.writer.write(entry, uow=uow)
+                    entry.entry["id"] = entry.context["pid"]
+                    self.writer.delete(entry, uow=uow)
+                except:
+                    pass
