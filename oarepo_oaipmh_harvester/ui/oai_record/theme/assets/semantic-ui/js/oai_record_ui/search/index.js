@@ -1,5 +1,6 @@
 import { createSearchAppInit } from '@js/invenio_search_ui'
 import {
+  ActiveFiltersElement,
   BucketAggregationElement,
   BucketAggregationValuesElement,
   CountElement,
@@ -7,7 +8,9 @@ import {
   SearchAppFacets,
   SearchAppSearchbarContainer,
   SearchFiltersToggleElement,
-  SearchAppSort
+  SearchAppResultOptions,
+  SearchAppSort,
+  SearchAppLayout
 } from '@js/oarepo_ui/search'
 import {
   OaiRecordResultsListItemWithState
@@ -21,16 +24,18 @@ const ResultsListItemWithConfig = parametrize(OaiRecordResultsListItemWithState,
 
 
 export const defaultComponents = {
+  [`${appName}.ActiveFilters.element`]: ActiveFiltersElement,
   [`${appName}.BucketAggregation.element`]: BucketAggregationElement,
   [`${appName}.BucketAggregationValues.element`]: BucketAggregationValuesElement,
   [`${appName}.Count.element`]: CountElement,
-  // [`${appName}.EmptyResults.element`]: EmptyResultsElement,
   [`${appName}.Error.element`]: ErrorElement,
   // [`${appName}.ResultsGrid.item`]: ResultsGridItemWithConfig,
   [`${appName}.ResultsList.item`]: ResultsListItemWithConfig,
   [`${appName}.SearchApp.facets`]: SearchAppFacets,
   [`${appName}.SearchApp.searchbarContainer`]: SearchAppSearchbarContainerWithConfig,
   [`${appName}.SearchApp.sort`]: SearchAppSort,
+  [`${appName}.SearchApp.layout`]: SearchAppLayout,
+  [`${appName}.SearchApp.resultOptions`]: SearchAppResultOptions,
   [`${appName}.SearchFilters.Toggle.element`]: SearchFiltersToggleElement,
 }
 

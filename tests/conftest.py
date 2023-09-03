@@ -21,11 +21,17 @@ def app_config(app_config):
     app_config[
         "RECORDS_REFRESOLVER_STORE"
     ] = "invenio_jsonschemas.proxies.current_refresolver_store"
-    app_config["DEFAULT_OAREPO_OAIPMH_HARVESTER_LOADERS"] = {"file": {"reader": "file"}}
+    app_config["DEFAULT_OAREPO_OAIPMH_HARVESTER_LOADERS"] = {
+        "file": {"reader": "file"},
+        "test_data": {"reader": "test_data"},
+    }
     app_config["DEFAULT_OAREPO_OAIPMH_HARVESTER_TRANSFORMERS"] = {
         "error_transformer": {"transformer": "error_transformer"},
     }
-    app_config["DATASTREAMS_READERS"] = {"file": "tests.datastreams:MockOAIReader"}
+    app_config["DATASTREAMS_READERS"] = {
+        "file": "tests.datastreams:MockOAIReader",
+        "test_data": "tests.datastreams:TestDataOAIReader",
+    }
     app_config["DATASTREAMS_TRANSFORMERS"] = {
         "error_transformer": "tests.datastreams:ErrorTransformer"
     }

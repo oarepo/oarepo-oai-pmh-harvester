@@ -5,8 +5,9 @@ record:
     alias: oarepo-oaipmh-batch
   service-config:
     components:
-      - invenio_records_resources.services.records.components.DataComponent
-
+      - CachingRelationsComponent
+    imports:
+      - import: oarepo_runtime.relations.components.CachingRelationsComponent
   properties:
     run:
       label.cs: Běh harvestru

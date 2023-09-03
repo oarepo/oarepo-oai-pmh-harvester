@@ -58,10 +58,10 @@ def harvest(
                 params={"facets": {"code": [harvester_or_code]}},
             )
         )
-        harvester = harvesters[0]
+        harvester = harvesters[0].data
     else:
         harvester = harvester_or_code
-    harvester = dict(harvester.data)
+    harvester = dict(harvester)
 
     harvester.pop("links", None)
     harvester.pop("created", None)
@@ -127,7 +127,7 @@ def harvest(
         success_callback=harvester_success.signature(),
         error_callback=harvester_error.signature(),
         progress_callback=progress,
-        batch_size=10,
+        batch_size=harvester.get("batch_size", 10),
         in_process=not on_background,
         extra_parameters={"run": run_id},
         identity=system_identity,

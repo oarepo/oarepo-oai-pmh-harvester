@@ -5,7 +5,9 @@ record:
     alias: oarepo-oaipmh-run
   service-config:
     components:
-      - invenio_records_resources.services.records.components.DataComponent
+      - CachingRelationsComponent
+    imports:
+      - import: oarepo_runtime.relations.components.CachingRelationsComponent
 
   properties:
     harvester:

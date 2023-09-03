@@ -48,5 +48,23 @@
     "entry": {
       "title": "delet"
     }
+  },
+  {
+    "oai": {
+      "identifier": "6",
+      "datestamp": "2000-01-03"
+    },
+    "entry": {
+      "title": "edelet"
+    }
+  },
+  {
+    "oai": {
+      "identifier": "6",
+      "datestamp": "2000-01-04",
+      "deleted": true
+    },
+    "entry": {
+    }
   }
 ]

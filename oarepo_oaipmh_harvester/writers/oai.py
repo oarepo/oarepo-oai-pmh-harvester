@@ -13,6 +13,7 @@ from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.uow import BulkUnitOfWork
+from oarepo_runtime.profile import timer
 
 
 class OAIWriter(BatchWriter):
@@ -28,6 +29,7 @@ class OAIWriter(BatchWriter):
         self.writer = get_instance(DATASTREAMS_WRITERS, "writer", writer_params)
         self._identity = identity
 
+    @timer.time
     def write_batch(self, batch: StreamBatch, *args, **kwargs):
         if batch.entries:
             with BulkUnitOfWork() as uow:
@@ -164,6 +166,7 @@ class OAIWriter(BatchWriter):
                     # do not save the item as it has the same datestamp
                     e.filtered = True
 
+    @timer.time
     def create_oai_records(self, batch, uow):
         oai_records = {
             x["oai_identifier"]: x
@@ -180,6 +183,7 @@ class OAIWriter(BatchWriter):
                 )
             )
         }
+
         for e in batch.entries:
             oai_rec = oai_records.get(e.context["oai"]["identifier"])
             if oai_rec:
@@ -214,11 +218,15 @@ class OAIWriter(BatchWriter):
             oai_rec["batch"] = {"id": batch.context["batch_id"]}
             oai_rec["manual"] = e.context["manual"]
             oai_rec["harvester"] = {"id": e.context["oai_harvester_id"]}
-            if update:
-                record_service.update(self._identity, oai_rec["id"], oai_rec, uow=uow)
-            else:
-                record_service.create(self._identity, oai_rec, uow=uow)
+            with timer.time_block("update_create_oai"):
+                if update:
+                    record_service.update(
+                        self._identity, oai_rec["id"], oai_rec, uow=uow
+                    )
+                else:
+                    record_service.create(self._identity, oai_rec, uow=uow)
 
+    @timer.time
     def write_entries(self, batch: StreamBatch, args, kwargs, uow):
         # TODO: write only if the entry has been modified
 

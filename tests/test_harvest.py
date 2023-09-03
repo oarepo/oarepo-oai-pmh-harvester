@@ -25,6 +25,7 @@ def test_harvest_synchronous(app, db, record_service, client):
         "loader": "file",
         "transformers": ["error_transformer"],
         "writer": "service{service=simple_model}",
+        "batch_size": 6,
     }
     harvester = _add_harvester(harvester_metadata)
 
@@ -99,3 +100,42 @@ def test_harvest_synchronous(app, db, record_service, client):
     record_pid = oai_records["5"]["context"]["pid"]
     with pytest.raises(PIDDeletedError):
         record_service.read(system_identity, record_pid)
+
+    # check batch size works. in fact, #6 should have two batches in historical version)
+    # so that the check should be more thorough
+    assert oai_records["4"]["batch"]["id"] != oai_records["6"]["batch"]["id"]
+
+    record_pid = oai_records["6"]["context"]["pid"]
+    with pytest.raises(PIDDeletedError):
+        record_service.read(system_identity, record_pid)
+
+
+def test_harvest_performance(app, db, record_service):
+    # create oai harvester with a test reader
+    data_count = 1000
+    batch_size = 100
+    harvester_metadata = {
+        "code": "test",
+        "baseurl": (Path(__file__).parent / "harvest_data.json").as_uri(),
+        "metadataprefix": "test",
+        "comment": "comment",
+        "name": "Test harvester",
+        "batch_size": batch_size,
+        "setspecs": "test",
+        "loader": f"test_data{{count={data_count}}}",
+        "transformers": ["error_transformer"],
+        "writer": "service{service=simple_model}",
+    }
+    harvester = _add_harvester(harvester_metadata)
+
+    # run the harvester synchronously
+    def progress(*args, **kwargs):
+        print(args, kwargs)
+
+    run_id = harvest(
+        harvester,
+        all_records=True,
+        on_background=False,
+        identifiers=None,
+        progress_callback=progress,
+    )
