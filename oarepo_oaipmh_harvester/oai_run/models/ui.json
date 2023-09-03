@@ -1,0 +1,142 @@
+{
+    "module": "oarepo_oaipmh_harvester.oai_run.models",
+    "file": "oarepo_oaipmh_harvester/oai_run/models/ui.json",
+    "alias": "oarepo-oaipmh-run",
+    "detail": "model",
+    "input": "model",
+    "help": ".help",
+    "label": ".label",
+    "hint": ".hint",
+    "children": {
+        "$schema": {
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "$schema.help",
+            "label": "$schema.label",
+            "hint": "$schema.hint",
+            "facet": "_schema"
+        },
+        "batches": {
+            "detail": "integer",
+            "input": "integer",
+            "help": "batches.help",
+            "label": "batches.label",
+            "hint": "batches.hint",
+            "facet": "batches"
+        },
+        "created": {
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "created.help",
+            "label": "created.label",
+            "hint": "created.hint",
+            "facet": "created"
+        },
+        "duration": {
+            "detail": "double",
+            "input": "double",
+            "help": "duration.help",
+            "label": "duration.label",
+            "hint": "duration.hint",
+            "facet": "duration"
+        },
+        "error": {
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "error.help",
+            "label": "error.label",
+            "hint": "error.hint",
+            "facet": "error"
+        },
+        "finished": {
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "finished.help",
+            "label": "finished.label",
+            "hint": "finished.hint",
+            "facet": "finished"
+        },
+        "harvester": {
+            "detail": "relation",
+            "input": "relation",
+            "help": "harvester.help",
+            "label": "harvester.label",
+            "hint": "harvester.hint",
+            "children": {
+                "id": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/id.help",
+                    "label": "harvester/id.label",
+                    "hint": "harvester/id.hint",
+                    "facet": "harvester_id"
+                },
+                "code": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/code.help",
+                    "label": "harvester/code.label",
+                    "hint": "harvester/code.hint",
+                    "facet": "harvester_code"
+                },
+                "@v": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/@v.help",
+                    "label": "harvester/@v.label",
+                    "hint": "harvester/@v.hint",
+                    "facet": "harvester__version"
+                }
+            }
+        },
+        "id": {
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "id.help",
+            "label": "id.label",
+            "hint": "id.hint",
+            "facet": "_id"
+        },
+        "manual": {
+            "detail": "boolean",
+            "input": "boolean",
+            "help": "manual.help",
+            "label": "manual.label",
+            "hint": "manual.hint",
+            "facet": "manual"
+        },
+        "started": {
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "started.help",
+            "label": "started.label",
+            "hint": "started.hint",
+            "facet": "started"
+        },
+        "status": {
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "status.help",
+            "label": "status.label",
+            "hint": "status.hint",
+            "enum": "status.enum",
+            "facet": "status"
+        },
+        "updated": {
+            "detail": "datetime",
+            "input": "datetime",
+            "help": "updated.help",
+            "label": "updated.label",
+            "hint": "updated.hint",
+            "facet": "updated"
+        },
+        "warning": {
+            "detail": "keyword",
+            "input": "keyword",
+            "help": "warning.help",
+            "label": "warning.label",
+            "hint": "warning.hint",
+            "facet": "warning"
+        }
+    }
+}

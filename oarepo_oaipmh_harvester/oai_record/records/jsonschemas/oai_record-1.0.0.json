@@ -1,0 +1,89 @@
+{
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "batch": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "@v": {
+                    "type": "string"
+                }
+            }
+        },
+        "context": {
+            "type": "object"
+        },
+        "created": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "datestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "entry": {
+            "type": "object"
+        },
+        "errors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "info": {
+                        "type": "object"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "harvester": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "@v": {
+                    "type": "string"
+                }
+            }
+        },
+        "id": {
+            "type": "string"
+        },
+        "local_identifier": {
+            "type": "string"
+        },
+        "manual": {
+            "type": "boolean"
+        },
+        "oai_identifier": {
+            "type": "string"
+        },
+        "status": {
+            "type": "string"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "warnings": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

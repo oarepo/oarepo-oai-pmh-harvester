@@ -1,0 +1,55 @@
+{
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "baseurl": {
+            "type": "string"
+        },
+        "batch_size": {
+            "type": "integer"
+        },
+        "code": {
+            "type": "string"
+        },
+        "comment": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "id": {
+            "type": "string"
+        },
+        "loader": {
+            "type": "string"
+        },
+        "max_records": {
+            "type": "integer"
+        },
+        "metadataprefix": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "setspecs": {
+            "type": "string"
+        },
+        "transformers": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "updated": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "writer": {
+            "type": "string"
+        }
+    }
+}

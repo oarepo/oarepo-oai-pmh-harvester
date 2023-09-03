@@ -1,0 +1,228 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2023-09-03T09:11:34.002099\n"
+"PO-Revision-Date: 2023-09-03T09:11:34.002100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "$schema.help"
+msgstr ""
+
+msgid "$schema.label"
+msgstr ""
+
+msgid "$schema.hint"
+msgstr ""
+
+msgid "batch.label"
+msgstr "Harvester batch"
+
+msgid "batch.help"
+msgstr ""
+
+msgid "batch.hint"
+msgstr ""
+
+msgid "batch/id.help"
+msgstr ""
+
+msgid "batch/id.label"
+msgstr ""
+
+msgid "batch/id.hint"
+msgstr ""
+
+msgid "batch/@v.help"
+msgstr ""
+
+msgid "batch/@v.label"
+msgstr ""
+
+msgid "batch/@v.hint"
+msgstr ""
+
+msgid "context.label"
+msgstr "Context"
+
+msgid "context.help"
+msgstr ""
+
+msgid "context.hint"
+msgstr ""
+
+msgid "created.help"
+msgstr ""
+
+msgid "created.label"
+msgstr ""
+
+msgid "created.hint"
+msgstr ""
+
+msgid "datestamp.label"
+msgstr "OAI date"
+
+msgid "datestamp.help"
+msgstr ""
+
+msgid "datestamp.hint"
+msgstr ""
+
+msgid "entry.label"
+msgstr "Entry"
+
+msgid "entry.help"
+msgstr ""
+
+msgid "entry.hint"
+msgstr ""
+
+msgid "errors.label"
+msgstr "Processing errors"
+
+msgid "errors.help"
+msgstr ""
+
+msgid "errors.hint"
+msgstr ""
+
+msgid "errors/code.label"
+msgstr "Error type"
+
+msgid "errors/code.help"
+msgstr ""
+
+msgid "errors/code.hint"
+msgstr ""
+
+msgid "errors/info.label"
+msgstr "Additional error information"
+
+msgid "errors/info.help"
+msgstr ""
+
+msgid "errors/info.hint"
+msgstr ""
+
+msgid "errors/location.label"
+msgstr "Error location in data"
+
+msgid "errors/location.help"
+msgstr ""
+
+msgid "errors/location.hint"
+msgstr ""
+
+msgid "errors/message.label"
+msgstr "Error message"
+
+msgid "errors/message.help"
+msgstr ""
+
+msgid "errors/message.hint"
+msgstr ""
+
+msgid "harvester.label"
+msgstr "Harvester"
+
+msgid "harvester.help"
+msgstr ""
+
+msgid "harvester.hint"
+msgstr ""
+
+msgid "harvester/id.help"
+msgstr ""
+
+msgid "harvester/id.label"
+msgstr ""
+
+msgid "harvester/id.hint"
+msgstr ""
+
+msgid "harvester/@v.help"
+msgstr ""
+
+msgid "harvester/@v.label"
+msgstr ""
+
+msgid "harvester/@v.hint"
+msgstr ""
+
+msgid "id.help"
+msgstr ""
+
+msgid "id.label"
+msgstr ""
+
+msgid "id.hint"
+msgstr ""
+
+msgid "local_identifier.label"
+msgstr "Local PID"
+
+msgid "local_identifier.help"
+msgstr ""
+
+msgid "local_identifier.hint"
+msgstr ""
+
+msgid "manual.label"
+msgstr "Initiated manually"
+
+msgid "manual.help"
+msgstr ""
+
+msgid "manual.hint"
+msgstr ""
+
+msgid "oai_identifier.label"
+msgstr "Remote OAI identifier"
+
+msgid "oai_identifier.help"
+msgstr ""
+
+msgid "oai_identifier.hint"
+msgstr ""
+
+msgid "status.label"
+msgstr "Processing State"
+
+msgid "status.enum.O"
+msgstr "Finished"
+
+msgid "status.enum.W"
+msgstr "Warning"
+
+msgid "status.enum.E"
+msgstr "Error"
+
+msgid "status.enum.S"
+msgstr "Skipped"
+
+msgid "status.help"
+msgstr ""
+
+msgid "status.hint"
+msgstr ""
+
+msgid "updated.help"
+msgstr ""
+
+msgid "updated.label"
+msgstr ""
+
+msgid "updated.hint"
+msgstr ""
+
+msgid "warnings.label"
+msgstr "Warnings"
+
+msgid "warnings.help"
+msgstr ""
+
+msgid "warnings.hint"
+msgstr ""

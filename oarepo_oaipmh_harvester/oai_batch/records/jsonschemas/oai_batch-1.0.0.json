@@ -1,0 +1,73 @@
+{
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "errors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "info": {
+                        "type": "object"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "oai_identifier": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "finished": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "id": {
+            "type": "string"
+        },
+        "identifiers": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "manual": {
+            "type": "boolean"
+        },
+        "run": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "@v": {
+                    "type": "string"
+                }
+            }
+        },
+        "started": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "status": {
+            "type": "string"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date-time"
+        }
+    }
+}

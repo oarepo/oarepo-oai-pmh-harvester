@@ -1,0 +1,59 @@
+{
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "batches": {
+            "type": "integer"
+        },
+        "created": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "duration": {
+            "type": "number"
+        },
+        "error": {
+            "type": "string"
+        },
+        "finished": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "harvester": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "@v": {
+                    "type": "string"
+                }
+            }
+        },
+        "id": {
+            "type": "string"
+        },
+        "manual": {
+            "type": "boolean"
+        },
+        "started": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "status": {
+            "type": "string"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "warning": {
+            "type": "string"
+        }
+    }
+}
