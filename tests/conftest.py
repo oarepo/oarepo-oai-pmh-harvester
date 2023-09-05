@@ -1,4 +1,3 @@
-
 import pytest
 from invenio_access.permissions import system_identity
 from invenio_app.factory import create_app as _create_app

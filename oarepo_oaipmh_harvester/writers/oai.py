@@ -1,19 +1,17 @@
 import datetime
-import time
-import traceback
 
 from invenio_db import db
-from oarepo_runtime.datastreams.datastreams import StreamEntryError
 from oarepo_runtime.datastreams.config import DATASTREAMS_WRITERS, get_instance
+from oarepo_runtime.datastreams.datastreams import StreamEntryError
 from oarepo_runtime.datastreams.writers import BatchWriter, StreamBatch
+from oarepo_runtime.profile import timer
+from oarepo_runtime.uow import BulkUnitOfWork
 from opensearchpy.helpers import BulkIndexError
 
 from oarepo_oaipmh_harvester.oai_batch.proxies import current_service as batch_service
 from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.proxies import current_harvester
-from oarepo_oaipmh_harvester.uow import BulkUnitOfWork
-from oarepo_runtime.profile import timer
 
 
 class OAIWriter(BatchWriter):
@@ -46,13 +44,13 @@ class OAIWriter(BatchWriter):
                     for entry in batch.entries:
                         if entry.entry["id"] in indexing_error_map:
                             entry.errors.append(
-                                {
-                                    "error_type": "indexer",
-                                    "error_message": "indexer error",  # TODO: is it possible to have a better error message?
-                                    "error_info": indexing_error_map[entry.entry["id"]][
-                                        "index"
-                                    ]["error"],
-                                }
+                                StreamEntryError(
+                                    code="indexer",
+                                    message="indexer error",
+                                    info=indexing_error_map[entry.entry["id"]]["index"][
+                                        "error"
+                                    ],
+                                )
                             )
 
         with BulkUnitOfWork() as uow:
