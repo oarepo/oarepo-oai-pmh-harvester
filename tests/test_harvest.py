@@ -14,7 +14,7 @@ from oarepo_oaipmh_harvester.oai_record.proxies import (
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 
 
-def test_harvest_synchronous(app, db, record_service, client):
+def test_harvest_synchronous(app, db, record_service, client, search_clear):
     # create oai harvester with a test reader
     harvester_metadata = {
         "code": "test",
@@ -111,7 +111,7 @@ def test_harvest_synchronous(app, db, record_service, client):
         record_service.read(system_identity, record_pid)
 
 
-def test_harvest_performance(app, db, record_service):
+def test_harvest_performance(app, db, record_service, search_clear):
     # create oai harvester with a test reader
     data_count = 1000
     batch_size = 100
