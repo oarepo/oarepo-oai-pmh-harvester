@@ -1,6 +1,10 @@
 from pathlib import Path
 from pprint import pprint
 
+import pytest
+from invenio_access.permissions import system_identity
+from invenio_pidstore.errors import PIDDeletedError
+
 from oarepo_oaipmh_harvester.cli import _add_harvester
 from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_batch.proxies import current_service as batch_service
@@ -8,9 +12,6 @@ from oarepo_oaipmh_harvester.oai_record.proxies import (
     current_service as oai_record_service,
 )
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
-from invenio_access.permissions import system_identity
-import pytest
-from invenio_pidstore.errors import PIDDeletedError
 
 
 def test_harvest_synchronous(app, db, record_service, client):

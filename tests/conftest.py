@@ -1,4 +1,3 @@
-from pathlib import Path
 
 import pytest
 from invenio_access.permissions import system_identity

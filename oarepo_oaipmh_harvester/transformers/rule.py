@@ -9,7 +9,6 @@ from oarepo_runtime.datastreams.datastreams import StreamEntry, StreamEntryError
 from oarepo_runtime.datastreams.transformers import BatchTransformer, StreamBatch
 
 
-
 class OAIRuleTransformer(BatchTransformer):
     def __init__(self, identity, **kwargs) -> None:
         super().__init__()

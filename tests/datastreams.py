@@ -1,12 +1,13 @@
 import contextlib
+from urllib.parse import unquote, urlparse
+
 from oarepo_runtime.datastreams import (
+    BaseReader,
     BaseTransformer,
     StreamEntry,
     TransformerError,
-    BaseReader,
 )
 from oarepo_runtime.datastreams.readers.json import JSONReader
-from urllib.parse import unquote, urlparse
 
 
 class MockOAIReader(JSONReader):
