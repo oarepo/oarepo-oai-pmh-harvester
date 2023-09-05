@@ -1,7 +1,6 @@
 import functools
 import threading
 import time
-import traceback
 
 threadLocal = threading.local()
 
@@ -33,4 +32,3 @@ def timeit(f):
 
     # otherwise it is a context manager
     return TIM(f)
-

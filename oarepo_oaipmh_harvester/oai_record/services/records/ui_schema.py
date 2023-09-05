@@ -1,5 +1,4 @@
 import marshmallow as ma
-from marshmallow import fields as ma_fields
 from marshmallow import validate as ma_validate
 from oarepo_runtime.ui import marshmallow as l10n
 from oarepo_runtime.ui.marshmallow import InvenioUISchema
@@ -9,44 +8,46 @@ class OaiRecordUISchema(InvenioUISchema):
     class Meta:
         unknown = ma.RAISE
 
-    batch = ma_fields.Nested(lambda: BatchUISchema())
+    batch = ma.fields.Nested(lambda: BatchUISchema(), required=True)
 
-    context = ma_fields.Raw()
+    context = ma.fields.Dict()
 
     datestamp = l10n.LocalizedDateTime()
 
-    entry = ma_fields.Raw()
+    entry = ma.fields.Dict()
 
-    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
+    errors = ma.fields.List(ma.fields.Nested(lambda: ErrorsItemUISchema()))
 
-    harvester = ma_fields.Nested(lambda: BatchUISchema())
+    harvester = ma.fields.Nested(lambda: BatchUISchema(), required=True)
 
-    local_identifier = ma_fields.String()
+    local_identifier = ma.fields.String()
 
-    manual = ma_fields.Boolean()
+    manual = ma.fields.Boolean()
 
-    oai_identifier = ma_fields.String()
+    oai_identifier = ma.fields.String()
 
-    status = ma_fields.String(validate=[ma_validate.OneOf(["O", "W", "E", "S"])])
+    status = ma.fields.String(validate=[ma_validate.OneOf(["O", "W", "E", "S"])])
 
-    warnings = ma_fields.List(ma_fields.String())
+    warnings = ma.fields.List(ma.fields.String())
 
 
 class BatchUISchema(ma.Schema):
     class Meta:
         unknown = ma.RAISE
 
-    _id = ma_fields.String(data_key="id", attribute="id")
+    _id = ma.fields.String(data_key="id", attribute="id")
 
-    _version = ma_fields.String(data_key="@v", attribute="@v")
+    _version = ma.fields.String(data_key="@v", attribute="@v")
 
 
 class ErrorsItemUISchema(ma.Schema):
     class Meta:
         unknown = ma.RAISE
 
-    error_info = ma_fields.String()
+    code = ma.fields.String()
 
-    error_message = ma_fields.String()
+    info = ma.fields.Dict()
 
-    error_type = ma_fields.String()
+    location = ma.fields.String()
+
+    message = ma.fields.String()

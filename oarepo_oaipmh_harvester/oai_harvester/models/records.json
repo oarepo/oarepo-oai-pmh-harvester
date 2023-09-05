@@ -1,5 +1,23 @@
 {
     "model": {
+        "type": "model",
+        "permissions": {
+            "presets": [
+                "oai_harvester"
+            ],
+            "generate": true,
+            "extra-code": "",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.permissions",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.permissions.OaiHarvesterPermissionPolicy",
+            "base-classes": [
+                "RecordPermissionPolicy"
+            ],
+            "imports": [
+                {
+                    "import": "invenio_records_permissions.RecordPermissionPolicy"
+                }
+            ]
+        },
         "marshmallow": {
             "imports": [
                 {
@@ -14,6 +32,7 @@
             "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema.OaiHarvesterSchema",
             "extra-code": ""
         },
+        "searchable": true,
         "ui": {
             "marshmallow": {
                 "imports": [
@@ -33,65 +52,15 @@
             "file": "oarepo_oaipmh_harvester/oai_harvester/models/ui.json",
             "alias": "oarepo-oaipmh-harvester"
         },
-        "type": "model",
-        "permissions": {
-            "presets": [
-                "oai_harvester"
-            ],
-            "generate": true,
-            "extra-code": "",
-            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.permissions",
-            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.permissions.OaiHarvesterPermissionPolicy",
-            "base-classes": [
-                "RecordPermissionPolicy"
+        "service-config": {
+            "components": [
+                "CachingRelationsComponent",
+                "DataComponent"
             ],
             "imports": [
                 {
-                    "import": "invenio_records_permissions.RecordPermissionPolicy"
-                }
-            ]
-        },
-        "plugins": {
-            "builder": {
-                "disable": [
-                    "script_sample_data",
-                    "invenio_cli_setup_cfg",
-                    "invenio_cli",
-                    "invenio_record_metadata_alembic_setup_cfg"
-                ]
-            }
-        },
-        "searchable": true,
-        "module": {
-            "alias": "oarepo-oaipmh-harvester",
-            "qualified": "oarepo_oaipmh_harvester.oai_harvester",
-            "path": "oarepo_oaipmh_harvester/oai_harvester",
-            "base": "oai_harvester",
-            "base-upper": "OAI_HARVESTER",
-            "kebab-module": "oarepo-oaipmh-harvester-oai-harvester",
-            "prefix": "OaiHarvester",
-            "prefix-upper": "OAIHARVESTER",
-            "prefix-snake": "oai_harvester",
-            "suffix": "oai_harvester",
-            "suffix-upper": "OAI_HARVESTER",
-            "suffix-snake": "oai_harvester"
-        },
-        "service-config": {
-            "components": [
-                "invenio_records_resources.services.records.components.DataComponent",
-                "DataComponent"
-            ],
-            "generate": true,
-            "config-key": "OAI_HARVESTER_RECORD_SERVICE_CONFIG",
-            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.config",
-            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.config.OaiHarvesterServiceConfig",
-            "extra-code": "",
-            "service-id": "oarepo-oaipmh-harvester",
-            "base-classes": [
-                "PermissionsPresetsConfigMixin",
-                "InvenioRecordServiceConfig"
-            ],
-            "imports": [
+                    "import": "oarepo_runtime.relations.components.CachingRelationsComponent"
+                },
                 {
                     "import": "invenio_records_resources.services.RecordServiceConfig",
                     "alias": "InvenioRecordServiceConfig"
@@ -102,10 +71,39 @@
                 {
                     "import": "invenio_records_resources.services.records.components.DataComponent"
                 }
+            ],
+            "generate": true,
+            "config-key": "OAI_HARVESTER_RECORD_SERVICE_CONFIG",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.config",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.config.OaiHarvesterServiceConfig",
+            "extra-code": "",
+            "service-id": "oai_harvester",
+            "base-classes": [
+                "PermissionsPresetsConfigMixin",
+                "InvenioRecordServiceConfig"
             ]
+        },
+        "module": {
+            "alias": "oarepo-oaipmh-harvester",
+            "qualified": "oarepo_oaipmh_harvester.oai_harvester",
+            "path": "oarepo_oaipmh_harvester/oai_harvester",
+            "base": "oai_harvester",
+            "base-upper": "OAI_HARVESTER",
+            "base-title": "Oai_harvester",
+            "kebab-module": "oarepo-oaipmh-harvester-oai-harvester",
+            "prefix": "OaiHarvester",
+            "prefix-upper": "OAIHARVESTER",
+            "prefix-snake": "oai_harvester",
+            "suffix": "oai_harvester",
+            "suffix-upper": "OAI_HARVESTER",
+            "suffix-snake": "oai_harvester"
         },
         "sample": {
             "file": "data/sample_data.yaml"
+        },
+        "ext-resource": {
+            "generate": true,
+            "skip": false
         },
         "model-name": "Oai_Harvester",
         "search-options": {
@@ -132,10 +130,10 @@
         "ext": {
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_harvester.ext",
-            "class": "oarepo_oaipmh_harvester.oai_harvester.ext.OaiHarvesterExt",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.ext.Oai_harvesterExt",
             "base-classes": [],
             "extra_code": "",
-            "alias": "oarepo-oaipmh-harvester",
+            "alias": "oarepo_oaipmh_harvester.oai_harvester",
             "imports": []
         },
         "api-blueprint": {
@@ -207,7 +205,7 @@
             ]
         },
         "saved-model": {
-            "file": "oarepo_oaipmh_harvester/oai_harvester/models/model.json",
+            "file": "oarepo_oaipmh_harvester/oai_harvester/models/records.json",
             "module": "oarepo_oaipmh_harvester.oai_harvester.models",
             "alias": "oarepo-oaipmh-harvester"
         },
@@ -281,8 +279,9 @@
                 }
             ],
             "table": "oaiharvester_metadata",
-            "alembic": "oarepo_oaipmh_harvester.oai_harvester.records.alembic",
-            "alias": "oarepo-oaipmh-harvester"
+            "alias": "oarepo-oaipmh-harvester",
+            "use-versioning": true,
+            "alembic": "oarepo_oaipmh_harvester.oai_harvester.alembic"
         },
         "service": {
             "generate": true,
@@ -325,36 +324,37 @@
             "module": "oarepo_oaipmh_harvester.oai_harvester.translations",
             "alias": "oarepo-oaipmh-harvester"
         },
-        "mapping-settings": {
+        "mapping": {
             "generate": true,
             "alias": "oarepo-oaipmh-harvester",
             "module": "oarepo_oaipmh_harvester.oai_harvester.records.mappings",
             "index": "oarepo-oaipmh-harvester-oai_harvester-1.0.0",
             "file": "oarepo_oaipmh_harvester/oai_harvester/records/mappings/os-v2/oarepo-oaipmh-harvester/oai_harvester-1.0.0.json"
         },
+        "sortable": [],
         "properties": {
             "$schema": {
+                "type": "keyword",
                 "marshmallow": {
-                    "write": false,
-                    "read": false
+                    "read": false,
+                    "write": false
                 },
                 "facets": {
                     "searchable": true
                 },
                 "ui": {
                     "marshmallow": {
-                        "write": false,
-                        "read": false
+                        "read": false,
+                        "write": false
                     }
                 },
                 "sample": {
                     "skip": true
-                },
-                "type": "keyword"
+                }
             },
             "baseurl": {
-                "required": true,
                 "type": "url",
+                "required": true,
                 "label.cs": "Sklízené URL",
                 "label.en": "URL Harvested"
             },
@@ -364,8 +364,8 @@
                 "label.en": "Batch size"
             },
             "code": {
-                "required": true,
                 "type": "keyword",
+                "required": true,
                 "label.cs": "Interní kód",
                 "label.en": "Internal code"
             },
@@ -375,42 +375,42 @@
                 "label.en": "Comment"
             },
             "created": {
-                "marshmallow": {
-                    "write": false,
-                    "read": false
-                },
-                "sample": {
-                    "skip": true
-                },
+                "type": "datetime",
                 "facets": {
                     "searchable": true
                 },
                 "ui": {
                     "marshmallow": {
-                        "write": false,
-                        "read": false
+                        "read": false,
+                        "write": false
                     }
                 },
-                "type": "datetime"
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
+                }
             },
             "id": {
+                "type": "keyword",
                 "marshmallow": {
-                    "write": false,
-                    "read": false
+                    "read": false,
+                    "write": false
                 },
                 "facets": {
                     "searchable": true
                 },
                 "ui": {
                     "marshmallow": {
-                        "write": false,
-                        "read": false
+                        "read": false,
+                        "write": false
                     }
                 },
                 "sample": {
                     "skip": true
-                },
-                "type": "keyword"
+                }
             },
             "loader": {
                 "type": "keyword",
@@ -423,26 +423,26 @@
                 "label.en": "Max records in run"
             },
             "metadataprefix": {
-                "required": true,
                 "type": "keyword",
+                "required": true,
                 "label.cs": "OAI metadata prefix",
                 "label.en": "OAI metadata prefix"
             },
             "name": {
-                "required": true,
                 "type": "keyword",
+                "required": true,
                 "label.cs": "Název harvestru",
                 "label.en": "Harvester name"
             },
             "setspecs": {
-                "required": true,
                 "type": "keyword",
+                "required": true,
                 "label.cs": "OAI set",
                 "label.en": "OAI set"
             },
             "transformers": {
-                "required": true,
                 "type": "array",
+                "required": true,
                 "label.cs": "Transformátor hodnot",
                 "label.en": "Value transformer",
                 "items": {
@@ -450,23 +450,23 @@
                 }
             },
             "updated": {
-                "marshmallow": {
-                    "write": false,
-                    "read": false
-                },
-                "sample": {
-                    "skip": true
-                },
+                "type": "datetime",
                 "facets": {
                     "searchable": true
                 },
                 "ui": {
                     "marshmallow": {
-                        "write": false,
-                        "read": false
+                        "read": false,
+                        "write": false
                     }
                 },
-                "type": "datetime"
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
+                }
             },
             "writer": {
                 "type": "keyword",

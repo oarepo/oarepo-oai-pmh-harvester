@@ -1,0 +1,70 @@
+[
+  {
+    "oai": {
+      "identifier": "1",
+      "datestamp": "2000-01-01",
+      "deleted": false
+    },
+    "entry": {
+      "title": "corr"
+    }
+  },
+  {
+    "oai": {
+      "identifier": "2",
+      "datestamp": "2000-01-02",
+      "deleted": false
+    },
+    "entry": {
+      "title": "too long title"
+    }
+  },
+  {
+    "oai": {
+      "identifier": "3",
+      "datestamp": "2000-01-03",
+      "deleted": false
+    },
+    "entry": {
+      "extra": "blah"
+    }
+  },
+  {
+    "oai": {
+      "identifier": "4",
+      "datestamp": "2000-01-03",
+      "deleted": false
+    },
+    "entry": {
+      "transformer": "tells transformer to raise error on this record"
+    }
+  },
+  {
+    "oai": {
+      "identifier": "5",
+      "datestamp": "2000-01-03",
+      "deleted": true
+    },
+    "entry": {
+      "title": "delet"
+    }
+  },
+  {
+    "oai": {
+      "identifier": "6",
+      "datestamp": "2000-01-03"
+    },
+    "entry": {
+      "title": "edelet"
+    }
+  },
+  {
+    "oai": {
+      "identifier": "6",
+      "datestamp": "2000-01-04",
+      "deleted": true
+    },
+    "entry": {
+    }
+  }
+]

@@ -1,14 +1,11 @@
 import re
+from functools import cached_property
 
 from oarepo_oaipmh_harvester.oai_run import config as config
 
 
-class OaiRunExt:
+class Oai_runExt:
     def __init__(self, app=None):
-        """Extension initialization."""
-        self.resource = None
-        self.service = None
-
         if app:
             self.init_app(app)
 
@@ -17,23 +14,10 @@ class OaiRunExt:
 
         self.init_config(app)
         if not self.is_inherited():
-            self.init_resource(app)
             self.register_flask_extension(app)
 
     def register_flask_extension(self, app):
-        app.extensions["oarepo-oaipmh-run"] = self
-
-    def init_resource(self, app):
-        """Initialize vocabulary resources."""
-
-        self.service = app.config["OAI_RUN_RECORD_SERVICE_CLASS"](
-            config=app.config["OAI_RUN_RECORD_SERVICE_CONFIG"](),
-        )
-
-        self.resource = app.config["OAI_RUN_RECORD_RESOURCE_CLASS"](
-            service=self.service,
-            config=app.config["OAI_RUN_RECORD_RESOURCE_CONFIG"](),
-        )
+        app.extensions["oarepo_oaipmh_harvester.oai_run"] = self
 
     def init_config(self, app):
         """Initialize configuration."""
@@ -54,3 +38,16 @@ class OaiRunExt:
             if loaded is not ext_class and issubclass(ext_class, loaded):
                 return True
         return False
+
+    @cached_property
+    def service_records(self):
+        return config.OAI_RUN_RECORD_SERVICE_CLASS(
+            config=config.OAI_RUN_RECORD_SERVICE_CONFIG(),
+        )
+
+    @cached_property
+    def resource_records(self):
+        return config.OAI_RUN_RECORD_RESOURCE_CLASS(
+            service=self.service_records,
+            config=config.OAI_RUN_RECORD_RESOURCE_CONFIG(),
+        )

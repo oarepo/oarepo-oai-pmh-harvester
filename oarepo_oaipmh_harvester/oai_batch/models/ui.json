@@ -37,21 +37,36 @@
                 "label": "errors.label",
                 "hint": "errors.hint",
                 "children": {
-                    "error_message": {
-                        "detail": "fulltext+keyword",
-                        "input": "fulltext+keyword",
-                        "help": "errors/error_message.help",
-                        "label": "errors/error_message.label",
-                        "hint": "errors/error_message.hint",
-                        "facet": "errors_error_message"
-                    },
-                    "error_type": {
+                    "code": {
                         "detail": "keyword",
                         "input": "keyword",
-                        "help": "errors/error_type.help",
-                        "label": "errors/error_type.label",
-                        "hint": "errors/error_type.hint",
-                        "facet": "errors_error_type"
+                        "help": "errors/code.help",
+                        "label": "errors/code.label",
+                        "hint": "errors/code.hint",
+                        "facet": "errors_code"
+                    },
+                    "info": {
+                        "detail": "flat_object",
+                        "input": "flat_object",
+                        "help": "errors/info.help",
+                        "label": "errors/info.label",
+                        "hint": "errors/info.hint"
+                    },
+                    "location": {
+                        "detail": "keyword",
+                        "input": "keyword",
+                        "help": "errors/location.help",
+                        "label": "errors/location.label",
+                        "hint": "errors/location.hint",
+                        "facet": "errors_location"
+                    },
+                    "message": {
+                        "detail": "fulltext+keyword",
+                        "input": "fulltext+keyword",
+                        "help": "errors/message.help",
+                        "label": "errors/message.label",
+                        "hint": "errors/message.hint",
+                        "facet": "errors_message"
                     },
                     "oai_identifier": {
                         "detail": "keyword",
@@ -142,6 +157,7 @@
             "help": "status.help",
             "label": "status.label",
             "hint": "status.hint",
+            "enum": "status.enum",
             "facet": "status"
         },
         "updated": {

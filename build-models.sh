@@ -13,11 +13,11 @@ rm -rf oarepo_oaipmh_harvester/oai_record
 
 .venv-builder/bin/oarepo-compile-model models/oaipmh_harvester.yaml --output-directory . -vvv
 .venv-builder/bin/oarepo-compile-model models/oaipmh_run.yaml --output-directory . \
-    --include oaipmh-harvester=oarepo_oaipmh_harvester/oai_harvester/models/model.json -vvv
+    --include oaipmh-harvester=oarepo_oaipmh_harvester/oai_harvester/models/records.json -vvv
 .venv-builder/bin/oarepo-compile-model models/oaipmh_batch.yaml --output-directory . \
-    --include oaipmh-harvester=oarepo_oaipmh_harvester/oai_harvester/models/model.json \
-    --include oaipmh-run=oarepo_oaipmh_harvester/oai_run/models/model.json -vvv
+    --include oaipmh-harvester=oarepo_oaipmh_harvester/oai_harvester/models/records.json \
+    --include oaipmh-run=oarepo_oaipmh_harvester/oai_run/models/records.json -vvv
 .venv-builder/bin/oarepo-compile-model models/oaipmh_record.yaml --output-directory . \
-    --include oaipmh-batch=oarepo_oaipmh_harvester/oai_batch/models/model.json  \
-    --include oaipmh-harvester=oarepo_oaipmh_harvester/oai_harvester/models/model.json \
-    --include oaipmh-run=oarepo_oaipmh_harvester/oai_run/models/model.json -vvv
+    --include oaipmh-batch=oarepo_oaipmh_harvester/oai_batch/models/records.json  \
+    --include oaipmh-harvester=oarepo_oaipmh_harvester/oai_harvester/models/records.json \
+    --include oaipmh-run=oarepo_oaipmh_harvester/oai_run/models/records.json -vvv

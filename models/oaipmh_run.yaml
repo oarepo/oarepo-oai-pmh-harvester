@@ -5,7 +5,9 @@ record:
     alias: oarepo-oaipmh-run
   service-config:
     components:
-      - invenio_records_resources.services.records.components.DataComponent
+      - CachingRelationsComponent
+    imports:
+      - import: oarepo_runtime.relations.components.CachingRelationsComponent
 
   properties:
     harvester:
@@ -73,16 +75,17 @@ record:
       label.en: Initiated manually
       type: boolean
 
-  plugins:
-    builder:
-      disable: 
-      - invenio_cli_setup_cfg
-      - invenio_cli
-      - script_sample_data
-      - invenio_record_metadata_alembic_setup_cfg
   permissions:
     presets:
     - oai_harvester
+
+plugins:
+  builder:
+    disable:
+    - invenio_cli_setup_cfg
+    - invenio_cli
+    - script_sample_data
+    - invenio_record_metadata_alembic_setup_cfg
 
 settings:
   schema-server: 'local://'

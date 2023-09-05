@@ -13,10 +13,16 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "error_message": {
+                    "code": {
                         "type": "string"
                     },
-                    "error_type": {
+                    "info": {
+                        "type": "object"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "message": {
                         "type": "string"
                     },
                     "oai_identifier": {

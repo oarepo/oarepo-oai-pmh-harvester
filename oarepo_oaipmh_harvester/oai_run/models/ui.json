@@ -119,6 +119,7 @@
             "help": "status.help",
             "label": "status.label",
             "hint": "status.hint",
+            "enum": "status.enum",
             "facet": "status"
         },
         "updated": {

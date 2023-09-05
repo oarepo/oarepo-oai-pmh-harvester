@@ -1,16 +1,6 @@
 {
     "model": {
-        "searchable": true,
-        "plugins": {
-            "builder": {
-                "disable": [
-                    "script_sample_data",
-                    "invenio_cli_setup_cfg",
-                    "invenio_cli",
-                    "invenio_record_metadata_alembic_setup_cfg"
-                ]
-            }
-        },
+        "type": "model",
         "permissions": {
             "presets": [
                 "oai_harvester"
@@ -42,48 +32,7 @@
             "class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.OaiBatchSchema",
             "extra-code": ""
         },
-        "service-config": {
-            "components": [
-                "invenio_records_resources.services.records.components.DataComponent",
-                "DataComponent"
-            ],
-            "generate": true,
-            "config-key": "OAI_BATCH_RECORD_SERVICE_CONFIG",
-            "module": "oarepo_oaipmh_harvester.oai_batch.services.records.config",
-            "class": "oarepo_oaipmh_harvester.oai_batch.services.records.config.OaiBatchServiceConfig",
-            "extra-code": "",
-            "service-id": "oarepo-oaipmh-batch",
-            "base-classes": [
-                "PermissionsPresetsConfigMixin",
-                "InvenioRecordServiceConfig"
-            ],
-            "imports": [
-                {
-                    "import": "invenio_records_resources.services.RecordServiceConfig",
-                    "alias": "InvenioRecordServiceConfig"
-                },
-                {
-                    "import": "oarepo_runtime.config.service.PermissionsPresetsConfigMixin"
-                },
-                {
-                    "import": "invenio_records_resources.services.records.components.DataComponent"
-                }
-            ]
-        },
-        "module": {
-            "alias": "oarepo-oaipmh-batch",
-            "qualified": "oarepo_oaipmh_harvester.oai_batch",
-            "path": "oarepo_oaipmh_harvester/oai_batch",
-            "base": "oai_batch",
-            "base-upper": "OAI_BATCH",
-            "kebab-module": "oarepo-oaipmh-harvester-oai-batch",
-            "prefix": "OaiBatch",
-            "prefix-upper": "OAIBATCH",
-            "prefix-snake": "oai_batch",
-            "suffix": "oai_batch",
-            "suffix-upper": "OAI_BATCH",
-            "suffix-snake": "oai_batch"
-        },
+        "searchable": true,
         "ui": {
             "marshmallow": {
                 "imports": [
@@ -103,9 +52,58 @@
             "file": "oarepo_oaipmh_harvester/oai_batch/models/ui.json",
             "alias": "oarepo-oaipmh-batch"
         },
-        "type": "model",
+        "service-config": {
+            "components": [
+                "CachingRelationsComponent",
+                "DataComponent"
+            ],
+            "imports": [
+                {
+                    "import": "oarepo_runtime.relations.components.CachingRelationsComponent"
+                },
+                {
+                    "import": "invenio_records_resources.services.RecordServiceConfig",
+                    "alias": "InvenioRecordServiceConfig"
+                },
+                {
+                    "import": "oarepo_runtime.config.service.PermissionsPresetsConfigMixin"
+                },
+                {
+                    "import": "invenio_records_resources.services.records.components.DataComponent"
+                }
+            ],
+            "generate": true,
+            "config-key": "OAI_BATCH_RECORD_SERVICE_CONFIG",
+            "module": "oarepo_oaipmh_harvester.oai_batch.services.records.config",
+            "class": "oarepo_oaipmh_harvester.oai_batch.services.records.config.OaiBatchServiceConfig",
+            "extra-code": "",
+            "service-id": "oai_batch",
+            "base-classes": [
+                "PermissionsPresetsConfigMixin",
+                "InvenioRecordServiceConfig"
+            ]
+        },
+        "module": {
+            "alias": "oarepo-oaipmh-batch",
+            "qualified": "oarepo_oaipmh_harvester.oai_batch",
+            "path": "oarepo_oaipmh_harvester/oai_batch",
+            "base": "oai_batch",
+            "base-upper": "OAI_BATCH",
+            "base-title": "Oai_batch",
+            "kebab-module": "oarepo-oaipmh-harvester-oai-batch",
+            "prefix": "OaiBatch",
+            "prefix-upper": "OAIBATCH",
+            "prefix-snake": "oai_batch",
+            "suffix": "oai_batch",
+            "suffix-upper": "OAI_BATCH",
+            "suffix-snake": "oai_batch"
+        },
         "sample": {
             "file": "data/sample_data.yaml"
+        },
+        "ext-resource": {
+            "generate": true,
+            "skip": false
         },
         "model-name": "Oai_Batch",
         "search-options": {
@@ -132,10 +130,10 @@
         "ext": {
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_batch.ext",
-            "class": "oarepo_oaipmh_harvester.oai_batch.ext.OaiBatchExt",
+            "class": "oarepo_oaipmh_harvester.oai_batch.ext.Oai_batchExt",
             "base-classes": [],
             "extra_code": "",
-            "alias": "oarepo-oaipmh-batch",
+            "alias": "oarepo_oaipmh_harvester.oai_batch",
             "imports": []
         },
         "api-blueprint": {
@@ -207,7 +205,7 @@
             ]
         },
         "saved-model": {
-            "file": "oarepo_oaipmh_harvester/oai_batch/models/model.json",
+            "file": "oarepo_oaipmh_harvester/oai_batch/models/records.json",
             "module": "oarepo_oaipmh_harvester.oai_batch.models",
             "alias": "oarepo-oaipmh-batch"
         },
@@ -281,8 +279,9 @@
                 }
             ],
             "table": "oaibatch_metadata",
-            "alembic": "oarepo_oaipmh_harvester.oai_batch.records.alembic",
-            "alias": "oarepo-oaipmh-batch"
+            "alias": "oarepo-oaipmh-batch",
+            "use-versioning": true,
+            "alembic": "oarepo_oaipmh_harvester.oai_batch.alembic"
         },
         "service": {
             "generate": true,
@@ -325,24 +324,23 @@
             "module": "oarepo_oaipmh_harvester.oai_batch.translations",
             "alias": "oarepo-oaipmh-batch"
         },
-        "mapping-settings": {
+        "mapping": {
             "generate": true,
             "alias": "oarepo-oaipmh-batch",
             "module": "oarepo_oaipmh_harvester.oai_batch.records.mappings",
             "index": "oarepo-oaipmh-batch-oai_batch-1.0.0",
             "file": "oarepo_oaipmh_harvester/oai_batch/records/mappings/os-v2/oarepo-oaipmh-batch/oai_batch-1.0.0.json"
         },
+        "sortable": [],
         "properties": {
             "$schema": {
-                "sample": {
-                    "skip": true
-                },
-                "facets": {
-                    "searchable": true
-                },
+                "type": "keyword",
                 "marshmallow": {
                     "read": false,
                     "write": false
+                },
+                "facets": {
+                    "searchable": true
                 },
                 "ui": {
                     "marshmallow": {
@@ -350,18 +348,14 @@
                         "write": false
                     }
                 },
-                "type": "keyword"
+                "sample": {
+                    "skip": true
+                }
             },
             "created": {
-                "sample": {
-                    "skip": true
-                },
+                "type": "datetime",
                 "facets": {
                     "searchable": true
-                },
-                "marshmallow": {
-                    "read": false,
-                    "write": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -369,7 +363,13 @@
                         "write": false
                     }
                 },
-                "type": "datetime"
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
+                }
             },
             "errors": {
                 "type": "array",
@@ -388,15 +388,25 @@
                         }
                     },
                     "properties": {
-                        "error_message": {
-                            "type": "fulltext+keyword",
-                            "label.cs": "Chybová hodnota",
-                            "label.en": "Error message"
-                        },
-                        "error_type": {
+                        "code": {
                             "type": "keyword",
                             "label.cs": "Typ chyby",
                             "label.en": "Error type"
+                        },
+                        "info": {
+                            "type": "flat_object",
+                            "label.cs": "Další informace o chybě",
+                            "label.en": "Additional error information"
+                        },
+                        "location": {
+                            "type": "keyword",
+                            "label.cs": "Pozice chyby v datech",
+                            "label.en": "Error location in data"
+                        },
+                        "message": {
+                            "type": "fulltext+keyword",
+                            "label.cs": "Chybová hodnota",
+                            "label.en": "Error message"
                         },
                         "oai_identifier": {
                             "type": "keyword",
@@ -412,15 +422,13 @@
                 "label.en": "End time"
             },
             "id": {
-                "sample": {
-                    "skip": true
-                },
-                "facets": {
-                    "searchable": true
-                },
+                "type": "keyword",
                 "marshmallow": {
                     "read": false,
                     "write": false
+                },
+                "facets": {
+                    "searchable": true
                 },
                 "ui": {
                     "marshmallow": {
@@ -428,7 +436,9 @@
                         "write": false
                     }
                 },
-                "type": "keyword"
+                "sample": {
+                    "skip": true
+                }
             },
             "identifiers": {
                 "type": "array",
@@ -444,15 +454,15 @@
                 "label.en": "Manual?"
             },
             "run": {
-                "required": true,
                 "type": "relation",
+                "required": true,
                 "model": "oaipmh-run",
                 "keys": [
                     {
+                        "key": "id",
                         "model": {
                             "type": "keyword"
                         },
-                        "key": "id",
                         "target": "id"
                     }
                 ],
@@ -476,12 +486,12 @@
                         "type": "keyword",
                         "marshmallow": {
                             "field-name": "_version",
-                            "field-class": "ma_fields.String"
+                            "field-class": "ma.fields.String"
                         },
                         "ui": {
                             "marshmallow": {
                                 "field-name": "_version",
-                                "field-class": "ma_fields.String"
+                                "field-class": "ma.fields.String"
                             }
                         }
                     }
@@ -493,6 +503,7 @@
                 "label.en": "Start time"
             },
             "status": {
+                "type": "keyword",
                 "required": true,
                 "enum": [
                     "R",
@@ -501,7 +512,6 @@
                     "E",
                     "I"
                 ],
-                "type": "keyword",
                 "label.cs": "Stav běhu",
                 "label.en": "Status",
                 "enum.R.cs": "Běží",
@@ -516,15 +526,9 @@
                 "enum.I.en": "Interrupted"
             },
             "updated": {
-                "sample": {
-                    "skip": true
-                },
+                "type": "datetime",
                 "facets": {
                     "searchable": true
-                },
-                "marshmallow": {
-                    "read": false,
-                    "write": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -532,7 +536,13 @@
                         "write": false
                     }
                 },
-                "type": "datetime"
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
+                }
             }
         }
     }

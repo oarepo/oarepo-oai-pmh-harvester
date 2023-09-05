@@ -58,7 +58,7 @@ def harvest(
                 params={"facets": {"code": [harvester_or_code]}},
             )
         )
-        harvester = harvesters[0]
+        harvester = harvesters[0].data
     else:
         harvester = harvester_or_code
     harvester = dict(harvester)
@@ -72,7 +72,7 @@ def harvest(
     run = run_service.create(
         system_identity,
         {
-            "harvester": {'id': harvester['id']},
+            "harvester": {"id": harvester["id"]},
             "status": "R",
             "batches": 0,
             "started": datetime.datetime.utcnow().isoformat() + "+00:00",
@@ -127,13 +127,15 @@ def harvest(
         success_callback=harvester_success.signature(),
         error_callback=harvester_error.signature(),
         progress_callback=progress,
-        batch_size=harvester["batch_size"],
+        batch_size=harvester.get("batch_size", 10),
         in_process=not on_background,
         extra_parameters={"run": run_id},
         identity=system_identity,
     )
 
     datastream.process()
+
+    return run.id
 
 
 @celery.shared_task

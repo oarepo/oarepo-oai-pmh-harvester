@@ -1,14 +1,11 @@
 import re
+from functools import cached_property
 
 from oarepo_oaipmh_harvester.oai_harvester import config as config
 
 
-class OaiHarvesterExt:
+class Oai_harvesterExt:
     def __init__(self, app=None):
-        """Extension initialization."""
-        self.resource = None
-        self.service = None
-
         if app:
             self.init_app(app)
 
@@ -17,23 +14,10 @@ class OaiHarvesterExt:
 
         self.init_config(app)
         if not self.is_inherited():
-            self.init_resource(app)
             self.register_flask_extension(app)
 
     def register_flask_extension(self, app):
-        app.extensions["oarepo-oaipmh-harvester"] = self
-
-    def init_resource(self, app):
-        """Initialize vocabulary resources."""
-
-        self.service = app.config["OAI_HARVESTER_RECORD_SERVICE_CLASS"](
-            config=app.config["OAI_HARVESTER_RECORD_SERVICE_CONFIG"](),
-        )
-
-        self.resource = app.config["OAI_HARVESTER_RECORD_RESOURCE_CLASS"](
-            service=self.service,
-            config=app.config["OAI_HARVESTER_RECORD_RESOURCE_CONFIG"](),
-        )
+        app.extensions["oarepo_oaipmh_harvester.oai_harvester"] = self
 
     def init_config(self, app):
         """Initialize configuration."""
@@ -54,3 +38,16 @@ class OaiHarvesterExt:
             if loaded is not ext_class and issubclass(ext_class, loaded):
                 return True
         return False
+
+    @cached_property
+    def service_records(self):
+        return config.OAI_HARVESTER_RECORD_SERVICE_CLASS(
+            config=config.OAI_HARVESTER_RECORD_SERVICE_CONFIG(),
+        )
+
+    @cached_property
+    def resource_records(self):
+        return config.OAI_HARVESTER_RECORD_RESOURCE_CLASS(
+            service=self.service_records,
+            config=config.OAI_HARVESTER_RECORD_RESOURCE_CONFIG(),
+        )

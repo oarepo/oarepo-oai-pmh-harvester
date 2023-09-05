@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-05-31T10:49:37.090661\n"
-"PO-Revision-Date: 2023-05-31T10:49:37.090662\n"
+"POT-Creation-Date: 2023-09-03T09:11:34.002099\n"
+"PO-Revision-Date: 2023-09-03T09:11:34.002100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -89,31 +89,40 @@ msgstr ""
 msgid "errors.hint"
 msgstr ""
 
-msgid "errors/error_info.help"
+msgid "errors/code.label"
+msgstr "Error type"
+
+msgid "errors/code.help"
 msgstr ""
 
-msgid "errors/error_info.label"
+msgid "errors/code.hint"
 msgstr ""
 
-msgid "errors/error_info.hint"
+msgid "errors/info.label"
+msgstr "Additional error information"
+
+msgid "errors/info.help"
 msgstr ""
 
-msgid "errors/error_message.help"
+msgid "errors/info.hint"
 msgstr ""
 
-msgid "errors/error_message.label"
+msgid "errors/location.label"
+msgstr "Error location in data"
+
+msgid "errors/location.help"
 msgstr ""
 
-msgid "errors/error_message.hint"
+msgid "errors/location.hint"
 msgstr ""
 
-msgid "errors/error_type.help"
+msgid "errors/message.label"
+msgstr "Error message"
+
+msgid "errors/message.help"
 msgstr ""
 
-msgid "errors/error_type.label"
-msgstr ""
-
-msgid "errors/error_type.hint"
+msgid "errors/message.hint"
 msgstr ""
 
 msgid "harvester.label"

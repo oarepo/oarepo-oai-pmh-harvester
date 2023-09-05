@@ -1,25 +1,6 @@
 {
     "model": {
-        "searchable": true,
-        "ui": {
-            "marshmallow": {
-                "base-classes": [
-                    "InvenioUISchema"
-                ],
-                "imports": [
-                    {
-                        "import": "oarepo_runtime.ui.marshmallow.InvenioUISchema"
-                    }
-                ],
-                "generate": true,
-                "module": "oarepo_oaipmh_harvester.oai_run.services.records.ui_schema",
-                "class": "oarepo_oaipmh_harvester.oai_run.services.records.ui_schema.OaiRunUISchema",
-                "extra-code": ""
-            },
-            "module": "oarepo_oaipmh_harvester.oai_run.models",
-            "file": "oarepo_oaipmh_harvester/oai_run/models/ui.json",
-            "alias": "oarepo-oaipmh-run"
-        },
+        "type": "model",
         "permissions": {
             "presets": [
                 "oai_harvester"
@@ -38,35 +19,48 @@
             ]
         },
         "marshmallow": {
-            "base-classes": [
-                "BaseRecordSchema"
-            ],
             "imports": [
                 {
                     "import": "oarepo_runtime.marshmallow.BaseRecordSchema"
                 }
+            ],
+            "base-classes": [
+                "BaseRecordSchema"
             ],
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_run.services.records.schema",
             "class": "oarepo_oaipmh_harvester.oai_run.services.records.schema.OaiRunSchema",
             "extra-code": ""
         },
+        "searchable": true,
+        "ui": {
+            "marshmallow": {
+                "imports": [
+                    {
+                        "import": "oarepo_runtime.ui.marshmallow.InvenioUISchema"
+                    }
+                ],
+                "base-classes": [
+                    "InvenioUISchema"
+                ],
+                "generate": true,
+                "module": "oarepo_oaipmh_harvester.oai_run.services.records.ui_schema",
+                "class": "oarepo_oaipmh_harvester.oai_run.services.records.ui_schema.OaiRunUISchema",
+                "extra-code": ""
+            },
+            "module": "oarepo_oaipmh_harvester.oai_run.models",
+            "file": "oarepo_oaipmh_harvester/oai_run/models/ui.json",
+            "alias": "oarepo-oaipmh-run"
+        },
         "service-config": {
             "components": [
-                "invenio_records_resources.services.records.components.DataComponent",
+                "CachingRelationsComponent",
                 "DataComponent"
             ],
-            "generate": true,
-            "config-key": "OAI_RUN_RECORD_SERVICE_CONFIG",
-            "module": "oarepo_oaipmh_harvester.oai_run.services.records.config",
-            "class": "oarepo_oaipmh_harvester.oai_run.services.records.config.OaiRunServiceConfig",
-            "extra-code": "",
-            "service-id": "oarepo-oaipmh-run",
-            "base-classes": [
-                "PermissionsPresetsConfigMixin",
-                "InvenioRecordServiceConfig"
-            ],
             "imports": [
+                {
+                    "import": "oarepo_runtime.relations.components.CachingRelationsComponent"
+                },
                 {
                     "import": "invenio_records_resources.services.RecordServiceConfig",
                     "alias": "InvenioRecordServiceConfig"
@@ -77,25 +71,25 @@
                 {
                     "import": "invenio_records_resources.services.records.components.DataComponent"
                 }
+            ],
+            "generate": true,
+            "config-key": "OAI_RUN_RECORD_SERVICE_CONFIG",
+            "module": "oarepo_oaipmh_harvester.oai_run.services.records.config",
+            "class": "oarepo_oaipmh_harvester.oai_run.services.records.config.OaiRunServiceConfig",
+            "extra-code": "",
+            "service-id": "oai_run",
+            "base-classes": [
+                "PermissionsPresetsConfigMixin",
+                "InvenioRecordServiceConfig"
             ]
         },
-        "plugins": {
-            "builder": {
-                "disable": [
-                    "invenio_cli_setup_cfg",
-                    "invenio_cli",
-                    "script_sample_data",
-                    "invenio_record_metadata_alembic_setup_cfg"
-                ]
-            }
-        },
-        "type": "model",
         "module": {
             "alias": "oarepo-oaipmh-run",
             "qualified": "oarepo_oaipmh_harvester.oai_run",
             "path": "oarepo_oaipmh_harvester/oai_run",
             "base": "oai_run",
             "base-upper": "OAI_RUN",
+            "base-title": "Oai_run",
             "kebab-module": "oarepo-oaipmh-harvester-oai-run",
             "prefix": "OaiRun",
             "prefix-upper": "OAIRUN",
@@ -106,6 +100,10 @@
         },
         "sample": {
             "file": "data/sample_data.yaml"
+        },
+        "ext-resource": {
+            "generate": true,
+            "skip": false
         },
         "model-name": "Oai_Run",
         "search-options": {
@@ -132,10 +130,10 @@
         "ext": {
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_run.ext",
-            "class": "oarepo_oaipmh_harvester.oai_run.ext.OaiRunExt",
+            "class": "oarepo_oaipmh_harvester.oai_run.ext.Oai_runExt",
             "base-classes": [],
             "extra_code": "",
-            "alias": "oarepo-oaipmh-run",
+            "alias": "oarepo_oaipmh_harvester.oai_run",
             "imports": []
         },
         "api-blueprint": {
@@ -207,7 +205,7 @@
             ]
         },
         "saved-model": {
-            "file": "oarepo_oaipmh_harvester/oai_run/models/model.json",
+            "file": "oarepo_oaipmh_harvester/oai_run/models/records.json",
             "module": "oarepo_oaipmh_harvester.oai_run.models",
             "alias": "oarepo-oaipmh-run"
         },
@@ -281,8 +279,9 @@
                 }
             ],
             "table": "oairun_metadata",
-            "alembic": "oarepo_oaipmh_harvester.oai_run.records.alembic",
-            "alias": "oarepo-oaipmh-run"
+            "alias": "oarepo-oaipmh-run",
+            "use-versioning": true,
+            "alembic": "oarepo_oaipmh_harvester.oai_run.alembic"
         },
         "service": {
             "generate": true,
@@ -325,31 +324,32 @@
             "module": "oarepo_oaipmh_harvester.oai_run.translations",
             "alias": "oarepo-oaipmh-run"
         },
-        "mapping-settings": {
+        "mapping": {
             "generate": true,
             "alias": "oarepo-oaipmh-run",
             "module": "oarepo_oaipmh_harvester.oai_run.records.mappings",
             "index": "oarepo-oaipmh-run-oai_run-1.0.0",
             "file": "oarepo_oaipmh_harvester/oai_run/records/mappings/os-v2/oarepo-oaipmh-run/oai_run-1.0.0.json"
         },
+        "sortable": [],
         "properties": {
             "$schema": {
+                "type": "keyword",
                 "marshmallow": {
                     "read": false,
                     "write": false
                 },
-                "type": "keyword",
                 "facets": {
                     "searchable": true
-                },
-                "sample": {
-                    "skip": true
                 },
                 "ui": {
                     "marshmallow": {
                         "read": false,
                         "write": false
                     }
+                },
+                "sample": {
+                    "skip": true
                 }
             },
             "batches": {
@@ -358,22 +358,22 @@
                 "label.en": "Number of batches"
             },
             "created": {
-                "marshmallow": {
-                    "read": false,
-                    "write": false
-                },
                 "type": "datetime",
                 "facets": {
                     "searchable": true
-                },
-                "sample": {
-                    "skip": true
                 },
                 "ui": {
                     "marshmallow": {
                         "read": false,
                         "write": false
                     }
+                },
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
                 }
             },
             "duration": {
@@ -392,25 +392,25 @@
                 "label.en": "Processing End Time"
             },
             "harvester": {
+                "type": "relation",
                 "required": true,
                 "model": "oaipmh-harvester",
                 "keys": [
                     {
+                        "key": "id",
                         "model": {
                             "type": "keyword"
                         },
-                        "key": "id",
                         "target": "id"
                     },
                     {
+                        "key": "code",
                         "model": {
                             "type": "keyword"
                         },
-                        "key": "code",
                         "target": "code"
                     }
                 ],
-                "type": "relation",
                 "label.cs": "Harvester",
                 "label.en": "Harvester",
                 "marshmallow": {
@@ -434,34 +434,34 @@
                         "type": "keyword",
                         "marshmallow": {
                             "field-name": "_version",
-                            "field-class": "ma_fields.String"
+                            "field-class": "ma.fields.String"
                         },
                         "ui": {
                             "marshmallow": {
                                 "field-name": "_version",
-                                "field-class": "ma_fields.String"
+                                "field-class": "ma.fields.String"
                             }
                         }
                     }
                 }
             },
             "id": {
+                "type": "keyword",
                 "marshmallow": {
                     "read": false,
                     "write": false
                 },
-                "type": "keyword",
                 "facets": {
                     "searchable": true
-                },
-                "sample": {
-                    "skip": true
                 },
                 "ui": {
                     "marshmallow": {
                         "read": false,
                         "write": false
                     }
+                },
+                "sample": {
+                    "skip": true
                 }
             },
             "manual": {
@@ -475,6 +475,7 @@
                 "label.en": "Processing Start Time"
             },
             "status": {
+                "type": "keyword",
                 "enum": [
                     "R",
                     "O",
@@ -482,7 +483,6 @@
                     "E",
                     "I"
                 ],
-                "type": "keyword",
                 "label.cs": "Stav běhu",
                 "label.en": "State",
                 "enum.R.cs": "Běží",
@@ -497,22 +497,22 @@
                 "enum.I.en": "Interrupted"
             },
             "updated": {
-                "marshmallow": {
-                    "read": false,
-                    "write": false
-                },
                 "type": "datetime",
                 "facets": {
                     "searchable": true
-                },
-                "sample": {
-                    "skip": true
                 },
                 "ui": {
                     "marshmallow": {
                         "read": false,
                         "write": false
                     }
+                },
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
                 }
             },
             "warning": {

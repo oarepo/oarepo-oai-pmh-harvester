@@ -5,6 +5,7 @@ from invenio_records_resources.services import (
 from invenio_records_resources.services import pagination_links
 from invenio_records_resources.services.records.components import DataComponent
 from oarepo_runtime.config.service import PermissionsPresetsConfigMixin
+from oarepo_runtime.relations.components import CachingRelationsComponent
 
 from oarepo_oaipmh_harvester.oai_record.records.api import OaiRecord
 from oarepo_oaipmh_harvester.oai_record.services.records.permissions import (
@@ -31,12 +32,12 @@ class OaiRecordServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordService
 
     record_cls = OaiRecord
 
-    service_id = "oarepo-oaipmh-record"
+    service_id = "oai_record"
 
     components = [
         *PermissionsPresetsConfigMixin.components,
         *InvenioRecordServiceConfig.components,
-        DataComponent,
+        CachingRelationsComponent,
         DataComponent,
     ]
 

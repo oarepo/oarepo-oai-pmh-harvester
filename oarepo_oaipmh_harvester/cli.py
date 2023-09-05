@@ -114,7 +114,7 @@ def _add_harvester(metadata):
     harvester = harvester_service.create(system_identity, metadata)
 
     harvester_service.indexer.refresh()
-    return harvester
+    return harvester.data
 
 
 add = as_command(
