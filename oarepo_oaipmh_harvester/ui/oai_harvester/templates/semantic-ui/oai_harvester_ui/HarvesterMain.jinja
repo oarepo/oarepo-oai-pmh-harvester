@@ -1,0 +1,30 @@
+{#def metadata, ui, layout, url_prefix #}
+
+<h1 style="margin-bottom: 1em">{{ metadata.name }}</h1>
+<dl class="ui very basic table">
+    <Field label={ _('code.label') }>{{ metadata.code }}</Field>
+    <Field label={ _('baseurl.label') }> {{ metadata.baseurl }}</Field>
+    <Field label={ _('metadataprefix.label') }>{{ metadata.metadataprefix }}</Field>
+    <Field label={ _('setspecs.label') }>{{ metadata.setspecs }}</Field>
+    <Field label={ _('writer.label') }>{{ metadata.writer }}</Field>
+    <Field label={ _('max_records.label') }>{{ metadata.max_records }}</Field>
+    <Field label={ _('batch_size.label') }>{{ metadata.batch_size }}</Field>
+    <Field label={ _('loader.label') }> {{ metadata.loader }}</Field>
+    <Field label={ _('Created') }> {{ metadata.created }}</Field>
+    <Field label={ _('Updated') }> {{ metadata.updated }}</Field>
+    <dt>{{_('runs_harvester.label')}}</dt>
+    <dd>
+        <a href="/oairun/?q=&f=harvester_id%3A{{metadata.id}}&l=list&p=1&s=10&sort=newest">{{_('runs.label')}}</a>
+    </dd>
+<dt>{{ _('comment.label') }}</dt>
+  <dd>
+    {{ metadata.comment }}
+  </dd>
+  <dt>{{ _('transformers.label') }}</dt>
+    <ul style="list-style-type: none;">
+  {% for i in (metadata.transformers or []) %}
+      <li>{{ i }}</li>
+  {% endfor %}
+    </ul>
+
+</dl>

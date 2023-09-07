@@ -1,0 +1,46 @@
+{#def metadata, ui, layout, url_prefix #}
+
+<h1 style="margin-bottom: 1em">{{ metadata.id }}</h1>
+<dl class="ui very basic table">
+    <dt>{{ _('status.label') }}</dt>
+  <dd>
+      <Status>{{metadata.status[-1]}}</Status>
+  </dd>
+  <dt>{{ _('batches.label') }}</dt>
+  <dd>
+    {{ metadata.batches}}
+  </dd>
+<dt>{{ _('warning.label') }}</dt>
+  <dd>
+    {{ metadata.warning}}
+  </dd>
+<dt>{{ _('error.label') }}</dt>
+  <dd>
+    {{ metadata.error}}
+  </dd>
+  <Field label={ _('Created') }> {{ metadata.created }}</Field>
+   <Field label={ _('Updated') }> {{ metadata.updated }}</Field>
+<dt>{{ _('started.label') }}</dt>
+  <dd>
+    {{ metadata.started}}
+  </dd>
+  <dt>{{ _('finished.label') }}</dt>
+  <dd>
+    {{ metadata.finished }}
+  </dd>
+<dt>{{ _('duration.label') }}</dt>
+  <dd>
+    {{ metadata.duration }}
+  </dd>
+  <dt>{{ _('harvester.label') }}</dt>
+    <dd>
+    <a href="/oaiharvester/{{metadata.harvester.id}}">{{ metadata.harvester.name }}</a>
+  </dd>
+    <dt>{{ _('batches_run.label') }}</dt>
+    <dd>
+    <a href="/oaibatch/?q=&f=run_id%3A{{metadata.id}}&l=list&p=1&s=10&sort=newest">{{ _('batches.label') }}</a>
+  </dd>
+
+
+</dl>
+

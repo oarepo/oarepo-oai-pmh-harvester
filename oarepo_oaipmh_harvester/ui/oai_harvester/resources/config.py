@@ -11,10 +11,10 @@ class OAIHarvesterUIResourceConfig(RecordsUIResourceConfig):
 
     templates = {
         "detail": {
-            "layout": "oai_harvester_ui/detail.html",
+            "layout": "oai_harvester_ui/HarvesterDetail.html.jinja",
             "blocks": {
-                "record_main_content": "oai_harvester_ui/main.html",
-                "record_sidebar": "oai_harvester_ui/sidebar.html",
+                "record_main_content": "HarvesterMain",
+                "record_sidebar": "HarvesterSidebar",
             },
         },
         "search": {"layout": "oai_harvester_ui/search.html"},
