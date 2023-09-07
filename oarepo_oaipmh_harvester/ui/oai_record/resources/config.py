@@ -11,7 +11,7 @@ class OAIRecordUIResourceConfig(RecordsUIResourceConfig):
 
     templates = {
         "detail": {
-             "layout": "oai_record_ui/OaiRecordDetail.jinja",
+            "layout": "oai_record_ui/OaiRecordDetail.jinja",
             "blocks": {
                 "record_main_content": "OaiRecordMain",
                 "record_sidebar": "OaiRecordSidebar",
