@@ -2,6 +2,7 @@ exclude tests/*
 recursive-include oarepo_oaipmh_harvester *.yaml
 recursive-include oarepo_oaipmh_harvester *.json
 recursive-include oarepo_oaipmh_harvester *.html
+recursive-include oarepo_oaipmh_harvester *.jinja
 recursive-include oarepo_oaipmh_harvester *.jinja2
 recursive-include oarepo_oaipmh_harvester *.less
 recursive-include oarepo_oaipmh_harvester *.js

@@ -1,0 +1,37 @@
+{#def metadata, ui, layout, url_prefix #}
+{% from './semantic-ui/oai_harvester_ui/status.html' import get_status %}
+
+<h1 style="margin-bottom: 1em">{{metadata.id }}</h1>
+<dl class="ui very basic table">
+    <dt>{{ _('status.label') }}</dt>
+  <dd>
+    <Status>{{metadata.status[-1]}}</Status>
+  </dd>
+  <dt>{{ _('started.label') }}</dt>
+  <dd>
+    {{metadata.started}}
+  </dd>
+  <dt>{{ _('finished.label') }}</dt>
+  <dd>
+    {{ metadata.finished }}
+  </dd>
+    <Field label={ _('Created') }> {{ metadata.created }}</Field>
+    <Field label={ _('Updated') }> {{ metadata.updated }}</Field>
+  <dt>{{ _('run.label') }}</dt>
+    <dd>
+    <a href="/oairun/{{metadata.run.id}}">{{ metadata.run.id }}</a>
+  </dd>
+    <dt>{{ _('records_batch.label') }}</dt>
+    <dd>
+    <a href="/oairecord/?q=&f=batch_id%3A{{metadata.id}}&l=list&p=1&s=10&sort=newest">{{_('records.label')}}</a>
+  </dd>
+  <dt>{{ _('identifiers.label') }}</dt>
+    <dd>
+    {% for i in (metadata.identifiers or []) %}
+         {{ i }},
+    {% endfor %}
+    </dd>
+
+
+</dl>
+

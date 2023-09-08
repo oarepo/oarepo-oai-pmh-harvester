@@ -11,10 +11,10 @@ class OAIRecordUIResourceConfig(RecordsUIResourceConfig):
 
     templates = {
         "detail": {
-            "layout": "oai_record_ui/detail.html",
+            "layout": "oai_record_ui/OaiRecordDetail.jinja",
             "blocks": {
-                "record_main_content": "oai_record_ui/main.html",
-                "record_sidebar": "oai_record_ui/sidebar.html",
+                "record_main_content": "OaiRecordMain",
+                "record_sidebar": "OaiRecordSidebar",
             },
         },
         "search": {"layout": "oai_record_ui/search.html"},

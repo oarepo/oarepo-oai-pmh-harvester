@@ -36,7 +36,7 @@ class OaiHarvesterServiceConfig(
 
     record_cls = OaiHarvesterRecord
 
-    service_id = "oai_harvester"
+    service_id = "oarepo-oaipmh-harvester"
 
     components = [
         *PermissionsPresetsConfigMixin.components,

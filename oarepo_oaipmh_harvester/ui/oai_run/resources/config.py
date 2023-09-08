@@ -13,10 +13,10 @@ class OaiRunUIResourceConfig(RecordsUIResourceConfig):
 
     templates = {
         "detail": {
-            "layout": "oai_run_ui/detail.html",
+            "layout": "oai_run_ui/RunDetail.jinja",
             "blocks": {
-                "record_main_content": "oai_run_ui/main.html",
-                "record_sidebar": "oai_run_ui/sidebar.html",
+                "record_main_content": "RunMain",
+                "record_sidebar": "RunSidebar",
             },
         },
         "search": {"layout": "oai_run_ui/search.html"},

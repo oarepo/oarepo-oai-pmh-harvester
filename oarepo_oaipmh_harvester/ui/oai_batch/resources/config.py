@@ -11,10 +11,10 @@ class OAIBatchUIResourceConfig(RecordsUIResourceConfig):
 
     templates = {
         "detail": {
-            "layout": "oai_batch_ui/detail.html",
+            "layout": "oai_batch_ui/BatchDetail.html.jinja",
             "blocks": {
-                "record_main_content": "oai_batch_ui/main.html",
-                "record_sidebar": "oai_batch_ui/sidebar.html",
+                "record_main_content": "BatchMain",
+                "record_sidebar": "BatchSidebar",
             },
         },
         "search": {"layout": "oai_batch_ui/search.html"},

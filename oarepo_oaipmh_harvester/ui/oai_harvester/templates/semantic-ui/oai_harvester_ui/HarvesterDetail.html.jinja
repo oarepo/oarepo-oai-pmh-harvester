@@ -1,0 +1,8 @@
+{#def metadata, ui, layout, url_prefix, record #}
+{% extends "oarepo_ui/detail.html" %}
+{%- block head_links %}
+    {{ super() }}
+    {{webpack['oai_harvester_ui_components.js']}}
+    {{ webpack['oai_harvester_ui_components.css']}}
+{%- endblock %}
+

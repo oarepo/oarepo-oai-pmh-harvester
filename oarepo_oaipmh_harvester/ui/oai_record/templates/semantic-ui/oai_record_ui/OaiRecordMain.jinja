@@ -1,0 +1,50 @@
+{#def metadata, ui, layout, url_prefix #}
+<h1 style="margin-bottom: 1em">{{ metadata.entry.metadata.title }}</h1>
+<dl class="ui very basic table">
+<dt>{{ _('id.label') }}</dt>
+  <dd>
+    {{ metadata.id }}
+  </dd>
+    <dt>{{ _('status.label') }}</dt>
+  <dd>
+    <Status>{{metadata.status[-1]}}</Status>
+  </dd>
+  <dt>{{ _('oai_identifier.label') }}</dt>
+  <dd>
+    {{ metadata.oai_identifier}}
+  </dd>
+<dt>{{ _('local_identifier.label') }}</dt>
+  <dd>
+    {{ metadata.local_identifier}}
+  </dd>
+      <Field label={ _('Created') }> {{ metadata.created }}</Field>
+    <Field label={ _('Updated') }> {{ metadata.updated }}</Field>
+  <dt>{{ _('batch.label') }}</dt>
+    <dd>
+    <a href="/oaibatch/{{metadata.batch.id}}">{{ _('batch.label') }}</a>
+  </dd>
+  <dt>{{ _('record_data.label') }}</dt>
+    <dd>
+    <a href="/docs/{{metadata.local_identifier}}">{{ _('record.label') }}</a>
+  </dd>
+    <dt>{{ _('warnings.label') }}</dt>
+<dd>
+    <ul>
+    {% for i in (metadata.warnings or []) %}
+        <li>{{ i }}</li>
+    {% endfor %}
+    </ul>
+</dd>
+
+  <dt>{{ _('errors.label') }}</dt>
+<dd>
+     <ul>
+    {% for i in (metadata.errors or []) %}
+        <li>{{ i }}</li>
+    {% endfor %}
+    </ul>
+</dd>
+
+
+
+</dl>
