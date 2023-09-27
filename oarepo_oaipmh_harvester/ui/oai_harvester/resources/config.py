@@ -17,7 +17,7 @@ class OAIHarvesterUIResourceConfig(RecordsUIResourceConfig):
                 "record_sidebar": "HarvesterSidebar",
             },
         },
-        "search": {"layout": "oai_harvester_ui/search.html"},
+        "search": {"layout": "oai_harvester_ui/HarvesterSearch.jinja", "app_id": "OaiHarvester.Search"},
     }
 
     routes = {

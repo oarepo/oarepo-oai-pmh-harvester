@@ -19,7 +19,7 @@ class OaiRunUIResourceConfig(RecordsUIResourceConfig):
                 "record_sidebar": "RunSidebar",
             },
         },
-        "search": {"layout": "oai_run_ui/search.html"},
+        "search": {"layout": "oai_run_ui/RunSearch.jinja", "app_id": "OaiRun.Search"},
     }
 
     routes = {

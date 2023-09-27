@@ -17,7 +17,7 @@ class OAIBatchUIResourceConfig(RecordsUIResourceConfig):
                 "record_sidebar": "BatchSidebar",
             },
         },
-        "search": {"layout": "oai_batch_ui/search.html"},
+        "search": {"layout": "oai_batch_ui/BatchSearch.jinja", "app_id": "OaiBatch.Search"},
     }
 
     routes = {
