@@ -17,7 +17,10 @@ class OAIRecordUIResourceConfig(RecordsUIResourceConfig):
                 "record_sidebar": "OaiRecordSidebar",
             },
         },
-        "search": {"layout": "oai_record_ui/search.html"},
+        "search": {
+            "layout": "oai_record_ui/OaiRecordSearch.jinja",
+            "app_id": "OaiRecord.Search",
+        },
     }
 
     routes = {
