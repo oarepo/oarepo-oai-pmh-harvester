@@ -9,7 +9,7 @@ class OaiRunResourceConfig(RecordResourceConfig):
     """OaiRunRecord resource config."""
 
     blueprint_name = "oarepo-oaipmh-run"
-    url_prefix = "/oarepo-oaipmh-harvester-oai-run/"
+    url_prefix = "/oai/harvest/runs/"
 
     @property
     def response_handlers(self):

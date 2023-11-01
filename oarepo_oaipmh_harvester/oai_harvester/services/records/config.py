@@ -26,7 +26,7 @@ class OaiHarvesterServiceConfig(
 
     PERMISSIONS_PRESETS = ["oai_harvester"]
 
-    url_prefix = "/oarepo-oaipmh-harvester-oai-harvester/"
+    url_prefix = "/oai/harvest/harvesters/"
 
     base_permission_policy_cls = OaiHarvesterPermissionPolicy
 
@@ -36,7 +36,7 @@ class OaiHarvesterServiceConfig(
 
     record_cls = OaiHarvesterRecord
 
-    service_id = "oarepo-oaipmh-harvester"
+    service_id = "oarepo-oaipmh-harvesters"
 
     components = [
         *PermissionsPresetsConfigMixin.components,
@@ -50,11 +50,11 @@ class OaiHarvesterServiceConfig(
     @property
     def links_item(self):
         return {
-            "self": RecordLink("{self.url_prefix}{id}"),
+            "self": RecordLink("{+api}/oai/harvest/harvesters/{id}"),
         }
 
     @property
     def links_search(self):
         return {
-            **pagination_links("{self.url_prefix}{?args*}"),
+            **pagination_links("{+api}/oai/harvest/harvesters/{?args*}"),
         }

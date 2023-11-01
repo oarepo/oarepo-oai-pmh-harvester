@@ -1,38 +1,41 @@
 import marshmallow as ma
-from marshmallow import validate as ma_validate
+from marshmallow import Schema
+from marshmallow import fields as ma_fields
+from marshmallow.fields import String
+from marshmallow.validate import OneOf
 from oarepo_runtime.marshmallow import BaseRecordSchema
-from oarepo_runtime.validation import validate_datetime
+from oarepo_runtime.services.schema.validation import validate_datetime
 
 
 class OaiRunSchema(BaseRecordSchema):
     class Meta:
         unknown = ma.RAISE
 
-    batches = ma.fields.Integer()
+    batches = ma_fields.Integer()
 
-    duration = ma.fields.Float()
+    duration = ma_fields.Float()
 
-    error = ma.fields.String()
+    error = ma_fields.String()
 
-    finished = ma.fields.String(validate=[validate_datetime])
+    finished = ma_fields.String(validate=[validate_datetime])
 
-    harvester = ma.fields.Nested(lambda: HarvesterSchema(), required=True)
+    harvester = ma_fields.Nested(lambda: HarvesterSchema(), required=True)
 
-    manual = ma.fields.Boolean()
+    manual = ma_fields.Boolean()
 
-    started = ma.fields.String(validate=[validate_datetime])
+    started = ma_fields.String(validate=[validate_datetime])
 
-    status = ma.fields.String(validate=[ma_validate.OneOf(["R", "O", "W", "E", "I"])])
+    status = ma_fields.String(validate=[OneOf(["R", "O", "W", "E", "I"])])
 
-    warning = ma.fields.String()
+    warning = ma_fields.String()
 
 
-class HarvesterSchema(ma.Schema):
+class HarvesterSchema(Schema):
     class Meta:
-        unknown = ma.RAISE
+        unknown = ma.INCLUDE
 
-    _id = ma.fields.String(data_key="id", attribute="id")
+    _id = ma_fields.String(data_key="id", attribute="id")
 
-    _version = ma.fields.String(data_key="@v", attribute="@v")
+    _version = String(data_key="@v", attribute="@v")
 
-    code = ma.fields.String()
+    code = ma_fields.String()

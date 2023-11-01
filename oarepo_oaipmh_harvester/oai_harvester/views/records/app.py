@@ -3,9 +3,7 @@ from flask import Blueprint
 
 def create_app_blueprint(app):
     blueprint = Blueprint(
-        "oarepo-oaipmh-harvester_app",
-        __name__,
-        url_prefix="/oarepo-oaipmh-harvester-oai-harvester/",
+        "oarepo-oaipmh-harvester_app", __name__, url_prefix="/oai/harvest/harvesters/"
     )
     blueprint.record_once(init_create_app_blueprint)
 

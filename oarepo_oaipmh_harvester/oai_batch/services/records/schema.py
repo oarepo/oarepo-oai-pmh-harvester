@@ -1,49 +1,52 @@
 import marshmallow as ma
-from marshmallow import validate as ma_validate
+from marshmallow import Schema
+from marshmallow import fields as ma_fields
+from marshmallow.fields import String
+from marshmallow.validate import OneOf
 from oarepo_runtime.marshmallow import BaseRecordSchema
-from oarepo_runtime.validation import validate_datetime
+from oarepo_runtime.services.schema.validation import validate_datetime
 
 
 class OaiBatchSchema(BaseRecordSchema):
     class Meta:
         unknown = ma.RAISE
 
-    errors = ma.fields.List(ma.fields.Nested(lambda: ErrorsItemSchema()))
+    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemSchema()))
 
-    finished = ma.fields.String(validate=[validate_datetime])
+    finished = ma_fields.String(validate=[validate_datetime])
 
-    identifiers = ma.fields.List(ma.fields.String())
+    identifiers = ma_fields.List(ma_fields.String())
 
-    manual = ma.fields.Boolean()
+    manual = ma_fields.Boolean()
 
-    run = ma.fields.Nested(lambda: RunSchema(), required=True)
+    run = ma_fields.Nested(lambda: RunSchema(), required=True)
 
-    started = ma.fields.String(validate=[validate_datetime])
+    started = ma_fields.String(validate=[validate_datetime])
 
-    status = ma.fields.String(
-        required=True, validate=[ma_validate.OneOf(["R", "O", "W", "E", "I"])]
+    status = ma_fields.String(
+        required=True, validate=[OneOf(["R", "O", "W", "E", "I"])]
     )
 
 
-class ErrorsItemSchema(ma.Schema):
+class ErrorsItemSchema(Schema):
     class Meta:
         unknown = ma.RAISE
 
-    code = ma.fields.String()
+    code = ma_fields.String()
 
-    info = ma.fields.Dict()
+    info = ma_fields.Dict()
 
-    location = ma.fields.String()
+    location = ma_fields.String()
 
-    message = ma.fields.String()
+    message = ma_fields.String()
 
-    oai_identifier = ma.fields.String()
+    oai_identifier = ma_fields.String()
 
 
-class RunSchema(ma.Schema):
+class RunSchema(Schema):
     class Meta:
-        unknown = ma.RAISE
+        unknown = ma.INCLUDE
 
-    _id = ma.fields.String(data_key="id", attribute="id")
+    _id = ma_fields.String(data_key="id", attribute="id")
 
-    _version = ma.fields.String(data_key="@v", attribute="@v")
+    _version = String(data_key="@v", attribute="@v")

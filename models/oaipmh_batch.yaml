@@ -3,11 +3,16 @@ record:
   module:
     qualified: oarepo_oaipmh_harvester.oai_batch
     alias: oarepo-oaipmh-batch
+
   service-config:
     components:
-      - CachingRelationsComponent
-    imports:
-      - import: oarepo_runtime.relations.components.CachingRelationsComponent
+      - "{{oarepo_runtime.relations.components.CachingRelationsComponent}}"
+    service-id: oarepo-oaipmh-batches
+
+  resource-config:
+    base-url: /oai/harvest/batches/
+    base-html-url: /oai/harvest/batches/
+
   properties:
     run:
       label.cs: Běh harvestru

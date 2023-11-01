@@ -6,6 +6,8 @@ from . import facets
 class OaiRunSearchOptions(InvenioSearchOptions):
     """OaiRunRecord search options."""
 
+    facet_groups = {}
+
     facets = {
         "_schema": facets._schema,
         "batches": facets.batches,
@@ -23,7 +25,4 @@ class OaiRunSearchOptions(InvenioSearchOptions):
         "updated": facets.updated,
         "warning": facets.warning,
         **getattr(InvenioSearchOptions, "facets", {}),
-    }
-    sort_options = {
-        **InvenioSearchOptions.sort_options,
     }

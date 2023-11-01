@@ -2,16 +2,19 @@
     "mappings": {
         "properties": {
             "$schema": {
-                "type": "keyword"
+                "type": "keyword",
+                "ignore_above": 1024
             },
             "batch": {
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "ignore_above": 1024
                     },
                     "@v": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "ignore_above": 1024
                     }
                 }
             },
@@ -35,19 +38,22 @@
                 "type": "object",
                 "properties": {
                     "code": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "ignore_above": 1024
                     },
                     "info": {
                         "type": "flat_object"
                     },
                     "location": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "ignore_above": 1024
                     },
                     "message": {
                         "type": "text",
                         "fields": {
                             "keyword": {
-                                "type": "keyword"
+                                "type": "keyword",
+                                "ignore_above": 256
                             }
                         }
                     }
@@ -57,27 +63,33 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "ignore_above": 1024
                     },
                     "@v": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "ignore_above": 1024
                     }
                 }
             },
             "id": {
-                "type": "keyword"
+                "type": "keyword",
+                "ignore_above": 1024
             },
             "local_identifier": {
-                "type": "keyword"
+                "type": "keyword",
+                "ignore_above": 1024
             },
             "manual": {
                 "type": "boolean"
             },
             "oai_identifier": {
-                "type": "keyword"
+                "type": "keyword",
+                "ignore_above": 1024
             },
             "status": {
-                "type": "keyword"
+                "type": "keyword",
+                "ignore_above": 1024
             },
             "updated": {
                 "type": "date",
@@ -87,7 +99,8 @@
                 "type": "text",
                 "fields": {
                     "keyword": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "ignore_above": 256
                     }
                 }
             }

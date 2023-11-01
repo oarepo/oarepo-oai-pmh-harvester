@@ -1,12 +1,12 @@
 from invenio_pidstore.providers.recordid_v2 import RecordIdProviderV2
-from invenio_records.systemfields import ConstantField, RelationsField
+from invenio_records.systemfields import ConstantField
 from invenio_records_resources.records.api import Record as InvenioRecord
 from invenio_records_resources.records.systemfields import IndexField
 from invenio_records_resources.records.systemfields.pid import PIDField, PIDFieldContext
 from oarepo_runtime.relations import PIDRelation, RelationsField
 
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
-from oarepo_oaipmh_harvester.oai_run.records.dumper import OaiRunDumper
+from oarepo_oaipmh_harvester.oai_run.records.dumpers.dumper import OaiRunDumper
 from oarepo_oaipmh_harvester.oai_run.records.models import OaiRunMetadata
 
 
@@ -23,8 +23,7 @@ class OaiRunRecord(InvenioRecord):
 
     pid = PIDField(provider=OaiRunIdProvider, context_cls=PIDFieldContext, create=True)
 
-    dumper_extensions = []
-    dumper = OaiRunDumper(extensions=dumper_extensions)
+    dumper = OaiRunDumper()
 
     relations = RelationsField(
         harvester=PIDRelation(

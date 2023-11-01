@@ -1,4 +1,5 @@
 import marshmallow as ma
+from marshmallow import fields as ma_fields
 from oarepo_runtime.marshmallow import BaseRecordSchema
 
 
@@ -6,24 +7,24 @@ class OaiHarvesterSchema(BaseRecordSchema):
     class Meta:
         unknown = ma.RAISE
 
-    baseurl = ma.fields.String(required=True)
+    baseurl = ma_fields.String(required=True)
 
-    batch_size = ma.fields.Integer()
+    batch_size = ma_fields.Integer()
 
-    code = ma.fields.String(required=True)
+    code = ma_fields.String(required=True)
 
-    comment = ma.fields.String()
+    comment = ma_fields.String()
 
-    loader = ma.fields.String()
+    loader = ma_fields.String()
 
-    max_records = ma.fields.Integer()
+    max_records = ma_fields.Integer()
 
-    metadataprefix = ma.fields.String(required=True)
+    metadataprefix = ma_fields.String(required=True)
 
-    name = ma.fields.String(required=True)
+    name = ma_fields.String(required=True)
 
-    setspecs = ma.fields.String(required=True)
+    setspecs = ma_fields.String(required=True)
 
-    transformers = ma.fields.List(ma.fields.String(), required=True)
+    transformers = ma_fields.List(ma_fields.String(), required=True)
 
-    writer = ma.fields.String()
+    writer = ma_fields.String()

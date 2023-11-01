@@ -4,7 +4,9 @@ from invenio_records_resources.records.api import Record as InvenioRecord
 from invenio_records_resources.records.systemfields import IndexField
 from invenio_records_resources.records.systemfields.pid import PIDField, PIDFieldContext
 
-from oarepo_oaipmh_harvester.oai_harvester.records.dumper import OaiHarvesterDumper
+from oarepo_oaipmh_harvester.oai_harvester.records.dumpers.dumper import (
+    OaiHarvesterDumper,
+)
 from oarepo_oaipmh_harvester.oai_harvester.records.models import OaiHarvesterMetadata
 
 
@@ -23,5 +25,4 @@ class OaiHarvesterRecord(InvenioRecord):
         provider=OaiHarvesterIdProvider, context_cls=PIDFieldContext, create=True
     )
 
-    dumper_extensions = []
-    dumper = OaiHarvesterDumper(extensions=dumper_extensions)
+    dumper = OaiHarvesterDumper()

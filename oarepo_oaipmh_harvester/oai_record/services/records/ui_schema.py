@@ -1,53 +1,55 @@
 import marshmallow as ma
-from marshmallow import validate as ma_validate
-from oarepo_runtime.ui import marshmallow as l10n
-from oarepo_runtime.ui.marshmallow import InvenioUISchema
+from marshmallow import Schema
+from marshmallow import fields as ma_fields
+from marshmallow.fields import String
+from marshmallow.validate import OneOf
+from oarepo_runtime.services.schema.ui import InvenioUISchema, LocalizedDateTime
 
 
 class OaiRecordUISchema(InvenioUISchema):
     class Meta:
         unknown = ma.RAISE
 
-    batch = ma.fields.Nested(lambda: BatchUISchema(), required=True)
+    batch = ma_fields.Nested(lambda: BatchUISchema(), required=True)
 
-    context = ma.fields.Dict()
+    context = ma_fields.Dict()
 
-    datestamp = l10n.LocalizedDateTime()
+    datestamp = LocalizedDateTime()
 
-    entry = ma.fields.Dict()
+    entry = ma_fields.Dict()
 
-    errors = ma.fields.List(ma.fields.Nested(lambda: ErrorsItemUISchema()))
+    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
 
-    harvester = ma.fields.Nested(lambda: BatchUISchema(), required=True)
+    harvester = ma_fields.Nested(lambda: BatchUISchema(), required=True)
 
-    local_identifier = ma.fields.String()
+    local_identifier = ma_fields.String()
 
-    manual = ma.fields.Boolean()
+    manual = ma_fields.Boolean()
 
-    oai_identifier = ma.fields.String()
+    oai_identifier = ma_fields.String()
 
-    status = ma.fields.String(validate=[ma_validate.OneOf(["O", "W", "E", "S"])])
+    status = ma_fields.String(validate=[OneOf(["O", "W", "E", "S"])])
 
-    warnings = ma.fields.List(ma.fields.String())
+    warnings = ma_fields.List(ma_fields.String())
 
 
-class BatchUISchema(ma.Schema):
+class BatchUISchema(Schema):
+    class Meta:
+        unknown = ma.INCLUDE
+
+    _id = ma_fields.String(data_key="id", attribute="id")
+
+    _version = String(data_key="@v", attribute="@v")
+
+
+class ErrorsItemUISchema(Schema):
     class Meta:
         unknown = ma.RAISE
 
-    _id = ma.fields.String(data_key="id", attribute="id")
+    code = ma_fields.String()
 
-    _version = ma.fields.String(data_key="@v", attribute="@v")
+    info = ma_fields.Dict()
 
+    location = ma_fields.String()
 
-class ErrorsItemUISchema(ma.Schema):
-    class Meta:
-        unknown = ma.RAISE
-
-    code = ma.fields.String()
-
-    info = ma.fields.Dict()
-
-    location = ma.fields.String()
-
-    message = ma.fields.String()
+    message = ma_fields.String()

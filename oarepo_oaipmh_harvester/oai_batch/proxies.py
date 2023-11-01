@@ -11,8 +11,8 @@ def _ext_proxy(attr):
 
 
 current_service = _ext_proxy("service_records")
-"""Proxy to the instantiated vocabulary service."""
+"""Proxy to the instantiated service."""
 
 
 current_resource = _ext_proxy("resource_records")
-"""Proxy to the instantiated vocabulary resource."""
+"""Proxy to the instantiated resource."""

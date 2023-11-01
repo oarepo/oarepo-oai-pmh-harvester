@@ -3,12 +3,12 @@ from oarepo_ui.resources.config import RecordsUIResourceConfig
 
 class OaiRunUIResourceConfig(RecordsUIResourceConfig):
     template_folder = "../templates"
-    url_prefix = "/oairun/"
+    url_prefix = "/oai/harvest/runs/"
     blueprint_name = "oai-run-ui"
     ui_serializer_class = (
         "oarepo_oaipmh_harvester.oai_run.resources.records.ui.OaiRunUIJSONSerializer"
     )
-    api_service = "oarepo-oaipmh-run"
+    api_service = "oarepo-oaipmh-runs"
     layout = "oarepo-oaipmh-run"
 
     templates = {
