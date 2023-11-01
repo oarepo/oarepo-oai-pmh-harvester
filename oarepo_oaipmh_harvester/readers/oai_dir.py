@@ -4,7 +4,7 @@ from typing import Iterator
 
 import yaml
 from oarepo_runtime.datastreams import BaseReader, StreamEntry
-from oarepo_runtime.tasks.datastreams import _deserialize_entries
+from oarepo_runtime.datastreams.tasks import _deserialize_entries
 
 
 class OAIDirReader(BaseReader):
