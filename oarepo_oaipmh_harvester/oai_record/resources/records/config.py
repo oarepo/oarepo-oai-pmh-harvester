@@ -11,7 +11,7 @@ class OaiRecordResourceConfig(RecordResourceConfig):
     """OaiRecord resource config."""
 
     blueprint_name = "oarepo-oaipmh-record"
-    url_prefix = "/oarepo-oaipmh-harvester-oai-record/"
+    url_prefix = "/oai/harvest/records/"
 
     @property
     def response_handlers(self):

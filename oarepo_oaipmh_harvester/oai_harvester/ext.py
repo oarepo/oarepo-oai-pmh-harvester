@@ -1,11 +1,12 @@
 import re
 from functools import cached_property
 
-from oarepo_oaipmh_harvester.oai_harvester import config as config
+from oarepo_oaipmh_harvester.oai_harvester import config
 
 
 class Oai_harvesterExt:
     def __init__(self, app=None):
+
         if app:
             self.init_app(app)
 

@@ -22,7 +22,7 @@ class OaiBatchServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceC
 
     PERMISSIONS_PRESETS = ["oai_harvester"]
 
-    url_prefix = "/oarepo-oaipmh-harvester-oai-batch/"
+    url_prefix = "/oai/harvest/batches/"
 
     base_permission_policy_cls = OaiBatchPermissionPolicy
 
@@ -32,7 +32,7 @@ class OaiBatchServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceC
 
     record_cls = OaiBatchRecord
 
-    service_id = "oarepo-oaipmh-batch"
+    service_id = "oarepo-oaipmh-batches"
 
     components = [
         *PermissionsPresetsConfigMixin.components,
@@ -46,11 +46,11 @@ class OaiBatchServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceC
     @property
     def links_item(self):
         return {
-            "self": RecordLink("{self.url_prefix}{id}"),
+            "self": RecordLink("{+api}/oai/harvest/batches/{id}"),
         }
 
     @property
     def links_search(self):
         return {
-            **pagination_links("{self.url_prefix}{?args*}"),
+            **pagination_links("{+api}/oai/harvest/batches/{?args*}"),
         }

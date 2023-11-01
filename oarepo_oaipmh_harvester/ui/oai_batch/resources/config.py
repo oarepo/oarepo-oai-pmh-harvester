@@ -3,10 +3,10 @@ from oarepo_ui.resources.config import RecordsUIResourceConfig
 
 class OAIBatchUIResourceConfig(RecordsUIResourceConfig):
     template_folder = "../templates"
-    url_prefix = "/oaibatch/"
+    url_prefix = "/oai/harvest/batches/"
     blueprint_name = "oai-batch-ui"
     ui_serializer_class = "oarepo_oaipmh_harvester.oai_batch.resources.records.ui.OaiBatchUIJSONSerializer"
-    api_service = "oarepo-oaipmh-batch"
+    api_service = "oarepo-oaipmh-batches"
     layout = "oarepo-oaipmh-batch"
 
     templates = {

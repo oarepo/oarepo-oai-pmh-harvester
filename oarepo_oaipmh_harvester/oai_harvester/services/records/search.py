@@ -6,6 +6,8 @@ from . import facets
 class OaiHarvesterSearchOptions(InvenioSearchOptions):
     """OaiHarvesterRecord search options."""
 
+    facet_groups = {}
+
     facets = {
         "_schema": facets._schema,
         "baseurl": facets.baseurl,
@@ -22,7 +24,4 @@ class OaiHarvesterSearchOptions(InvenioSearchOptions):
         "updated": facets.updated,
         "writer": facets.writer,
         **getattr(InvenioSearchOptions, "facets", {}),
-    }
-    sort_options = {
-        **InvenioSearchOptions.sort_options,
     }

@@ -1,49 +1,51 @@
 import marshmallow as ma
-from marshmallow import validate as ma_validate
-from oarepo_runtime.ui import marshmallow as l10n
-from oarepo_runtime.ui.marshmallow import InvenioUISchema
+from marshmallow import Schema
+from marshmallow import fields as ma_fields
+from marshmallow.fields import String
+from marshmallow.validate import OneOf
+from oarepo_runtime.services.schema.ui import InvenioUISchema, LocalizedDateTime
 
 
 class OaiBatchUISchema(InvenioUISchema):
     class Meta:
         unknown = ma.RAISE
 
-    errors = ma.fields.List(ma.fields.Nested(lambda: ErrorsItemUISchema()))
+    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
 
-    finished = l10n.LocalizedDateTime()
+    finished = LocalizedDateTime()
 
-    identifiers = ma.fields.List(ma.fields.String())
+    identifiers = ma_fields.List(ma_fields.String())
 
-    manual = ma.fields.Boolean()
+    manual = ma_fields.Boolean()
 
-    run = ma.fields.Nested(lambda: RunUISchema(), required=True)
+    run = ma_fields.Nested(lambda: RunUISchema(), required=True)
 
-    started = l10n.LocalizedDateTime()
+    started = LocalizedDateTime()
 
-    status = ma.fields.String(
-        required=True, validate=[ma_validate.OneOf(["R", "O", "W", "E", "I"])]
+    status = ma_fields.String(
+        required=True, validate=[OneOf(["R", "O", "W", "E", "I"])]
     )
 
 
-class ErrorsItemUISchema(ma.Schema):
+class ErrorsItemUISchema(Schema):
     class Meta:
         unknown = ma.RAISE
 
-    code = ma.fields.String()
+    code = ma_fields.String()
 
-    info = ma.fields.Dict()
+    info = ma_fields.Dict()
 
-    location = ma.fields.String()
+    location = ma_fields.String()
 
-    message = ma.fields.String()
+    message = ma_fields.String()
 
-    oai_identifier = ma.fields.String()
+    oai_identifier = ma_fields.String()
 
 
-class RunUISchema(ma.Schema):
+class RunUISchema(Schema):
     class Meta:
-        unknown = ma.RAISE
+        unknown = ma.INCLUDE
 
-    _id = ma.fields.String(data_key="id", attribute="id")
+    _id = ma_fields.String(data_key="id", attribute="id")
 
-    _version = ma.fields.String(data_key="@v", attribute="@v")
+    _version = String(data_key="@v", attribute="@v")

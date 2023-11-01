@@ -20,7 +20,7 @@ class OaiRunServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceCon
 
     PERMISSIONS_PRESETS = ["oai_harvester"]
 
-    url_prefix = "/oarepo-oaipmh-harvester-oai-run/"
+    url_prefix = "/oai/harvest/runs/"
 
     base_permission_policy_cls = OaiRunPermissionPolicy
 
@@ -30,7 +30,7 @@ class OaiRunServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceCon
 
     record_cls = OaiRunRecord
 
-    service_id = "oarepo-oaipmh-run"
+    service_id = "oarepo-oaipmh-runs"
 
     components = [
         *PermissionsPresetsConfigMixin.components,
@@ -44,11 +44,11 @@ class OaiRunServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceCon
     @property
     def links_item(self):
         return {
-            "self": RecordLink("{self.url_prefix}{id}"),
+            "self": RecordLink("{+api}/oai/harvest/runs/{id}"),
         }
 
     @property
     def links_search(self):
         return {
-            **pagination_links("{self.url_prefix}{?args*}"),
+            **pagination_links("{+api}/oai/harvest/runs/{?args*}"),
         }

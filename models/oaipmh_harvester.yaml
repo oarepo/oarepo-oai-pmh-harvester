@@ -3,11 +3,15 @@ record:
   module:
     qualified: oarepo_oaipmh_harvester.oai_harvester
     alias: oarepo-oaipmh-harvester
+
   service-config:
     components:
-      - CachingRelationsComponent
-    imports:
-      - import: oarepo_runtime.relations.components.CachingRelationsComponent
+      - "{{oarepo_runtime.relations.components.CachingRelationsComponent}}"
+    service-id: oarepo-oaipmh-harvesters
+
+  resource-config:
+    base-url: /oai/harvest/harvesters/
+    base-html-url: /oai/harvest/harvesters/
 
   properties:
     code: 

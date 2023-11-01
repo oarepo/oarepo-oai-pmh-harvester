@@ -11,7 +11,7 @@ class OaiBatchResourceConfig(RecordResourceConfig):
     """OaiBatchRecord resource config."""
 
     blueprint_name = "oarepo-oaipmh-batch"
-    url_prefix = "/oarepo-oaipmh-harvester-oai-batch/"
+    url_prefix = "/oai/harvest/batches/"
 
     @property
     def response_handlers(self):

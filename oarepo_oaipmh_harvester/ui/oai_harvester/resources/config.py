@@ -3,10 +3,10 @@ from oarepo_ui.resources.config import RecordsUIResourceConfig
 
 class OAIHarvesterUIResourceConfig(RecordsUIResourceConfig):
     template_folder = "../templates"
-    url_prefix = "/oaiharvester/"
+    url_prefix = "/oai/harvest/harvesters/"
     blueprint_name = "oai-harvester-ui"
     ui_serializer_class = "oarepo_oaipmh_harvester.oai_harvester.resources.records.ui.OaiHarvesterUIJSONSerializer"
-    api_service = "oarepo-oaipmh-harvester"
+    api_service = "oarepo-oaipmh-harvesters"
     layout = "oarepo-oaipmh-harvester"
 
     templates = {

@@ -5,9 +5,13 @@ record:
     alias: oarepo-oaipmh-record
   service-config:
     components:
-      - CachingRelationsComponent
-    imports:
-      - import: oarepo_runtime.relations.components.CachingRelationsComponent
+      - "{{oarepo_runtime.relations.components.CachingRelationsComponent}}"
+    service-id: oarepo-oaipmh-records
+
+  resource-config:
+    base-url: /oai/harvest/records/
+    base-html-url: /oai/harvest/records/
+
   record:
     class: oarepo_oaipmh_harvester.oai_record.records.api.OaiRecord
 

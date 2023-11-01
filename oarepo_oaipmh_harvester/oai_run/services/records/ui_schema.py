@@ -1,38 +1,40 @@
 import marshmallow as ma
-from marshmallow import validate as ma_validate
-from oarepo_runtime.ui import marshmallow as l10n
-from oarepo_runtime.ui.marshmallow import InvenioUISchema
+from marshmallow import Schema
+from marshmallow import fields as ma_fields
+from marshmallow.fields import String
+from marshmallow.validate import OneOf
+from oarepo_runtime.services.schema.ui import InvenioUISchema, LocalizedDateTime
 
 
 class OaiRunUISchema(InvenioUISchema):
     class Meta:
         unknown = ma.RAISE
 
-    batches = ma.fields.Integer()
+    batches = ma_fields.Integer()
 
-    duration = ma.fields.Float()
+    duration = ma_fields.Float()
 
-    error = ma.fields.String()
+    error = ma_fields.String()
 
-    finished = l10n.LocalizedDateTime()
+    finished = LocalizedDateTime()
 
-    harvester = ma.fields.Nested(lambda: HarvesterUISchema(), required=True)
+    harvester = ma_fields.Nested(lambda: HarvesterUISchema(), required=True)
 
-    manual = ma.fields.Boolean()
+    manual = ma_fields.Boolean()
 
-    started = l10n.LocalizedDateTime()
+    started = LocalizedDateTime()
 
-    status = ma.fields.String(validate=[ma_validate.OneOf(["R", "O", "W", "E", "I"])])
+    status = ma_fields.String(validate=[OneOf(["R", "O", "W", "E", "I"])])
 
-    warning = ma.fields.String()
+    warning = ma_fields.String()
 
 
-class HarvesterUISchema(ma.Schema):
+class HarvesterUISchema(Schema):
     class Meta:
-        unknown = ma.RAISE
+        unknown = ma.INCLUDE
 
-    _id = ma.fields.String(data_key="id", attribute="id")
+    _id = ma_fields.String(data_key="id", attribute="id")
 
-    _version = ma.fields.String(data_key="@v", attribute="@v")
+    _version = String(data_key="@v", attribute="@v")
 
-    code = ma.fields.String()
+    code = ma_fields.String()
