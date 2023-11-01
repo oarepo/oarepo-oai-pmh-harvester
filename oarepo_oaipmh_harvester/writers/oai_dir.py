@@ -4,7 +4,7 @@ from pathlib import Path
 
 import yaml
 from oarepo_runtime.datastreams.writers import BatchWriter, StreamBatch
-from oarepo_runtime.tasks.datastreams import _serialize_entries
+from oarepo_runtime.datastreams.tasks import _serialize_entries
 
 
 class OAIDirWriter(BatchWriter):

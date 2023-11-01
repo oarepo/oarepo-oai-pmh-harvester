@@ -6,7 +6,7 @@ from invenio_access.permissions import system_identity
 from invenio_search import current_search_client
 from invenio_search.utils import build_alias_name
 from oarepo_runtime.datastreams import StreamEntry
-from oarepo_runtime.tasks.datastreams import AsyncDataStream
+from oarepo_runtime.datastreams.tasks import AsyncDataStream
 
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
