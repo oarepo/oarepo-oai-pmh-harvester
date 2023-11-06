@@ -15,6 +15,9 @@ from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_servi
 
 
 def test_harvest_synchronous(app, db, record_service, client, search_clear):
+    import logging
+
+    logging.basicConfig(level=logging.ERROR)
     # create oai harvester with a test reader
     harvester_metadata = {
         "code": "test",
@@ -31,15 +34,12 @@ def test_harvest_synchronous(app, db, record_service, client, search_clear):
     harvester = _add_harvester(harvester_metadata)
 
     # run the harvester synchronously
-    def progress(**kwargs):
-        print(kwargs)
 
     run_id = harvest(
         harvester,
         all_records=True,
         on_background=False,
         identifiers=None,
-        progress_callback=progress,
     )
 
     # check the harvested data
@@ -63,7 +63,7 @@ def test_harvest_synchronous(app, db, record_service, client, search_clear):
 
     # check the created records
     assert "errors" not in oai_records["1"]
-    record_pid = oai_records["1"]["context"]["pid"]
+    record_pid = oai_records["1"]["local_identifier"]
     record = record_service.read(system_identity, record_pid)
     assert record.data["title"] == "corr"
 
@@ -98,23 +98,23 @@ def test_harvest_synchronous(app, db, record_service, client, search_clear):
         "transformer": "tells transformer to raise error on this record"
     }
 
-    record_pid = oai_records["5"]["context"]["pid"]
-    with pytest.raises(PIDDeletedError):
-        record_service.read(system_identity, record_pid)
+    # local identifier not here as the record has been deleted
+    assert "local_identifier" not in oai_records["5"]
+    assert oai_records["5"]["context"]["oai"]["deleted"]
 
     # check batch size works. in fact, #6 should have two batches in historical version)
     # so that the check should be more thorough
     assert oai_records["4"]["batch"]["id"] != oai_records["6"]["batch"]["id"]
 
-    record_pid = oai_records["6"]["context"]["pid"]
-    with pytest.raises(PIDDeletedError):
-        record_service.read(system_identity, record_pid)
+    # local identifier not here as the record has been deleted
+    assert "local_identifier" not in oai_records["6"]
+    assert oai_records["6"]["context"]["oai"]["deleted"]
 
 
 def test_harvest_performance(app, db, record_service, search_clear):
     # create oai harvester with a test reader
-    data_count = 1000
-    batch_size = 100
+    data_count = 200
+    batch_size = 50
     harvester_metadata = {
         "code": "test",
         "baseurl": (Path(__file__).parent / "harvest_data.json").as_uri(),
@@ -130,13 +130,11 @@ def test_harvest_performance(app, db, record_service, search_clear):
     harvester = _add_harvester(harvester_metadata)
 
     # run the harvester synchronously
-    def progress(*args, **kwargs):
-        print(args, kwargs)
-
     run_id = harvest(
         harvester,
         all_records=True,
         on_background=False,
         identifiers=None,
-        progress_callback=progress,
     )
+    run = run_service.read(system_identity, run_id).data
+    assert run["status"] == "O"

@@ -6,8 +6,10 @@ from oarepo_runtime.datastreams import (
     BaseTransformer,
     StreamEntry,
     TransformerError,
+    StreamBatch,
 )
 from oarepo_runtime.datastreams.readers.json import JSONReader
+from oarepo_runtime.datastreams.types import StreamEntryError
 
 
 class MockOAIReader(JSONReader):
@@ -49,6 +51,7 @@ class MockOAIReader(JSONReader):
             x.context["manual"] = self.manual
             x.context["oai_run_id"] = self.oai_run
             x.entry = x.entry["entry"]
+            x.deleted = x.context["oai"].get("deleted", False)
             yield x
 
 
@@ -99,14 +102,17 @@ class TestDataOAIReader(BaseReader):
 
 
 class ErrorTransformer(BaseTransformer):
-    def apply(self, stream_entry: StreamEntry, *args, **kwargs) -> StreamEntry:
-        if "transformer" in stream_entry.entry:
-            raise TransformerError(
-                "Error in transformer",
-                location="transformer",
-                code="TE",
-                detail={
-                    "transformer-specific-message": stream_entry.entry["transformer"]
-                },
-            )
-        return stream_entry
+    def apply(self, stream_batch: StreamBatch, *args, **kwargs) -> StreamBatch:
+        for entry in stream_batch.entries:
+            if "transformer" in entry.entry:
+                entry.errors.append(
+                    StreamEntryError(
+                        message="Error in transformer",
+                        location="transformer",
+                        code="TE",
+                        info={
+                            "transformer-specific-message": entry.entry["transformer"]
+                        },
+                    )
+                )
+        return stream_batch

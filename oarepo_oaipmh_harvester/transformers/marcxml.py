@@ -6,9 +6,8 @@ from oarepo_runtime.datastreams import BaseTransformer, StreamEntry
 
 
 class MarcXMLTransformer(BaseTransformer):
-    def __init__(self, config, identity) -> None:
+    def __init__(self, **kwargs) -> None:
         super().__init__()
-        self.config = config
 
     def apply(self, stream_entry: StreamEntry, *args, **kwargs) -> StreamEntry:
         xml = etree.fromstring(stream_entry.entry)
