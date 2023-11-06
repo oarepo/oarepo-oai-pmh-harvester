@@ -5,17 +5,17 @@ from abc import abstractmethod
 from collections import defaultdict
 from typing import List
 
-from oarepo_runtime.datastreams.datastreams import StreamEntry, StreamEntryError
-from oarepo_runtime.datastreams.transformers import BatchTransformer, StreamBatch
+from oarepo_runtime.datastreams.types import StreamEntry, StreamEntryError, StreamBatch
+from oarepo_runtime.datastreams.transformers import BaseTransformer
 
 
-class OAIRuleTransformer(BatchTransformer):
+class OAIRuleTransformer(BaseTransformer):
     def __init__(self, identity, **kwargs) -> None:
         super().__init__()
         self.late_actions = defaultdict(list)
         self.identity = identity
 
-    def apply_batch(self, batch: StreamBatch, *args, **kwargs) -> List[StreamEntry]:
+    def apply(self, batch: StreamBatch, *args, **kwargs) -> StreamBatch:
         if not len(batch.entries):
             return batch
         for entry in batch.entries:
@@ -25,8 +25,10 @@ class OAIRuleTransformer(BatchTransformer):
                 self.transform(entry)
             except Exception as e:
                 entry.errors.append(StreamEntryError.from_exception(e))
-
-        self.finish_transformation(batch.entries)
+        try:
+            self.finish_transformation(batch.entries)
+        except Exception as e:
+            batch.errors.append(StreamEntryError.from_exception(e))
         return batch
 
     @abstractmethod
