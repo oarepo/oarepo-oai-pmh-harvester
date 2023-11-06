@@ -1,9 +1,7 @@
 from pathlib import Path
 from pprint import pprint
 
-import pytest
 from invenio_access.permissions import system_identity
-from invenio_pidstore.errors import PIDDeletedError
 
 from oarepo_oaipmh_harvester.cli import _add_harvester
 from oarepo_oaipmh_harvester.harvester import harvest

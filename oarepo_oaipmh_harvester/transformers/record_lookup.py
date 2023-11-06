@@ -28,10 +28,11 @@ class OAIRecordLookupTransformer(BaseTransformer):
             )
         ):
             entry = by_oai_identifier[oai_record["oai_identifier"]]
-            entry["context"]["oai"]["oai_record_id"] = oai_record["id"]
+            entry.context["oai"]["oai_record_id"] = oai_record["id"]
 
             if oai_record and oai_record.get("local_identifier"):
                 entry.entry["id"] = oai_record["local_identifier"]
+                entry.id = oai_record["local_identifier"]
                 if (
                     oai_record["status"] == "O"
                     and oai_record["datestamp"] == entry.context["oai"]["datestamp"]

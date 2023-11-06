@@ -1,17 +1,22 @@
 import functools
 import sys
+import time
 
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
 from oarepo_runtime.cli import as_command, oarepo
+from oarepo_runtime.datastreams import StreamBatch
+from oarepo_runtime.datastreams.types import StatsKeepingDataStreamCallback
 from tqdm import tqdm
 
 from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
+from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 
+import threading
 
 @oarepo.group(name="oai")
 def oai():
@@ -144,6 +149,35 @@ def _delete_harvester(code):
     harvester_service.indexer.refresh()
 
 
+class TQDMSynchronousCallback(StatsKeepingDataStreamCallback):
+    def __init__(self, progress_bar):
+        super().__init__(log_error_entry=True)
+        self.progress_bar = progress_bar
+        self.last = 0
+
+    def batch_finished(self, batch: StreamBatch):
+        super().batch_finished(batch)
+
+        read = (
+            self.ok_entries_count
+            + self.filtered_entries_count
+            + self.deleted_entries_count
+            + self.failed_entries_count
+        )
+
+        self.progress_bar.update(read - self.last)
+        self.last = read
+
+
+def asynchronous_reporting(progress_bar, run_id):
+    while True:
+        run = run_service.get(system_identity, run_id)
+        if run['status'] != 'R':
+            break
+        progress_bar.update(run['batches'] - progress_bar.n)
+        time.sleep(30)
+
+
 def _run_harvester(metadata, on_background, all_records, identifier):
     """Run/Start a harvester. Only the code is required, other arguments
     might be used to override harvester settings stored in the database"""
@@ -171,18 +205,24 @@ def _run_harvester(metadata, on_background, all_records, identifier):
         click.secho(f"    {k:20s}: {v}", file=sys.stderr)
 
     with tqdm() as bar:
-        last = [0]
 
-        def progress(read, **kwargs):
-            bar.update(read - last[0])
-            last[0] = read
+        callback = None
+        on_run_created = None
+        if not on_background:
+            callback = TQDMSynchronousCallback(bar)
+        else:
+            def on_run_created(run_id):
+                threading.Thread(target=asynchronous_reporting, args=(bar, run_id)).start()
 
-        harvest(
+        run_id = harvest(
             harvester,
             all_records=all_records,
             on_background=on_background,
             identifiers=identifier or None,
+            callback=callback,
+            on_run_created=on_run_created,
         )
+
     bar.close()
 
 

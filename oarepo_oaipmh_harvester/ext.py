@@ -2,13 +2,12 @@ import re
 from io import StringIO
 from typing import Union
 
-import importlib_metadata
 import yaml
+from oarepo_runtime.datastreams.datastreams import Signature, SignatureKind
 
 from oarepo_oaipmh_harvester import cli  # noqa
 from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
-from oarepo_runtime.datastreams.datastreams import Signature, SignatureKind
 
 from . import config
 

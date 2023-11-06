@@ -2,12 +2,11 @@ import datetime
 
 from invenio_db import db
 from oarepo_runtime.datastreams import BaseWriter, StreamBatch
+from oarepo_runtime.uow import BulkUnitOfWork
 
-from oarepo_oaipmh_harvester.oai_batch.records.api import OaiBatchRecord
 from oarepo_oaipmh_harvester.oai_batch.proxies import current_service as batch_service
 from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
-from oarepo_runtime.uow import BulkUnitOfWork
 
 
 class OAIWriter(BaseWriter):
@@ -21,7 +20,7 @@ class OAIWriter(BaseWriter):
             self.set_batch_status(batch, uow)
             uow.commit()
 
-        OaiBatchRecord.index.refresh()
+        batch_service.indexer.refresh()
 
         oai_run = run_service.read(self._identity, batch.context["run_id"]).data
 
