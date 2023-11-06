@@ -182,7 +182,6 @@ def _run_harvester(metadata, on_background, all_records, identifier):
             all_records=all_records,
             on_background=on_background,
             identifiers=identifier or None,
-            progress_callback=progress,
         )
     bar.close()
 
