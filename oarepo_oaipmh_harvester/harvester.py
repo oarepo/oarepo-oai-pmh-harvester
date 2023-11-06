@@ -1,12 +1,15 @@
 import datetime
+from functools import partial
 from typing import Dict, Union
 
-import celery
 from invenio_access.permissions import system_identity
 from invenio_search import current_search_client
 from invenio_search.utils import build_alias_name
-from oarepo_runtime.datastreams import StreamEntry
-from oarepo_runtime.datastreams.tasks import AsyncDataStream
+from oarepo_runtime.datastreams import SynchronousDataStream
+from oarepo_runtime.datastreams.asynchronous import AsynchronousDataStream
+from oarepo_runtime.datastreams.datastreams import Signature
+from oarepo_runtime.datastreams.fixtures import fixtures_asynchronous_callback
+from oarepo_runtime.datastreams.types import StatsKeepingDataStreamCallback
 
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
@@ -49,7 +52,6 @@ def harvest(
     all_records=False,
     on_background=False,
     identifiers=None,
-    progress_callback=None,
 ):
     if isinstance(harvester_or_code, str):
         harvesters = list(
@@ -83,73 +85,79 @@ def harvest(
     start_from = _get_latest_oai_datestamp(harvester["id"]) if not run_manual else None
     print(f"STARTING FROM: {start_from}")
 
-    reader_config = current_harvester.get_parser_config(harvester["loader"])
-    reader_config = {
-        "source": harvester["baseurl"],
-        **reader_config,
-        "all_records": all_records,
-        "identifiers": identifiers,
-        "config": dict(harvester),
-        "oai_run": run_id,
-        "start_from": start_from,
-        "oai_harvester_id": harvester["id"],
-    }
+    reader_signature: Signature = current_harvester.get_parser_signature(
+        harvester["loader"],
+        source=harvester["baseurl"],
+        all_records=all_records,
+        identifiers=identifiers,
+        config=dict(harvester),
+        oai_run=run_id,
+        start_from=start_from,
+        oai_harvester_id=harvester["id"],
+        manual=run_manual,
+    )
 
-    transformers_config = [
-        {
-            **current_harvester.get_transformer_config("oai_batch"),
-            "config": dict(harvester),
-            "oai_run": run_id,
-            "manual": run_manual,
-        }
+    transformers_signatures = [
+        current_harvester.get_transformer_signature(
+            "oai_batch",
+            oai_config=dict(harvester),
+            oai_run=run_id,
+            oai_harvester_id=harvester["id"],
+            manual=run_manual,
+        )
     ]
-    transformers_config.extend(
-        {
-            **current_harvester.get_transformer_config(x),
-            "config": dict(harvester),
-        }
-        for x in harvester["transformers"]
+
+    transformers_signatures.extend(
+        current_harvester.get_transformer_signature(
+            transformer,
+            oai_config=dict(harvester),
+            oai_run=run_id,
+            oai_harvester_id=harvester["id"],
+            manual=run_manual,
+        )
+        for transformer in harvester["transformers"]
     )
 
-    writer_config = {
-        "writer": "oai",
-        "target_writer": harvester["writer"],
-    }
-
-    def progress(read, run_id=None, **kwargs):
-        if progress_callback and (read % 100) == 0:
-            progress_callback(read)
-
-    datastream = AsyncDataStream(
-        readers=[reader_config],
-        writers=[writer_config],
-        transformers=transformers_config,
-        success_callback=harvester_success.signature(),
-        error_callback=harvester_error.signature(),
-        progress_callback=progress,
-        batch_size=harvester.get("batch_size", 10),
-        in_process=not on_background,
-        extra_parameters={"run": run_id},
-        identity=system_identity,
+    transformers_signatures.append(
+        current_harvester.get_transformer_signature(
+            "oai_record_lookup",
+            oai_config=dict(harvester),
+            oai_run=run_id,
+            oai_harvester_id=harvester["id"],
+            manual=run_manual,
+        )
     )
 
-    datastream.process()
+    writers_config = [
+        current_harvester.get_writer_signature(harvester["writer"]),
+        current_harvester.get_writer_signature(
+            "oai",
+            oai_config=dict(harvester),
+            oai_run=run_id,
+            oai_harvester_id=harvester["id"],
+            manual=run_manual,
+        ),
+    ]
 
-    return run.id
-
-
-@celery.shared_task
-def harvester_success(*args, entry: StreamEntry = None, **kwargs):
-    pass
-    # print("success", entry)
-
-
-@celery.shared_task
-def harvester_error(*args, entry: StreamEntry = None, **kwargs):
-    if entry:
-        print("Error in oai identifier", entry.context.get("oai", {}).get("identifier"))
-        for e in entry.errors:
-            print(e)
-        print()
+    if not on_background:
+        datastream_impl = partial(
+            SynchronousDataStream,
+            callback=StatsKeepingDataStreamCallback(log_error_entry=True),
+        )
     else:
-        print("Unexpected error", *args, **kwargs)
+        datastream_impl = partial(
+            AsynchronousDataStream,
+            on_background=True,
+            callback=fixtures_asynchronous_callback.s(),
+        )
+
+    datastream = datastream_impl(
+        readers=[reader_signature],
+        writers=writers_config,
+        transformers=transformers_signatures,
+        batch_size=harvester.get("batch_size", 10),
+    )
+
+    datastream.process(identity=system_identity, context={"run_id": run_id})
+
+    return run_id

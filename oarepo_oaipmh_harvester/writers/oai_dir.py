@@ -3,11 +3,11 @@ import gzip
 from pathlib import Path
 
 import yaml
-from oarepo_runtime.datastreams.writers import BatchWriter, StreamBatch
-from oarepo_runtime.datastreams.tasks import _serialize_entries
+
+from oarepo_runtime.datastreams import BaseWriter, StreamBatch
 
 
-class OAIDirWriter(BatchWriter):
+class OAIDirWriter(BaseWriter):
     def __init__(self, *, dir, **kwargs) -> None:
         super().__init__()
         self.target = dir

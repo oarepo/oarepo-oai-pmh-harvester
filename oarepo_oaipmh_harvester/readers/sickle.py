@@ -13,10 +13,10 @@ class SickleReader(BaseReader):
         *,
         all_records=None,
         identifiers=None,
-        config=None,
+        oai_config=None,
         source=None,
-        start_from=None,
-        base_path=None,
+        datestamp_from=None,
+        datestamp_until=None,
         oai_run=None,
         oai_harvester_id=None,
         manual=False,
@@ -26,8 +26,9 @@ class SickleReader(BaseReader):
         super().__init__(source=source, base_path=None, **kwargs)
         self.all_records = all_records
         self.identifiers = identifiers
-        self.config = config
-        self.start_from = start_from
+        self.config = oai_config
+        self.datestamp_from = datestamp_from
+        self.datestamp_until = datestamp_until
         self.oai_run = oai_run
         self.oai_harvester_id = oai_harvester_id
         self.manual = manual
@@ -35,7 +36,7 @@ class SickleReader(BaseReader):
     def __iter__(self) -> Iterator[StreamEntry]:
         request = Sickle(self.source, encoding="utf-8")
 
-        dates = {"from": self.start_from, "until": None}
+        dates = {"from": self.datestamp_from, "until": self.datestamp_until}
         setspecs = (self.config["setspecs"] or "").split() or [None]
 
         for spec in setspecs:

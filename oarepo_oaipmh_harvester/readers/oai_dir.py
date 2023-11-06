@@ -4,14 +4,37 @@ from typing import Iterator
 
 import yaml
 from oarepo_runtime.datastreams import BaseReader, StreamEntry
-from oarepo_runtime.datastreams.tasks import _deserialize_entries
 
 
 class OAIDirReader(BaseReader):
+    def __init__(
+        self,
+        *,
+        oai_run=None,
+        oai_harvester_id=None,
+        manual=False,
+        **kwargs,
+    ):
+        # we are handling url, so ignore the base path
+        super().__init__(**kwargs)
+        self.oai_run = oai_run
+        self.oai_harvester_id = oai_harvester_id
+        self.manual = manual
+
     def __iter__(self) -> Iterator[StreamEntry]:
         parent_dir = Path(self.source)
         files = list(parent_dir.glob("*.yaml.gz"))
         files.sort()
         for f in files:
             with gzip.open(f, "rt") as ff:
-                yield from _deserialize_entries(yaml.safe_load(ff))
+                for record in yaml.safe_load(f):
+                    yield StreamEntry(
+                        record["entry"],
+                        context={
+                            "oai": record["oai"],
+                            "oai_run": self.oai_run,
+                            "oai_harvester_id": self.oai_harvester_id,
+                            "manual": self.manual,
+                        },
+                        deleted=record["oai"].get("deleted"),
+                    )
