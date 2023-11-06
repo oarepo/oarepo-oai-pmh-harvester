@@ -52,6 +52,8 @@ def harvest(
     all_records=False,
     on_background=False,
     identifiers=None,
+    callback=None,
+    on_run_created=None,
 ):
     if isinstance(harvester_or_code, str):
         harvesters = list(
@@ -82,15 +84,17 @@ def harvest(
         },
     )
     run_id = run["id"]
+    if on_run_created:
+        on_run_created(run_id)
+
     start_from = _get_latest_oai_datestamp(harvester["id"]) if not run_manual else None
-    print(f"STARTING FROM: {start_from}")
 
     reader_signature: Signature = current_harvester.get_parser_signature(
         harvester["loader"],
         source=harvester["baseurl"],
         all_records=all_records,
         identifiers=identifiers,
-        config=dict(harvester),
+        oai_config=dict(harvester),
         oai_run=run_id,
         start_from=start_from,
         oai_harvester_id=harvester["id"],
@@ -142,13 +146,13 @@ def harvest(
     if not on_background:
         datastream_impl = partial(
             SynchronousDataStream,
-            callback=StatsKeepingDataStreamCallback(log_error_entry=True),
+            callback=callback or StatsKeepingDataStreamCallback(log_error_entry=True),
         )
     else:
         datastream_impl = partial(
             AsynchronousDataStream,
             on_background=True,
-            callback=fixtures_asynchronous_callback.s(),
+            callback=callback or fixtures_asynchronous_callback.s(),
         )
 
     datastream = datastream_impl(

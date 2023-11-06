@@ -5,8 +5,8 @@ from abc import abstractmethod
 from collections import defaultdict
 from typing import List
 
-from oarepo_runtime.datastreams.types import StreamEntry, StreamEntryError, StreamBatch
 from oarepo_runtime.datastreams.transformers import BaseTransformer
+from oarepo_runtime.datastreams.types import StreamBatch, StreamEntry, StreamEntryError
 
 
 class OAIRuleTransformer(BaseTransformer):

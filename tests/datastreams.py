@@ -4,9 +4,8 @@ from urllib.parse import unquote, urlparse
 from oarepo_runtime.datastreams import (
     BaseReader,
     BaseTransformer,
-    StreamEntry,
-    TransformerError,
     StreamBatch,
+    StreamEntry,
 )
 from oarepo_runtime.datastreams.readers.json import JSONReader
 from oarepo_runtime.datastreams.types import StreamEntryError

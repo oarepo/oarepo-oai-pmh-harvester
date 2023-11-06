@@ -2,14 +2,19 @@ from collections import defaultdict
 
 from dojson.contrib.marc21.utils import GroupableOrderedDict, create_record
 from lxml import etree
-from oarepo_runtime.datastreams import BaseTransformer, StreamEntry
+from oarepo_runtime.datastreams import BaseTransformer, StreamBatch, StreamEntry
 
 
 class MarcXMLTransformer(BaseTransformer):
     def __init__(self, **kwargs) -> None:
         super().__init__()
 
-    def apply(self, stream_entry: StreamEntry, *args, **kwargs) -> StreamEntry:
+    def apply(self, batch: StreamBatch, *args, **kwargs) -> StreamBatch:
+        for entry in batch.entries:
+            self.apply_entry(entry, *args, **kwargs)
+        return batch
+
+    def apply_entry(self, stream_entry: StreamEntry, *args, **kwargs) -> StreamEntry:
         xml = etree.fromstring(stream_entry.entry)
         ret = {}
         for k, vals in create_record(xml).items():
