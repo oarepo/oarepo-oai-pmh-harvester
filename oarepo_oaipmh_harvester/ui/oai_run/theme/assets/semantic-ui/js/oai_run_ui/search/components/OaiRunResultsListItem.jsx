@@ -21,10 +21,7 @@ export const OaiRunResultsListItemComponent = ({
   const id = _get(result, "id");
   const started =_get(result, "started");
   const harvester =_get(result, "harvester.name");
-  const viewLink = new URL(
-      result.links.self,
-    new URL(searchAppConfig.ui_endpoint, window.location.origin)
-  );
+  const viewLink = result.links.self_html;
   return (
     <Overridable
       id={buildUID("RecordsResultsListItem.layout", "", appName)}

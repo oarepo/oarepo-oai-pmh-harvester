@@ -133,6 +133,14 @@
                     "hint": "harvester/id.hint",
                     "facet": "harvester_id"
                 },
+                "writer": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/writer.help",
+                    "label": "harvester/writer.label",
+                    "hint": "harvester/writer.hint",
+                    "facet": "harvester_writer"
+                },
                 "@v": {
                     "detail": "keyword",
                     "input": "keyword",
@@ -175,6 +183,31 @@
             "hint": "oai_identifier.hint",
             "facet": "oai_identifier"
         },
+        "run": {
+            "detail": "relation",
+            "input": "relation",
+            "help": "run.help",
+            "label": "run.label",
+            "hint": "run.hint",
+            "children": {
+                "id": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "run/id.help",
+                    "label": "run/id.label",
+                    "hint": "run/id.hint",
+                    "facet": "run_id"
+                },
+                "@v": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "run/@v.help",
+                    "label": "run/@v.label",
+                    "hint": "run/@v.hint",
+                    "facet": "run__version"
+                }
+            }
+        },
         "status": {
             "detail": "keyword",
             "input": "keyword",
@@ -183,6 +216,14 @@
             "hint": "status.hint",
             "enum": "status.enum",
             "facet": "status"
+        },
+        "title": {
+            "detail": "fulltext+keyword",
+            "input": "fulltext+keyword",
+            "help": "title.help",
+            "label": "title.label",
+            "hint": "title.hint",
+            "facet": "title"
         },
         "updated": {
             "detail": "datetime",

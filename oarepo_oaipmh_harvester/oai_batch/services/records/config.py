@@ -47,6 +47,7 @@ class OaiBatchServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceC
     def links_item(self):
         return {
             "self": RecordLink("{+api}/oai/harvest/batches/{id}"),
+            "self_html": RecordLink("{+ui}/oai/harvest/batches/{id}"),
         }
 
     @property

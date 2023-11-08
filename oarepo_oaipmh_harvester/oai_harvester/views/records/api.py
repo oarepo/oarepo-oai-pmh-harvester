@@ -1,5 +1,3 @@
-
-
 def create_api_blueprint(app):
     """Create OaiHarvesterRecord blueprint."""
     blueprint = app.extensions[

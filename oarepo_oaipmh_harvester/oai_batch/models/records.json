@@ -335,6 +335,11 @@
                             "label.cs": "Další informace o chybě",
                             "label.en": "Additional error information"
                         },
+                        "local_identifier": {
+                            "type": "keyword",
+                            "label.cs": "Lokální identifikátor OAI záznamu",
+                            "label.en": "Local OAI record identifier"
+                        },
                         "location": {
                             "type": "keyword",
                             "label.cs": "Pozice chyby v datech",
@@ -435,6 +440,11 @@
                         }
                     }
                 }
+            },
+            "sequence": {
+                "type": "integer",
+                "label.cs": "Pořadí",
+                "label.en": "Sequence"
             },
             "started": {
                 "type": "datetime",

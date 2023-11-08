@@ -5,23 +5,25 @@
                 "type": "keyword",
                 "ignore_above": 1024
             },
-            "batches": {
-                "type": "integer"
-            },
             "created": {
                 "type": "date",
                 "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
             },
+            "created_batches": {
+                "type": "integer"
+            },
             "duration": {
                 "type": "double"
             },
-            "error": {
-                "type": "keyword",
-                "ignore_above": 1024
+            "errors": {
+                "type": "integer"
             },
             "finished": {
                 "type": "date",
                 "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
+            },
+            "finished_batches": {
+                "type": "integer"
             },
             "harvester": {
                 "type": "object",
@@ -55,13 +57,24 @@
                 "type": "keyword",
                 "ignore_above": 1024
             },
+            "title": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "total_batches": {
+                "type": "integer"
+            },
             "updated": {
                 "type": "date",
                 "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
             },
-            "warning": {
-                "type": "keyword",
-                "ignore_above": 1024
+            "warnings": {
+                "type": "integer"
             }
         }
     }

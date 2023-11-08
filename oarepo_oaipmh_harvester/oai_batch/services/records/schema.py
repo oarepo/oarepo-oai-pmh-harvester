@@ -21,6 +21,8 @@ class OaiBatchSchema(BaseRecordSchema):
 
     run = ma_fields.Nested(lambda: RunSchema(), required=True)
 
+    sequence = ma_fields.Integer()
+
     started = ma_fields.String(validate=[validate_datetime])
 
     status = ma_fields.String(
@@ -35,6 +37,8 @@ class ErrorsItemSchema(Schema):
     code = ma_fields.String()
 
     info = ma_fields.Dict()
+
+    local_identifier = ma_fields.String()
 
     location = ma_fields.String()
 

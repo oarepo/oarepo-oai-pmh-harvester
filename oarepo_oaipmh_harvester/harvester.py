@@ -18,6 +18,7 @@ from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
 from oarepo_oaipmh_harvester.oai_record.records.api import OaiRecord
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.proxies import current_harvester
+from oarepo_oaipmh_harvester.reader_callback import reader_callback
 
 
 def _get_max_datestamp_query(harvester):
@@ -54,6 +55,7 @@ def harvest(
     identifiers=None,
     callback=None,
     on_run_created=None,
+    title=None,
 ):
     if isinstance(harvester_or_code, str):
         harvesters = list(
@@ -78,9 +80,12 @@ def harvest(
         {
             "harvester": {"id": harvester["id"]},
             "status": "R",
-            "batches": 0,
+            "created_batches": 0,
+            "total_batches": 0,
+            "finished_batches": 0,
             "started": datetime.datetime.utcnow().isoformat() + "+00:00",
             "manual": run_manual,
+            "title": title or str(datetime.datetime.now()),
         },
     )
     run_id = run["id"]
@@ -103,16 +108,6 @@ def harvest(
 
     transformers_signatures = [
         current_harvester.get_transformer_signature(
-            "oai_batch",
-            oai_config=dict(harvester),
-            oai_run=run_id,
-            oai_harvester_id=harvester["id"],
-            manual=run_manual,
-        )
-    ]
-
-    transformers_signatures.extend(
-        current_harvester.get_transformer_signature(
             transformer,
             oai_config=dict(harvester),
             oai_run=run_id,
@@ -120,7 +115,7 @@ def harvest(
             manual=run_manual,
         )
         for transformer in harvester["transformers"]
-    )
+    ]
 
     transformers_signatures.append(
         current_harvester.get_transformer_signature(
@@ -160,6 +155,9 @@ def harvest(
         writers=writers_config,
         transformers=transformers_signatures,
         batch_size=harvester.get("batch_size", 10),
+        reader_callback=partial(
+            reader_callback, identity=system_identity, oai_run=run_id, manual=run_manual
+        ),
     )
 
     datastream.process(identity=system_identity, context={"run_id": run_id})

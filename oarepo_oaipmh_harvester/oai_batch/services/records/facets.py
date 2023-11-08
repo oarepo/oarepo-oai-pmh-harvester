@@ -10,6 +10,10 @@ created = DateTimeFacet(field="created", label=_("created.label"))
 
 errors_code = TermsFacet(field="errors.code", label=_("errors/code.label"))
 
+errors_local_identifier = TermsFacet(
+    field="errors.local_identifier", label=_("errors/local_identifier.label")
+)
+
 errors_location = TermsFacet(field="errors.location", label=_("errors/location.label"))
 
 errors_message = TermsFacet(
@@ -31,6 +35,8 @@ manual = TermsFacet(field="manual", label=_("manual.label"))
 run_id = TermsFacet(field="run.id", label=_("run/id.label"))
 
 run__version = TermsFacet(field="run.@v", label=_("run/@v.label"))
+
+sequence = TermsFacet(field="sequence", label=_("sequence.label"))
 
 started = DateTimeFacet(field="started", label=_("started.label"))
 

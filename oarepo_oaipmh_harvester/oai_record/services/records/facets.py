@@ -24,6 +24,10 @@ errors_message = TermsFacet(
 
 harvester_id = TermsFacet(field="harvester.id", label=_("harvester/id.label"))
 
+harvester_writer = TermsFacet(
+    field="harvester.writer", label=_("harvester/writer.label")
+)
+
 harvester__version = TermsFacet(field="harvester.@v", label=_("harvester/@v.label"))
 
 _id = TermsFacet(field="id", label=_("id.label"))
@@ -36,7 +40,13 @@ manual = TermsFacet(field="manual", label=_("manual.label"))
 
 oai_identifier = TermsFacet(field="oai_identifier", label=_("oai_identifier.label"))
 
+run_id = TermsFacet(field="run.id", label=_("run/id.label"))
+
+run__version = TermsFacet(field="run.@v", label=_("run/@v.label"))
+
 status = TermsFacet(field="status", label=_("status.label"))
+
+title = TermsFacet(field="title.keyword", label=_("title.label"))
 
 updated = DateTimeFacet(field="updated", label=_("updated.label"))
 

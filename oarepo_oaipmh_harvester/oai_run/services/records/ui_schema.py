@@ -10,13 +10,15 @@ class OaiRunUISchema(InvenioUISchema):
     class Meta:
         unknown = ma.RAISE
 
-    batches = ma_fields.Integer()
+    created_batches = ma_fields.Integer()
 
     duration = ma_fields.Float()
 
-    error = ma_fields.String()
+    errors = ma_fields.Integer()
 
     finished = LocalizedDateTime()
+
+    finished_batches = ma_fields.Integer()
 
     harvester = ma_fields.Nested(lambda: HarvesterUISchema(), required=True)
 
@@ -26,7 +28,11 @@ class OaiRunUISchema(InvenioUISchema):
 
     status = ma_fields.String(validate=[OneOf(["R", "O", "W", "E", "I"])])
 
-    warning = ma_fields.String()
+    title = ma_fields.String()
+
+    total_batches = ma_fields.Integer()
+
+    warnings = ma_fields.Integer()
 
 
 class HarvesterUISchema(Schema):

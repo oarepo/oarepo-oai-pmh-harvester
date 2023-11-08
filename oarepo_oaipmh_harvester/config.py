@@ -1,7 +1,6 @@
 from oarepo_oaipmh_harvester.permissions import OAIHarvesterPermissions
 from oarepo_oaipmh_harvester.readers.oai_dir import OAIDirReader
 from oarepo_oaipmh_harvester.readers.sickle import SickleReader
-from oarepo_oaipmh_harvester.transformers.batch import OAIBatchTransformer
 from oarepo_oaipmh_harvester.transformers.marcxml import MarcXMLTransformer
 from oarepo_oaipmh_harvester.transformers.record_lookup import (
     OAIRecordLookupTransformer,
@@ -13,7 +12,6 @@ DATASTREAMS_READERS = {"sickle": SickleReader, "oai_dir": OAIDirReader}
 
 DATASTREAMS_TRANSFORMERS = {
     "marcxml": MarcXMLTransformer,
-    "oai_batch": OAIBatchTransformer,
     "oai_record_lookup": OAIRecordLookupTransformer,
 }
 

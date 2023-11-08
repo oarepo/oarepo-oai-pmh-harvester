@@ -18,8 +18,8 @@
   <dd>
     {{ metadata.error}}
   </dd>
-  <Field label={ _('Created') }> {{ metadata.created }}</Field>
-   <Field label={ _('Updated') }> {{ metadata.updated }}</Field>
+  <Field label={ _('created.label') }> {{ metadata.created }}</Field>
+   <Field label={ _('updated.label') }> {{ metadata.updated }}</Field>
 <dt>{{ _('started.label') }}</dt>
   <dd>
     {{ metadata.started}}
@@ -34,13 +34,11 @@
   </dd>
   <dt>{{ _('harvester.label') }}</dt>
     <dd>
-    <a href="/oaiharvester/{{metadata.harvester.id}}">{{ metadata.harvester.name }}</a>
+    <a href="/oai/harvest/harvesters/{{metadata.harvester.id}}">{{ metadata.harvester.code }}</a>
   </dd>
-    <dt>{{ _('batches_run.label') }}</dt>
+    <dt>{{ _('batches_links.label') }}</dt>
     <dd>
-    <a href="/oaibatch/?q=&f=run_id%3A{{metadata.id}}&l=list&p=1&s=10&sort=newest">{{ _('batches.label') }}</a>
+    <a href="/oai/harvest/batches/?q=&f=run_id%3A{{metadata.id}}&l=list&p=1&s=10&sort=newest">{{ _('batches_link.label') }}</a>
   </dd>
-
-
 </dl>
 

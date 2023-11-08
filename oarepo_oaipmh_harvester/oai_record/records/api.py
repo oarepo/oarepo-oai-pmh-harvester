@@ -9,6 +9,7 @@ from oarepo_oaipmh_harvester.oai_batch.records.api import OaiBatchRecord
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
 from oarepo_oaipmh_harvester.oai_record.records.dumpers.dumper import OaiRecordDumper
 from oarepo_oaipmh_harvester.oai_record.records.models import OaiRecordMetadata
+from oarepo_oaipmh_harvester.oai_run.records.api import OaiRunRecord
 
 
 class OaiRecordIdProvider(RecordIdProviderV2):
@@ -36,7 +37,12 @@ class OaiRecord(InvenioRecord):
         ),
         harvester=PIDRelation(
             "harvester",
-            keys=["id"],
+            keys=["id", "writer"],
             pid_field=OaiHarvesterRecord.pid,
+        ),
+        run=PIDRelation(
+            "run",
+            keys=["id"],
+            pid_field=OaiRunRecord.pid,
         ),
     )

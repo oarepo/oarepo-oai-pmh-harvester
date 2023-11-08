@@ -133,6 +133,17 @@ def test_harvest_performance(app, db, record_service, search_clear):
         all_records=True,
         on_background=False,
         identifiers=None,
+        title="Test harvest",
     )
     run = run_service.read(system_identity, run_id).data
     assert run["status"] == "O"
+    assert run["total_batches"] == 4
+    assert run["finished_batches"] == 4
+    assert run["created_batches"] == 4
+    assert run["manual"] is False
+    assert run["errors"] == 0
+    assert run["started"] is not None
+    assert run["finished"] is not None
+    assert run["created"] is not None
+    assert run["updated"] is not None
+    assert run["title"] == "Test harvest"

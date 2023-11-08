@@ -47,6 +47,7 @@ class OaiRecordServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordService
     def links_item(self):
         return {
             "self": RecordLink("{+api}/oai/harvest/records/{id}"),
+            "self_html": RecordLink("{+ui}/oai/harvest/records/{id}"),
         }
 
     @property

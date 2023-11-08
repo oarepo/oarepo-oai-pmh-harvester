@@ -4,22 +4,25 @@
         "$schema": {
             "type": "string"
         },
-        "batches": {
-            "type": "integer"
-        },
         "created": {
             "type": "string",
             "format": "date-time"
         },
+        "created_batches": {
+            "type": "integer"
+        },
         "duration": {
             "type": "number"
         },
-        "error": {
-            "type": "string"
+        "errors": {
+            "type": "integer"
         },
         "finished": {
             "type": "string",
             "format": "date-time"
+        },
+        "finished_batches": {
+            "type": "integer"
         },
         "harvester": {
             "type": "object",
@@ -48,12 +51,18 @@
         "status": {
             "type": "string"
         },
+        "title": {
+            "type": "string"
+        },
+        "total_batches": {
+            "type": "integer"
+        },
         "updated": {
             "type": "string",
             "format": "date-time"
         },
-        "warning": {
-            "type": "string"
+        "warnings": {
+            "type": "integer"
         }
     }
 }

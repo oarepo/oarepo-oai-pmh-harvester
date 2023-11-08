@@ -20,10 +20,7 @@ export const OaiRecordResultsListItemComponent = ({
   const searchAppConfig = useContext(SearchConfigurationContext);
   const id = _get(result, "oai_identifier");
   const title =_get(result, "entry.metadata.title");
-  const viewLink = new URL(
-      result.links.self,
-    new URL(searchAppConfig.ui_endpoint, window.location.origin)
-  );
+  const viewLink = result.links.self_html;
   return (
     <Overridable
       id={buildUID("RecordsResultsListItem.layout", "", appName)}

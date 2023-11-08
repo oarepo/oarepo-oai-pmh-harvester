@@ -52,6 +52,14 @@
                         "label": "errors/info.label",
                         "hint": "errors/info.hint"
                     },
+                    "local_identifier": {
+                        "detail": "keyword",
+                        "input": "keyword",
+                        "help": "errors/local_identifier.help",
+                        "label": "errors/local_identifier.label",
+                        "hint": "errors/local_identifier.hint",
+                        "facet": "errors_local_identifier"
+                    },
                     "location": {
                         "detail": "keyword",
                         "input": "keyword",
@@ -142,6 +150,14 @@
                     "facet": "run__version"
                 }
             }
+        },
+        "sequence": {
+            "detail": "integer",
+            "input": "integer",
+            "help": "sequence.help",
+            "label": "sequence.label",
+            "hint": "sequence.hint",
+            "facet": "sequence"
         },
         "started": {
             "detail": "datetime",

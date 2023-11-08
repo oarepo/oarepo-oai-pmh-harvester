@@ -10,21 +10,20 @@
     <Field label={ _('max_records.label') }>{{ metadata.max_records }}</Field>
     <Field label={ _('batch_size.label') }>{{ metadata.batch_size }}</Field>
     <Field label={ _('loader.label') }> {{ metadata.loader }}</Field>
-    <Field label={ _('Created') }> {{ metadata.created }}</Field>
-    <Field label={ _('Updated') }> {{ metadata.updated }}</Field>
-    <dt>{{_('runs_harvester.label')}}</dt>
+    <Field label={ _('created.label') }> {{ metadata.created }}</Field>
+    <Field label={ _('updated.label') }> {{ metadata.updated }}</Field>
+    <dt>{{_('runs.label')}}</dt>
     <dd>
-        <a href="/oairun/?q=&f=harvester_id%3A{{metadata.id}}&l=list&p=1&s=10&sort=newest">{{_('runs.label')}}</a>
+        <a href="/oai/harvest/runs/?q=&f=harvester_id%3A{{metadata.id}}&l=list&p=1&s=10&sort=newest">{{_('runs_link.label')}}</a>
     </dd>
 <dt>{{ _('comment.label') }}</dt>
   <dd>
     {{ metadata.comment }}
   </dd>
   <dt>{{ _('transformers.label') }}</dt>
-    <ul style="list-style-type: none;">
+    <dd>
   {% for i in (metadata.transformers or []) %}
-      <li>{{ i }}</li>
+      {{ i }}<br/>
   {% endfor %}
-    </ul>
-
+    </dd>
 </dl>

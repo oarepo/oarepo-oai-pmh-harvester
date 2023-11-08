@@ -20,7 +20,7 @@ class OaiRecordUISchema(InvenioUISchema):
 
     errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
 
-    harvester = ma_fields.Nested(lambda: BatchUISchema(), required=True)
+    harvester = ma_fields.Nested(lambda: HarvesterUISchema(), required=True)
 
     local_identifier = ma_fields.String()
 
@@ -28,7 +28,11 @@ class OaiRecordUISchema(InvenioUISchema):
 
     oai_identifier = ma_fields.String()
 
+    run = ma_fields.Nested(lambda: BatchUISchema(), required=True)
+
     status = ma_fields.String(validate=[OneOf(["O", "W", "E", "S"])])
+
+    title = ma_fields.String()
 
     warnings = ma_fields.List(ma_fields.String())
 
@@ -53,3 +57,14 @@ class ErrorsItemUISchema(Schema):
     location = ma_fields.String()
 
     message = ma_fields.String()
+
+
+class HarvesterUISchema(Schema):
+    class Meta:
+        unknown = ma.INCLUDE
+
+    _id = ma_fields.String(data_key="id", attribute="id")
+
+    _version = String(data_key="@v", attribute="@v")
+
+    writer = ma_fields.String()
