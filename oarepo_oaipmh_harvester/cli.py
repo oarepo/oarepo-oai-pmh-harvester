@@ -19,6 +19,7 @@ from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 
 from flask import current_app
+from invenio_db import db
 
 
 @oarepo.group(name="oai")
@@ -187,6 +188,7 @@ class TQDMSynchronousCallback(StatsKeepingDataStreamCallback):
 def asynchronous_reporting(app, progress_bar, run_id):
     with app.app_context():
         while True:
+            db.session.expunge_all()
             run = run_service.read(system_identity, run_id)
             search_response = record_service.search(
                 system_identity, params={"facets": {"run_id": [run_id]}, "size": 1}
