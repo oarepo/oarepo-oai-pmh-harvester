@@ -55,6 +55,10 @@ record:
           label.cs: OAI identifikátor
           label.en: OAI identifier
           type: keyword
+        local_identifier:
+          label.cs: Lokální identifikátor OAI záznamu
+          label.en: Local OAI record identifier
+          type: keyword
         code:
           label.cs: Typ chyby
           label.en: Error type
@@ -88,6 +92,11 @@ record:
       label.cs: Manuálně spuštěno?
       label.en: Manual?
       type: boolean
+
+    sequence:
+      label.cs: Pořadí
+      label.en: Sequence
+      type: integer
 
   permissions:
     presets:

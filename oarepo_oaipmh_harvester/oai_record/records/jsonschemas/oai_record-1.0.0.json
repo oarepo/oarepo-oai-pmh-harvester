@@ -55,6 +55,9 @@
                 "id": {
                     "type": "string"
                 },
+                "writer": {
+                    "type": "string"
+                },
                 "@v": {
                     "type": "string"
                 }
@@ -72,7 +75,21 @@
         "oai_identifier": {
             "type": "string"
         },
+        "run": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "@v": {
+                    "type": "string"
+                }
+            }
+        },
         "status": {
+            "type": "string"
+        },
+        "title": {
             "type": "string"
         },
         "updated": {

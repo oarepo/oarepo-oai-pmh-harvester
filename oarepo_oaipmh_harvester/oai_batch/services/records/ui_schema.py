@@ -20,6 +20,8 @@ class OaiBatchUISchema(InvenioUISchema):
 
     run = ma_fields.Nested(lambda: RunUISchema(), required=True)
 
+    sequence = ma_fields.Integer()
+
     started = LocalizedDateTime()
 
     status = ma_fields.String(
@@ -34,6 +36,8 @@ class ErrorsItemUISchema(Schema):
     code = ma_fields.String()
 
     info = ma_fields.Dict()
+
+    local_identifier = ma_fields.String()
 
     location = ma_fields.String()
 

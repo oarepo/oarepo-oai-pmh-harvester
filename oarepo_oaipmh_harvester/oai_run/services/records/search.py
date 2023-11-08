@@ -10,11 +10,12 @@ class OaiRunSearchOptions(InvenioSearchOptions):
 
     facets = {
         "_schema": facets._schema,
-        "batches": facets.batches,
         "created": facets.created,
+        "created_batches": facets.created_batches,
         "duration": facets.duration,
-        "error": facets.error,
+        "errors": facets.errors,
         "finished": facets.finished,
+        "finished_batches": facets.finished_batches,
         "harvester_id": facets.harvester_id,
         "harvester_code": facets.harvester_code,
         "harvester__version": facets.harvester__version,
@@ -22,7 +23,9 @@ class OaiRunSearchOptions(InvenioSearchOptions):
         "manual": facets.manual,
         "started": facets.started,
         "status": facets.status,
+        "title": facets.title,
+        "total_batches": facets.total_batches,
         "updated": facets.updated,
-        "warning": facets.warning,
+        "warnings": facets.warnings,
         **getattr(InvenioSearchOptions, "facets", {}),
     }

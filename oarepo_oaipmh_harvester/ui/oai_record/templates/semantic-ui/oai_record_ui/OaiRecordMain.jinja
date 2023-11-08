@@ -17,11 +17,11 @@
   <dd>
     {{ metadata.local_identifier}}
   </dd>
-      <Field label={ _('Created') }> {{ metadata.created }}</Field>
-    <Field label={ _('Updated') }> {{ metadata.updated }}</Field>
+      <Field label={ _('created.label') }> {{ metadata.created }}</Field>
+    <Field label={ _('updated.label') }> {{ metadata.updated }}</Field>
   <dt>{{ _('batch.label') }}</dt>
     <dd>
-    <a href="/oaibatch/{{metadata.batch.id}}">{{ _('batch.label') }}</a>
+    <a href="/oai/harvest/batches/{{metadata.batch.id}}">{{ _('batch.label') }}</a>
   </dd>
   <dt>{{ _('record_data.label') }}</dt>
     <dd>

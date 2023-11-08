@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-11-01T13:58:19.253924\n"
-"PO-Revision-Date: 2023-11-01T13:58:19.253932\n"
+"POT-Creation-Date: 2023-11-07T22:26:52.184771\n"
+"PO-Revision-Date: 2023-11-07T22:26:52.184787\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -143,6 +143,15 @@ msgstr ""
 msgid "harvester/id.hint"
 msgstr ""
 
+msgid "harvester/writer.help"
+msgstr ""
+
+msgid "harvester/writer.label"
+msgstr ""
+
+msgid "harvester/writer.hint"
+msgstr ""
+
 msgid "harvester/@v.help"
 msgstr ""
 
@@ -171,7 +180,7 @@ msgid "local_identifier.hint"
 msgstr ""
 
 msgid "manual.label"
-msgstr "Ručně vyžádána"
+msgstr "Ručně spuštěno"
 
 msgid "manual.help"
 msgstr ""
@@ -186,6 +195,33 @@ msgid "oai_identifier.help"
 msgstr ""
 
 msgid "oai_identifier.hint"
+msgstr ""
+
+msgid "run.label"
+msgstr "Běh harvestru"
+
+msgid "run.help"
+msgstr ""
+
+msgid "run.hint"
+msgstr ""
+
+msgid "run/id.help"
+msgstr ""
+
+msgid "run/id.label"
+msgstr ""
+
+msgid "run/id.hint"
+msgstr ""
+
+msgid "run/@v.help"
+msgstr ""
+
+msgid "run/@v.label"
+msgstr ""
+
+msgid "run/@v.hint"
 msgstr ""
 
 msgid "status.label"
@@ -207,6 +243,15 @@ msgid "status.help"
 msgstr ""
 
 msgid "status.hint"
+msgstr ""
+
+msgid "title.label"
+msgstr "Název záznamu"
+
+msgid "title.help"
+msgstr ""
+
+msgid "title.hint"
 msgstr ""
 
 msgid "updated.help"

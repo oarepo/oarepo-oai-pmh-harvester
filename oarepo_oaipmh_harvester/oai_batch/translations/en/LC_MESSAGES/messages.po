@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-11-01T13:58:13.938273\n"
-"PO-Revision-Date: 2023-11-01T13:58:13.938274\n"
+"POT-Creation-Date: 2023-11-07T22:26:46.601404\n"
+"PO-Revision-Date: 2023-11-07T22:26:46.601405\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,6 +51,15 @@ msgid "errors/info.help"
 msgstr ""
 
 msgid "errors/info.hint"
+msgstr ""
+
+msgid "errors/local_identifier.label"
+msgstr "Local OAI record identifier"
+
+msgid "errors/local_identifier.help"
+msgstr ""
+
+msgid "errors/local_identifier.hint"
 msgstr ""
 
 msgid "errors/location.label"
@@ -141,6 +150,15 @@ msgid "run/@v.label"
 msgstr ""
 
 msgid "run/@v.hint"
+msgstr ""
+
+msgid "sequence.label"
+msgstr "Sequence"
+
+msgid "sequence.help"
+msgstr ""
+
+msgid "sequence.hint"
 msgstr ""
 
 msgid "started.label"

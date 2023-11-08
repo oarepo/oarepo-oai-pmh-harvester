@@ -289,11 +289,6 @@
                     "skip": true
                 }
             },
-            "batches": {
-                "type": "integer",
-                "label.cs": "Počet dávek v běhu",
-                "label.en": "Number of batches"
-            },
             "created": {
                 "type": "datetime",
                 "facets": {
@@ -313,13 +308,18 @@
                     "skip": true
                 }
             },
+            "created_batches": {
+                "type": "integer",
+                "label.cs": "Počet vytvořených dávek v běhu",
+                "label.en": "Number of created batches"
+            },
             "duration": {
                 "type": "double",
                 "label.cs": "Doba zpracování",
                 "label.en": "Processing Duration"
             },
-            "error": {
-                "type": "keyword",
+            "errors": {
+                "type": "integer",
                 "label.cs": "Chyby",
                 "label.en": "Errors"
             },
@@ -327,6 +327,11 @@
                 "type": "datetime",
                 "label.cs": "Konec zpracování",
                 "label.en": "Processing End Time"
+            },
+            "finished_batches": {
+                "type": "integer",
+                "label.cs": "Počet ukončených dávek v běhu",
+                "label.en": "Number of finalized batches"
             },
             "harvester": {
                 "type": "relation",
@@ -435,6 +440,16 @@
                 "enum.E.en": "Error",
                 "enum.I.en": "Interrupted"
             },
+            "title": {
+                "type": "fulltext+keyword",
+                "label.cs": "Název běhu",
+                "label.en": "Run title"
+            },
+            "total_batches": {
+                "type": "integer",
+                "label.cs": "Celkový počet dávek v běhu",
+                "label.en": "Total number of batches"
+            },
             "updated": {
                 "type": "datetime",
                 "facets": {
@@ -454,8 +469,8 @@
                     "skip": true
                 }
             },
-            "warning": {
-                "type": "keyword",
+            "warnings": {
+                "type": "integer",
                 "label.cs": "Varování",
                 "label.en": "Warning"
             }

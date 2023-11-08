@@ -27,12 +27,27 @@ record:
           type: keyword
       required: true
 
-    batches:
-      label.cs: Počet dávek v běhu
-      label.en: Number of batches
+    title:
+      label.cs: Název běhu
+      label.en: Run title
+      type: fulltext+keyword
+
+    created_batches:
+      label.cs: Počet vytvořených dávek v běhu
+      label.en: Number of created batches
       type: integer
 
-    status: 
+    total_batches:
+      label.cs: Celkový počet dávek v běhu
+      label.en: Total number of batches
+      type: integer
+
+    finished_batches:
+      label.cs: Počet ukončených dávek v běhu
+      label.en: Number of finalized batches
+      type: integer
+
+    status:
       label.cs: Stav běhu
       label.en: State
       enum.R.cs: Běží
@@ -48,15 +63,15 @@ record:
       type: keyword
       enum: [ R, O, W, E, I ]
 
-    warning: 
+    warnings:
       label.cs: Varování
       label.en: Warning
-      type: keyword
+      type: integer
 
-    error: 
+    errors:
       label.cs: Chyby
       label.en: Errors
-      type: keyword
+      type: integer
 
     started:
       label.cs: Začátek zpracování

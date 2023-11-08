@@ -16,7 +16,18 @@ record:
     class: oarepo_oaipmh_harvester.oai_record.records.api.OaiRecord
 
   properties:
-    batch: 
+    run:
+      label.cs: Běh harvestru
+      label.en: Harvester run
+      type: relation
+      model: oaipmh-run
+      keys:
+      - key: id
+        model:
+          type: keyword
+      required: true
+
+    batch:
       label.cs: Dávka záznamu
       label.en: Harvester batch
       # batch in which the record has been modified the last time
@@ -37,7 +48,15 @@ record:
       - key: id
         model:
           type: keyword
+      - key: writer
+        model:
+          type: keyword
       required: true
+
+    title:
+      label.cs: Název záznamu
+      label.en: Record title
+      type: fulltext+keyword
 
     local_identifier:
       label.cs: Místní PID
@@ -113,7 +132,7 @@ record:
         enabled: false
 
     manual:
-      label.cs: Ručně vyžádána
+      label.cs: Ručně spuštěno
       label.en: Initiated manually
       type: boolean
 

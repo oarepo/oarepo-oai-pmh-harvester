@@ -11,13 +11,15 @@ class OaiRunSchema(BaseRecordSchema):
     class Meta:
         unknown = ma.RAISE
 
-    batches = ma_fields.Integer()
+    created_batches = ma_fields.Integer()
 
     duration = ma_fields.Float()
 
-    error = ma_fields.String()
+    errors = ma_fields.Integer()
 
     finished = ma_fields.String(validate=[validate_datetime])
+
+    finished_batches = ma_fields.Integer()
 
     harvester = ma_fields.Nested(lambda: HarvesterSchema(), required=True)
 
@@ -27,7 +29,11 @@ class OaiRunSchema(BaseRecordSchema):
 
     status = ma_fields.String(validate=[OneOf(["R", "O", "W", "E", "I"])])
 
-    warning = ma_fields.String()
+    title = ma_fields.String()
+
+    total_batches = ma_fields.Integer()
+
+    warnings = ma_fields.Integer()
 
 
 class HarvesterSchema(Schema):

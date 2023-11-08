@@ -1,5 +1,6 @@
 import functools
 import sys
+import threading
 import time
 
 import click
@@ -14,9 +15,11 @@ from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
+from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 
-import threading
+from flask import current_app
+
 
 @oarepo.group(name="oai")
 def oai():
@@ -166,16 +169,44 @@ class TQDMSynchronousCallback(StatsKeepingDataStreamCallback):
         )
 
         self.progress_bar.update(read - self.last)
+        description = []
+
+        if self.ok_entries_count:
+            description.append(f"ok {self.ok_entries_count}")
+        if self.failed_entries_count:
+            description.append(f"failed {self.failed_entries_count}")
+        if self.deleted_entries_count:
+            description.append(f"deleted {self.deleted_entries_count}")
+        if self.filtered_entries_count:
+            description.append(f"filtered {self.filtered_entries_count}")
+
+        self.progress_bar.set_description(", ".join(description))
         self.last = read
 
 
-def asynchronous_reporting(progress_bar, run_id):
-    while True:
-        run = run_service.get(system_identity, run_id)
-        if run['status'] != 'R':
-            break
-        progress_bar.update(run['batches'] - progress_bar.n)
-        time.sleep(30)
+def asynchronous_reporting(app, progress_bar, run_id):
+    with app.app_context():
+        while True:
+            run = run_service.read(system_identity, run_id)
+            search_response = record_service.search(
+                system_identity, params={"facets": {"run_id": [run_id]}, "size": 1}
+            )
+            record_stat = {
+                x["key"]: x["doc_count"]
+                for x in search_response.aggregations["status"]["buckets"]
+            }
+            description = []
+            description.append(f"created batches {run['created_batches']}")
+            description.append(f"finished batches {run['finished_batches']}")
+            if record_stat.get("O"):
+                description.append(f"ok records {record_stat['O']}")
+            if record_stat.get("E"):
+                description.append(f"failed records {record_stat['E']}")
+            if record_stat.get("S"):
+                description.append(f"filtered records {record_stat['S']}")
+            progress_bar.update(run["finished_batches"] - progress_bar.n)
+            progress_bar.set_description(", ".join(description))
+            time.sleep(30)
 
 
 def _run_harvester(metadata, on_background, all_records, identifier):
@@ -205,14 +236,16 @@ def _run_harvester(metadata, on_background, all_records, identifier):
         click.secho(f"    {k:20s}: {v}", file=sys.stderr)
 
     with tqdm() as bar:
-
         callback = None
         on_run_created = None
         if not on_background:
             callback = TQDMSynchronousCallback(bar)
         else:
+            app = current_app._get_current_object()
             def on_run_created(run_id):
-                threading.Thread(target=asynchronous_reporting, args=(bar, run_id)).start()
+                threading.Thread(
+                    target=asynchronous_reporting, args=(app, bar, run_id)
+                ).start()
 
         run_id = harvest(
             harvester,

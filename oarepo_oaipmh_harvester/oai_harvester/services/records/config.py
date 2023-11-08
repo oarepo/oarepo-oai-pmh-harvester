@@ -51,6 +51,7 @@ class OaiHarvesterServiceConfig(
     def links_item(self):
         return {
             "self": RecordLink("{+api}/oai/harvest/harvesters/{id}"),
+            "self_html": RecordLink("{+ui}/oai/harvest/harvesters/{id}"),
         }
 
     @property

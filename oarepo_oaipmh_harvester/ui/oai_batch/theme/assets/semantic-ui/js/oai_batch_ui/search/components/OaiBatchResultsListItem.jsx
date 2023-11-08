@@ -20,10 +20,7 @@ export const OaiBatchResultsListItemComponent = ({
   const id = _get(result, "id");
   const run =  _get(result, "run.id");
   const started = _get(result, "started");
-  const viewLink = new URL(
-      result.links.self,
-    new URL(searchAppConfig.ui_endpoint, window.location.origin)
-  );
+  const viewLink = result.links.self_html;
   return (
     <Overridable
       id={buildUID("RecordsResultsListItem.layout", "", appName)}
