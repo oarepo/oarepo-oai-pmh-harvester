@@ -6,7 +6,7 @@ record:
 
   service-config:
     components:
-      - "{{oarepo_runtime.relations.components.CachingRelationsComponent}}"
+      - "{{oarepo_runtime.services.relations.components.CachingRelationsComponent}}"
     service-id: oarepo-oaipmh-batches
 
   resource-config:

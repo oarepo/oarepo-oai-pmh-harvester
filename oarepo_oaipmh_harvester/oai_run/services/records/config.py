@@ -4,8 +4,8 @@ from invenio_records_resources.services import (
 )
 from invenio_records_resources.services import pagination_links
 from invenio_records_resources.services.records.components import DataComponent
-from oarepo_runtime.config.service import PermissionsPresetsConfigMixin
-from oarepo_runtime.relations.components import CachingRelationsComponent
+from oarepo_runtime.services.config.service import PermissionsPresetsConfigMixin
+from oarepo_runtime.services.relations.components import CachingRelationsComponent
 
 from oarepo_oaipmh_harvester.oai_run.records.api import OaiRunRecord
 from oarepo_oaipmh_harvester.oai_run.services.records.permissions import (

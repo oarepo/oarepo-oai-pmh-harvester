@@ -17,7 +17,7 @@
         "marshmallow": {
             "imports": [],
             "base-classes": [
-                "oarepo_runtime.marshmallow.BaseRecordSchema"
+                "oarepo_runtime.services.schema.marshmallow.BaseRecordSchema"
             ],
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_record.services.records.schema",
@@ -43,7 +43,7 @@
         "service-config": {
             "service-id": "oarepo-oaipmh-records",
             "components": [
-                "{{oarepo_runtime.relations.components.CachingRelationsComponent}}",
+                "{{oarepo_runtime.services.relations.components.CachingRelationsComponent}}",
                 "{{invenio_records_resources.services.records.components.DataComponent}}"
             ],
             "generate": true,
@@ -52,7 +52,7 @@
             "class": "oarepo_oaipmh_harvester.oai_record.services.records.config.OaiRecordServiceConfig",
             "extra-code": "",
             "base-classes": [
-                "oarepo_runtime.config.service.PermissionsPresetsConfigMixin",
+                "oarepo_runtime.services.config.service.PermissionsPresetsConfigMixin",
                 "invenio_records_resources.services.RecordServiceConfig{InvenioRecordServiceConfig}"
             ]
         },
