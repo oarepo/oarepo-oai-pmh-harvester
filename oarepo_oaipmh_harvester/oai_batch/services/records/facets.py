@@ -2,7 +2,7 @@
 
 from flask_babelex import lazy_gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
-from oarepo_runtime.facets.date import DateTimeFacet
+from oarepo_runtime.services.facets.date import DateTimeFacet
 
 _schema = TermsFacet(field="$schema", label=_("$schema.label"))
 
