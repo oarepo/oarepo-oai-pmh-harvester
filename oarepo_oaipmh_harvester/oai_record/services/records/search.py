@@ -26,9 +26,7 @@ class OaiRecordSearchOptions(InvenioSearchOptions):
         "oai_identifier": facets.oai_identifier,
         "run_id": facets.run_id,
         "run__version": facets.run__version,
-        "status": facets.status,
         "title": facets.title,
         "updated": facets.updated,
-        "warnings": facets.warnings,
         **getattr(InvenioSearchOptions, "facets", {}),
     }

@@ -6,7 +6,9 @@
       "deleted": false
     },
     "entry": {
-      "title": "corr"
+      "metadata": {
+        "title": "corr"
+      }
     }
   },
   {
@@ -16,7 +18,9 @@
       "deleted": false
     },
     "entry": {
-      "title": "too long title"
+      "metadata": {
+        "title": "too long title"
+      }
     }
   },
   {
@@ -46,7 +50,9 @@
       "deleted": true
     },
     "entry": {
-      "title": "delet"
+      "metadata": {
+        "title": "delet"
+      }
     }
   },
   {
@@ -55,7 +61,9 @@
       "datestamp": "2000-01-03"
     },
     "entry": {
-      "title": "edelet"
+      "metadata": {
+        "title": "edelet"
+      }
     }
   },
   {

@@ -88,7 +88,7 @@ class TestDataOAIReader(BaseReader):
 
     def __iter__(self):
         for idx in range(self.count):
-            x = StreamEntry({"title": f"{idx}"})
+            x = StreamEntry({"metadata": {"title": f"{idx}"}})
             x.context["oai"] = {
                 "identifier": f"{idx}",
                 "datestamp": "2000-01-03",

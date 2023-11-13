@@ -4,8 +4,10 @@ import threading
 import time
 
 import click
+from flask import current_app
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
+from invenio_db import db
 from oarepo_runtime.cli import as_command, oarepo
 from oarepo_runtime.datastreams import StreamBatch
 from oarepo_runtime.datastreams.types import StatsKeepingDataStreamCallback
@@ -17,9 +19,6 @@ from oarepo_oaipmh_harvester.oai_harvester.proxies import (
 )
 from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
-
-from flask import current_app
-from invenio_db import db
 
 
 @oarepo.group(name="oai")
@@ -244,6 +243,7 @@ def _run_harvester(metadata, on_background, all_records, identifier):
             callback = TQDMSynchronousCallback(bar)
         else:
             app = current_app._get_current_object()
+
             def on_run_created(run_id):
                 threading.Thread(
                     target=asynchronous_reporting, args=(app, bar, run_id)

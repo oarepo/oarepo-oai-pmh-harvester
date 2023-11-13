@@ -1,5 +1,4 @@
 import pytest
-from invenio_access.permissions import system_identity
 from invenio_app.factory import create_app as _create_app
 
 
@@ -35,25 +34,3 @@ def app_config(app_config):
 def create_app(instance_path, entry_points):
     """Application factory fixture."""
     return _create_app
-
-
-@pytest.fixture(scope="module")
-def record_service(app):
-    from .model import ModelService, ModelServiceConfig
-
-    service = ModelService(ModelServiceConfig())
-    sregistry = app.extensions["invenio-records-resources"].registry
-    sregistry.register(service, service_id="simple_model")
-    return service
-
-
-@pytest.fixture
-def simple_record(app, db, search_clear, record_service):
-    from .model import ModelRecord
-
-    record = record_service.create(
-        system_identity,
-        {},
-    )
-    ModelRecord.index.refresh()
-    return record

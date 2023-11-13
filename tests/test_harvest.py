@@ -12,11 +12,12 @@ from oarepo_oaipmh_harvester.oai_record.proxies import (
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 
 
-def test_harvest_synchronous(app, db, record_service, client, search_clear):
+def test_harvest_synchronous(app, db, client, search_clear):
     import logging
 
     logging.basicConfig(level=logging.ERROR)
     # create oai harvester with a test reader
+
     harvester_metadata = {
         "code": "test",
         "baseurl": (Path(__file__).parent / "harvest_data.json").as_uri(),
@@ -26,7 +27,7 @@ def test_harvest_synchronous(app, db, record_service, client, search_clear):
         "setspecs": "test",
         "loader": "file",
         "transformers": ["error_transformer"],
-        "writer": "service{service=simple_model}",
+        "writer": "service{service=test_model}",
         "batch_size": 6,
     }
     harvester = _add_harvester(harvester_metadata)
@@ -45,41 +46,33 @@ def test_harvest_synchronous(app, db, record_service, client, search_clear):
     oai_run = run_service.read(system_identity, run_id).data
     print(f"{oai_run=}")
 
-    batches = batch_service.scan(
-        system_identity,
-        params={"facets": {"run_id": [run_id]}},
-    )
-    oai_records = {}
-    for batch in batches.hits:
-        batch_id = batch["id"]
-        for r in oai_record_service.scan(
-            system_identity,
-            params={"facets": {"batch_id": [batch_id]}},
-        ).hits:
-            oai_records[r["oai_identifier"]] = r
-    pprint(oai_records)
+    oai_records = get_oai_records(run_id)
 
-    # check the created records
-    assert "errors" not in oai_records["1"]
-    record_pid = oai_records["1"]["local_identifier"]
-    record = record_service.read(system_identity, record_pid)
-    assert record.data["title"] == "corr"
+    assert len(oai_records) == 3
+
+    assert oai_records.keys() == {"2", "3", "4"}
 
     assert "errors" in oai_records["2"]
     assert oai_records["2"]["errors"] == [
         {
             "code": "MARHSMALLOW",
-            "location": "title",
-            "message": "Length must be between 1 and 5.",
+            "location": "metadata.title",
+            "message": "Length must be between 1 and 6.",
         }
     ]
-    assert oai_records["2"]["entry"] == {"title": "too long title"}
+    assert oai_records["2"]["entry"] == {
+        "metadata": {"title": "too long title"},
+        "oai": {"harvest": {"datestamp": "2000-01-02", "identifier": "2"}},
+    }
 
     assert "errors" in oai_records["3"]
     assert oai_records["3"]["errors"] == [
         {"code": "MARHSMALLOW", "location": "extra", "message": "Unknown field."}
     ]
-    assert oai_records["3"]["entry"] == {"extra": "blah"}
+    assert oai_records["3"]["entry"] == {
+        "extra": "blah",
+        "oai": {"harvest": {"datestamp": "2000-01-03", "identifier": "3"}},
+    }
 
     assert "errors" in oai_records["4"]
     assert oai_records["4"]["errors"] == [
@@ -93,23 +86,87 @@ def test_harvest_synchronous(app, db, record_service, client, search_clear):
         }
     ]
     assert oai_records["4"]["entry"] == {
-        "transformer": "tells transformer to raise error on this record"
+        "oai": {"harvest": {"datestamp": "2000-01-03", "identifier": "4"}},
+        "transformer": "tells transformer to raise error on this record",
     }
 
-    # local identifier not here as the record has been deleted
-    assert "local_identifier" not in oai_records["5"]
-    assert oai_records["5"]["context"]["oai"]["deleted"]
+    ok_records = get_ok_records()
 
-    # check batch size works. in fact, #6 should have two batches in historical version)
-    # so that the check should be more thorough
-    assert oai_records["4"]["batch"]["id"] != oai_records["6"]["batch"]["id"]
+    # the other records were either skipped, failed or deleted
+    assert ok_records.keys() == {"1"}
+    assert ok_records["1"]["oai"] == {
+        "harvest": {"datestamp": "2000-01-01", "identifier": "1"}
+    }
 
-    # local identifier not here as the record has been deleted
-    assert "local_identifier" not in oai_records["6"]
-    assert oai_records["6"]["context"]["oai"]["deleted"]
+    # run the harvester again, fix the first error
+    harvester_metadata = {
+        "code": "test2",
+        "baseurl": (Path(__file__).parent / "harvest_data2.json").as_uri(),
+        "metadataprefix": "test",
+        "comment": "comment",
+        "name": "Test harvester",
+        "setspecs": "test",
+        "loader": "file",
+        "transformers": ["error_transformer"],
+        "writer": "service{service=test_model}",
+        "batch_size": 6,
+    }
+    harvester = _add_harvester(harvester_metadata)
+
+    # run the harvester synchronously
+
+    run_id = harvest(
+        harvester,
+        all_records=True,
+        on_background=False,
+        identifiers=None,
+    )
+
+    ok_records = get_ok_records()
+    assert ok_records.keys() == {"1", "2"}
+    assert ok_records["2"]["oai"] == {
+        "harvest": {"datestamp": "2000-01-30", "identifier": "2"}
+    }
+    assert ok_records["2"]["metadata"]["title"] == "oktit"
+
+    oai_records = get_oai_records(run_id)
+    assert len(oai_records) == 0
+
+    all_oai_records = {
+        r['oai_identifier']: r for r in oai_record_service.scan(
+                system_identity,
+        ).hits
+    }
+    assert "2" not in all_oai_records
 
 
-def test_harvest_performance(app, db, record_service, search_clear):
+def get_oai_records(run_id):
+    batches = list(batch_service.scan(
+        system_identity,
+        params={"facets": {"run_id": [run_id]}},
+    ).hits)
+    oai_records = {}
+    for batch in batches:
+        batch_id = batch["id"]
+        for r in oai_record_service.scan(
+                system_identity,
+                params={"facets": {"batch_id": [batch_id]}},
+        ).hits:
+            oai_records[r["oai_identifier"]] = r
+    return oai_records
+
+
+def get_ok_records():
+    from test_model.proxies import current_service as test_model_service
+    ok_records = list(test_model_service.scan(system_identity).hits)
+    ok_records = {
+        x["oai"]["harvest"]["identifier"]: x
+        for x in ok_records
+    }
+    return ok_records
+
+
+def test_harvest_performance(app, db, search_clear):
     # create oai harvester with a test reader
     data_count = 200
     batch_size = 50
@@ -123,7 +180,7 @@ def test_harvest_performance(app, db, record_service, search_clear):
         "setspecs": "test",
         "loader": f"test_data{{count={data_count}}}",
         "transformers": ["error_transformer"],
-        "writer": "service{service=simple_model}",
+        "writer": "service{service=test_model}",
     }
     harvester = _add_harvester(harvester_metadata)
 
@@ -135,6 +192,7 @@ def test_harvest_performance(app, db, record_service, search_clear):
         identifiers=None,
         title="Test harvest",
     )
+    pprint(get_oai_records(run_id))
     run = run_service.read(system_identity, run_id).data
     assert run["status"] == "O"
     assert run["total_batches"] == 4

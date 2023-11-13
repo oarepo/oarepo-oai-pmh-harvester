@@ -553,25 +553,6 @@
                     }
                 }
             },
-            "status": {
-                "type": "keyword",
-                "enum": [
-                    "O",
-                    "W",
-                    "E",
-                    "S"
-                ],
-                "label.cs": "Stav zpracování",
-                "label.en": "Processing State",
-                "enum.O.cs": "Skončeno OK",
-                "enum.W.cs": "Varování",
-                "enum.E.cs": "Chyba",
-                "enum.S.cs": "Přeskočeno",
-                "enum.O.en": "Finished",
-                "enum.W.en": "Warning",
-                "enum.E.en": "Error",
-                "enum.S.en": "Skipped"
-            },
             "title": {
                 "type": "fulltext+keyword",
                 "label.cs": "Název záznamu",
@@ -594,14 +575,6 @@
                 },
                 "sample": {
                     "skip": true
-                }
-            },
-            "warnings": {
-                "type": "array",
-                "label.cs": "Varování",
-                "label.en": "Warnings",
-                "items": {
-                    "type": "fulltext+keyword"
                 }
             }
         }

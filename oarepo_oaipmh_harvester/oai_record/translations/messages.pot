@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2023-11-07T22:26:52.184821\n"
-"PO-Revision-Date: 2023-11-07T22:26:52.184822\n"
+"POT-Creation-Date: 2023-11-12T20:30:37.925229\n"
+"PO-Revision-Date: 2023-11-12T20:30:37.925230\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -224,27 +224,6 @@ msgstr ""
 msgid "run/@v.hint"
 msgstr ""
 
-msgid "status.label"
-msgstr ""
-
-msgid "status.enum.O"
-msgstr ""
-
-msgid "status.enum.W"
-msgstr ""
-
-msgid "status.enum.E"
-msgstr ""
-
-msgid "status.enum.S"
-msgstr ""
-
-msgid "status.help"
-msgstr ""
-
-msgid "status.hint"
-msgstr ""
-
 msgid "title.label"
 msgstr ""
 
@@ -261,13 +240,4 @@ msgid "updated.label"
 msgstr ""
 
 msgid "updated.hint"
-msgstr ""
-
-msgid "warnings.label"
-msgstr ""
-
-msgid "warnings.help"
-msgstr ""
-
-msgid "warnings.hint"
 msgstr ""

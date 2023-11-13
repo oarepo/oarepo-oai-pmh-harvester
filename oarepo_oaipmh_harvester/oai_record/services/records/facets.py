@@ -44,10 +44,6 @@ run_id = TermsFacet(field="run.id", label=_("run/id.label"))
 
 run__version = TermsFacet(field="run.@v", label=_("run/@v.label"))
 
-status = TermsFacet(field="status", label=_("status.label"))
-
 title = TermsFacet(field="title.keyword", label=_("title.label"))
 
 updated = DateTimeFacet(field="updated", label=_("updated.label"))
-
-warnings = TermsFacet(field="warnings.keyword", label=_("warnings.label"))

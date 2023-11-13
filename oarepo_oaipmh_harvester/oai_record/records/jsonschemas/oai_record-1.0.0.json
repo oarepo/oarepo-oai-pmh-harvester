@@ -86,21 +86,12 @@
                 }
             }
         },
-        "status": {
-            "type": "string"
-        },
         "title": {
             "type": "string"
         },
         "updated": {
             "type": "string",
             "format": "date-time"
-        },
-        "warnings": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
         }
     }
 }

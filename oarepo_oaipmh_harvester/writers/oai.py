@@ -5,7 +5,9 @@ from oarepo_runtime.records import select_record_for_update
 from oarepo_runtime.uow import BulkUnitOfWork
 
 from oarepo_oaipmh_harvester.oai_batch.proxies import current_service as batch_service
-from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
+from oarepo_oaipmh_harvester.oai_record.proxies import (
+    current_service as oai_record_service,
+)
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 
 
@@ -16,7 +18,7 @@ class OAIWriter(BaseWriter):
 
     def write(self, batch: StreamBatch, *args, **kwargs):
         with BulkUnitOfWork() as uow:
-            self.create_oai_records(batch, uow)
+            self.update_oai_records(batch, uow)
             self.set_batch_status(batch, uow)
             uow.commit()
 
@@ -35,7 +37,7 @@ class OAIWriter(BaseWriter):
 
         return batch
 
-    def create_oai_records(self, batch, uow):
+    def update_oai_records(self, batch, uow):
         oai_record_ids = [
             entry.context["oai"].get("oai_record_id") for entry in batch.entries
         ]
@@ -44,7 +46,7 @@ class OAIWriter(BaseWriter):
         oai_records = {
             x["oai_identifier"]: x
             for x in list(
-                record_service.scan(
+                oai_record_service.scan(
                     self._identity,
                     params={"facets": {"id": oai_record_ids}},
                 )
@@ -55,54 +57,51 @@ class OAIWriter(BaseWriter):
             oai_id = entry.context["oai"]["identifier"]
             oai_record_data = oai_records.get(oai_id)
 
-            update = True
-            if not oai_record_data:
-                update = False
-                oai_record_data = {
-                    "oai_identifier": entry.context["oai"]["identifier"],
-                }
-                if entry.id:
-                    oai_record_data["local_identifier"] = entry.id
-
-            if entry.ok:
-                oai_record_data["status"] = "O"
-            elif entry.errors:
-                oai_record_data["status"] = "E"
-            elif entry.filtered:
-                oai_record_data["status"] = "S"
-
             if entry.errors:
-                oai_record_data["errors"] = [err.json for err in entry.errors]
-            elif "errors" in oai_record_data:
-                del oai_record_data["errors"]
+                self.create_oai_record_with_error(batch, entry, oai_record_data, uow)
+            elif oai_record_data:
+                self.remove_oai_record_with_error(oai_record_data, uow)
 
-            oai_record_data["datestamp"] = entry.context["oai"]["datestamp"]
+    def create_oai_record_with_error(self, batch, entry, oai_record_data, uow):
+        update = True
+        if not oai_record_data:
+            update = False
+            oai_record_data = {
+                "oai_identifier": entry.context["oai"]["identifier"],
+            }
+            if entry.id:
+                oai_record_data["local_identifier"] = entry.id
 
-            # add entry only on errors, no need to add it on normal records as the entry has been stored
-            # and oai and local identifier are directly on the record
-            if entry.errors:
-                oai_record_data["entry"] = entry.entry
-                oai_record_data["context"] = entry.context
+        self.update_oai_record_metadata(batch, entry, oai_record_data)
 
-            oai_record_data["batch"] = {"id": batch.context["batch_id"]}
-            oai_record_data["run"] = {"id": batch.context["run_id"]}
-            oai_record_data["manual"] = entry.context["manual"]
-            oai_record_data["harvester"] = {"id": entry.context["oai_harvester_id"]}
-            if entry.entry.get("title"):
-                oai_record_data["title"] = str(entry.entry["title"])
-            if entry.entry.get("metadata", {}).get("title"):
-                oai_record_data["title"] = str(entry.entry["metadata"]["title"])
+        if update:
+            oai_record = oai_record_service.update(
+                self._identity, oai_record_data["id"], oai_record_data, uow=uow
+            )
+        else:
+            oai_record = oai_record_service.create(
+                self._identity, oai_record_data, uow=uow
+            )
+        entry.context["oai"]["local_oai_record_id"] = oai_record["id"]
 
-            if update:
-                oai_record = record_service.update(
-                    self._identity, oai_record_data["id"], oai_record_data, uow=uow
-                )
-            else:
-                oai_record = record_service.create(
-                    self._identity, oai_record_data, uow=uow
-                )
+    def remove_oai_record_with_error(self, oai_record_data, uow):
+        oai_record_service.delete(self._identity, oai_record_data["id"], uow=uow)
 
-            entry.context["oai"]["local_oai_record_id"] = oai_record["id"]
+    @staticmethod
+    def update_oai_record_metadata(batch, entry, oai_record_data):
+        if entry.errors:
+            oai_record_data["errors"] = [err.json for err in entry.errors]
+        oai_record_data["datestamp"] = entry.context["oai"]["datestamp"]
+        oai_record_data["entry"] = entry.entry
+        oai_record_data["context"] = entry.context
+        oai_record_data["batch"] = {"id": batch.context["batch_id"]}
+        oai_record_data["run"] = {"id": batch.context["run_id"]}
+        oai_record_data["manual"] = entry.context["manual"]
+        oai_record_data["harvester"] = {"id": entry.context["oai_harvester_id"]}
+        if entry.entry.get("title"):
+            oai_record_data["title"] = str(entry.entry["title"])
+        if entry.entry.get("metadata", {}).get("title"):
+            oai_record_data["title"] = str(entry.entry["metadata"]["title"])
 
     def set_batch_status(self, batch, uow):
         batch_id = batch.context["batch_id"]
@@ -131,7 +130,8 @@ class OAIWriter(BaseWriter):
             batch_data["errors"] = errors
         batch_service.update(self._identity, batch_id, batch_data, uow=uow)
 
-    def set_run_status(self, batch, oai_run):
+    @staticmethod
+    def set_run_status(batch, oai_run):
         if oai_run["finished_batches"] == oai_run["total_batches"]:
             status = "O"
             if oai_run.get("errors"):

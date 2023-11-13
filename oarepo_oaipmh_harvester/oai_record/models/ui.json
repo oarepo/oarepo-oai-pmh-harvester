@@ -208,15 +208,6 @@
                 }
             }
         },
-        "status": {
-            "detail": "keyword",
-            "input": "keyword",
-            "help": "status.help",
-            "label": "status.label",
-            "hint": "status.hint",
-            "enum": "status.enum",
-            "facet": "status"
-        },
         "title": {
             "detail": "fulltext+keyword",
             "input": "fulltext+keyword",
@@ -232,21 +223,6 @@
             "label": "updated.label",
             "hint": "updated.hint",
             "facet": "updated"
-        },
-        "warnings": {
-            "detail": "array",
-            "input": "array",
-            "help": "warnings.help",
-            "label": "warnings.label",
-            "hint": "warnings.hint",
-            "child": {
-                "detail": "fulltext+keyword",
-                "input": "fulltext+keyword",
-                "help": "warnings.help",
-                "label": "warnings.label",
-                "hint": "warnings.hint",
-                "facet": "warnings"
-            }
         }
     }
 }

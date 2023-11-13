@@ -79,6 +79,7 @@ def harvest(
         system_identity,
         {
             "harvester": {"id": harvester["id"]},
+            "errors": 0,
             "status": "R",
             "created_batches": 0,
             "total_batches": 0,
@@ -117,18 +118,25 @@ def harvest(
         for transformer in harvester["transformers"]
     ]
 
-    transformers_signatures.append(
-        current_harvester.get_transformer_signature(
+    writer_signature = current_harvester.get_writer_signature(harvester["writer"])
+
+    t: Signature
+    for t in transformers_signatures:
+        if t.name == "oai_record_lookup":
+            break
+    else:
+        t = current_harvester.get_transformer_signature(
             "oai_record_lookup",
             oai_config=dict(harvester),
             oai_run=run_id,
             oai_harvester_id=harvester["id"],
             manual=run_manual,
         )
-    )
+        transformers_signatures.append(t)
+    t.kwargs["harvested_record_service"] = writer_signature.kwargs["service"]
 
     writers_config = [
-        current_harvester.get_writer_signature(harvester["writer"]),
+        writer_signature,
         current_harvester.get_writer_signature(
             "oai",
             oai_config=dict(harvester),
