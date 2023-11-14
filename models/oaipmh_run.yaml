@@ -5,7 +5,7 @@ record:
     alias: oarepo-oaipmh-run
   service-config:
     components:
-      - "{{oarepo_runtime.relations.components.CachingRelationsComponent}}"
+      - "{{oarepo_runtime.services.relations.components.CachingRelationsComponent}}"
     service-id: oarepo-oaipmh-runs
 
   resource-config:

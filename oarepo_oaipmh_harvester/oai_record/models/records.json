@@ -43,7 +43,7 @@
         "service-config": {
             "service-id": "oarepo-oaipmh-records",
             "components": [
-                "{{oarepo_runtime.relations.components.CachingRelationsComponent}}",
+                "{{oarepo_runtime.services.relations.components.CachingRelationsComponent}}",
                 "{{invenio_records_resources.services.records.components.DataComponent}}"
             ],
             "generate": true,
@@ -362,8 +362,8 @@
             "context": {
                 "type": "flat_object",
                 "mapping": {
-                    "enabled": false,
-                    "type": "object"
+                    "type": "object",
+                    "enabled": false
                 },
                 "label.cs": "Kontext",
                 "label.en": "Context"
@@ -396,8 +396,8 @@
             "entry": {
                 "type": "flat_object",
                 "mapping": {
-                    "enabled": false,
-                    "type": "object"
+                    "type": "object",
+                    "enabled": false
                 },
                 "label.cs": "Položka",
                 "label.en": "Entry"

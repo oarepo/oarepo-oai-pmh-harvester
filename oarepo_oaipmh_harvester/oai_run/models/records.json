@@ -43,7 +43,7 @@
         "service-config": {
             "service-id": "oarepo-oaipmh-runs",
             "components": [
-                "{{oarepo_runtime.relations.components.CachingRelationsComponent}}",
+                "{{oarepo_runtime.services.relations.components.CachingRelationsComponent}}",
                 "{{invenio_records_resources.services.records.components.DataComponent}}"
             ],
             "generate": true,
