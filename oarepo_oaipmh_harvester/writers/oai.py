@@ -42,16 +42,21 @@ class OAIWriter(BaseWriter):
             entry.context["oai"].get("oai_record_id") for entry in batch.entries
         ]
         oai_record_ids = [x for x in oai_record_ids if x]
+        if oai_record_ids:
+            # TODO: better escaping if we change the pid format
+            query = "id:({})".format(" OR ".join(f'"{x}"' for x in oai_record_ids))
 
-        oai_records = {
-            x["oai_identifier"]: x
-            for x in list(
-                oai_record_service.scan(
-                    self._identity,
-                    params={"facets": {"id": oai_record_ids}},
+            oai_records = {
+                x["oai_identifier"]: x
+                for x in list(
+                    oai_record_service.scan(
+                        self._identity,
+                        params={"q": query},
+                    )
                 )
-            )
-        }
+            }
+        else:
+            oai_records = {}
 
         for entry in batch.entries:
             oai_id = entry.context["oai"]["identifier"]

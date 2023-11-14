@@ -110,7 +110,7 @@ def _add_harvester(metadata):
     code = metadata["code"]
     harvester = False
     harvesters = list(
-        harvester_service.scan(system_identity, params={"facets": {"code": [code]}})
+        harvester_service.scan(system_identity, params={"q": f"code:{code}"})
     )
 
     if len(harvesters) > 0:
