@@ -121,7 +121,7 @@ record:
             location:
               # dot-separated location in data (if applicable)
               label.cs: Pozice chyby v datech
-              label.en: Error location in data
+              label.en: Additional error information
               type: keyword
               facets:
                 facet: false
