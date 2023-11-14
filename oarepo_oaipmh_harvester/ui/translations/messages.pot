@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-07 11:13+0100\n"
+"POT-Creation-Date: 2023-11-14 08:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,207 +17,139 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:7
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:7
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:7
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:7
-msgid "$schema.label"
+#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:12
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:33
+#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:12
+msgid "harvester/name.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:9
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:15
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:13
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:11
-msgid "created.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:11
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:17
-msgid "errors/code.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:13
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:19
-msgid "errors/location.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:16
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:22
-msgid "errors/message.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:20
-msgid "errors/oai_identifier.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:23
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:17
-#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:14
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:27
-msgid "finished.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:25
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:17
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:29
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:25
-msgid "id.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:27
-#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:28
-msgid "identifiers.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:29
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:35
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:27
+#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:14
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:39
+#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:14
 msgid "manual.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:31
-msgid "run/id.label"
+#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:17
+msgid "records/errors/code.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:33
-msgid "run/@v.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:35
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:29
-#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:10
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:23
-msgid "started.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:37
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:39
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:31
-#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:6
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:8
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:5
+#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:20
+#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:16
+#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:41
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:14
 msgid "status.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_batch/services/records/facets.py:39
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:31
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:41
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:33
-msgid "updated.label"
-msgstr ""
-
 #: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:9
-msgid "baseurl.label"
+#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:15
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:10
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:14
+msgid "$schema.label"
 msgstr ""
 
 #: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:11
+#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:17
+msgid "baseurl.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:20
 msgid "batch_size.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:13
-msgid "code.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:19
+#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:22
 msgid "loader.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:21
+#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:24
 msgid "max_records.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:23
+#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:26
 msgid "metadataprefix.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:25
-msgid "name.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:27
+#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:28
 msgid "setspecs.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:29
-#: oarepo_oaipmh_harvester/ui/oai_harvester/templates/semantic-ui/oai_harvester_ui/HarvesterMain.jinja:23
+#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:30
+#: oarepo_oaipmh_harvester/ui/oai_harvester/templates/semantic-ui/oai_harvester_ui/HarvesterMain.jinja:31
 msgid "transformers.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_harvester/services/records/facets.py:33
-msgid "writer.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:9
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:17
 msgid "batch/id.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:11
-msgid "batch/@v.label"
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:19
+msgid "batch/started.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:15
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:21
+msgid "batch/sequence.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:23
 msgid "datestamp.label"
 msgstr ""
 
 #: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:25
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:19
-msgid "harvester/id.label"
+msgid "errors/code.label"
 msgstr ""
 
 #: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:27
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:23
-msgid "harvester/@v.label"
+msgid "errors/location.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:32
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:16
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:29
+msgid "harvester/id.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:31
+msgid "harvester/code.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:36
 msgid "local_identifier.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:37
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:12
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:41
+#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:8
 msgid "oai_identifier.label"
 msgstr ""
 
 #: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:43
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:30
-msgid "warnings.label"
+msgid "run/id.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:9
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:9
-msgid "batches.label"
+#: oarepo_oaipmh_harvester/oai_record/services/records/facets.py:45
+msgid "run/started.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:13
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:31
-msgid "duration.label"
+#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:6
+msgid "batch.run.number.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:15
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:17
-msgid "error.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:21
-msgid "harvester/code.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/oai_run/services/records/facets.py:35
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:13
-msgid "warning.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:20
+#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:9
 msgid "run.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:24
-msgid "records_batch.label"
+#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:16
+msgid "failed_records.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:26
-msgid "records_link.label"
+#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:29
+msgid "ok_records.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:45
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:22
+msgid "started.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchMain.jinja:49
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:27
+msgid "finished.label"
 msgstr ""
 
 #: oarepo_oaipmh_harvester/ui/oai_batch/templates/semantic-ui/oai_batch_ui/BatchSearch.jinja:2
@@ -291,47 +223,65 @@ msgid "Links"
 msgstr ""
 
 #: oarepo_oaipmh_harvester/ui/oai_harvester/templates/semantic-ui/oai_harvester_ui/HarvesterMain.jinja:15
+msgid "comment.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/ui/oai_harvester/templates/semantic-ui/oai_harvester_ui/HarvesterMain.jinja:24
 msgid "runs.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_harvester/templates/semantic-ui/oai_harvester_ui/HarvesterMain.jinja:17
+#: oarepo_oaipmh_harvester/ui/oai_harvester/templates/semantic-ui/oai_harvester_ui/HarvesterMain.jinja:26
 msgid "runs_link.label"
-msgstr ""
-
-#: oarepo_oaipmh_harvester/ui/oai_harvester/templates/semantic-ui/oai_harvester_ui/HarvesterMain.jinja:19
-msgid "comment.label"
 msgstr ""
 
 #: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:4
 msgid "ID"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:22
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:24
+#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:16
+#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:18
 msgid "batch.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:26
+#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:21
 msgid "record_data.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:28
+#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:23
 msgid "record.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:39
+#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:26
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:64
+msgid "warnings.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/ui/oai_record/templates/semantic-ui/oai_record_ui/OaiRecordMain.jinja:35
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:70
 msgid "errors.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:35
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:9
 msgid "harvester.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:39
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:33
+msgid "duration.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:46
 msgid "batches_links.label"
 msgstr ""
 
-#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:41
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:48
 msgid "batches_link.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:52
+msgid "created_batches.label"
+msgstr ""
+
+#: oarepo_oaipmh_harvester/ui/oai_run/templates/semantic-ui/oai_run_ui/RunMain.jinja:58
+msgid "finished_batches.label"
 msgstr ""
 

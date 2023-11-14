@@ -277,7 +277,8 @@
                     "write": false
                 },
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -292,7 +293,8 @@
             "created": {
                 "type": "datetime",
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -308,60 +310,93 @@
                     "skip": true
                 }
             },
-            "errors": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "label.cs": "Chyby",
-                    "label.en": "Errors",
-                    "marshmallow": {
-                        "generate": true,
-                        "class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.ErrorsItemSchema"
+            "finished": {
+                "type": "datetime",
+                "facets": {
+                    "facet": false
+                },
+                "label.cs": "Konec běhu",
+                "label.en": "End time"
+            },
+            "harvester": {
+                "type": "relation",
+                "model": "oaipmh-harvester",
+                "keys": [
+                    {
+                        "key": "id",
+                        "model": {
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            }
+                        },
+                        "target": "id"
                     },
-                    "ui": {
-                        "marshmallow": {
-                            "generate": true,
-                            "class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.ErrorsItemUISchema"
+                    {
+                        "key": "code",
+                        "model": {
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            }
+                        },
+                        "target": "code"
+                    },
+                    {
+                        "key": "name",
+                        "model": {
+                            "type": "keyword"
+                        },
+                        "target": "name"
+                    }
+                ],
+                "label.cs": "Harvester",
+                "label.en": "Harvester",
+                "marshmallow": {
+                    "unknown": "INCLUDE",
+                    "generate": true,
+                    "class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.HarvesterSchema"
+                },
+                "ui": {
+                    "marshmallow": {
+                        "unknown": "INCLUDE",
+                        "generate": true,
+                        "class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.HarvesterUISchema"
+                    }
+                },
+                "properties": {
+                    "id": {
+                        "type": "keyword",
+                        "facets": {
+                            "facet": false
                         }
                     },
-                    "properties": {
-                        "code": {
-                            "type": "keyword",
-                            "label.cs": "Typ chyby",
-                            "label.en": "Error type"
+                    "code": {
+                        "type": "keyword",
+                        "facets": {
+                            "facet": false
+                        }
+                    },
+                    "name": {
+                        "type": "keyword"
+                    },
+                    "@v": {
+                        "type": "keyword",
+                        "marshmallow": {
+                            "field-name": "_version",
+                            "field-class": "marshmallow.fields.String"
                         },
-                        "info": {
-                            "type": "flat_object",
-                            "label.cs": "Další informace o chybě",
-                            "label.en": "Additional error information"
+                        "ui": {
+                            "marshmallow": {
+                                "field-name": "_version",
+                                "field-class": "marshmallow.fields.String"
+                            }
                         },
-                        "local_identifier": {
-                            "type": "keyword",
-                            "label.cs": "Lokální identifikátor OAI záznamu",
-                            "label.en": "Local OAI record identifier"
-                        },
-                        "location": {
-                            "type": "keyword",
-                            "label.cs": "Pozice chyby v datech",
-                            "label.en": "Error location in data"
-                        },
-                        "message": {
-                            "type": "fulltext+keyword",
-                            "label.cs": "Chybová hodnota",
-                            "label.en": "Error message"
-                        },
-                        "oai_identifier": {
-                            "type": "keyword",
-                            "label.cs": "OAI identifikátor",
-                            "label.en": "OAI identifier"
+                        "facets": {
+                            "facet": false
                         }
                     }
                 }
-            },
-            "finished": {
-                "type": "datetime",
-                "label.cs": "Konec běhu",
-                "label.en": "End time"
             },
             "id": {
                 "type": "keyword",
@@ -370,7 +405,8 @@
                     "write": false
                 },
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -382,18 +418,110 @@
                     "skip": true
                 }
             },
-            "identifiers": {
-                "type": "array",
-                "items": {
-                    "type": "keyword",
-                    "label.cs": "OAI Identifikátory",
-                    "label.en": "OAI Identifiers"
-                }
-            },
             "manual": {
                 "type": "boolean",
                 "label.cs": "Manuálně spuštěno?",
                 "label.en": "Manual?"
+            },
+            "records": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "label.cs": "Sklizené záznamy",
+                    "label.en": "Harvested records",
+                    "marshmallow": {
+                        "generate": true,
+                        "class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.RecordsItemSchema"
+                    },
+                    "ui": {
+                        "marshmallow": {
+                            "generate": true,
+                            "class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.RecordsItemUISchema"
+                        }
+                    },
+                    "properties": {
+                        "errors": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "label.cs": "Chyby",
+                                "label.en": "Errors",
+                                "marshmallow": {
+                                    "generate": true,
+                                    "class": "oarepo_oaipmh_harvester.oai_batch.services.records.schema.ErrorsItemSchema"
+                                },
+                                "ui": {
+                                    "marshmallow": {
+                                        "generate": true,
+                                        "class": "oarepo_oaipmh_harvester.oai_batch.services.records.ui_schema.ErrorsItemUISchema"
+                                    }
+                                },
+                                "properties": {
+                                    "code": {
+                                        "type": "keyword",
+                                        "label.cs": "Typ chyby",
+                                        "label.en": "Error type"
+                                    },
+                                    "info": {
+                                        "type": "flat_object",
+                                        "label.cs": "Další informace o chybě",
+                                        "label.en": "Additional error information"
+                                    },
+                                    "location": {
+                                        "type": "keyword",
+                                        "facets": {
+                                            "facet": false
+                                        },
+                                        "label.cs": "Pozice chyby v datech",
+                                        "label.en": "Error location in data"
+                                    },
+                                    "message": {
+                                        "type": "fulltext+keyword",
+                                        "label.cs": "Chybová hodnota",
+                                        "label.en": "Error message"
+                                    }
+                                }
+                            }
+                        },
+                        "local_error_identifier": {
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            },
+                            "label.cs": "Lokální identifikátor chybového záznamu",
+                            "label.en": "Local error record identifier"
+                        },
+                        "local_record_identifier": {
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            },
+                            "label.cs": "Lokální identifikátor záznamu",
+                            "label.en": "Local record identifier"
+                        },
+                        "oai_identifier": {
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            },
+                            "label.cs": "OAI identifikátor",
+                            "label.en": "OAI identifier"
+                        },
+                        "title": {
+                            "type": "fulltext+keyword",
+                            "label.cs": "Název",
+                            "label.en": "Title"
+                        },
+                        "url": {
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            },
+                            "label.cs": "UI cesta",
+                            "label.en": "UI path"
+                        }
+                    }
+                }
             },
             "run": {
                 "type": "relation",
@@ -403,9 +531,32 @@
                     {
                         "key": "id",
                         "model": {
-                            "type": "keyword"
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            }
                         },
                         "target": "id"
+                    },
+                    {
+                        "key": "title",
+                        "model": {
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            }
+                        },
+                        "target": "title"
+                    },
+                    {
+                        "key": "started",
+                        "model": {
+                            "type": "datetime",
+                            "facets": {
+                                "facet": false
+                            }
+                        },
+                        "target": "started"
                     }
                 ],
                 "label.cs": "Běh harvestru",
@@ -424,7 +575,22 @@
                 },
                 "properties": {
                     "id": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "facets": {
+                            "facet": false
+                        }
+                    },
+                    "title": {
+                        "type": "keyword",
+                        "facets": {
+                            "facet": false
+                        }
+                    },
+                    "started": {
+                        "type": "datetime",
+                        "facets": {
+                            "facet": false
+                        }
                     },
                     "@v": {
                         "type": "keyword",
@@ -437,17 +603,26 @@
                                 "field-name": "_version",
                                 "field-class": "marshmallow.fields.String"
                             }
+                        },
+                        "facets": {
+                            "facet": false
                         }
                     }
                 }
             },
             "sequence": {
                 "type": "integer",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Pořadí",
                 "label.en": "Sequence"
             },
             "started": {
                 "type": "datetime",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Začátek běhu",
                 "label.en": "Start time"
             },
@@ -477,7 +652,8 @@
             "updated": {
                 "type": "datetime",
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {

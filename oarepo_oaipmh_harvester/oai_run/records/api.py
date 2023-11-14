@@ -28,7 +28,7 @@ class OaiRunRecord(InvenioRecord):
     relations = RelationsField(
         harvester=PIDRelation(
             "harvester",
-            keys=["id", "code"],
+            keys=["id", "code", "name"],
             pid_field=OaiHarvesterRecord.pid,
         ),
     )

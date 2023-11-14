@@ -13,110 +13,66 @@
             "input": "keyword",
             "help": "$schema.help",
             "label": "$schema.label",
-            "hint": "$schema.hint",
-            "facet": "_schema"
+            "hint": "$schema.hint"
         },
         "created": {
             "detail": "datetime",
             "input": "datetime",
             "help": "created.help",
             "label": "created.label",
-            "hint": "created.hint",
-            "facet": "created"
-        },
-        "errors": {
-            "detail": "array",
-            "input": "array",
-            "help": "errors.help",
-            "label": "errors.label",
-            "hint": "errors.hint",
-            "child": {
-                "detail": "error",
-                "input": "error",
-                "help": "errors.help",
-                "label": "errors.label",
-                "hint": "errors.hint",
-                "children": {
-                    "code": {
-                        "detail": "keyword",
-                        "input": "keyword",
-                        "help": "errors/code.help",
-                        "label": "errors/code.label",
-                        "hint": "errors/code.hint",
-                        "facet": "errors_code"
-                    },
-                    "info": {
-                        "detail": "flat_object",
-                        "input": "flat_object",
-                        "help": "errors/info.help",
-                        "label": "errors/info.label",
-                        "hint": "errors/info.hint"
-                    },
-                    "local_identifier": {
-                        "detail": "keyword",
-                        "input": "keyword",
-                        "help": "errors/local_identifier.help",
-                        "label": "errors/local_identifier.label",
-                        "hint": "errors/local_identifier.hint",
-                        "facet": "errors_local_identifier"
-                    },
-                    "location": {
-                        "detail": "keyword",
-                        "input": "keyword",
-                        "help": "errors/location.help",
-                        "label": "errors/location.label",
-                        "hint": "errors/location.hint",
-                        "facet": "errors_location"
-                    },
-                    "message": {
-                        "detail": "fulltext+keyword",
-                        "input": "fulltext+keyword",
-                        "help": "errors/message.help",
-                        "label": "errors/message.label",
-                        "hint": "errors/message.hint",
-                        "facet": "errors_message"
-                    },
-                    "oai_identifier": {
-                        "detail": "keyword",
-                        "input": "keyword",
-                        "help": "errors/oai_identifier.help",
-                        "label": "errors/oai_identifier.label",
-                        "hint": "errors/oai_identifier.hint",
-                        "facet": "errors_oai_identifier"
-                    }
-                }
-            }
+            "hint": "created.hint"
         },
         "finished": {
             "detail": "datetime",
             "input": "datetime",
             "help": "finished.help",
             "label": "finished.label",
-            "hint": "finished.hint",
-            "facet": "finished"
+            "hint": "finished.hint"
+        },
+        "harvester": {
+            "detail": "relation",
+            "input": "relation",
+            "help": "harvester.help",
+            "label": "harvester.label",
+            "hint": "harvester.hint",
+            "children": {
+                "id": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/id.help",
+                    "label": "harvester/id.label",
+                    "hint": "harvester/id.hint"
+                },
+                "code": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/code.help",
+                    "label": "harvester/code.label",
+                    "hint": "harvester/code.hint"
+                },
+                "name": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/name.help",
+                    "label": "harvester/name.label",
+                    "hint": "harvester/name.hint",
+                    "facet": "harvester_name"
+                },
+                "@v": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/@v.help",
+                    "label": "harvester/@v.label",
+                    "hint": "harvester/@v.hint"
+                }
+            }
         },
         "id": {
             "detail": "keyword",
             "input": "keyword",
             "help": "id.help",
             "label": "id.label",
-            "hint": "id.hint",
-            "facet": "_id"
-        },
-        "identifiers": {
-            "detail": "array",
-            "input": "array",
-            "help": "identifiers.help",
-            "label": "identifiers.label",
-            "hint": "identifiers.hint",
-            "child": {
-                "detail": "keyword",
-                "input": "keyword",
-                "help": "identifiers.help",
-                "label": "identifiers.label",
-                "hint": "identifiers.hint",
-                "facet": "identifiers"
-            }
+            "hint": "id.hint"
         },
         "manual": {
             "detail": "boolean",
@@ -125,6 +81,102 @@
             "label": "manual.label",
             "hint": "manual.hint",
             "facet": "manual"
+        },
+        "records": {
+            "detail": "array",
+            "input": "array",
+            "help": "records.help",
+            "label": "records.label",
+            "hint": "records.hint",
+            "child": {
+                "detail": "record",
+                "input": "record",
+                "help": "records.help",
+                "label": "records.label",
+                "hint": "records.hint",
+                "children": {
+                    "errors": {
+                        "detail": "array",
+                        "input": "array",
+                        "help": "records/errors.help",
+                        "label": "records/errors.label",
+                        "hint": "records/errors.hint",
+                        "child": {
+                            "detail": "error",
+                            "input": "error",
+                            "help": "records/errors.help",
+                            "label": "records/errors.label",
+                            "hint": "records/errors.hint",
+                            "children": {
+                                "code": {
+                                    "detail": "keyword",
+                                    "input": "keyword",
+                                    "help": "records/errors/code.help",
+                                    "label": "records/errors/code.label",
+                                    "hint": "records/errors/code.hint",
+                                    "facet": "records_errors_code"
+                                },
+                                "info": {
+                                    "detail": "flat_object",
+                                    "input": "flat_object",
+                                    "help": "records/errors/info.help",
+                                    "label": "records/errors/info.label",
+                                    "hint": "records/errors/info.hint"
+                                },
+                                "location": {
+                                    "detail": "keyword",
+                                    "input": "keyword",
+                                    "help": "records/errors/location.help",
+                                    "label": "records/errors/location.label",
+                                    "hint": "records/errors/location.hint"
+                                },
+                                "message": {
+                                    "detail": "fulltext+keyword",
+                                    "input": "fulltext+keyword",
+                                    "help": "records/errors/message.help",
+                                    "label": "records/errors/message.label",
+                                    "hint": "records/errors/message.hint"
+                                }
+                            }
+                        }
+                    },
+                    "local_error_identifier": {
+                        "detail": "keyword",
+                        "input": "keyword",
+                        "help": "records/local_error_identifier.help",
+                        "label": "records/local_error_identifier.label",
+                        "hint": "records/local_error_identifier.hint"
+                    },
+                    "local_record_identifier": {
+                        "detail": "keyword",
+                        "input": "keyword",
+                        "help": "records/local_record_identifier.help",
+                        "label": "records/local_record_identifier.label",
+                        "hint": "records/local_record_identifier.hint"
+                    },
+                    "oai_identifier": {
+                        "detail": "keyword",
+                        "input": "keyword",
+                        "help": "records/oai_identifier.help",
+                        "label": "records/oai_identifier.label",
+                        "hint": "records/oai_identifier.hint"
+                    },
+                    "title": {
+                        "detail": "fulltext+keyword",
+                        "input": "fulltext+keyword",
+                        "help": "records/title.help",
+                        "label": "records/title.label",
+                        "hint": "records/title.hint"
+                    },
+                    "url": {
+                        "detail": "keyword",
+                        "input": "keyword",
+                        "help": "records/url.help",
+                        "label": "records/url.label",
+                        "hint": "records/url.hint"
+                    }
+                }
+            }
         },
         "run": {
             "detail": "relation",
@@ -138,16 +190,28 @@
                     "input": "keyword",
                     "help": "run/id.help",
                     "label": "run/id.label",
-                    "hint": "run/id.hint",
-                    "facet": "run_id"
+                    "hint": "run/id.hint"
+                },
+                "title": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "run/title.help",
+                    "label": "run/title.label",
+                    "hint": "run/title.hint"
+                },
+                "started": {
+                    "detail": "datetime",
+                    "input": "datetime",
+                    "help": "run/started.help",
+                    "label": "run/started.label",
+                    "hint": "run/started.hint"
                 },
                 "@v": {
                     "detail": "keyword",
                     "input": "keyword",
                     "help": "run/@v.help",
                     "label": "run/@v.label",
-                    "hint": "run/@v.hint",
-                    "facet": "run__version"
+                    "hint": "run/@v.hint"
                 }
             }
         },
@@ -156,16 +220,14 @@
             "input": "integer",
             "help": "sequence.help",
             "label": "sequence.label",
-            "hint": "sequence.hint",
-            "facet": "sequence"
+            "hint": "sequence.hint"
         },
         "started": {
             "detail": "datetime",
             "input": "datetime",
             "help": "started.help",
             "label": "started.label",
-            "hint": "started.hint",
-            "facet": "started"
+            "hint": "started.hint"
         },
         "status": {
             "detail": "keyword",
@@ -181,8 +243,7 @@
             "input": "datetime",
             "help": "updated.help",
             "label": "updated.label",
-            "hint": "updated.hint",
-            "facet": "updated"
+            "hint": "updated.hint"
         }
     }
 }

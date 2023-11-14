@@ -2,7 +2,6 @@ import marshmallow as ma
 from marshmallow import Schema
 from marshmallow import fields as ma_fields
 from marshmallow.fields import String
-from marshmallow.validate import OneOf
 from oarepo_runtime.services.schema.ui import InvenioUISchema, LocalizedDateTime
 
 
@@ -28,13 +27,9 @@ class OaiRecordUISchema(InvenioUISchema):
 
     oai_identifier = ma_fields.String()
 
-    run = ma_fields.Nested(lambda: BatchUISchema(), required=True)
-
-    status = ma_fields.String(validate=[OneOf(["O", "W", "E", "S"])])
+    run = ma_fields.Nested(lambda: RunUISchema(), required=True)
 
     title = ma_fields.String()
-
-    warnings = ma_fields.List(ma_fields.String())
 
 
 class BatchUISchema(Schema):
@@ -44,6 +39,10 @@ class BatchUISchema(Schema):
     _id = ma_fields.String(data_key="id", attribute="id")
 
     _version = String(data_key="@v", attribute="@v")
+
+    sequence = ma_fields.Integer()
+
+    started = LocalizedDateTime()
 
 
 class ErrorsItemUISchema(Schema):
@@ -67,4 +66,19 @@ class HarvesterUISchema(Schema):
 
     _version = String(data_key="@v", attribute="@v")
 
-    writer = ma_fields.String()
+    code = ma_fields.String()
+
+    name = ma_fields.String()
+
+
+class RunUISchema(Schema):
+    class Meta:
+        unknown = ma.INCLUDE
+
+    _id = ma_fields.String(data_key="id", attribute="id")
+
+    _version = String(data_key="@v", attribute="@v")
+
+    started = LocalizedDateTime()
+
+    title = ma_fields.String()

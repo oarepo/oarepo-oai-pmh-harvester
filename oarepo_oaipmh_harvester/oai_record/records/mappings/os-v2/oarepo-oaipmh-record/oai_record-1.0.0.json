@@ -12,6 +12,13 @@
                         "type": "keyword",
                         "ignore_above": 1024
                     },
+                    "started": {
+                        "type": "date",
+                        "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
+                    },
+                    "sequence": {
+                        "type": "integer"
+                    },
                     "@v": {
                         "type": "keyword",
                         "ignore_above": 1024
@@ -19,8 +26,8 @@
                 }
             },
             "context": {
-                "enabled": false,
-                "type": "object"
+                "type": "object",
+                "enabled": false
             },
             "created": {
                 "type": "date",
@@ -31,8 +38,8 @@
                 "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
             },
             "entry": {
-                "enabled": false,
-                "type": "object"
+                "type": "object",
+                "enabled": false
             },
             "errors": {
                 "type": "object",
@@ -66,7 +73,11 @@
                         "type": "keyword",
                         "ignore_above": 1024
                     },
-                    "writer": {
+                    "code": {
+                        "type": "keyword",
+                        "ignore_above": 1024
+                    },
+                    "name": {
                         "type": "keyword",
                         "ignore_above": 1024
                     },
@@ -98,15 +109,24 @@
                         "type": "keyword",
                         "ignore_above": 1024
                     },
+                    "title": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    },
+                    "started": {
+                        "type": "date",
+                        "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
+                    },
                     "@v": {
                         "type": "keyword",
                         "ignore_above": 1024
                     }
                 }
-            },
-            "status": {
-                "type": "keyword",
-                "ignore_above": 1024
             },
             "title": {
                 "type": "text",
@@ -120,15 +140,6 @@
             "updated": {
                 "type": "date",
                 "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
-            },
-            "warnings": {
-                "type": "text",
-                "fields": {
-                    "keyword": {
-                        "type": "keyword",
-                        "ignore_above": 256
-                    }
-                }
             }
         }
     }

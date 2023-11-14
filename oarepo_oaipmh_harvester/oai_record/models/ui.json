@@ -13,8 +13,7 @@
             "input": "keyword",
             "help": "$schema.help",
             "label": "$schema.label",
-            "hint": "$schema.hint",
-            "facet": "_schema"
+            "hint": "$schema.hint"
         },
         "batch": {
             "detail": "relation",
@@ -31,13 +30,28 @@
                     "hint": "batch/id.hint",
                     "facet": "batch_id"
                 },
+                "started": {
+                    "detail": "datetime",
+                    "input": "datetime",
+                    "help": "batch/started.help",
+                    "label": "batch/started.label",
+                    "hint": "batch/started.hint",
+                    "facet": "batch_started"
+                },
+                "sequence": {
+                    "detail": "integer",
+                    "input": "integer",
+                    "help": "batch/sequence.help",
+                    "label": "batch/sequence.label",
+                    "hint": "batch/sequence.hint",
+                    "facet": "batch_sequence"
+                },
                 "@v": {
                     "detail": "keyword",
                     "input": "keyword",
                     "help": "batch/@v.help",
                     "label": "batch/@v.label",
-                    "hint": "batch/@v.hint",
-                    "facet": "batch__version"
+                    "hint": "batch/@v.hint"
                 }
             }
         },
@@ -53,8 +67,7 @@
             "input": "datetime",
             "help": "created.help",
             "label": "created.label",
-            "hint": "created.hint",
-            "facet": "created"
+            "hint": "created.hint"
         },
         "datestamp": {
             "detail": "datetime",
@@ -112,8 +125,7 @@
                         "input": "fulltext+keyword",
                         "help": "errors/message.help",
                         "label": "errors/message.label",
-                        "hint": "errors/message.hint",
-                        "facet": "errors_message"
+                        "hint": "errors/message.hint"
                     }
                 }
             }
@@ -133,21 +145,28 @@
                     "hint": "harvester/id.hint",
                     "facet": "harvester_id"
                 },
-                "writer": {
+                "code": {
                     "detail": "keyword",
                     "input": "keyword",
-                    "help": "harvester/writer.help",
-                    "label": "harvester/writer.label",
-                    "hint": "harvester/writer.hint",
-                    "facet": "harvester_writer"
+                    "help": "harvester/code.help",
+                    "label": "harvester/code.label",
+                    "hint": "harvester/code.hint",
+                    "facet": "harvester_code"
+                },
+                "name": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/name.help",
+                    "label": "harvester/name.label",
+                    "hint": "harvester/name.hint",
+                    "facet": "harvester_name"
                 },
                 "@v": {
                     "detail": "keyword",
                     "input": "keyword",
                     "help": "harvester/@v.help",
                     "label": "harvester/@v.label",
-                    "hint": "harvester/@v.hint",
-                    "facet": "harvester__version"
+                    "hint": "harvester/@v.hint"
                 }
             }
         },
@@ -156,8 +175,7 @@
             "input": "keyword",
             "help": "id.help",
             "label": "id.label",
-            "hint": "id.hint",
-            "facet": "_id"
+            "hint": "id.hint"
         },
         "local_identifier": {
             "detail": "keyword",
@@ -198,55 +216,43 @@
                     "hint": "run/id.hint",
                     "facet": "run_id"
                 },
+                "title": {
+                    "detail": "fulltext+keyword",
+                    "input": "fulltext+keyword",
+                    "help": "run/title.help",
+                    "label": "run/title.label",
+                    "hint": "run/title.hint"
+                },
+                "started": {
+                    "detail": "datetime",
+                    "input": "datetime",
+                    "help": "run/started.help",
+                    "label": "run/started.label",
+                    "hint": "run/started.hint",
+                    "facet": "run_started"
+                },
                 "@v": {
                     "detail": "keyword",
                     "input": "keyword",
                     "help": "run/@v.help",
                     "label": "run/@v.label",
-                    "hint": "run/@v.hint",
-                    "facet": "run__version"
+                    "hint": "run/@v.hint"
                 }
             }
-        },
-        "status": {
-            "detail": "keyword",
-            "input": "keyword",
-            "help": "status.help",
-            "label": "status.label",
-            "hint": "status.hint",
-            "enum": "status.enum",
-            "facet": "status"
         },
         "title": {
             "detail": "fulltext+keyword",
             "input": "fulltext+keyword",
             "help": "title.help",
             "label": "title.label",
-            "hint": "title.hint",
-            "facet": "title"
+            "hint": "title.hint"
         },
         "updated": {
             "detail": "datetime",
             "input": "datetime",
             "help": "updated.help",
             "label": "updated.label",
-            "hint": "updated.hint",
-            "facet": "updated"
-        },
-        "warnings": {
-            "detail": "array",
-            "input": "array",
-            "help": "warnings.help",
-            "label": "warnings.label",
-            "hint": "warnings.hint",
-            "child": {
-                "detail": "fulltext+keyword",
-                "input": "fulltext+keyword",
-                "help": "warnings.help",
-                "label": "warnings.label",
-                "hint": "warnings.hint",
-                "facet": "warnings"
-            }
+            "hint": "updated.hint"
         }
     }
 }

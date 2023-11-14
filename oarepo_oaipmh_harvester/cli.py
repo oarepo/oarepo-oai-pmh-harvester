@@ -1,11 +1,14 @@
 import functools
+import logging
 import sys
 import threading
 import time
 
 import click
+from flask import current_app
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
+from invenio_db import db
 from oarepo_runtime.cli import as_command, oarepo
 from oarepo_runtime.datastreams import StreamBatch
 from oarepo_runtime.datastreams.types import StatsKeepingDataStreamCallback
@@ -17,9 +20,6 @@ from oarepo_oaipmh_harvester.oai_harvester.proxies import (
 )
 from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
-
-from flask import current_app
-from invenio_db import db
 
 
 @oarepo.group(name="oai")
@@ -110,7 +110,7 @@ def _add_harvester(metadata):
     code = metadata["code"]
     harvester = False
     harvesters = list(
-        harvester_service.scan(system_identity, params={"facets": {"code": [code]}})
+        harvester_service.scan(system_identity, params={"q": f"code:{code}"})
     )
 
     if len(harvesters) > 0:
@@ -211,9 +211,13 @@ def asynchronous_reporting(app, progress_bar, run_id):
             time.sleep(30)
 
 
-def _run_harvester(metadata, on_background, all_records, identifier):
+def _run_harvester(metadata, on_background, all_records, identifier, log_level):
     """Run/Start a harvester. Only the code is required, other arguments
     might be used to override harvester settings stored in the database"""
+
+    if log_level:
+        logging.basicConfig(level=log_level)
+
     code = metadata.pop("code")
     harvesters = list(
         harvester_service.scan(system_identity, params={"facets": {"code": [code]}})
@@ -244,6 +248,7 @@ def _run_harvester(metadata, on_background, all_records, identifier):
             callback = TQDMSynchronousCallback(bar)
         else:
             app = current_app._get_current_object()
+
             def on_run_created(run_id):
                 threading.Thread(
                     target=asynchronous_reporting, args=(app, bar, run_id)
@@ -267,6 +272,11 @@ run = as_command(
     click.option("--on-background/--on-foreground"),
     click.option("--all-records/--modified-records"),
     click.option("--identifier", multiple=True),
+    click.option(
+        "--log-level",
+        help="Debug level (INFO, WARNING, ERROR, CRITICAL)",
+        default=logging.getLevelName(logging.ERROR),
+    ),
     harvester_parameters(False),
     with_appcontext,
     _run_harvester,

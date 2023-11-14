@@ -10,6 +10,13 @@
                 "id": {
                     "type": "string"
                 },
+                "started": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "sequence": {
+                    "type": "integer"
+                },
                 "@v": {
                     "type": "string"
                 }
@@ -55,7 +62,10 @@
                 "id": {
                     "type": "string"
                 },
-                "writer": {
+                "code": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "@v": {
@@ -81,13 +91,17 @@
                 "id": {
                     "type": "string"
                 },
+                "title": {
+                    "type": "string"
+                },
+                "started": {
+                    "type": "string",
+                    "format": "date-time"
+                },
                 "@v": {
                     "type": "string"
                 }
             }
-        },
-        "status": {
-            "type": "string"
         },
         "title": {
             "type": "string"
@@ -95,12 +109,6 @@
         "updated": {
             "type": "string",
             "format": "date-time"
-        },
-        "warnings": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
         }
     }
 }

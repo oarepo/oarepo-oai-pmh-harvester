@@ -7,13 +7,17 @@ from oarepo_oaipmh_harvester.oai_batch.proxies import current_service as batch_s
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 
 
-def reader_callback(batch: StreamBatch, *, identity, oai_run, manual):
+def reader_callback(batch: StreamBatch, *, identity, oai_run, manual, oai_harvester):
     batch_el = batch_service.create(
         identity,
         {
             "run": {"id": oai_run},
+            "harvester": {"id": oai_harvester},
             "status": "R",
-            "identifiers": [x.context["oai"]["identifier"] for x in batch.entries],
+            "records": [
+                {"oai_identifier": x.context["oai"]["identifier"]}
+                for x in batch.entries
+            ],
             "started": datetime.datetime.utcnow().isoformat() + "+00:00",
             "manual": manual,
             "sequence": batch.seq,

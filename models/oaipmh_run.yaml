@@ -22,7 +22,14 @@ record:
       - key: id
         model:
           type: keyword
+          facets:
+            facet: false
       - key: code
+        model:
+          type: keyword
+          facets:
+            facet: false
+      - key: name
         model:
           type: keyword
       required: true
@@ -36,16 +43,22 @@ record:
       label.cs: Počet vytvořených dávek v běhu
       label.en: Number of created batches
       type: integer
+      facets:
+        facet: false
 
     total_batches:
       label.cs: Celkový počet dávek v běhu
       label.en: Total number of batches
       type: integer
+      facets:
+        facet: false
 
     finished_batches:
       label.cs: Počet ukončených dávek v běhu
       label.en: Number of finalized batches
       type: integer
+      facets:
+        facet: false
 
     status:
       label.cs: Stav běhu
@@ -67,26 +80,36 @@ record:
       label.cs: Varování
       label.en: Warning
       type: integer
+      facets:
+        facet: false
 
     errors:
       label.cs: Chyby
       label.en: Errors
       type: integer
+      facets:
+        facet: false
 
     started:
       label.cs: Začátek zpracování
       label.en: Processing Start Time
       type: datetime
+      facets:
+        facet: false
 
     finished:
       label.cs: Konec zpracování
       label.en: Processing End Time
       type: datetime
+      facets:
+        facet: false
 
     duration:
       label.cs: Doba zpracování
       label.en: Processing Duration
       type: double
+      facets:
+        facet: false
 
     manual:
       label.cs: Spuštěno ručně

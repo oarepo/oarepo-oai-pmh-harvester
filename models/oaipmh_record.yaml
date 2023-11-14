@@ -25,6 +25,12 @@ record:
       - key: id
         model:
           type: keyword
+      - key: title
+        model:
+          type: fulltext+keyword
+      - key: started
+        model:
+          type: datetime
       required: true
 
     batch:
@@ -37,10 +43,16 @@ record:
       - key: id
         model:
           type: keyword
+      - key: started
+        model:
+          type: datetime
+      - key: sequence
+        model:
+          type: integer
       required: true
 
     harvester:
-      label.cs: Harvestr záznamu
+      label.cs: Harvester
       label.en: Harvester
       type: relation
       model: oaipmh-harvester
@@ -48,7 +60,10 @@ record:
       - key: id
         model:
           type: keyword
-      - key: writer
+      - key: code
+        model:
+          type: keyword
+      - key: name
         model:
           type: keyword
       required: true
@@ -73,25 +88,6 @@ record:
       label.en: OAI date
       type: datetime
 
-    status: 
-      label.cs: Stav zpracování
-      label.en: Processing State
-      enum.O.cs: Skončeno OK
-      enum.W.cs: Varování
-      enum.E.cs: Chyba
-      enum.S.cs: Přeskočeno
-      enum.O.en: Finished
-      enum.W.en: Warning
-      enum.E.en: Error
-      enum.S.en: Skipped
-      type: keyword
-      enum: [ O, W, E, S ]
-    
-    warnings[]: 
-      ^label.cs: Varování
-      ^label.en: Warnings
-      type: fulltext+keyword
-    
     errors[]:
       ^label.cs: Chyby zpracování
       ^label.en: Processing errors

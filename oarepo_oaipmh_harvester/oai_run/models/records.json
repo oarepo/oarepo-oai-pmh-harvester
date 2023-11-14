@@ -277,7 +277,8 @@
                     "write": false
                 },
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -292,7 +293,8 @@
             "created": {
                 "type": "datetime",
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -310,26 +312,41 @@
             },
             "created_batches": {
                 "type": "integer",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Počet vytvořených dávek v běhu",
                 "label.en": "Number of created batches"
             },
             "duration": {
                 "type": "double",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Doba zpracování",
                 "label.en": "Processing Duration"
             },
             "errors": {
                 "type": "integer",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Chyby",
                 "label.en": "Errors"
             },
             "finished": {
                 "type": "datetime",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Konec zpracování",
                 "label.en": "Processing End Time"
             },
             "finished_batches": {
                 "type": "integer",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Počet ukončených dávek v běhu",
                 "label.en": "Number of finalized batches"
             },
@@ -341,16 +358,29 @@
                     {
                         "key": "id",
                         "model": {
-                            "type": "keyword"
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            }
                         },
                         "target": "id"
                     },
                     {
                         "key": "code",
                         "model": {
-                            "type": "keyword"
+                            "type": "keyword",
+                            "facets": {
+                                "facet": false
+                            }
                         },
                         "target": "code"
+                    },
+                    {
+                        "key": "name",
+                        "model": {
+                            "type": "keyword"
+                        },
+                        "target": "name"
                     }
                 ],
                 "label.cs": "Harvester",
@@ -369,9 +399,18 @@
                 },
                 "properties": {
                     "id": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "facets": {
+                            "facet": false
+                        }
                     },
                     "code": {
+                        "type": "keyword",
+                        "facets": {
+                            "facet": false
+                        }
+                    },
+                    "name": {
                         "type": "keyword"
                     },
                     "@v": {
@@ -385,6 +424,9 @@
                                 "field-name": "_version",
                                 "field-class": "marshmallow.fields.String"
                             }
+                        },
+                        "facets": {
+                            "facet": false
                         }
                     }
                 }
@@ -396,7 +438,8 @@
                     "write": false
                 },
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -415,6 +458,9 @@
             },
             "started": {
                 "type": "datetime",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Začátek zpracování",
                 "label.en": "Processing Start Time"
             },
@@ -447,13 +493,17 @@
             },
             "total_batches": {
                 "type": "integer",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Celkový počet dávek v běhu",
                 "label.en": "Total number of batches"
             },
             "updated": {
                 "type": "datetime",
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -471,6 +521,9 @@
             },
             "warnings": {
                 "type": "integer",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Varování",
                 "label.en": "Warning"
             }

@@ -9,25 +9,79 @@
                 "type": "date",
                 "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
             },
-            "errors": {
+            "finished": {
+                "type": "date",
+                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
+            },
+            "harvester": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "keyword",
+                        "ignore_above": 1024
+                    },
                     "code": {
                         "type": "keyword",
                         "ignore_above": 1024
                     },
-                    "info": {
-                        "type": "flat_object"
-                    },
-                    "local_identifier": {
+                    "name": {
                         "type": "keyword",
                         "ignore_above": 1024
                     },
-                    "location": {
+                    "@v": {
+                        "type": "keyword",
+                        "ignore_above": 1024
+                    }
+                }
+            },
+            "id": {
+                "type": "keyword",
+                "ignore_above": 1024
+            },
+            "manual": {
+                "type": "boolean"
+            },
+            "records": {
+                "type": "object",
+                "properties": {
+                    "errors": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "keyword",
+                                "ignore_above": 1024
+                            },
+                            "info": {
+                                "type": "flat_object"
+                            },
+                            "location": {
+                                "type": "keyword",
+                                "ignore_above": 1024
+                            },
+                            "message": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "local_error_identifier": {
                         "type": "keyword",
                         "ignore_above": 1024
                     },
-                    "message": {
+                    "local_record_identifier": {
+                        "type": "keyword",
+                        "ignore_above": 1024
+                    },
+                    "oai_identifier": {
+                        "type": "keyword",
+                        "ignore_above": 1024
+                    },
+                    "title": {
                         "type": "text",
                         "fields": {
                             "keyword": {
@@ -36,26 +90,11 @@
                             }
                         }
                     },
-                    "oai_identifier": {
+                    "url": {
                         "type": "keyword",
                         "ignore_above": 1024
                     }
                 }
-            },
-            "finished": {
-                "type": "date",
-                "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
-            },
-            "id": {
-                "type": "keyword",
-                "ignore_above": 1024
-            },
-            "identifiers": {
-                "type": "keyword",
-                "ignore_above": 1024
-            },
-            "manual": {
-                "type": "boolean"
             },
             "run": {
                 "type": "object",
@@ -63,6 +102,14 @@
                     "id": {
                         "type": "keyword",
                         "ignore_above": 1024
+                    },
+                    "title": {
+                        "type": "keyword",
+                        "ignore_above": 1024
+                    },
+                    "started": {
+                        "type": "date",
+                        "format": "strict_date_time||strict_date_time_no_millis||basic_date_time||basic_date_time_no_millis||basic_date||strict_date||strict_date_hour_minute_second||strict_date_hour_minute_second_fraction"
                     },
                     "@v": {
                         "type": "keyword",

@@ -23,7 +23,39 @@ record:
       - key: id
         model:
           type: keyword
+          facets:
+            facet: false
+      - key: title
+        model:
+          type: keyword
+          facets:
+            facet: false
+      - key: started
+        model:
+          type: datetime
+          facets:
+            facet: false
       required: true
+
+    harvester:
+      label.cs: Harvester
+      label.en: Harvester
+      type: relation
+      model: oaipmh-harvester
+      keys:
+      - key: id
+        model:
+          type: keyword
+          facets:
+            facet: false
+      - key: code
+        model:
+          type: keyword
+          facets:
+            facet: false
+      - key: name
+        model:
+          type: keyword
 
     status: 
       label.cs: Stav běhu
@@ -41,52 +73,76 @@ record:
       type: keyword
       enum: [ R, O, W, E, I ]
       required: true
-    
-    identifiers[]:
-      label.cs: OAI Identifikátory
-      label.en: OAI Identifiers
-      type: keyword
 
-    errors[]: 
-      label.cs: Chyby
-      label.en: Errors
+    records[]:
+      label.cs: Sklizené záznamy
+      label.en: Harvested records
       properties:
         oai_identifier:
           label.cs: OAI identifikátor
           label.en: OAI identifier
           type: keyword
-        local_identifier:
-          label.cs: Lokální identifikátor OAI záznamu
-          label.en: Local OAI record identifier
+          facets:
+            facet: false
+        local_record_identifier:
+          label.cs: Lokální identifikátor záznamu
+          label.en: Local record identifier
           type: keyword
-        code:
-          label.cs: Typ chyby
-          label.en: Error type
+          facets:
+            facet: false
+        local_error_identifier:
+          label.cs: Lokální identifikátor chybového záznamu
+          label.en: Local error record identifier
           type: keyword
-        message:
-          label.cs: Chybová hodnota
-          label.en: Error message
+          facets:
+            facet: false
+        url:
+          label.cs: UI cesta
+          label.en: UI path
+          type: keyword
+          facets:
+            facet: false
+        title:
+          label.cs: Název
+          label.en: Title
           type: fulltext+keyword
-        location:
-          # dot-separated location in data (if applicable)
-          label.cs: Pozice chyby v datech
-          label.en: Error location in data
-          type: keyword
-        info:
-          label.cs: Další informace o chybě
-          label.en: Additional error information
-          type: flat_object
-
+        errors[]:
+          label.cs: Chyby
+          label.en: Errors
+          properties:
+            code:
+              label.cs: Typ chyby
+              label.en: Error type
+              type: keyword
+            message:
+              label.cs: Chybová hodnota
+              label.en: Error message
+              type: fulltext+keyword
+            location:
+              # dot-separated location in data (if applicable)
+              label.cs: Pozice chyby v datech
+              label.en: Error location in data
+              type: keyword
+              facets:
+                facet: false
+            info:
+              label.cs: Další informace o chybě
+              label.en: Additional error information
+              type: flat_object
 
     started:
       label.cs: Začátek běhu
       label.en: Start time
       type: datetime
-    
+      facets:
+        facet: false
+
     finished:
       label.cs: Konec běhu
       label.en: End time
       type: datetime
+      facets:
+        facet: false
 
     manual:
       label.cs: Manuálně spuštěno?
@@ -97,6 +153,8 @@ record:
       label.cs: Pořadí
       label.en: Sequence
       type: integer
+      facets:
+        facet: false
 
   permissions:
     presets:

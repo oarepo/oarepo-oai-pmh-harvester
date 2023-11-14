@@ -7,6 +7,7 @@ from oarepo_runtime.records.relations import PIDRelation, RelationsField
 
 from oarepo_oaipmh_harvester.oai_batch.records.dumpers.dumper import OaiBatchDumper
 from oarepo_oaipmh_harvester.oai_batch.records.models import OaiBatchMetadata
+from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
 from oarepo_oaipmh_harvester.oai_run.records.api import OaiRunRecord
 
 
@@ -28,9 +29,14 @@ class OaiBatchRecord(InvenioRecord):
     dumper = OaiBatchDumper()
 
     relations = RelationsField(
+        harvester=PIDRelation(
+            "harvester",
+            keys=["id", "code", "name"],
+            pid_field=OaiHarvesterRecord.pid,
+        ),
         run=PIDRelation(
             "run",
-            keys=["id"],
+            keys=["id", "title", "started"],
             pid_field=OaiRunRecord.pid,
         ),
     )

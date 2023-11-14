@@ -32,17 +32,17 @@ class OaiRecord(InvenioRecord):
     relations = RelationsField(
         batch=PIDRelation(
             "batch",
-            keys=["id"],
+            keys=["id", "started", "sequence"],
             pid_field=OaiBatchRecord.pid,
         ),
         harvester=PIDRelation(
             "harvester",
-            keys=["id", "writer"],
+            keys=["id", "code", "name"],
             pid_field=OaiHarvesterRecord.pid,
         ),
         run=PIDRelation(
             "run",
-            keys=["id"],
+            keys=["id", "title", "started"],
             pid_field=OaiRunRecord.pid,
         ),
     )

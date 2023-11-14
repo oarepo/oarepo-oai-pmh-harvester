@@ -40,19 +40,19 @@ class OARepoOAIHarvesterExt(object):
             identifiers=identifiers,
         )
 
-    def get_parser_signature(self, parser_name, **kwargs):
+    def get_parser_signature(self, parser_name, **kwargs) -> Signature:
         parser_name, args = split_processor_name(parser_name)
         return Signature(
             kind=SignatureKind.READER, name=parser_name, kwargs={**args, **kwargs}
         )
 
-    def get_transformer_signature(self, transformer, **kwargs):
+    def get_transformer_signature(self, transformer, **kwargs) -> Signature:
         transformer, args = split_processor_name(transformer)
         return Signature(
             kind=SignatureKind.TRANSFORMER, name=transformer, kwargs={**args, **kwargs}
         )
 
-    def get_writer_signature(self, writer, **kwargs):
+    def get_writer_signature(self, writer, **kwargs) -> Signature:
         writer, args = split_processor_name(writer)
         return Signature(
             kind=SignatureKind.WRITER, name=writer, kwargs={**args, **kwargs}

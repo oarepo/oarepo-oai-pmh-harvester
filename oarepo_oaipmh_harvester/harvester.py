@@ -75,18 +75,22 @@ def harvest(
     harvester.pop("revision_id", None)
 
     run_manual = True if identifiers else False
+    run_metadata = {
+        "harvester": {"id": harvester["id"]},
+        "errors": 0,
+        "status": "R",
+        "created_batches": 0,
+        "total_batches": 0,
+        "finished_batches": 0,
+        "started": datetime.datetime.utcnow().isoformat() + "+00:00",
+        "manual": run_manual,
+    }
+    if title:
+        run_metadata["title"] = title
+
     run = run_service.create(
         system_identity,
-        {
-            "harvester": {"id": harvester["id"]},
-            "status": "R",
-            "created_batches": 0,
-            "total_batches": 0,
-            "finished_batches": 0,
-            "started": datetime.datetime.utcnow().isoformat() + "+00:00",
-            "manual": run_manual,
-            "title": title or str(datetime.datetime.now()),
-        },
+        run_metadata,
     )
     run_id = run["id"]
     if on_run_created:
@@ -117,18 +121,25 @@ def harvest(
         for transformer in harvester["transformers"]
     ]
 
-    transformers_signatures.append(
-        current_harvester.get_transformer_signature(
+    writer_signature = current_harvester.get_writer_signature(harvester["writer"])
+
+    t: Signature
+    for t in transformers_signatures:
+        if t.name == "oai_record_lookup":
+            break
+    else:
+        t = current_harvester.get_transformer_signature(
             "oai_record_lookup",
             oai_config=dict(harvester),
             oai_run=run_id,
             oai_harvester_id=harvester["id"],
             manual=run_manual,
         )
-    )
+        transformers_signatures.append(t)
+    t.kwargs["harvested_record_service"] = writer_signature.kwargs["service"]
 
     writers_config = [
-        current_harvester.get_writer_signature(harvester["writer"]),
+        writer_signature,
         current_harvester.get_writer_signature(
             "oai",
             oai_config=dict(harvester),
@@ -156,7 +167,11 @@ def harvest(
         transformers=transformers_signatures,
         batch_size=harvester.get("batch_size", 10),
         reader_callback=partial(
-            reader_callback, identity=system_identity, oai_run=run_id, manual=run_manual
+            reader_callback,
+            identity=system_identity,
+            oai_run=run_id,
+            manual=run_manual,
+            oai_harvester=harvester["id"],
         ),
     )
 

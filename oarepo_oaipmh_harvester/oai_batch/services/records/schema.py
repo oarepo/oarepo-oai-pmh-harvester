@@ -11,13 +11,13 @@ class OaiBatchSchema(BaseRecordSchema):
     class Meta:
         unknown = ma.RAISE
 
-    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemSchema()))
-
     finished = ma_fields.String(validate=[validate_datetime])
 
-    identifiers = ma_fields.List(ma_fields.String())
+    harvester = ma_fields.Nested(lambda: HarvesterSchema())
 
     manual = ma_fields.Boolean()
+
+    records = ma_fields.List(ma_fields.Nested(lambda: RecordsItemSchema()))
 
     run = ma_fields.Nested(lambda: RunSchema(), required=True)
 
@@ -30,6 +30,23 @@ class OaiBatchSchema(BaseRecordSchema):
     )
 
 
+class RecordsItemSchema(Schema):
+    class Meta:
+        unknown = ma.RAISE
+
+    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemSchema()))
+
+    local_error_identifier = ma_fields.String()
+
+    local_record_identifier = ma_fields.String()
+
+    oai_identifier = ma_fields.String()
+
+    title = ma_fields.String()
+
+    url = ma_fields.String()
+
+
 class ErrorsItemSchema(Schema):
     class Meta:
         unknown = ma.RAISE
@@ -38,13 +55,22 @@ class ErrorsItemSchema(Schema):
 
     info = ma_fields.Dict()
 
-    local_identifier = ma_fields.String()
-
     location = ma_fields.String()
 
     message = ma_fields.String()
 
-    oai_identifier = ma_fields.String()
+
+class HarvesterSchema(Schema):
+    class Meta:
+        unknown = ma.INCLUDE
+
+    _id = ma_fields.String(data_key="id", attribute="id")
+
+    _version = String(data_key="@v", attribute="@v")
+
+    code = ma_fields.String()
+
+    name = ma_fields.String()
 
 
 class RunSchema(Schema):
@@ -54,3 +80,7 @@ class RunSchema(Schema):
     _id = ma_fields.String(data_key="id", attribute="id")
 
     _version = String(data_key="@v", attribute="@v")
+
+    started = ma_fields.String(validate=[validate_datetime])
+
+    title = ma_fields.String()

@@ -9,22 +9,9 @@ class OaiBatchSearchOptions(InvenioSearchOptions):
     facet_groups = {}
 
     facets = {
-        "_schema": facets._schema,
-        "created": facets.created,
-        "errors_code": facets.errors_code,
-        "errors_local_identifier": facets.errors_local_identifier,
-        "errors_location": facets.errors_location,
-        "errors_message": facets.errors_message,
-        "errors_oai_identifier": facets.errors_oai_identifier,
-        "finished": facets.finished,
-        "_id": facets._id,
-        "identifiers": facets.identifiers,
+        "harvester_name": facets.harvester_name,
         "manual": facets.manual,
-        "run_id": facets.run_id,
-        "run__version": facets.run__version,
-        "sequence": facets.sequence,
-        "started": facets.started,
+        "records_errors_code": facets.records_errors_code,
         "status": facets.status,
-        "updated": facets.updated,
         **getattr(InvenioSearchOptions, "facets", {}),
     }

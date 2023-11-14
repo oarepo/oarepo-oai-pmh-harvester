@@ -1,0 +1,20 @@
+record:
+  use: invenio
+  module:
+    qualified: test_model
+  service-config:
+    components:
+    - "{{invenio_records_resources.services.records.components.DataComponent}}"
+  properties:
+    metadata:
+      properties:
+        title:
+          type: keyword
+          minLength: 1
+          maxLength: 6
+    oai:
+      properties:
+        harvest:
+          properties:
+            identifier: keyword
+            datestamp: keyword

@@ -33,6 +33,9 @@
                 "code": {
                     "type": "string"
                 },
+                "name": {
+                    "type": "string"
+                },
                 "@v": {
                     "type": "string"
                 }

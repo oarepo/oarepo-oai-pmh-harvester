@@ -34,7 +34,7 @@ class SickleReader(BaseReader):
         self.manual = manual
 
     def __iter__(self) -> Iterator[StreamEntry]:
-        request = Sickle(self.source, encoding="utf-8")
+        request = Sickle(self.source, encoding="utf-8", max_retries=50, default_retry_after=60)
 
         dates = {"from": self.datestamp_from, "until": self.datestamp_until}
         setspecs = (self.config["setspecs"] or "").split() or [None]
@@ -93,6 +93,7 @@ class SickleReader(BaseReader):
                             "oai_harvester_id": self.oai_harvester_id,
                             "manual": self.manual,
                         },
+                        deleted=record.header.deleted,
                     )
 
             except NoRecordsMatch:
