@@ -13,56 +13,49 @@
             "input": "keyword",
             "help": "$schema.help",
             "label": "$schema.label",
-            "hint": "$schema.hint",
-            "facet": "_schema"
+            "hint": "$schema.hint"
         },
         "created": {
             "detail": "datetime",
             "input": "datetime",
             "help": "created.help",
             "label": "created.label",
-            "hint": "created.hint",
-            "facet": "created"
+            "hint": "created.hint"
         },
         "created_batches": {
             "detail": "integer",
             "input": "integer",
             "help": "created_batches.help",
             "label": "created_batches.label",
-            "hint": "created_batches.hint",
-            "facet": "created_batches"
+            "hint": "created_batches.hint"
         },
         "duration": {
             "detail": "double",
             "input": "double",
             "help": "duration.help",
             "label": "duration.label",
-            "hint": "duration.hint",
-            "facet": "duration"
+            "hint": "duration.hint"
         },
         "errors": {
             "detail": "integer",
             "input": "integer",
             "help": "errors.help",
             "label": "errors.label",
-            "hint": "errors.hint",
-            "facet": "errors"
+            "hint": "errors.hint"
         },
         "finished": {
             "detail": "datetime",
             "input": "datetime",
             "help": "finished.help",
             "label": "finished.label",
-            "hint": "finished.hint",
-            "facet": "finished"
+            "hint": "finished.hint"
         },
         "finished_batches": {
             "detail": "integer",
             "input": "integer",
             "help": "finished_batches.help",
             "label": "finished_batches.label",
-            "hint": "finished_batches.hint",
-            "facet": "finished_batches"
+            "hint": "finished_batches.hint"
         },
         "harvester": {
             "detail": "relation",
@@ -76,24 +69,29 @@
                     "input": "keyword",
                     "help": "harvester/id.help",
                     "label": "harvester/id.label",
-                    "hint": "harvester/id.hint",
-                    "facet": "harvester_id"
+                    "hint": "harvester/id.hint"
                 },
                 "code": {
                     "detail": "keyword",
                     "input": "keyword",
                     "help": "harvester/code.help",
                     "label": "harvester/code.label",
-                    "hint": "harvester/code.hint",
-                    "facet": "harvester_code"
+                    "hint": "harvester/code.hint"
+                },
+                "name": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "harvester/name.help",
+                    "label": "harvester/name.label",
+                    "hint": "harvester/name.hint",
+                    "facet": "harvester_name"
                 },
                 "@v": {
                     "detail": "keyword",
                     "input": "keyword",
                     "help": "harvester/@v.help",
                     "label": "harvester/@v.label",
-                    "hint": "harvester/@v.hint",
-                    "facet": "harvester__version"
+                    "hint": "harvester/@v.hint"
                 }
             }
         },
@@ -102,8 +100,7 @@
             "input": "keyword",
             "help": "id.help",
             "label": "id.label",
-            "hint": "id.hint",
-            "facet": "_id"
+            "hint": "id.hint"
         },
         "manual": {
             "detail": "boolean",
@@ -118,8 +115,7 @@
             "input": "datetime",
             "help": "started.help",
             "label": "started.label",
-            "hint": "started.hint",
-            "facet": "started"
+            "hint": "started.hint"
         },
         "status": {
             "detail": "keyword",
@@ -135,32 +131,28 @@
             "input": "fulltext+keyword",
             "help": "title.help",
             "label": "title.label",
-            "hint": "title.hint",
-            "facet": "title"
+            "hint": "title.hint"
         },
         "total_batches": {
             "detail": "integer",
             "input": "integer",
             "help": "total_batches.help",
             "label": "total_batches.label",
-            "hint": "total_batches.hint",
-            "facet": "total_batches"
+            "hint": "total_batches.hint"
         },
         "updated": {
             "detail": "datetime",
             "input": "datetime",
             "help": "updated.help",
             "label": "updated.label",
-            "hint": "updated.hint",
-            "facet": "updated"
+            "hint": "updated.hint"
         },
         "warnings": {
             "detail": "integer",
             "input": "integer",
             "help": "warnings.help",
             "label": "warnings.label",
-            "hint": "warnings.hint",
-            "facet": "warnings"
+            "hint": "warnings.hint"
         }
     }
 }

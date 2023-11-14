@@ -1,4 +1,5 @@
 import functools
+import logging
 import sys
 import threading
 import time
@@ -210,9 +211,13 @@ def asynchronous_reporting(app, progress_bar, run_id):
             time.sleep(30)
 
 
-def _run_harvester(metadata, on_background, all_records, identifier):
+def _run_harvester(metadata, on_background, all_records, identifier, log_level):
     """Run/Start a harvester. Only the code is required, other arguments
     might be used to override harvester settings stored in the database"""
+
+    if log_level:
+        logging.basicConfig(level=log_level)
+
     code = metadata.pop("code")
     harvesters = list(
         harvester_service.scan(system_identity, params={"facets": {"code": [code]}})
@@ -267,6 +272,11 @@ run = as_command(
     click.option("--on-background/--on-foreground"),
     click.option("--all-records/--modified-records"),
     click.option("--identifier", multiple=True),
+    click.option(
+        "--log-level",
+        help="Debug level (INFO, WARNING, ERROR, CRITICAL)",
+        default=logging.getLevelName(logging.ERROR),
+    ),
     harvester_parameters(False),
     with_appcontext,
     _run_harvester,

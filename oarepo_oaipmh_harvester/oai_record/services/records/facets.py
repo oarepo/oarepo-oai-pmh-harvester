@@ -2,15 +2,13 @@
 
 from flask_babelex import lazy_gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
-from oarepo_runtime.facets.date import DateTimeFacet
-
-_schema = TermsFacet(field="$schema", label=_("$schema.label"))
+from oarepo_runtime.services.facets.date import DateTimeFacet
 
 batch_id = TermsFacet(field="batch.id", label=_("batch/id.label"))
 
-batch__version = TermsFacet(field="batch.@v", label=_("batch/@v.label"))
+batch_started = DateTimeFacet(field="batch.started", label=_("batch/started.label"))
 
-created = DateTimeFacet(field="created", label=_("created.label"))
+batch_sequence = TermsFacet(field="batch.sequence", label=_("batch/sequence.label"))
 
 datestamp = DateTimeFacet(field="datestamp", label=_("datestamp.label"))
 
@@ -18,19 +16,11 @@ errors_code = TermsFacet(field="errors.code", label=_("errors/code.label"))
 
 errors_location = TermsFacet(field="errors.location", label=_("errors/location.label"))
 
-errors_message = TermsFacet(
-    field="errors.message.keyword", label=_("errors/message.label")
-)
-
 harvester_id = TermsFacet(field="harvester.id", label=_("harvester/id.label"))
 
-harvester_writer = TermsFacet(
-    field="harvester.writer", label=_("harvester/writer.label")
-)
+harvester_code = TermsFacet(field="harvester.code", label=_("harvester/code.label"))
 
-harvester__version = TermsFacet(field="harvester.@v", label=_("harvester/@v.label"))
-
-_id = TermsFacet(field="id", label=_("id.label"))
+harvester_name = TermsFacet(field="harvester.name", label=_("harvester/name.label"))
 
 local_identifier = TermsFacet(
     field="local_identifier", label=_("local_identifier.label")
@@ -42,8 +32,4 @@ oai_identifier = TermsFacet(field="oai_identifier", label=_("oai_identifier.labe
 
 run_id = TermsFacet(field="run.id", label=_("run/id.label"))
 
-run__version = TermsFacet(field="run.@v", label=_("run/@v.label"))
-
-title = TermsFacet(field="title.keyword", label=_("title.label"))
-
-updated = DateTimeFacet(field="updated", label=_("updated.label"))
+run_started = DateTimeFacet(field="run.started", label=_("run/started.label"))

@@ -10,13 +10,13 @@ class OaiBatchUISchema(InvenioUISchema):
     class Meta:
         unknown = ma.RAISE
 
-    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
-
     finished = LocalizedDateTime()
 
-    identifiers = ma_fields.List(ma_fields.String())
+    harvester = ma_fields.Nested(lambda: HarvesterUISchema())
 
     manual = ma_fields.Boolean()
+
+    records = ma_fields.List(ma_fields.Nested(lambda: RecordsItemUISchema()))
 
     run = ma_fields.Nested(lambda: RunUISchema(), required=True)
 
@@ -29,6 +29,23 @@ class OaiBatchUISchema(InvenioUISchema):
     )
 
 
+class RecordsItemUISchema(Schema):
+    class Meta:
+        unknown = ma.RAISE
+
+    errors = ma_fields.List(ma_fields.Nested(lambda: ErrorsItemUISchema()))
+
+    local_error_identifier = ma_fields.String()
+
+    local_record_identifier = ma_fields.String()
+
+    oai_identifier = ma_fields.String()
+
+    title = ma_fields.String()
+
+    url = ma_fields.String()
+
+
 class ErrorsItemUISchema(Schema):
     class Meta:
         unknown = ma.RAISE
@@ -37,13 +54,22 @@ class ErrorsItemUISchema(Schema):
 
     info = ma_fields.Dict()
 
-    local_identifier = ma_fields.String()
-
     location = ma_fields.String()
 
     message = ma_fields.String()
 
-    oai_identifier = ma_fields.String()
+
+class HarvesterUISchema(Schema):
+    class Meta:
+        unknown = ma.INCLUDE
+
+    _id = ma_fields.String(data_key="id", attribute="id")
+
+    _version = String(data_key="@v", attribute="@v")
+
+    code = ma_fields.String()
+
+    name = ma_fields.String()
 
 
 class RunUISchema(Schema):
@@ -53,3 +79,7 @@ class RunUISchema(Schema):
     _id = ma_fields.String(data_key="id", attribute="id")
 
     _version = String(data_key="@v", attribute="@v")
+
+    started = LocalizedDateTime()
+
+    title = ma_fields.String()

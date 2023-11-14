@@ -70,7 +70,7 @@ class OAIWriter(BaseWriter):
                 "oai_identifier": entry.context["oai"]["identifier"],
             }
             if entry.id:
-                oai_record_data["local_identifier"] = entry.id
+                oai_record_data["oairecord_identifier"] = entry.id
 
         self.update_oai_record_metadata(batch, entry, oai_record_data)
 
@@ -83,12 +83,14 @@ class OAIWriter(BaseWriter):
                 self._identity, oai_record_data, uow=uow
             )
         entry.context["oai"]["local_oai_record_id"] = oai_record["id"]
+        entry.context["oai"]["local_oai_record_ui_path"] = oai_record["links"][
+            "self_html"
+        ]
 
     def remove_oai_record_with_error(self, oai_record_data, uow):
         oai_record_service.delete(self._identity, oai_record_data["id"], uow=uow)
 
-    @staticmethod
-    def update_oai_record_metadata(batch, entry, oai_record_data):
+    def update_oai_record_metadata(self, batch, entry, oai_record_data):
         if entry.errors:
             oai_record_data["errors"] = [err.json for err in entry.errors]
         oai_record_data["datestamp"] = entry.context["oai"]["datestamp"]
@@ -98,36 +100,48 @@ class OAIWriter(BaseWriter):
         oai_record_data["run"] = {"id": batch.context["run_id"]}
         oai_record_data["manual"] = entry.context["manual"]
         oai_record_data["harvester"] = {"id": entry.context["oai_harvester_id"]}
+        title = self._get_entry_title(entry)
+        if title:
+            oai_record_data["title"] = title
+
+    @staticmethod
+    def _get_entry_title(entry):
         if entry.entry.get("title"):
-            oai_record_data["title"] = str(entry.entry["title"])
+            return str(entry.entry["title"])
         if entry.entry.get("metadata", {}).get("title"):
-            oai_record_data["title"] = str(entry.entry["metadata"]["title"])
+            return str(entry.entry["metadata"]["title"])
 
     def set_batch_status(self, batch, uow):
         batch_id = batch.context["batch_id"]
         batch_data = batch_service.read(self._identity, batch_id).data
         status = "O"
-        identifiers = []
-        errors = []
+        records = []
         for e in batch.entries:
+            rec = {"oai_identifier": e.context["oai"]["identifier"]}
+            title = self._get_entry_title(e)
+            if title:
+                rec["title"] = title
+
+            records.append(rec)
+            if e.id:
+                rec["local_record_identifier"] = e.id
+                rec["url"] = e.entry["links"]["self_html"]
             if e.errors:
                 status = "E"
+
+                errors = []
+                rec["local_error_identifier"] = e.context["oai"]["local_oai_record_id"]
+                rec["url"] = e.context["oai"]["local_oai_record_ui_path"]
+                rec["errors"] = errors
+
                 for err in e.errors:
                     err = err.json
                     err.pop("info", None)
-                    errors.append(
-                        {
-                            "oai_identifier": e.context["oai"]["identifier"],
-                            "local_identifier": e.context["oai"]["local_oai_record_id"],
-                            **err,
-                        }
-                    )
-            identifiers.append(e.context["oai"]["identifier"])
+                    errors.append(err)
+
         batch_data["status"] = status
-        batch_data["identifiers"] = identifiers
+        batch_data["records"] = records
         batch_data["finished"] = datetime.datetime.utcnow().isoformat() + "+00:00"
-        if errors:
-            batch_data["errors"] = errors
         batch_service.update(self._identity, batch_id, batch_data, uow=uow)
 
     @staticmethod

@@ -75,19 +75,22 @@ def harvest(
     harvester.pop("revision_id", None)
 
     run_manual = True if identifiers else False
+    run_metadata = {
+        "harvester": {"id": harvester["id"]},
+        "errors": 0,
+        "status": "R",
+        "created_batches": 0,
+        "total_batches": 0,
+        "finished_batches": 0,
+        "started": datetime.datetime.utcnow().isoformat() + "+00:00",
+        "manual": run_manual,
+    }
+    if title:
+        run_metadata["title"] = title
+
     run = run_service.create(
         system_identity,
-        {
-            "harvester": {"id": harvester["id"]},
-            "errors": 0,
-            "status": "R",
-            "created_batches": 0,
-            "total_batches": 0,
-            "finished_batches": 0,
-            "started": datetime.datetime.utcnow().isoformat() + "+00:00",
-            "manual": run_manual,
-            "title": title or str(datetime.datetime.now()),
-        },
+        run_metadata,
     )
     run_id = run["id"]
     if on_run_created:
@@ -164,7 +167,11 @@ def harvest(
         transformers=transformers_signatures,
         batch_size=harvester.get("batch_size", 10),
         reader_callback=partial(
-            reader_callback, identity=system_identity, oai_run=run_id, manual=run_manual
+            reader_callback,
+            identity=system_identity,
+            oai_run=run_id,
+            manual=run_manual,
+            oai_harvester=harvester["id"],
         ),
     )
 

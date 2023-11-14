@@ -17,7 +17,7 @@
         "marshmallow": {
             "imports": [],
             "base-classes": [
-                "oarepo_runtime.marshmallow.BaseRecordSchema"
+                "oarepo_runtime.services.schema.marshmallow.BaseRecordSchema"
             ],
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema",
@@ -52,7 +52,7 @@
             "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.config.OaiHarvesterServiceConfig",
             "extra-code": "",
             "base-classes": [
-                "oarepo_runtime.config.service.PermissionsPresetsConfigMixin",
+                "oarepo_runtime.services.config.service.PermissionsPresetsConfigMixin",
                 "invenio_records_resources.services.RecordServiceConfig{InvenioRecordServiceConfig}"
             ]
         },
@@ -277,7 +277,8 @@
                     "write": false
                 },
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -292,6 +293,9 @@
             "baseurl": {
                 "type": "url",
                 "required": true,
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Sklízené URL",
                 "label.en": "URL Harvested"
             },
@@ -303,6 +307,9 @@
             "code": {
                 "type": "keyword",
                 "required": true,
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Interní kód",
                 "label.en": "Internal code"
             },
@@ -314,7 +321,8 @@
             "created": {
                 "type": "datetime",
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -337,7 +345,8 @@
                     "write": false
                 },
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -368,6 +377,9 @@
             "name": {
                 "type": "keyword",
                 "required": true,
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Název harvestru",
                 "label.en": "Harvester name"
             },
@@ -389,7 +401,8 @@
             "updated": {
                 "type": "datetime",
                 "facets": {
-                    "searchable": true
+                    "searchable": true,
+                    "facet": false
                 },
                 "ui": {
                     "marshmallow": {
@@ -407,6 +420,9 @@
             },
             "writer": {
                 "type": "keyword",
+                "facets": {
+                    "facet": false
+                },
                 "label.cs": "Cíl zápisu",
                 "label.en": "Write target"
             }

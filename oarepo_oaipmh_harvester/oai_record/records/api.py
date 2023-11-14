@@ -3,7 +3,7 @@ from invenio_records.systemfields import ConstantField
 from invenio_records_resources.records.api import Record as InvenioRecord
 from invenio_records_resources.records.systemfields import IndexField
 from invenio_records_resources.records.systemfields.pid import PIDField, PIDFieldContext
-from oarepo_runtime.relations import PIDRelation, RelationsField
+from oarepo_runtime.records.relations import PIDRelation, RelationsField
 
 from oarepo_oaipmh_harvester.oai_batch.records.api import OaiBatchRecord
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
@@ -32,17 +32,17 @@ class OaiRecord(InvenioRecord):
     relations = RelationsField(
         batch=PIDRelation(
             "batch",
-            keys=["id"],
+            keys=["id", "started", "sequence"],
             pid_field=OaiBatchRecord.pid,
         ),
         harvester=PIDRelation(
             "harvester",
-            keys=["id", "writer"],
+            keys=["id", "code", "name"],
             pid_field=OaiHarvesterRecord.pid,
         ),
         run=PIDRelation(
             "run",
-            keys=["id"],
+            keys=["id", "title", "started"],
             pid_field=OaiRunRecord.pid,
         ),
     )

@@ -48,8 +48,12 @@ class OAIRecordLookupTransformer(BaseTransformer):
         self._identity = identity
         self._oai_identifier_field = oai_identifier_field.split(".")
         self._oai_datestamp_field = oai_datestamp_field.split(".")
-        self._oai_identifier_facet = oai_identifier_facet or oai_identifier_field.replace('.', '_')
-        self._oai_datestamp_facet = oai_datestamp_facet or oai_datestamp_field.replace('.', '_')
+        self._oai_identifier_facet = (
+            oai_identifier_facet or oai_identifier_field.replace(".", "_")
+        )
+        self._oai_datestamp_facet = oai_datestamp_facet or oai_datestamp_field.replace(
+            ".", "_"
+        )
         self._harvested_record_service = current_service_registry.get(
             harvested_record_service
         )
@@ -115,13 +119,17 @@ class OAIRecordLookupTransformer(BaseTransformer):
             # TODO: handle multiple harvested sources for a single record
             try:
                 oai_identifier = list(
-                    dict_lookup_ignore_arrays(harvested_record, self._oai_identifier_field)
+                    dict_lookup_ignore_arrays(
+                        harvested_record, self._oai_identifier_field
+                    )
                 )[0]
             except:
-                raise KeyError(f'Could not get {self._oai_identifier_field} in {harvested_record}.'
-                               f'This should never happen, please make sure that the oai record'
-                               f'lookup has the correct configuration of oai_identifier_field,'
-                               f' oai_datestamp_field, oai_identifier_facet and oai_datestamp_facet.')
+                raise KeyError(
+                    f"Could not get {self._oai_identifier_field} in {harvested_record}."
+                    f"This should never happen, please make sure that the oai record"
+                    f"lookup has the correct configuration of oai_identifier_field,"
+                    f" oai_datestamp_field, oai_identifier_facet and oai_datestamp_facet."
+                )
             entry = by_oai_identifier[oai_identifier]
             entry.entry["id"] = harvested_record["id"]
             entry.id = harvested_record["id"]

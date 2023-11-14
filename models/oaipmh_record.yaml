@@ -25,6 +25,12 @@ record:
       - key: id
         model:
           type: keyword
+      - key: title
+        model:
+          type: fulltext+keyword
+      - key: started
+        model:
+          type: datetime
       required: true
 
     batch:
@@ -37,10 +43,16 @@ record:
       - key: id
         model:
           type: keyword
+      - key: started
+        model:
+          type: datetime
+      - key: sequence
+        model:
+          type: integer
       required: true
 
     harvester:
-      label.cs: Harvestr záznamu
+      label.cs: Harvester
       label.en: Harvester
       type: relation
       model: oaipmh-harvester
@@ -48,7 +60,10 @@ record:
       - key: id
         model:
           type: keyword
-      - key: writer
+      - key: code
+        model:
+          type: keyword
+      - key: name
         model:
           type: keyword
       required: true

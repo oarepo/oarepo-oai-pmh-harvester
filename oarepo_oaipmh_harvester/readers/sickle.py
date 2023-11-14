@@ -93,6 +93,7 @@ class SickleReader(BaseReader):
                             "oai_harvester_id": self.oai_harvester_id,
                             "manual": self.manual,
                         },
+                        deleted=record.header.deleted,
                     )
 
             except NoRecordsMatch:

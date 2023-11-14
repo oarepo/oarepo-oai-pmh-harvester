@@ -13,16 +13,14 @@
             "input": "keyword",
             "help": "$schema.help",
             "label": "$schema.label",
-            "hint": "$schema.hint",
-            "facet": "_schema"
+            "hint": "$schema.hint"
         },
         "baseurl": {
             "detail": "url",
             "input": "url",
             "help": "baseurl.help",
             "label": "baseurl.label",
-            "hint": "baseurl.hint",
-            "facet": "baseurl"
+            "hint": "baseurl.hint"
         },
         "batch_size": {
             "detail": "integer",
@@ -37,8 +35,7 @@
             "input": "keyword",
             "help": "code.help",
             "label": "code.label",
-            "hint": "code.hint",
-            "facet": "code"
+            "hint": "code.hint"
         },
         "comment": {
             "detail": "fulltext",
@@ -52,16 +49,14 @@
             "input": "datetime",
             "help": "created.help",
             "label": "created.label",
-            "hint": "created.hint",
-            "facet": "created"
+            "hint": "created.hint"
         },
         "id": {
             "detail": "keyword",
             "input": "keyword",
             "help": "id.help",
             "label": "id.label",
-            "hint": "id.hint",
-            "facet": "_id"
+            "hint": "id.hint"
         },
         "loader": {
             "detail": "keyword",
@@ -92,8 +87,7 @@
             "input": "keyword",
             "help": "name.help",
             "label": "name.label",
-            "hint": "name.hint",
-            "facet": "name"
+            "hint": "name.hint"
         },
         "setspecs": {
             "detail": "keyword",
@@ -123,16 +117,14 @@
             "input": "datetime",
             "help": "updated.help",
             "label": "updated.label",
-            "hint": "updated.hint",
-            "facet": "updated"
+            "hint": "updated.hint"
         },
         "writer": {
             "detail": "keyword",
             "input": "keyword",
             "help": "writer.help",
             "label": "writer.label",
-            "hint": "writer.hint",
-            "facet": "writer"
+            "hint": "writer.hint"
         }
     }
 }

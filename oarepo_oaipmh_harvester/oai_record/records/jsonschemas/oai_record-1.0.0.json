@@ -10,6 +10,13 @@
                 "id": {
                     "type": "string"
                 },
+                "started": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "sequence": {
+                    "type": "integer"
+                },
                 "@v": {
                     "type": "string"
                 }
@@ -55,7 +62,10 @@
                 "id": {
                     "type": "string"
                 },
-                "writer": {
+                "code": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "@v": {
@@ -80,6 +90,13 @@
             "properties": {
                 "id": {
                     "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "started": {
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "@v": {
                     "type": "string"

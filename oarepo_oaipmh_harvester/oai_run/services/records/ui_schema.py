@@ -44,3 +44,5 @@ class HarvesterUISchema(Schema):
     _version = String(data_key="@v", attribute="@v")
 
     code = ma_fields.String()
+
+    name = ma_fields.String()

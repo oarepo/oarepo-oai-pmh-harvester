@@ -5,6 +5,7 @@ python3 -m venv .venv-builder
 
 .venv-builder/bin/pip install -U pip setuptools wheel
 .venv-builder/bin/pip install 'oarepo-model-builder>=4.0.0' oarepo-model-builder-relations oarepo-model-builder-ui
+.venv-builder/bin/pip install -e /Users/m/w/cesnet/oarepo-model-builder
 
 rm -rf oarepo_oaipmh_harvester/oai_harvester
 rm -rf oarepo_oaipmh_harvester/oai_run

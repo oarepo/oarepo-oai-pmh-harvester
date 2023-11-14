@@ -46,6 +46,13 @@ def test_harvest_synchronous(app, db, client, search_clear):
     oai_run = run_service.read(system_identity, run_id).data
     print(f"{oai_run=}")
 
+    batches = list(
+        batch_service.scan(
+            system_identity,
+            params={"facets": {"run_id": [run_id]}},
+        ).hits
+    )
+
     oai_records = get_oai_records(run_id)
 
     assert len(oai_records) == 3
@@ -73,6 +80,8 @@ def test_harvest_synchronous(app, db, client, search_clear):
         "extra": "blah",
         "oai": {"harvest": {"datestamp": "2000-01-03", "identifier": "3"}},
     }
+
+    pprint(oai_records["3"])
 
     assert "errors" in oai_records["4"]
     assert oai_records["4"]["errors"] == [
@@ -133,24 +142,27 @@ def test_harvest_synchronous(app, db, client, search_clear):
     assert len(oai_records) == 0
 
     all_oai_records = {
-        r['oai_identifier']: r for r in oai_record_service.scan(
-                system_identity,
+        r["oai_identifier"]: r
+        for r in oai_record_service.scan(
+            system_identity,
         ).hits
     }
     assert "2" not in all_oai_records
 
 
 def get_oai_records(run_id):
-    batches = list(batch_service.scan(
-        system_identity,
-        params={"facets": {"run_id": [run_id]}},
-    ).hits)
+    batches = list(
+        batch_service.scan(
+            system_identity,
+            params={"facets": {"run_id": [run_id]}},
+        ).hits
+    )
     oai_records = {}
     for batch in batches:
         batch_id = batch["id"]
         for r in oai_record_service.scan(
-                system_identity,
-                params={"facets": {"batch_id": [batch_id]}},
+            system_identity,
+            params={"facets": {"batch_id": [batch_id]}},
         ).hits:
             oai_records[r["oai_identifier"]] = r
     return oai_records
@@ -158,11 +170,9 @@ def get_oai_records(run_id):
 
 def get_ok_records():
     from test_model.proxies import current_service as test_model_service
+
     ok_records = list(test_model_service.scan(system_identity).hits)
-    ok_records = {
-        x["oai"]["harvest"]["identifier"]: x
-        for x in ok_records
-    }
+    ok_records = {x["oai"]["harvest"]["identifier"]: x for x in ok_records}
     return ok_records
 
 

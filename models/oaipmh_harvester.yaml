@@ -19,12 +19,16 @@ record:
       label.en: Internal code
       type: keyword
       required: true
+      facets:
+        facet: false
 
     baseurl:
       label.cs: Sklízené URL
       label.en: URL Harvested
       type: url
       required: true
+      facets:
+        facet: false
 
     metadataprefix: 
       label.cs: OAI metadata prefix
@@ -42,6 +46,8 @@ record:
       label.en: Harvester name
       type: keyword
       required: true
+      facets:
+        facet: false
 
     setspecs: 
       label.cs: OAI set
@@ -67,6 +73,8 @@ record:
       label.cs: Cíl zápisu
       label.en: Write target
       type: keyword
+      facets:
+        facet: false
 
     max_records:
       label.cs: Maximální počet záznamů per běh

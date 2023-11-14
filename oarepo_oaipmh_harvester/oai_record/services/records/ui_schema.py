@@ -27,7 +27,7 @@ class OaiRecordUISchema(InvenioUISchema):
 
     oai_identifier = ma_fields.String()
 
-    run = ma_fields.Nested(lambda: BatchUISchema(), required=True)
+    run = ma_fields.Nested(lambda: RunUISchema(), required=True)
 
     title = ma_fields.String()
 
@@ -39,6 +39,10 @@ class BatchUISchema(Schema):
     _id = ma_fields.String(data_key="id", attribute="id")
 
     _version = String(data_key="@v", attribute="@v")
+
+    sequence = ma_fields.Integer()
+
+    started = LocalizedDateTime()
 
 
 class ErrorsItemUISchema(Schema):
@@ -62,4 +66,19 @@ class HarvesterUISchema(Schema):
 
     _version = String(data_key="@v", attribute="@v")
 
-    writer = ma_fields.String()
+    code = ma_fields.String()
+
+    name = ma_fields.String()
+
+
+class RunUISchema(Schema):
+    class Meta:
+        unknown = ma.INCLUDE
+
+    _id = ma_fields.String(data_key="id", attribute="id")
+
+    _version = String(data_key="@v", attribute="@v")
+
+    started = LocalizedDateTime()
+
+    title = ma_fields.String()
