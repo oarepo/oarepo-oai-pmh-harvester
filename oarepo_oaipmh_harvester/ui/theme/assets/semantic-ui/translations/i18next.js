@@ -31,6 +31,8 @@ const options = {
   },
 };
 
+console.log('iiii')
+
 const i18next = i18n.createInstance();
 i18next.use(LanguageDetector).use(initReactI18next).init(options);
 

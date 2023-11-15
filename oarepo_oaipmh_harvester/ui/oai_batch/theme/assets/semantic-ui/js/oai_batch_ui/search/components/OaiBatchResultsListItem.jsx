@@ -1,24 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 
 import _get from "lodash/get";
 
-
-
-import { Item, Label, Icon } from "semantic-ui-react";
+import { Item } from "semantic-ui-react";
 import { withState, buildUID } from "react-searchkit";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
+import { i18next } from "@translations/oarepo_oaipmh_harvester/i18next";
 
-
-export const OaiBatchResultsListItemComponent = ({
-  currentQueryState,
-  result,
-  appName,
-}) => {
-  const searchAppConfig = useContext(SearchConfigurationContext);
+export const OaiBatchResultsListItemComponent = ({ result, appName }) => {
   const id = _get(result, "id");
-  const run =  _get(result, "run.id");
+  const run = _get(result, "run.id");
   const started = _get(result, "started");
   const viewLink = result.links.self_html;
   return (
@@ -31,12 +23,14 @@ export const OaiBatchResultsListItemComponent = ({
         <Item.Content>
           <Item.Extra className="labels-actions"></Item.Extra>
           <Item.Header as="h2">
-            <a href={viewLink}>Batch - {id}</a>
+            <a href={viewLink}>
+              {i18next.t("Batch")} - {id}
+            </a>
           </Item.Header>
           <Item.Description>
-            <b>Run</b> - {run}
-            <br/>
-            <b>Start</b> - {started}
+            <b>{i18next.t("Run")}</b> - {run}
+            <br />
+            <b>{i18next.t("Started")}</b> - {started}
           </Item.Description>
         </Item.Content>
       </Item>
@@ -54,7 +48,6 @@ OaiBatchResultsListItemComponent.defaultProps = {
   currentQueryState: null,
   appName: "",
 };
-
 
 export const OaiBatchResultsListItem = (props) => {
   return (
