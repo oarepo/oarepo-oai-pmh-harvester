@@ -10,7 +10,7 @@ theme = WebpackThemeBundle(
             dependencies={},
             devDependencies={},
             aliases={
-                "@translations/oarepo_oaipmh_harvester": "translations",
+                "@translations/oarepo_oaipmh_harvester": "translations/oarepo_oaipmh_harvester",
             },
         )
     },

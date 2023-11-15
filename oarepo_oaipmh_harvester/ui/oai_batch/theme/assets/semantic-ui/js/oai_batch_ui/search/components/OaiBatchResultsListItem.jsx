@@ -24,13 +24,13 @@ export const OaiBatchResultsListItemComponent = ({ result, appName }) => {
           <Item.Extra className="labels-actions"></Item.Extra>
           <Item.Header as="h2">
             <a href={viewLink}>
-              {i18next.t("Batch")} - {id}
+              {i18next.t("batch.label")} - {id}
             </a>
           </Item.Header>
           <Item.Description>
-            <b>{i18next.t("Run")}</b> - {run}
+            <b>{i18next.t("run.label")}</b> - {run}
             <br />
-            <b>{i18next.t("Started")}</b> - {started}
+            <b>{i18next.t("started.label")}</b> - {started}
           </Item.Description>
         </Item.Content>
       </Item>
