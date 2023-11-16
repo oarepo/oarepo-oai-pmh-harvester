@@ -1,24 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 
 import _get from "lodash/get";
-import _join from "lodash/join";
-import _truncate from "lodash/truncate";
 
-
-import { Item, Label, Icon } from "semantic-ui-react";
+import { Item } from "semantic-ui-react";
 import { withState, buildUID } from "react-searchkit";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 
-
-export const OaiHarvesterResultsListItemComponent = ({
-  currentQueryState,
-  result,
-  appName,
-}) => {
-  const searchAppConfig = useContext(SearchConfigurationContext);
-  // console.log(result);
+export const OaiHarvesterResultsListItemComponent = ({ result, appName }) => {
   const name = _get(result, "name");
   const url = _get(result, "baseurl");
   const code = _get(result, "code");
@@ -54,7 +43,6 @@ OaiHarvesterResultsListItemComponent.defaultProps = {
   currentQueryState: null,
   appName: "",
 };
-
 
 export const OaiHarvesterResultsListItem = (props) => {
   return (
