@@ -1,25 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 
 import _get from "lodash/get";
-import _join from "lodash/join";
-import _truncate from "lodash/truncate";
 
-
-import { Item, Label, Icon } from "semantic-ui-react";
+import { Item } from "semantic-ui-react";
 import { withState, buildUID } from "react-searchkit";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 
-
-export const OaiRecordResultsListItemComponent = ({
-  currentQueryState,
-  result,
-  appName,
-}) => {
-  const searchAppConfig = useContext(SearchConfigurationContext);
+export const OaiRecordResultsListItemComponent = ({ result, appName }) => {
   const id = _get(result, "oai_identifier");
-  const title =_get(result, "entry.metadata.title");
+  const title = _get(result, "entry.metadata.title");
   const viewLink = result.links.self_html;
   return (
     <Overridable
@@ -33,9 +23,7 @@ export const OaiRecordResultsListItemComponent = ({
           <Item.Header as="h2">
             <a href={viewLink}>{id}</a>
           </Item.Header>
-          <Item.Description>
-            {title}
-          </Item.Description>
+          <Item.Description>{title}</Item.Description>
         </Item.Content>
       </Item>
     </Overridable>
@@ -52,7 +40,6 @@ OaiRecordResultsListItemComponent.defaultProps = {
   currentQueryState: null,
   appName: "",
 };
-
 
 export const OaiRecordResultsListItem = (props) => {
   return (

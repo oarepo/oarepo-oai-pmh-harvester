@@ -3,6 +3,7 @@
         "editorInfo.foreground": "#0080ff6a"
     },
     "conventionalCommits.scopes": [
-        "search"
+        "search",
+        "release"
     ]
 }
