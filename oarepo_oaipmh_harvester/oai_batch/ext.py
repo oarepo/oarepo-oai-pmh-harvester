@@ -6,7 +6,6 @@ from oarepo_oaipmh_harvester.oai_batch import config
 
 class Oai_batchExt:
     def __init__(self, app=None):
-
         if app:
             self.init_app(app)
 

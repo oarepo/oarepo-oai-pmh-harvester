@@ -1,5 +1,5 @@
-from invenio_records_resources.services import SearchOptions as InvenioSearchOptions
 from flask_babelex import lazy_gettext as _
+from invenio_records_resources.services import SearchOptions as InvenioSearchOptions
 
 from . import facets
 
