@@ -6,6 +6,7 @@ from oarepo_oaipmh_harvester.oai_run import config
 
 class Oai_runExt:
     def __init__(self, app=None):
+
         if app:
             self.init_app(app)
 
@@ -17,6 +18,7 @@ class Oai_runExt:
             self.register_flask_extension(app)
 
     def register_flask_extension(self, app):
+
         app.extensions["oarepo_oaipmh_harvester.oai_run"] = self
 
     def init_config(self, app):

@@ -1,8 +1,7 @@
 import marshmallow as ma
-from marshmallow import Schema
 from marshmallow import fields as ma_fields
 from marshmallow.fields import String
-from oarepo_runtime.services.schema.marshmallow import BaseRecordSchema
+from oarepo_runtime.services.schema.marshmallow import BaseRecordSchema, DictOnlySchema
 from oarepo_runtime.services.schema.validation import validate_datetime
 
 
@@ -33,7 +32,7 @@ class OaiRecordSchema(BaseRecordSchema):
     title = ma_fields.String()
 
 
-class BatchSchema(Schema):
+class BatchSchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 
@@ -46,7 +45,7 @@ class BatchSchema(Schema):
     started = ma_fields.String(validate=[validate_datetime])
 
 
-class ErrorsItemSchema(Schema):
+class ErrorsItemSchema(DictOnlySchema):
     class Meta:
         unknown = ma.RAISE
 
@@ -59,7 +58,7 @@ class ErrorsItemSchema(Schema):
     message = ma_fields.String()
 
 
-class HarvesterSchema(Schema):
+class HarvesterSchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 
@@ -72,7 +71,7 @@ class HarvesterSchema(Schema):
     name = ma_fields.String()
 
 
-class RunSchema(Schema):
+class RunSchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 

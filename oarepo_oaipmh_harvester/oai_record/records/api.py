@@ -17,6 +17,7 @@ class OaiRecordIdProvider(RecordIdProviderV2):
 
 
 class OaiRecord(InvenioRecord):
+
     model_cls = OaiRecordMetadata
 
     schema = ConstantField("$schema", "local://oai_record-1.0.0.json")

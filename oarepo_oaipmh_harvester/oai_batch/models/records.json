@@ -54,7 +54,8 @@
             "base-classes": [
                 "oarepo_runtime.services.config.service.PermissionsPresetsConfigMixin",
                 "invenio_records_resources.services.RecordServiceConfig{InvenioRecordServiceConfig}"
-            ]
+            ],
+            "result-list-class": "oarepo_runtime.services.results.RecordList"
         },
         "resource-config": {
             "base-url": "/oai/harvest/batches/",
@@ -68,6 +69,17 @@
                 "invenio_records_resources.resources.RecordResourceConfig"
             ],
             "imports": []
+        },
+        "search-options": {
+            "base-classes": [
+                "oarepo_runtime.services.search.SearchOptions"
+            ],
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_batch.services.records.search",
+            "extra-code": "",
+            "class": "oarepo_oaipmh_harvester.oai_batch.services.records.search.OaiBatchSearchOptions",
+            "imports": [],
+            "sort-options-field": "sort_options"
         },
         "module": {
             "alias": "oarepo-oaipmh-batch",
@@ -92,17 +104,6 @@
             "skip": false
         },
         "model-name": "Oai_Batch",
-        "search-options": {
-            "generate": true,
-            "module": "oarepo_oaipmh_harvester.oai_batch.services.records.search",
-            "extra-code": "",
-            "class": "oarepo_oaipmh_harvester.oai_batch.services.records.search.OaiBatchSearchOptions",
-            "base-classes": [
-                "invenio_records_resources.services.SearchOptions{InvenioSearchOptions}"
-            ],
-            "imports": [],
-            "sort-options-field": "sort_options"
-        },
         "config": {
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_batch.config",
@@ -473,7 +474,7 @@
                                             "facet": false
                                         },
                                         "label.cs": "Pozice chyby v datech",
-                                        "label.en": "Error location in data"
+                                        "label.en": "Additional error information"
                                     },
                                     "message": {
                                         "type": "fulltext+keyword",

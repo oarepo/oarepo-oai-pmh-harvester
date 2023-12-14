@@ -1,7 +1,7 @@
 import marshmallow as ma
-from marshmallow import Schema
 from marshmallow import fields as ma_fields
 from marshmallow.fields import String
+from oarepo_runtime.services.schema.marshmallow import DictOnlySchema
 from oarepo_runtime.services.schema.ui import InvenioUISchema, LocalizedDateTime
 
 
@@ -32,7 +32,7 @@ class OaiRecordUISchema(InvenioUISchema):
     title = ma_fields.String()
 
 
-class BatchUISchema(Schema):
+class BatchUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 
@@ -45,7 +45,7 @@ class BatchUISchema(Schema):
     started = LocalizedDateTime()
 
 
-class ErrorsItemUISchema(Schema):
+class ErrorsItemUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.RAISE
 
@@ -58,7 +58,7 @@ class ErrorsItemUISchema(Schema):
     message = ma_fields.String()
 
 
-class HarvesterUISchema(Schema):
+class HarvesterUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 
@@ -71,7 +71,7 @@ class HarvesterUISchema(Schema):
     name = ma_fields.String()
 
 
-class RunUISchema(Schema):
+class RunUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 

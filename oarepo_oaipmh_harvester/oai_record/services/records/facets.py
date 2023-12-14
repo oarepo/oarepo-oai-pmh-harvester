@@ -1,7 +1,7 @@
 """Facet definitions."""
 
-from flask_babelex import lazy_gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
+from oarepo_runtime.i18n import lazy_gettext as _
 from oarepo_runtime.services.facets.date import DateTimeFacet
 
 batch_id = TermsFacet(field="batch.id", label=_("batch/id.label"))

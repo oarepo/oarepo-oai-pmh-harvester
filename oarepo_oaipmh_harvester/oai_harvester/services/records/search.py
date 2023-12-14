@@ -1,10 +1,9 @@
-from flask_babelex import lazy_gettext as _
-from invenio_records_resources.services import SearchOptions as InvenioSearchOptions
+from oarepo_runtime.services.search import SearchOptions
 
 from . import facets
 
 
-class OaiHarvesterSearchOptions(InvenioSearchOptions):
+class OaiHarvesterSearchOptions(SearchOptions):
     """OaiHarvesterRecord search options."""
 
     facet_groups = {}
@@ -16,11 +15,5 @@ class OaiHarvesterSearchOptions(InvenioSearchOptions):
         "metadataprefix": facets.metadataprefix,
         "setspecs": facets.setspecs,
         "transformers": facets.transformers,
-        **getattr(InvenioSearchOptions, "facets", {}),
-    }
-
-    # Translate sort option titles
-    sort_options = {
-        key: {k: _(v) if k == "title" else v for k, v in value.items()}
-        for key, value in InvenioSearchOptions.sort_options.items()
+        **getattr(SearchOptions, "facets", {}),
     }
