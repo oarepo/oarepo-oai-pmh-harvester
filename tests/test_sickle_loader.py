@@ -62,7 +62,7 @@ def test_sickle_loader_single_record():
             "relation": ["https://zenodo.org/communities/openaire", "https://doi.org/"],
             "rights": [
                 "info:eu-repo/semantics/openAccess",
-                "Creative Commons Attribution Share Alike 4.0 " "International",
+                "Creative Commons Attribution Share Alike 4.0 International",
                 "https://creativecommons.org/licenses/by-sa/4.0/legalcode",
             ],
             "subject": ["Repository", "Open Access", "Guidelines"],
