@@ -18,6 +18,7 @@ class Oai_batchExt:
             self.register_flask_extension(app)
 
     def register_flask_extension(self, app):
+
         app.extensions["oarepo_oaipmh_harvester.oai_batch"] = self
 
     def init_config(self, app):

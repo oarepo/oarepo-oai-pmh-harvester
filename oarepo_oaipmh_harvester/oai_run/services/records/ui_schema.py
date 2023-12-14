@@ -1,8 +1,8 @@
 import marshmallow as ma
-from marshmallow import Schema
 from marshmallow import fields as ma_fields
 from marshmallow.fields import String
 from marshmallow.validate import OneOf
+from oarepo_runtime.services.schema.marshmallow import DictOnlySchema
 from oarepo_runtime.services.schema.ui import InvenioUISchema, LocalizedDateTime
 
 
@@ -35,7 +35,7 @@ class OaiRunUISchema(InvenioUISchema):
     warnings = ma_fields.Integer()
 
 
-class HarvesterUISchema(Schema):
+class HarvesterUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 

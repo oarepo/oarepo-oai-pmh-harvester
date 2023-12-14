@@ -49,7 +49,7 @@ def test_harvest_synchronous(app, db, client, search_clear):
     batches = list(
         batch_service.scan(
             system_identity,
-            params={"q": f"run.id:\"{run_id}\""},
+            params={"q": f'run.id:"{run_id}"'},
         ).hits
     )
 
@@ -154,7 +154,7 @@ def get_oai_records(run_id):
     batches = list(
         batch_service.scan(
             system_identity,
-            params={"q": f"run.id:\"{run_id}\""},
+            params={"q": f'run.id:"{run_id}"'},
         ).hits
     )
     oai_records = {}
@@ -162,7 +162,7 @@ def get_oai_records(run_id):
         batch_id = batch["id"]
         for r in oai_record_service.scan(
             system_identity,
-            params={"q": f"batch.id:\"{batch_id}\""},
+            params={"q": f'batch.id:"{batch_id}"'},
         ).hits:
             oai_records[r["oai_identifier"]] = r
     return oai_records

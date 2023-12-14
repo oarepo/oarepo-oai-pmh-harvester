@@ -30,7 +30,7 @@ python3 -m venv $VENV
 . $VENV/bin/activate
 pip install -U setuptools pip wheel
 
-pip install "oarepo>=${OAREPO_VERSION},<${OAREPO_VERSION%%.*}.9999"
+pip install "oarepo==${OAREPO_VERSION}.*"
 pip install -e ".[tests]"
 pip install -e test-model
 

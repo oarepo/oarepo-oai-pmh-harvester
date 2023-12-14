@@ -1,8 +1,8 @@
 import marshmallow as ma
-from marshmallow import Schema
 from marshmallow import fields as ma_fields
 from marshmallow.fields import String
 from marshmallow.validate import OneOf
+from oarepo_runtime.services.schema.marshmallow import DictOnlySchema
 from oarepo_runtime.services.schema.ui import InvenioUISchema, LocalizedDateTime
 
 
@@ -29,7 +29,7 @@ class OaiBatchUISchema(InvenioUISchema):
     )
 
 
-class RecordsItemUISchema(Schema):
+class RecordsItemUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.RAISE
 
@@ -46,7 +46,7 @@ class RecordsItemUISchema(Schema):
     url = ma_fields.String()
 
 
-class ErrorsItemUISchema(Schema):
+class ErrorsItemUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.RAISE
 
@@ -59,7 +59,7 @@ class ErrorsItemUISchema(Schema):
     message = ma_fields.String()
 
 
-class HarvesterUISchema(Schema):
+class HarvesterUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 
@@ -72,7 +72,7 @@ class HarvesterUISchema(Schema):
     name = ma_fields.String()
 
 
-class RunUISchema(Schema):
+class RunUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 

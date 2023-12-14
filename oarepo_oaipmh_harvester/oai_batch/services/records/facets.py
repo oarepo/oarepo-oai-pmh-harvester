@@ -1,7 +1,7 @@
 """Facet definitions."""
 
-from flask_babelex import lazy_gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
+from oarepo_runtime.i18n import lazy_gettext as _
 
 harvester_name = TermsFacet(field="harvester.name", label=_("harvester/name.label"))
 

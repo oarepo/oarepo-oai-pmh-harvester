@@ -27,11 +27,32 @@ def test_sickle_loader_single_record():
     iterator = iter(loader)
     item = next(iterator)
     assert item.context["oai"] == {
+        "datestamp": "2020-01-20T15:23:55+00:00",
+        "deleted": False,
+        "identifier": "oai:zenodo.org:59204",
         "metadata": {
             "creator": ["van Berchum, Marnix", "Rodrigues, Eloy"],
             "date": ["2010-07-29"],
             "description": [
-                "The OpenAIRE Guidelines 1.0 will provide orientation for repository managers to define and implement their local data management policies in compliance with the Open Access demands of the European Commission. Furthermore they will comply with the technical requirements of the OpenAIRE infrastructure that is being established to support and monitor the implementation of the FP7 OA pilot.\nBy implementing these Guidelines repository managers are facilitating the authors who deposit their publications in the repository, in complying with the EC Open Access requirements.\nFor developers of repository platforms the Guidelines provide guidance to add supportive functionalities for authors of EC funded research in future versions."
+                "&lt;p&gt;The OpenAIRE Guidelines 1.0 will "
+                "provide orientation for repository managers to "
+                "define and implement their local data "
+                "management policies in compliance with the Open "
+                "Access demands of the European Commission. "
+                "Furthermore they will comply with the technical "
+                "requirements of the OpenAIRE infrastructure "
+                "that is being established to support and "
+                "monitor the implementation of the FP7 OA "
+                "pilot.&lt;br&gt;\n"
+                "By implementing these Guidelines repository "
+                "managers are facilitating the authors who "
+                "deposit their publications in the repository, "
+                "in complying with the EC Open Access "
+                "requirements.&lt;br&gt;\n"
+                "For developers of repository platforms the "
+                "Guidelines provide guidance to add supportive "
+                "functionalities for authors of EC funded "
+                "research in future versions.&lt;/p&gt;"
             ],
             "identifier": [
                 "https://doi.org/10.5281/zenodo.59204",
@@ -46,14 +67,12 @@ def test_sickle_loader_single_record():
             ],
             "subject": ["Repository", "Open Access", "Guidelines"],
             "title": [
-                "OpenAIRE Guidelines 1.0 : Guidelines for content providers of the OpenAIRE information space"
+                "OpenAIRE Guidelines 1.0 : Guidelines for content "
+                "providers of the OpenAIRE information space"
             ],
             "type": ["info:eu-repo/semantics/report"],
         },
-        "datestamp": "2020-01-20T15:23:55+00:00",
-        "deleted": False,
-        "identifier": "oai:zenodo.org:59204",
-        "setSpecs": [],
+        "setSpecs": ["user-openaire"],
     }
     with pytest.raises(StopIteration):
         next(iterator)
