@@ -1,4 +1,4 @@
-{#def metadata, ui, layout, record #}
+{#def metadata, ui, record #}
 
 {% extends "oarepo_ui/detail.html" %}
 {%- block head_links %}
@@ -6,6 +6,11 @@
     {{webpack['oai_run_ui_components.js']}}
     {{ webpack['oai_run_ui_components.css']}}
 {%- endblock %}
-
+{% block record_main_content %}
+<oai_run_ui.RunMain metadata={metadata} ui={ui}  record={record} ></oai_run_ui.RunMain>
+{% endblock record_main_content %}
+{% block record_sidebar %}
+<oai_run_ui.RunSidebar record={record}></oai_run_ui.RunSidebar>
+{% endblock record_sidebar %}
 
 

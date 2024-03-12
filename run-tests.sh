@@ -9,10 +9,11 @@ if test -d $BUILDER_VENV ; then
 	rm -rf $BUILDER_VENV
 fi
 
-python3 -m venv $BUILDER_VENV
+python3.9 -m venv $BUILDER_VENV
 . $BUILDER_VENV/bin/activate
 pip install -U setuptools pip wheel
 pip install -U oarepo-model-builder
+
 
 if test -d test-model ; then
   rm -rf test-model
@@ -26,12 +27,13 @@ if test -d $VENV ; then
   rm -rf $VENV
 fi
 
-python3 -m venv $VENV
+python3.9 -m venv $VENV
 . $VENV/bin/activate
 pip install -U setuptools pip wheel
 
 pip install "oarepo==${OAREPO_VERSION}.*"
 pip install -e ".[tests]"
+pip install langdetect
 pip install -e test-model
 
 pip uninstall -y uritemplate

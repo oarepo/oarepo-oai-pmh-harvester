@@ -2,7 +2,7 @@ from invenio_records_resources.services.base.components import BaseServiceCompon
 
 
 class FilterErrorsComponent(BaseServiceComponent):
-    def before_ui_detail(self, *, resource, record, identity, extra_context, **kwargs):
+    def before_ui_detail(self, *, api_record, record, identity, args, view_args, ui_links ,extra_context, **kwargs):
         ok_records, failed_records = [], []
         if record.get("records"):
             for rec in record["records"]:

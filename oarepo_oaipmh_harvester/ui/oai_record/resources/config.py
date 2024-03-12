@@ -10,17 +10,8 @@ class OAIRecordUIResourceConfig(RecordsUIResourceConfig):
     layout = "oarepo-oaipmh-record"
 
     templates = {
-        "detail": {
-            "layout": "oai_record_ui/OaiRecordDetail.jinja",
-            "blocks": {
-                "record_main_content": "OaiRecordMain",
-                "record_sidebar": "OaiRecordSidebar",
-            },
-        },
-        "search": {
-            "layout": "oai_record_ui/OaiRecordSearch.jinja",
-            "app_id": "OaiRecord.Search",
-        },
+        "detail": "oai_record_ui.OaiRecordDetail",
+        "search": "oai_record_ui.OaiRecordSearch",
     }
 
     routes = {

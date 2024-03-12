@@ -14,17 +14,8 @@ class OAIBatchUIResourceConfig(RecordsUIResourceConfig):
     layout = "oarepo-oaipmh-batch"
 
     templates = {
-        "detail": {
-            "layout": "oai_batch_ui/BatchDetail.html.jinja",
-            "blocks": {
-                "record_main_content": "BatchMain",
-                "record_sidebar": "BatchSidebar",
-            },
-        },
-        "search": {
-            "layout": "oai_batch_ui/BatchSearch.jinja",
-            "app_id": "OaiBatch.Search",
-        },
+        "detail": "oai_batch_ui.BatchDetail",
+        "search": "oai_batch_ui.BatchSearch",
     }
 
     routes = {

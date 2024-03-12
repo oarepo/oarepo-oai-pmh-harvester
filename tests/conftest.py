@@ -24,7 +24,8 @@ def app_config(app_config):
         "test_data": "tests.datastreams:TestDataOAIReader",
     }
     app_config["DATASTREAMS_TRANSFORMERS"] = {
-        "error_transformer": "tests.datastreams:ErrorTransformer"
+        "error_transformer": "tests.datastreams:ErrorTransformer",
+        "lindat_transformer": "tests.datastreams:LinDatTransformer"
     }
     # app_config["SQLALCHEMY_ENGINE_OPTIONS"] = {"echo": True}
     return app_config
