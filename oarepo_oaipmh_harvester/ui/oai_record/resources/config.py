@@ -9,6 +9,8 @@ class OAIRecordUIResourceConfig(RecordsUIResourceConfig):
     api_service = "oarepo-oaipmh-records"
     layout = "oarepo-oaipmh-record"
 
+    application_id = "oai_record_ui"
+
     templates = {
         "detail": "oai_record_ui.OaiRecordDetail",
         "search": "oai_record_ui.OaiRecordSearch",
