@@ -9,6 +9,8 @@ class OAIHarvesterUIResourceConfig(RecordsUIResourceConfig):
     api_service = "oarepo-oaipmh-harvesters"
     layout = "oarepo-oaipmh-harvester"
 
+    application_id = "oai_harvester_ui"
+
     templates = {
         "detail": "oai_harvester_ui.HarvesterDetail",
         "search": "oai_harvester_ui.HarvesterSearch",

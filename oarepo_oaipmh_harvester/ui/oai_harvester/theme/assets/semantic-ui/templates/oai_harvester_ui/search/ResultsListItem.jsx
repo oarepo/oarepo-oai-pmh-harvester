@@ -66,7 +66,7 @@ OaiHarvesterResultsListItem.defaultProps = {
   appName: "",
 };
 
-export const OaiHarvesterResultsListItemWithState = withState(
+const OaiHarvesterResultsListItemWithState = withState(
   ({ currentQueryState, result, appName }) => (
     <OaiHarvesterResultsListItem
       currentQueryState={currentQueryState}
@@ -75,6 +75,8 @@ export const OaiHarvesterResultsListItemWithState = withState(
     />
   )
 );
+
+export default OaiHarvesterResultsListItemWithState;
 
 OaiHarvesterResultsListItemWithState.propTypes = {
   currentQueryState: PropTypes.object,
