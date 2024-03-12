@@ -1,5 +1,6 @@
 import contextlib
 from urllib.parse import unquote, urlparse
+
 from langdetect import detect
 from oarepo_runtime.datastreams import (
     BaseReader,
@@ -10,14 +11,8 @@ from oarepo_runtime.datastreams import (
 from oarepo_runtime.datastreams.readers.json import JSONReader
 from oarepo_runtime.datastreams.types import StreamEntryError
 
-from oarepo_oaipmh_harvester.transformers.rule import (
-    OAIRuleTransformer,
-    matches,
-    deduplicate,
-    ignore,
-    make_dict,
-    make_array,
-)
+from oarepo_oaipmh_harvester.transformers.rule import OAIRuleTransformer, matches
+
 
 class LinDatTransformer(OAIRuleTransformer):
     def transform(self, entry: StreamEntry):
@@ -27,9 +22,13 @@ class LinDatTransformer(OAIRuleTransformer):
         transform_title(md, entry)
         print(md)
 
+
 @matches("title")
 def transform_title(md, entry, value):
-    md.setdefault("titles", []).append({"lang": detect(value), "title" : value, "titleType": "Other"}) #todo: title type enum contains only AlternativeTitle, Subtitle, TranslatedTitle, Other
+    md.setdefault("titles", []).append(
+        {"lang": detect(value), "title": value, "titleType": "Other"}
+    )  # todo: title type enum contains only AlternativeTitle, Subtitle, TranslatedTitle, Other
+
 
 class MockOAIReader(JSONReader):
     def __init__(

@@ -5,20 +5,17 @@ from oarepo_oaipmh_harvester.readers.sickle import SickleReader
 
 def test_sickle_loader_first_record():
     loader = SickleReader(
-        oai_config={"setspecs": "hdl_11858_00-097C-0000-0007-710A-A", "metadataprefix": "oai_dc"},
-        source="http://lindat.mff.cuni.cz/repository/oai/request",
-        # datestamp_from="2020-01-20",
-        # datestamp_until="2020-01-21",
+        oai_config={"setspecs": "user-openaire", "metadataprefix": "oai_dc"},
+        source="https://zenodo.org/oai2d",
+        datestamp_from="2020-01-20",
+        datestamp_until="2020-01-21",
     )
     iterator = iter(loader)
     item = next(iterator)
-    print(item)
 
-    item = next(iterator)
-    print(item)
-    # assert item.context["oai"]["datestamp"].startswith("2020-01-20T")
-    # assert "metadata" in item.context["oai"]
-    # assert "title" in item.context["oai"]["metadata"]
+    assert item.context["oai"]["datestamp"].startswith("2020-01-20T")
+    assert "metadata" in item.context["oai"]
+    assert "title" in item.context["oai"]["metadata"]
 
 
 def test_sickle_loader_single_record():
