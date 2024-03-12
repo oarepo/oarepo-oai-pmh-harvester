@@ -1,7 +1,6 @@
 import contextlib
 from urllib.parse import unquote, urlparse
 
-from langdetect import detect
 from oarepo_runtime.datastreams import (
     BaseReader,
     BaseTransformer,
