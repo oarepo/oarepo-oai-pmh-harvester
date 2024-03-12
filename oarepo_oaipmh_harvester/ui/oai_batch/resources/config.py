@@ -13,6 +13,8 @@ class OAIBatchUIResourceConfig(RecordsUIResourceConfig):
     api_service = "oarepo-oaipmh-batches"
     layout = "oarepo-oaipmh-batch"
 
+    application_id = "oai_batch_ui"
+
     templates = {
         "detail": "oai_batch_ui.BatchDetail",
         "search": "oai_batch_ui.BatchSearch",
