@@ -13,7 +13,6 @@ class OAIRecordUIResourceConfig(RecordsUIResourceConfig):
         "detail": "oai_record_ui.OaiRecordDetail",
         "search": "oai_record_ui.OaiRecordSearch",
     }
-
     routes = {
         "search": "",
         "detail": "/<pid_value>",

@@ -11,6 +11,8 @@ class OaiRunUIResourceConfig(RecordsUIResourceConfig):
     api_service = "oarepo-oaipmh-runs"
     layout = "oarepo-oaipmh-run"
 
+    application_id = "oai_run_ui"
+
     templates = {
         "detail": "oai_run_ui.RunDetail",
         "search": "oai_run_ui.RunSearch",
