@@ -11,24 +11,6 @@ from oarepo_runtime.datastreams import (
 from oarepo_runtime.datastreams.readers.json import JSONReader
 from oarepo_runtime.datastreams.types import StreamEntryError
 
-from oarepo_oaipmh_harvester.transformers.rule import OAIRuleTransformer, matches
-
-
-class LinDatTransformer(OAIRuleTransformer):
-    def transform(self, entry: StreamEntry):
-        metadata = entry.context["oai"]["metadata"]
-        md = entry.transformed.setdefault("metadata", {})
-        entry.entry = metadata
-        transform_title(md, entry)
-        print(md)
-
-
-@matches("title")
-def transform_title(md, entry, value):
-    md.setdefault("titles", []).append(
-        {"lang": detect(value), "title": value, "titleType": "Other"}
-    )  # todo: title type enum contains only AlternativeTitle, Subtitle, TranslatedTitle, Other
-
 
 class MockOAIReader(JSONReader):
     def __init__(
