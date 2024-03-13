@@ -1,7 +1,6 @@
 {#def metadata, ui #}
-<h1 style="margin-bottom: 1em">{{ metadata.title or metadata.started }}</h1>
+<h1 class="ui header">{{ metadata.title or metadata.started }}</h1>
 <dl class="ui very basic table">
-
     <dt>{{ _('harvester.label') }}</dt>
     <dd>
         <a href="/oai/harvest/harvesters/{{ metadata.harvester.id }}">&laquo; {{ metadata.harvester.name }}</a>
