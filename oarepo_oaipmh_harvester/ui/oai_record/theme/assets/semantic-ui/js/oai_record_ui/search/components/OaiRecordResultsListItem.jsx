@@ -63,7 +63,7 @@ OaiRecordResultsListItem.defaultProps = {
   appName: "",
 };
 
-const OaiRecordResultsListItemWithState = withState(
+export const OaiRecordResultsListItemWithState = withState(
   ({ currentQueryState, result, appName }) => (
     <OaiRecordResultsListItem
       currentQueryState={currentQueryState}
@@ -72,8 +72,6 @@ const OaiRecordResultsListItemWithState = withState(
     />
   )
 );
-
-export default OaiRecordResultsListItemWithState;
 
 OaiRecordResultsListItemWithState.propTypes = {
   currentQueryState: PropTypes.object,

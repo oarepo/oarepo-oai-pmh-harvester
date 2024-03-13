@@ -71,7 +71,7 @@ OaiBatchResultsListItem.defaultProps = {
   appName: "",
 };
 
-const OaiBatchResultsListItemWithState = withState(
+export const OaiBatchResultsListItemWithState = withState(
   ({ currentQueryState, result, appName }) => (
     <OaiBatchResultsListItem
       currentQueryState={currentQueryState}
@@ -80,7 +80,6 @@ const OaiBatchResultsListItemWithState = withState(
     />
   )
 );
-export default OaiBatchResultsListItemWithState;
 
 OaiBatchResultsListItemWithState.propTypes = {
   currentQueryState: PropTypes.object,

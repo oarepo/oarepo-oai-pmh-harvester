@@ -6,26 +6,31 @@ import _get from "lodash/get";
 
 import { Item } from "semantic-ui-react";
 import { withState, buildUID } from "react-searchkit";
+import { i18next } from "@translations/oarepo_oaipmh_harvester/i18next";
 
-export const OaiHarvesterResultsListItemComponent = ({ result, appName }) => {
-  const name = _get(result, "name");
-  const url = _get(result, "baseurl");
-  const code = _get(result, "code");
+export const OaiRunResultsListItemComponent = ({ result, appName }) => {
+  const id = _get(result, "id");
+  const started = _get(result, "started");
+  const harvester = _get(result, "harvester.name");
   const viewLink = result.links.self_html;
   return (
     <Overridable
       id={buildUID("RecordsResultsListItem.layout", "", appName)}
       result={result}
-      name={name}
+      name={id}
     >
       <Item key={result.id}>
         <Item.Content>
           <Item.Extra className="labels-actions"></Item.Extra>
           <Item.Header as="h2">
-            <a href={viewLink}>{name}</a>
+            <a href={viewLink}>
+              {i18next.t("run.label")} - {id}
+            </a>
           </Item.Header>
           <Item.Description>
-            {code} - {url}
+            {harvester}
+            <br />
+            {i18next.t("run/started.label")} - {started}
           </Item.Description>
         </Item.Content>
       </Item>
@@ -33,42 +38,42 @@ export const OaiHarvesterResultsListItemComponent = ({ result, appName }) => {
   );
 };
 
-OaiHarvesterResultsListItemComponent.propTypes = {
+OaiRunResultsListItemComponent.propTypes = {
   currentQueryState: PropTypes.object,
   result: PropTypes.object.isRequired,
   appName: PropTypes.string,
 };
 
-OaiHarvesterResultsListItemComponent.defaultProps = {
+OaiRunResultsListItemComponent.defaultProps = {
   currentQueryState: null,
   appName: "",
 };
 
-export const OaiHarvesterResultsListItem = (props) => {
+export const OaiRunResultsListItem = (props) => {
   return (
     <Overridable
-      id={buildUID("OaiHarvesterResultsListItem", "", props.appName)}
+      id={buildUID("OaiRunResultsListItem", "", props.appName)}
       {...props}
     >
-      <OaiHarvesterResultsListItemComponent {...props} />
+      <OaiRunResultsListItemComponent {...props} />
     </Overridable>
   );
 };
 
-OaiHarvesterResultsListItem.propTypes = {
+OaiRunResultsListItem.propTypes = {
   currentQueryState: PropTypes.object,
   result: PropTypes.object.isRequired,
   appName: PropTypes.string,
 };
 
-OaiHarvesterResultsListItem.defaultProps = {
+OaiRunResultsListItem.defaultProps = {
   currentQueryState: null,
   appName: "",
 };
 
-const OaiHarvesterResultsListItemWithState = withState(
+export const OaiRunResultsListItemWithState = withState(
   ({ currentQueryState, result, appName }) => (
-    <OaiHarvesterResultsListItem
+    <OaiRunResultsListItem
       currentQueryState={currentQueryState}
       result={result}
       appName={appName}
@@ -76,13 +81,11 @@ const OaiHarvesterResultsListItemWithState = withState(
   )
 );
 
-export default OaiHarvesterResultsListItemWithState;
-
-OaiHarvesterResultsListItemWithState.propTypes = {
+OaiRunResultsListItemWithState.propTypes = {
   currentQueryState: PropTypes.object,
   result: PropTypes.object.isRequired,
 };
 
-OaiHarvesterResultsListItemComponent.defaultProps = {
+OaiRunResultsListItemComponent.defaultProps = {
   currentQueryState: null,
 };
