@@ -14,6 +14,7 @@ python3 -m venv $BUILDER_VENV
 pip install -U setuptools pip wheel
 pip install -U oarepo-model-builder
 
+
 if test -d test-model ; then
   rm -rf test-model
 fi
@@ -32,6 +33,7 @@ pip install -U setuptools pip wheel
 
 pip install "oarepo==${OAREPO_VERSION}.*"
 pip install -e ".[tests]"
+pip install langdetect
 pip install -e test-model
 
 pip uninstall -y uritemplate

@@ -1,0 +1,13 @@
+{#def metadata, ui, record #}
+{% extends "oarepo_ui/detail.html" %}
+{%- block head_links %}
+    {{ super() }}
+    {{webpack['oai_harvester_ui_components.js']}}
+    {{ webpack['oai_harvester_ui_components.css']}}
+{%- endblock %}
+{% block record_main_content %}
+<oai_harvester_ui.HarvesterMain metadata={metadata} ui={ui}  record={record} ></oai_harvester_ui.HarvesterMain>
+{% endblock record_main_content %}
+{% block record_sidebar %}
+<oai_harvester_ui.HarvesterSidebar record={record}></oai_harvester_ui.HarvesterSidebar>
+{% endblock record_sidebar %}

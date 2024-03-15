@@ -9,18 +9,11 @@ class OAIHarvesterUIResourceConfig(RecordsUIResourceConfig):
     api_service = "oarepo-oaipmh-harvesters"
     layout = "oarepo-oaipmh-harvester"
 
+    application_id = "oai_harvester_ui"
+
     templates = {
-        "detail": {
-            "layout": "oai_harvester_ui/HarvesterDetail.html.jinja",
-            "blocks": {
-                "record_main_content": "HarvesterMain",
-                "record_sidebar": "HarvesterSidebar",
-            },
-        },
-        "search": {
-            "layout": "oai_harvester_ui/HarvesterSearch.jinja",
-            "app_id": "OaiHarvester.Search",
-        },
+        "detail": "oai_harvester_ui.HarvesterDetail",
+        "search": "oai_harvester_ui.HarvesterSearch",
     }
 
     routes = {

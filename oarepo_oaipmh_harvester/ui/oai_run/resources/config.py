@@ -11,15 +11,11 @@ class OaiRunUIResourceConfig(RecordsUIResourceConfig):
     api_service = "oarepo-oaipmh-runs"
     layout = "oarepo-oaipmh-run"
 
+    application_id = "oai_run_ui"
+
     templates = {
-        "detail": {
-            "layout": "oai_run_ui/RunDetail.jinja",
-            "blocks": {
-                "record_main_content": "RunMain",
-                "record_sidebar": "RunSidebar",
-            },
-        },
-        "search": {"layout": "oai_run_ui/RunSearch.jinja", "app_id": "OaiRun.Search"},
+        "detail": "oai_run_ui.RunDetail",
+        "search": "oai_run_ui.RunSearch",
     }
 
     routes = {

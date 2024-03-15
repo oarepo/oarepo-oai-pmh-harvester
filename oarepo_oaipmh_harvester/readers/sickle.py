@@ -83,9 +83,11 @@ class SickleReader(BaseReader):
                         entry=record.raw,
                         context={
                             "oai": {
-                                "metadata": record.metadata
-                                if hasattr(record, "metadata")
-                                else {},
+                                "metadata": (
+                                    record.metadata
+                                    if hasattr(record, "metadata")
+                                    else {}
+                                ),
                                 "datestamp": datestamp,
                                 "deleted": record.header.deleted,
                                 "identifier": record.header.identifier,
