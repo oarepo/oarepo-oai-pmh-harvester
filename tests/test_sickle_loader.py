@@ -59,7 +59,11 @@ def test_sickle_loader_single_record():
                 "oai:zenodo.org:59204",
             ],
             "publisher": ["Zenodo"],
-            "relation": ["https://zenodo.org/communities/openaire","https://zenodo.org/communities/eu","https://doi.org/"],
+            "relation": [
+                "https://zenodo.org/communities/openaire",
+                "https://zenodo.org/communities/eu",
+                "https://doi.org/",
+            ],
             "rights": [
                 "info:eu-repo/semantics/openAccess",
                 "Creative Commons Attribution Share Alike 4.0 International",
@@ -72,7 +76,7 @@ def test_sickle_loader_single_record():
             ],
             "type": ["info:eu-repo/semantics/report"],
         },
-        "setSpecs": ["user-eu","user-openaire"],
+        "setSpecs": ["user-openaire", "user-eu"],
     }
     with pytest.raises(StopIteration):
         next(iterator)
