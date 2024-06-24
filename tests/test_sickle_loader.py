@@ -72,7 +72,7 @@ def test_sickle_loader_single_record():
             ],
             "type": ["info:eu-repo/semantics/report"],
         },
-        "setSpecs": ["user-eu","user-openaire"],
+        "setSpecs": ["user-openaire", "user-eu"],
     }
     with pytest.raises(StopIteration):
         next(iterator)
