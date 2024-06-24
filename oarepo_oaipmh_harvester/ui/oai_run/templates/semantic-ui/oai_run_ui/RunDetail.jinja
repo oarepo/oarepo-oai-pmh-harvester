@@ -1,4 +1,4 @@
-{#def metadata, ui, record #}
+{#def metadata, ui, record, extra_context #}
 
 {% extends "oarepo_ui/detail.html" %}
 {%- block head_links %}
@@ -10,7 +10,7 @@
 <oai_run_ui.RunMain metadata={metadata} ui={ui}  record={record} ></oai_run_ui.RunMain>
 {% endblock record_main_content %}
 {% block record_sidebar %}
-<oai_run_ui.RunSidebar record={record}></oai_run_ui.RunSidebar>
+<oai_run_ui.RunSidebar record={record} extra_context={extra_context}></oai_run_ui.RunSidebar>
 {% endblock record_sidebar %}
 
 
