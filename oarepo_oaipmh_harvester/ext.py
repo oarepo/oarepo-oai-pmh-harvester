@@ -23,8 +23,22 @@ class OARepoOAIHarvesterExt(object):
     def init_app(self, app):
         """Flask application initialization."""
         self.app = app
+        self.init_services(app)
+        self.init_resources(app)
         app.extensions["oarepo_oaipmh_harvester"] = self
         self.load_config(app)
+
+    def init_services(self, app):
+        """Initialize service."""
+        self.harvest_records_service = HarvestService(
+            config=HarvestServiceConfig.build(app),
+        )
+
+    def init_resources(self, app):
+        """Init resources."""
+        self.harvest_resource = HarvestResource(
+            config=HarvestResourceConfig(), service=self.harvest_records_service
+        )
 
     def run(
         self,

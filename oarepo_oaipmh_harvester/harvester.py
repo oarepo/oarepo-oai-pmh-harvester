@@ -64,7 +64,7 @@ def harvest(
                 params={"facets": {"code": [harvester_or_code]}},
             )
         )
-        harvester = harvesters[0].data
+        harvester = harvesters[0]
     else:
         harvester = harvester_or_code
     harvester = dict(harvester)
