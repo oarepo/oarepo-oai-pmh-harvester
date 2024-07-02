@@ -3,13 +3,12 @@ from invenio_administration.views.base import (
     AdminResourceDetailView,
     AdminResourceEditView,
     AdminResourceListView,
-    AdminView
+    AdminView,
 )
 from invenio_i18n import lazy_gettext as _
 
 
 class RecordListView(AdminResourceListView):
-
     api_endpoint = "/oai/harvest/records/"
     extension_name = "oarepo_oaipmh_harvester.oai_record"
     name = "records"
@@ -27,7 +26,7 @@ class RecordListView(AdminResourceListView):
     display_edit = False
     item_field_list = {
         "id": {"text": _("Id"), "order": 1},
-        "title" : {"text": _("Title"), "order": 2},
+        "title": {"text": _("Title"), "order": 2},
         "created": {"text": _("Created"), "order": 3},
     }
 
@@ -36,7 +35,6 @@ class RecordListView(AdminResourceListView):
 
 
 class RecordDetailView(AdminResourceDetailView):
-
     url = "/records/<pid_value>"
     api_endpoint = "/oai/harvest/records/"
     search_request_headers = {"Accept": "application/json"}
@@ -54,10 +52,9 @@ class RecordDetailView(AdminResourceDetailView):
 
     item_field_list = {
         "id": {"text": _("Id"), "order": 2},
-        "title" : {"text": _("Title"), "order": 1},
+        "title": {"text": _("Title"), "order": 1},
         "created": {"text": _("Created"), "order": 3},
         "harvester.code": {"text": _("Harvester code"), "order": 4},
         "oai_identifier": {"text": _("OAI identifier"), "order": 5},
         "errors": {"text": _("Errors"), "order": 6},
     }
-

@@ -1,14 +1,16 @@
 from invenio_administration.views.base import (
+    AdminFormView,
+    AdminResourceBaseView,
     AdminResourceCreateView,
     AdminResourceDetailView,
     AdminResourceEditView,
     AdminResourceListView,
-    AdminResourceBaseView,
-AdminFormView,
-    AdminView
+    AdminView,
 )
 from invenio_i18n import lazy_gettext as _
+
 from ..base import OarepoAdminFormView
+
 
 class OaiPmhListView(AdminResourceListView):
     """Configuration for OAI-PMH sets list view."""
@@ -37,7 +39,6 @@ class OaiPmhListView(AdminResourceListView):
         "code": {"text": _("Code"), "order": 2},
         "baseurl": {"text": _("Base URL"), "order": 3},
         "metadataprefix": {"text": _("Metadata prefix"), "order": 4},
-
         "created": {"text": _("Created"), "order": 5},
     }
 
@@ -47,6 +48,7 @@ class OaiPmhListView(AdminResourceListView):
 
     create_view_name = "oaipmh_create"
     # resource_name = "name"
+
 
 class OaiPmhDetailView(AdminResourceDetailView):
     """Configuration for OAI-PMH sets detail view."""
@@ -79,7 +81,6 @@ class OaiPmhDetailView(AdminResourceDetailView):
         "transformers": {"text": _("Tranformers"), "order": 10},
         "created": {"text": _("Created"), "order": 11},
         "updated": {"text": _("Updated"), "order": 12},
-
         "comment": {"text": _("Comment"), "order": 13},
     }
 
@@ -105,23 +106,19 @@ class OaiPmhEditView(OarepoAdminFormView):
         "code": {
             "order": 2,
             "text": _("Code"),
-        }
-        ,
+        },
         "baseurl": {
             "order": 3,
             "text": _("Base URL"),
-        }
-        ,
+        },
         "metadataprefix": {
             "order": 4,
             "text": _("Metadataprefix"),
-        }
-        ,
+        },
         "comment": {
             "order": 5,
             "text": _("comment"),
-        }
-        ,
+        },
         "setspecs": {
             "order": 6,
             "text": _("Setspecs"),
@@ -142,13 +139,12 @@ class OaiPmhEditView(OarepoAdminFormView):
             "order": 11,
             "text": _("transformers"),
             "description": _("A short human-readable string naming the set."),
-            "type": "string"
-        }
-        ,
+            "type": "string",
+        },
         "writer": {
             "order": 9,
             "text": _("writer"),
-        }
+        },
     }
 
 
@@ -157,7 +153,7 @@ class OaiPmhCreateView(OarepoAdminFormView):
 
     name = "oaipmh_create"
     url = "/harvesters/create"
-    resource_config =  "resource_records"
+    resource_config = "resource_records"
     pid_path = "id"
     api_endpoint = "/oai/harvest/harvesters/"
     title = "Create OAI-PMH Harvester"
@@ -173,23 +169,19 @@ class OaiPmhCreateView(OarepoAdminFormView):
         "code": {
             "order": 2,
             "text": _("Code"),
-        }
-        ,
+        },
         "baseurl": {
             "order": 3,
             "text": _("Base URL"),
-        }
-        ,
+        },
         "metadataprefix": {
             "order": 4,
             "text": _("Metadataprefix"),
-        }
-        ,
+        },
         "comment": {
             "order": 5,
             "text": _("comment"),
-       }
-        ,
+        },
         "setspecs": {
             "order": 6,
             "text": _("Set specifications"),
@@ -210,12 +202,10 @@ class OaiPmhCreateView(OarepoAdminFormView):
             "order": 8,
             "text": _("transformers"),
             "description": _("A short human-readable string naming the set."),
-            "type": "string"
-        }
-        ,
+            "type": "string",
+        },
         "writer": {
             "order": 9,
             "text": _("writer"),
-        }
+        },
     }
-

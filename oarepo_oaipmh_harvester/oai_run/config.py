@@ -18,13 +18,15 @@ OAI_RUN_RECORD_SERVICE_CLASS = OaiRunService
 
 from invenio_i18n import lazy_gettext as _
 
-OAI_RUN_SEARCH ={
+OAI_RUN_SEARCH = {
     "facets": [],
     "sort": ["newest"],
     "sort_default": "newest",
-    "sort_default_no_query": "newest"
+    "sort_default_no_query": "newest",
 }
-OAI_RUN_SORT_OPTIONS = {"newest": dict(
-            title=_("Newest"),
-            fields=["-created"],
-        ),}
+OAI_RUN_SORT_OPTIONS = {
+    "newest": dict(
+        title=_("Newest"),
+        fields=["-created"],
+    ),
+}

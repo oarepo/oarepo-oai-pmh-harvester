@@ -1,5 +1,6 @@
 import marshmallow as ma
-from marshmallow import fields as ma_fields, post_dump
+from marshmallow import fields as ma_fields
+from marshmallow import post_dump
 from marshmallow.fields import String
 from oarepo_runtime.services.schema.marshmallow import BaseRecordSchema, DictOnlySchema
 from oarepo_runtime.services.schema.validation import validate_datetime

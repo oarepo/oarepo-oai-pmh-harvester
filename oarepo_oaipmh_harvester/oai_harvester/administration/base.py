@@ -1,20 +1,20 @@
+from invenio_administration.marshmallow_utils import custom_mapping, vocabulary_schemas
 from invenio_administration.views.base import (
+    AdminFormView,
+    AdminResourceBaseView,
     AdminResourceCreateView,
     AdminResourceDetailView,
     AdminResourceEditView,
     AdminResourceListView,
-    AdminResourceBaseView,
-    AdminFormView,
-    AdminView
+    AdminView,
 )
-
 from marshmallow import fields
 from marshmallow_utils import fields as invenio_fields
-from invenio_administration.marshmallow_utils import custom_mapping, vocabulary_schemas
 
 
 class OarepoAdminFormView(AdminFormView):
     """Basic form view."""
+
     display_edit = False
     display_read = False
     form_fields = None
@@ -36,12 +36,12 @@ class OarepoAdminFormView(AdminFormView):
                 "ui_config": self.form_fields,
             }
         )
-    def _schema_to_json(self, schema, form_fields):
 
+    def _schema_to_json(self, schema, form_fields):
         return jsonify_schema(schema, form_fields)
 
-def find_type_in_mapping(field_type, custom_mapping):
 
+def find_type_in_mapping(field_type, custom_mapping):
     current_type = field_type
     while current_type:
         if current_type in custom_mapping:
@@ -50,12 +50,12 @@ def find_type_in_mapping(field_type, custom_mapping):
 
     raise KeyError(f"Unrecognized field type: {field_type}")
 
+
 def jsonify_schema(schema, form_fields):
     """Marshmallow schema to dict."""
     schema_dict = {}
 
     for field, field_type in schema.fields.items():
-
         if field == "_schema":
             continue
         is_links = isinstance(field_type, invenio_fields.links.Links)
@@ -91,7 +91,8 @@ def jsonify_schema(schema, form_fields):
             schema_dict[field].update(
                 {
                     "type": form_fields[field]["type"],
-                })
+                }
+            )
             continue
         if nested_field:
             if any([isinstance(field_type.schema, x) for x in vocabulary_schemas]):

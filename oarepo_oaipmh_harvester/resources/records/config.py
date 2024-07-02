@@ -1,6 +1,5 @@
-
-from invenio_records_resources.resources.records.config import RecordResourceConfig
 import marshmallow as ma
+from invenio_records_resources.resources.records.config import RecordResourceConfig
 
 
 class HarvestResourceConfig(RecordResourceConfig):

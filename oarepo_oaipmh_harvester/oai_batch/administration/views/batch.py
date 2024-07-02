@@ -3,13 +3,12 @@ from invenio_administration.views.base import (
     AdminResourceDetailView,
     AdminResourceEditView,
     AdminResourceListView,
-    AdminView
+    AdminView,
 )
 from invenio_i18n import lazy_gettext as _
 
 
 class BatchListView(AdminResourceListView):
-
     api_endpoint = "/oai/harvest/batches/"
     extension_name = "oarepo_oaipmh_harvester.oai_batch"
     name = "batches"
@@ -27,7 +26,7 @@ class BatchListView(AdminResourceListView):
     display_edit = False
     item_field_list = {
         "id": {"text": _("Id"), "order": 1},
-        "status" : {"text": _("Status"), "order": 2},
+        "status": {"text": _("Status"), "order": 2},
         "created": {"text": _("Created"), "order": 3},
         "finished": {"text": _("Finished"), "order": 4},
     }
@@ -37,7 +36,6 @@ class BatchListView(AdminResourceListView):
 
 
 class BatchDetailView(AdminResourceDetailView):
-
     url = "/batches/<pid_value>"
     api_endpoint = "/oai/harvest/batches/"
     search_request_headers = {"Accept": "application/json"}
@@ -59,4 +57,3 @@ class BatchDetailView(AdminResourceDetailView):
         "created": {"text": _("Created"), "order": 3},
         "finished": {"text": _("Finished"), "order": 4},
     }
-

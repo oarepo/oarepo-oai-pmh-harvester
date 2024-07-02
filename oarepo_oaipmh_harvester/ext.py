@@ -9,6 +9,7 @@ from oarepo_oaipmh_harvester import cli  # noqa
 from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
 from oarepo_oaipmh_harvester.resources.records.resource import HarvestResource
+
 from . import config
 from .resources.records.config import HarvestResourceConfig
 from .services.records.config import HarvestServiceConfig
@@ -17,6 +18,7 @@ from .services.records.service import HarvestService
 
 class OARepoOAIHarvesterExt(object):
     """extension."""
+
     harvest_resource: HarvestResource = None
 
     def __init__(self, app=None):
@@ -42,8 +44,7 @@ class OARepoOAIHarvesterExt(object):
     def init_resources(self, app):
         """Init resources."""
         self.harvest_resource = HarvestResource(
-            config=HarvestResourceConfig(),
-            service=self.harvest_records_service
+            config=HarvestResourceConfig(), service=self.harvest_records_service
         )
 
     def run(

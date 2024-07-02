@@ -3,13 +3,12 @@ from invenio_administration.views.base import (
     AdminResourceDetailView,
     AdminResourceEditView,
     AdminResourceListView,
-    AdminView
+    AdminView,
 )
 from invenio_i18n import lazy_gettext as _
 
 
 class RunListView(AdminResourceListView):
-
     api_endpoint = "/oai/harvest/runs/"
     extension_name = "oarepo_oaipmh_harvester.oai_run"
     name = "runs"
@@ -35,7 +34,6 @@ class RunListView(AdminResourceListView):
 
 
 class RunDetailView(AdminResourceDetailView):
-
     url = "/runs/<pid_value>"
     api_endpoint = "/oai/harvest/runs/"
     search_request_headers = {"Accept": "application/json"}
@@ -56,4 +54,3 @@ class RunDetailView(AdminResourceDetailView):
         "created": {"text": _("Created"), "order": 2},
         "finished": {"text": _("Finished"), "order": 3},
     }
-

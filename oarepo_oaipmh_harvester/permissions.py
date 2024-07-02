@@ -1,6 +1,6 @@
+from invenio_administration.generators import Administration
 from invenio_records_permissions import RecordPermissionPolicy
 from invenio_records_permissions.generators import SystemProcess
-from invenio_administration.generators import Administration
 
 
 class OAIHarvesterPermissions(RecordPermissionPolicy):
