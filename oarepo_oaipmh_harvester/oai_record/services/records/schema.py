@@ -1,5 +1,5 @@
 import marshmallow as ma
-from marshmallow import fields as ma_fields
+from marshmallow import fields as ma_fields, post_dump
 from marshmallow.fields import String
 from oarepo_runtime.services.schema.marshmallow import BaseRecordSchema, DictOnlySchema
 from oarepo_runtime.services.schema.validation import validate_datetime
@@ -30,6 +30,15 @@ class OaiRecordSchema(BaseRecordSchema):
     run = ma_fields.Nested(lambda: RunSchema(), required=True)
 
     title = ma_fields.String()
+
+    @post_dump
+    def process_transformers(self, data, **kwargs):
+        error_str = ""
+        for e in data["errors"]:
+            error_str = error_str + f'{e["location"]}: {e["message"]}, '
+
+        data["errors"] = error_str
+        return data
 
 
 class BatchSchema(DictOnlySchema):

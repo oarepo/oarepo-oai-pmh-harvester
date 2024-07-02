@@ -8,12 +8,16 @@ from oarepo_runtime.datastreams.datastreams import Signature, SignatureKind
 from oarepo_oaipmh_harvester import cli  # noqa
 from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
-
+from oarepo_oaipmh_harvester.resources.records.resource import HarvestResource
 from . import config
+from .resources.records.config import HarvestResourceConfig
+from .services.records.config import HarvestServiceConfig
+from .services.records.service import HarvestService
 
 
 class OARepoOAIHarvesterExt(object):
     """extension."""
+    harvest_resource: HarvestResource = None
 
     def __init__(self, app=None):
         """Extension initialization."""
@@ -23,8 +27,24 @@ class OARepoOAIHarvesterExt(object):
     def init_app(self, app):
         """Flask application initialization."""
         self.app = app
+        self.init_services(app)
+        self.init_resources(app)
         app.extensions["oarepo_oaipmh_harvester"] = self
         self.load_config(app)
+
+    def init_services(self, app):
+        """Initialize communities service."""
+        # Services
+        self.harvest_records_service = HarvestService(
+            config=HarvestServiceConfig.build(app),
+        )
+
+    def init_resources(self, app):
+        """Init resources."""
+        self.harvest_resource = HarvestResource(
+            config=HarvestResourceConfig(),
+            service=self.harvest_records_service
+        )
 
     def run(
         self,

@@ -19,3 +19,17 @@ OAI_BATCH_RECORD_SERVICE_CONFIG = OaiBatchServiceConfig
 
 
 OAI_BATCH_RECORD_SERVICE_CLASS = OaiBatchService
+
+from invenio_i18n import lazy_gettext as _
+
+OAI_BATCH_SEARCH ={
+    "facets": [],
+    "sort": ["newest"],
+    "sort_default": "newest",
+    "sort_default_no_query": "newest"
+}
+
+OAI_BATCH_SORT_OPTIONS = {"newest": dict(
+            title=_("Newest"),
+            fields=["-created"],
+        ),}

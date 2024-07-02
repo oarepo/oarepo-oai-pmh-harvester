@@ -1,0 +1,62 @@
+
+
+{% extends admin_base_template %}
+
+{% block admin_main_column %}
+  <main id="admin-main-content"
+        class="ten wide mobile twelve wide tablet thirteen wide computer fourteen wide widescreen column">
+
+    <div class="ui container fluid pl-10 pr-10 pt-10 pb-10">
+    <div class="ui grid">
+      <div class="column twelve wide">
+        <h1 class="ui header">{{ title or name }}</h1>
+      </div>
+      <div class="column four wide">
+        {% if display_create %}
+          <div class="ui grid fluid">
+            <div class="three wide column right floated">
+              <a class="ui right floated icon left labeled button green"
+                 href="{{ create_ui_endpoint }}">
+                <i aria-hidden="true"
+                   class="plus icon"></i>{{ _("Create") }}
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+{#      {% block admin_page_content %}#}
+{#        <div class="ui divider" aria-hidden="true"></div>#}
+{##}
+{#        {%- block search_app %}#}
+{#          <div#}
+{#            id="invenio-search-config"#}
+{#            data-title='{{ title | tojson }}'#}
+{#            data-resource-name='{{ resource_name | tojson }}'#}
+{#            data-invenio-search-config='{{ search_config() | tojson }}'#}
+{#            data-fields='{{ fields | tojson }}'#}
+{#            data-display-search='{{ display_search | tojson }}'#}
+{#            data-display-read='{{ display_read | tojson }}'#}
+{#            data-display-edit='{{ display_edit | tojson }}'#}
+{#            data-display-delete='{{ display_delete | tojson }}'#}
+{#            data-resource-schema='{{ resource_schema | tojson }}'#}
+{#            data-actions='{{ actions | tojson }}'#}
+{#            data-api-endpoint='{{ api_endpoint }}'#}
+{#            data-pid-path='{{ pid_path | tojson }}'#}
+{#            data-create-endpoint='{{ create_ui_endpoint }}'#}
+{#            data-list-endpoint='{{ list_ui_endpoint }}'#}
+{#          >#}
+{#          </div>#}
+{#        {%- endblock search_app %}#}
+{#      {% endblock admin_page_content %}#}
+
+
+    </div>
+  </main>
+{% endblock %}
+{##}
+{#{% block javascript %}#}
+{#  {{ super() }}#}
+{#  {{ webpack['oai_harvester_ui_components.js']}}#}
+{#  {{ webpack['oai_harvester_search.js'] }}#}
+{#{% endblock %}#}
