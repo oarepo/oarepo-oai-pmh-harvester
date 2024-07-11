@@ -1,13 +1,5 @@
 from invenio_administration.marshmallow_utils import custom_mapping, vocabulary_schemas
-from invenio_administration.views.base import (
-    AdminFormView,
-    AdminResourceBaseView,
-    AdminResourceCreateView,
-    AdminResourceDetailView,
-    AdminResourceEditView,
-    AdminResourceListView,
-    AdminView,
-)
+from invenio_administration.views.base import AdminFormView
 from marshmallow import fields
 from marshmallow_utils import fields as invenio_fields
 

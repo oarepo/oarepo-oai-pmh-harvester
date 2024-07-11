@@ -1,11 +1,6 @@
 from invenio_administration.views.base import (
-    AdminFormView,
-    AdminResourceBaseView,
-    AdminResourceCreateView,
     AdminResourceDetailView,
-    AdminResourceEditView,
     AdminResourceListView,
-    AdminView,
 )
 from invenio_i18n import lazy_gettext as _
 
@@ -61,7 +56,6 @@ class OaiPmhDetailView(AdminResourceDetailView):
     title = "OAI-PMH Harvesters"
     extension_name = "oarepo_oaipmh_harvester.oai_harvester"
 
-    template = "oai_harvester_ui/oai-details.html"
     display_delete = True
     display_edit = True
 

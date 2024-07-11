@@ -1,9 +1,6 @@
 from invenio_administration.views.base import (
-    AdminResourceCreateView,
     AdminResourceDetailView,
-    AdminResourceEditView,
     AdminResourceListView,
-    AdminView,
 )
 from invenio_i18n import lazy_gettext as _
 
@@ -44,7 +41,6 @@ class BatchDetailView(AdminResourceDetailView):
     title = "OAI-PMH Batch Detail"
     extension_name = "oarepo_oaipmh_harvester.oai_batch"
 
-    template = "oai_harvester_ui/oai-details.html"
     display_delete = False
     display_edit = False
 

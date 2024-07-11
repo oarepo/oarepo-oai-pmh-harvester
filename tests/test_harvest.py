@@ -60,22 +60,18 @@ def test_harvest_synchronous(app, db, client, search_clear):
     assert oai_records.keys() == {"2", "3", "4"}
 
     assert "errors" in oai_records["2"]
-    assert oai_records["2"]["errors"] == [
-        {
-            "code": "MARHSMALLOW",
-            "location": "metadata.title",
-            "message": "Length must be between 1 and 6.",
-        }
-    ]
+    assert (
+        "metadata.title: Length must be between 1 and 6" in oai_records["2"]["errors"]
+    )
+
     assert oai_records["2"]["entry"] == {
         "metadata": {"title": "too long title"},
         "oai": {"harvest": {"datestamp": "2000-01-02", "identifier": "2"}},
     }
 
     assert "errors" in oai_records["3"]
-    assert oai_records["3"]["errors"] == [
-        {"code": "MARHSMALLOW", "location": "extra", "message": "Unknown field."}
-    ]
+    assert "extra: Unknown field" in oai_records["3"]["errors"]
+
     assert oai_records["3"]["entry"] == {
         "extra": "blah",
         "oai": {"harvest": {"datestamp": "2000-01-03", "identifier": "3"}},
@@ -84,16 +80,10 @@ def test_harvest_synchronous(app, db, client, search_clear):
     pprint(oai_records["3"])
 
     assert "errors" in oai_records["4"]
-    assert oai_records["4"]["errors"] == [
-        {
-            "code": "TE",
-            "info": {
-                "transformer-specific-message": "tells transformer to raise error on this record"
-            },
-            "location": "transformer",
-            "message": "Error in transformer",
-        }
-    ]
+    assert (
+        "transformer: Error in transformer - {'transformer-specific-message': 'tells transformer to raise error on this record'}"
+        in oai_records["4"]["errors"]
+    )
     assert oai_records["4"]["entry"] == {
         "oai": {"harvest": {"datestamp": "2000-01-03", "identifier": "4"}},
         "transformer": "tells transformer to raise error on this record",

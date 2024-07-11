@@ -30,6 +30,8 @@ OAI_HARVESTER_SEARCH = {
 }
 from invenio_i18n import lazy_gettext as _
 
+from oarepo_oaipmh_harvester.oai_harvester.services.records import facets
+
 OAI_HARVESTER_FACETS = {
     "batch_size": facets.batch_size,
     "loader": facets.loader,

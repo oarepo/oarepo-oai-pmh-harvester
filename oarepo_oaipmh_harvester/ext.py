@@ -8,8 +8,12 @@ from oarepo_runtime.datastreams.datastreams import Signature, SignatureKind
 from oarepo_oaipmh_harvester import cli  # noqa
 from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
+from oarepo_oaipmh_harvester.resources.records.resource import HarvestResource
 
 from . import config
+from .resources.records.config import HarvestResourceConfig
+from .services.records.config import HarvestServiceConfig
+from .services.records.service import HarvestService
 
 
 class OARepoOAIHarvesterExt(object):

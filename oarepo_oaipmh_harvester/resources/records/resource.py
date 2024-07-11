@@ -1,11 +1,7 @@
-from flask import g
 from flask_resources import resource_requestctx, response_handler, route
 from flask_resources.resources import Resource
 from invenio_records_resources.resources.errors import ErrorHandlersMixin
-from invenio_records_resources.resources.records.resource import (
-    request_headers,
-    request_view_args,
-)
+from invenio_records_resources.resources.records.resource import request_view_args
 
 from oarepo_oaipmh_harvester.tasks import harvest_task
 
