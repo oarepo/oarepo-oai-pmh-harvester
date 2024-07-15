@@ -19,6 +19,8 @@ from .services.records.service import HarvestService
 class OARepoOAIHarvesterExt(object):
     """extension."""
 
+    harvest_resource: HarvestResource = None
+
     def __init__(self, app=None):
         """Extension initialization."""
         if app:
@@ -77,40 +79,43 @@ class OARepoOAIHarvesterExt(object):
         )
 
     def load_config(self, app):
-        app.config.setdefault("DATASTREAMS_READERS", {}).update(
-            config.DATASTREAMS_READERS
+        app.config.setdefault(
+            "DATASTREAMS_READERS", config.DATASTREAMS_READERS
+        )
+        app.config.setdefault(
+            "DATASTREAMS_TRANSFORMERS", config.DATASTREAMS_TRANSFORMERS
+        )
+        app.config.setdefault(
+            "DATASTREAMS_WRITERS", config.DATASTREAMS_WRITERS
+        )
+        app.config.setdefault(
+            "OAREPO_PERMISSIONS_PRESETS", config.OAREPO_PERMISSIONS_PRESETS
+        )
+        app.config.setdefault(
+            "OAI_RUN_SEARCH", config.OAI_RUN_SEARCH
+        )
+        app.config.setdefault(
+            "OAI_RUN_SORT_OPTIONS", config.OAI_RUN_SORT_OPTIONS
+        )
+        app.config.setdefault(
+            "OAI_BATCH_SEARCH", config.OAI_BATCH_SEARCH
+        )
+        app.config.setdefault(
+            "OAI_BATCH_SORT_OPTIONS", config.OAI_BATCH_SORT_OPTIONS
+        )
+        app.config.setdefault(
+            "OAI_HARVESTER_SORT_OPTIONS", config.OAI_HARVESTER_SORT_OPTIONS
+        )
+        app.config.setdefault(
+            "OAI_HARVESTER_SEARCH", config.OAI_HARVESTER_SEARCH
+        )
+        app.config.setdefault(
+            "OAI_RECORD_SEARCH", config.OAI_RECORD_SEARCH
+        )
+        app.config.setdefault(
+            "OAI_RECORD_SORT_OPTIONS", config.OAI_RECORD_SORT_OPTIONS
         )
 
-        app.config.setdefault("DATASTREAMS_TRANSFORMERS", {}).update(
-            config.DATASTREAMS_TRANSFORMERS
-        )
-
-        app.config.setdefault("DATASTREAMS_WRITERS", {}).update(
-            config.DATASTREAMS_WRITERS
-        )
-
-        app.config.setdefault("OAREPO_PERMISSIONS_PRESETS", {}).update(
-            config.OAREPO_PERMISSIONS_PRESETS
-        )
-
-        app.config.setdefault("OAI_RUN_SEARCH", {}).update(config.OAI_RUN_SEARCH)
-        app.config.setdefault("OAI_RUN_SORT_OPTIONS", {}).update(
-            config.OAI_RUN_SORT_OPTIONS
-        )
-        app.config.setdefault("OAI_BATCH_SEARCH", {}).update(config.OAI_BATCH_SEARCH)
-        app.config.setdefault("OAI_BATCH_SORT_OPTIONS", {}).update(
-            config.OAI_BATCH_SORT_OPTIONS
-        )
-        app.config.setdefault("OAI_HARVESTER_SORT_OPTIONS", {}).update(
-            config.OAI_HARVESTER_SORT_OPTIONS
-        )
-        app.config.setdefault("OAI_HARVESTER_SEARCH", {}).update(
-            config.OAI_HARVESTER_SEARCH
-        )
-        app.config.setdefault("OAI_RECORD_SEARCH", {}).update(config.OAI_RECORD_SEARCH)
-        app.config.setdefault("OAI_RECORD_SORT_OPTIONS", {}).update(
-            config.OAI_RECORD_SORT_OPTIONS
-        )
 
 
 def split_processor_name(processor):
