@@ -93,6 +93,25 @@ class OARepoOAIHarvesterExt(object):
             config.OAREPO_PERMISSIONS_PRESETS
         )
 
+        app.config.setdefault("OAI_RUN_SEARCH", {}).update(config.OAI_RUN_SEARCH)
+        app.config.setdefault("OAI_RUN_SORT_OPTIONS", {}).update(
+            config.OAI_RUN_SORT_OPTIONS
+        )
+        app.config.setdefault("OAI_BATCH_SEARCH", {}).update(config.OAI_BATCH_SEARCH)
+        app.config.setdefault("OAI_BATCH_SORT_OPTIONS", {}).update(
+            config.OAI_BATCH_SORT_OPTIONS
+        )
+        app.config.setdefault("OAI_HARVESTER_SORT_OPTIONS", {}).update(
+            config.OAI_HARVESTER_SORT_OPTIONS
+        )
+        app.config.setdefault("OAI_HARVESTER_SEARCH", {}).update(
+            config.OAI_HARVESTER_SEARCH
+        )
+        app.config.setdefault("OAI_RECORD_SEARCH", {}).update(config.OAI_RECORD_SEARCH)
+        app.config.setdefault("OAI_RECORD_SORT_OPTIONS", {}).update(
+            config.OAI_RECORD_SORT_OPTIONS
+        )
+
 
 def split_processor_name(processor):
     if "{" not in processor:

@@ -1,10 +1,12 @@
 import marshmallow as ma
 from marshmallow import fields as ma_fields
-from marshmallow import pre_load
-from oarepo_runtime.services.schema.marshmallow import BaseRecordSchema
+
+from oarepo_oaipmh_harvester.common.services.records.oai_harvester import (
+    BaseOaiHarvesterSchema,
+)
 
 
-class OaiHarvesterSchema(BaseRecordSchema):
+class OaiHarvesterSchema(BaseOaiHarvesterSchema):
     class Meta:
         unknown = ma.RAISE
 
@@ -29,16 +31,3 @@ class OaiHarvesterSchema(BaseRecordSchema):
     transformers = ma_fields.List(ma_fields.String(), required=True)
 
     writer = ma_fields.String()
-
-    @pre_load
-    def process_transformers(self, data, **kwargs):
-        transformers = data.get("transformers")
-        batch_size = data.get("batch_size")
-        max_records = data.get("max_records")
-        if isinstance(transformers, str):
-            data["transformers"] = [item.strip() for item in transformers.split(",")]
-        if batch_size == "":
-            data.pop("batch_size")
-        if max_records == "":
-            data.pop("max_records")
-        return data

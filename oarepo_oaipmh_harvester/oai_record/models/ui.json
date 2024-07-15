@@ -18,6 +18,7 @@
         "batch": {
             "detail": "relation",
             "input": "relation",
+            "required": true,
             "help": "batch.help",
             "label": "batch.label",
             "hint": "batch.hint",
@@ -133,6 +134,7 @@
         "harvester": {
             "detail": "relation",
             "input": "relation",
+            "required": true,
             "help": "harvester.help",
             "label": "harvester.label",
             "hint": "harvester.hint",
@@ -201,9 +203,47 @@
             "hint": "oai_identifier.hint",
             "facet": "oai_identifier"
         },
+        "pid": {
+            "detail": false,
+            "input": false,
+            "help": "pid.help",
+            "label": "pid.label",
+            "hint": "pid.hint",
+            "children": {
+                "obj_type": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/obj_type.help",
+                    "label": "pid/obj_type.label",
+                    "hint": "pid/obj_type.hint"
+                },
+                "pid_type": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/pid_type.help",
+                    "label": "pid/pid_type.label",
+                    "hint": "pid/pid_type.hint"
+                },
+                "pk": {
+                    "detail": "integer",
+                    "input": "integer",
+                    "help": "pid/pk.help",
+                    "label": "pid/pk.label",
+                    "hint": "pid/pk.hint"
+                },
+                "status": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/status.help",
+                    "label": "pid/status.label",
+                    "hint": "pid/status.hint"
+                }
+            }
+        },
         "run": {
             "detail": "relation",
             "input": "relation",
+            "required": true,
             "help": "run.help",
             "label": "run.label",
             "hint": "run.hint",

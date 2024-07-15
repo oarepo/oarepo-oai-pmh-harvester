@@ -22,7 +22,6 @@ class OaiPmhListView(AdminResourceListView):
     icon = "exchange"
     order = 1
     menu_label = "OAI-PMH Harvesters"
-    # template = "oai_harvester_ui/oai-search.html"
 
     display_search = True
     display_delete = True
@@ -38,11 +37,9 @@ class OaiPmhListView(AdminResourceListView):
     }
 
     search_config_name = "OAI_HARVESTER_SEARCH"
-    # search_facets_config_name = "OAI_HARVESTER_FACETS"
     search_sort_config_name = "OAI_HARVESTER_SORT_OPTIONS"
 
     create_view_name = "oaipmh_create"
-    # resource_name = "name"
 
 
 class OaiPmhDetailView(AdminResourceDetailView):
