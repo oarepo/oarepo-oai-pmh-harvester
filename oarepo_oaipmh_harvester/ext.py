@@ -94,7 +94,7 @@ class OARepoOAIHarvesterExt(object):
         app.config.setdefault("OAREPO_PERMISSIONS_PRESETS", {}).update(
             config.OAREPO_PERMISSIONS_PRESETS
         )
-        
+
         app.config.setdefault(
             "OAI_RUN_SEARCH", config.OAI_RUN_SEARCH
         )
