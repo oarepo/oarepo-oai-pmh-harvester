@@ -11,7 +11,7 @@ class OarepoAdminFormView(AdminFormView):
     display_read = False
     form_fields = None
     display_read_only = True
-    
+
     def _schema_to_json(self, schema = None, form_fields = None):
         return jsonify_schema(schema, form_fields)
 
@@ -96,7 +96,7 @@ def jsonify_schema(schema, form_fields):
             schema_dict[field].update(
                 {
                     "type": schema_type,
-                    "properties": jsonify_schema(field_type.schema),
+                    "properties": jsonify_schema(schema, field_type.schema),
                 }
             )
         elif list_field and isinstance(field_type.inner, fields.Nested):
@@ -106,7 +106,7 @@ def jsonify_schema(schema, form_fields):
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "properties": jsonify_schema(field_type.inner.schema),
+                        "properties": jsonify_schema(schema, field_type.inner.schema),
                     },
                 }
             )
