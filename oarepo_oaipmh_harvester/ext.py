@@ -79,18 +79,22 @@ class OARepoOAIHarvesterExt(object):
         )
 
     def load_config(self, app):
-        app.config.setdefault(
-            "DATASTREAMS_READERS", config.DATASTREAMS_READERS
+        app.config.setdefault("DATASTREAMS_READERS", {}).update(
+            config.DATASTREAMS_READERS
         )
-        app.config.setdefault(
-            "DATASTREAMS_TRANSFORMERS", config.DATASTREAMS_TRANSFORMERS
+
+        app.config.setdefault("DATASTREAMS_TRANSFORMERS", {}).update(
+            config.DATASTREAMS_TRANSFORMERS
         )
-        app.config.setdefault(
-            "DATASTREAMS_WRITERS", config.DATASTREAMS_WRITERS
+
+        app.config.setdefault("DATASTREAMS_WRITERS", {}).update(
+            config.DATASTREAMS_WRITERS
         )
-        app.config.setdefault(
-            "OAREPO_PERMISSIONS_PRESETS", config.OAREPO_PERMISSIONS_PRESETS
+
+        app.config.setdefault("OAREPO_PERMISSIONS_PRESETS", {}).update(
+            config.OAREPO_PERMISSIONS_PRESETS
         )
+        
         app.config.setdefault(
             "OAI_RUN_SEARCH", config.OAI_RUN_SEARCH
         )
