@@ -82,6 +82,43 @@
             "hint": "manual.hint",
             "facet": "manual"
         },
+        "pid": {
+            "detail": false,
+            "input": false,
+            "help": "pid.help",
+            "label": "pid.label",
+            "hint": "pid.hint",
+            "children": {
+                "obj_type": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/obj_type.help",
+                    "label": "pid/obj_type.label",
+                    "hint": "pid/obj_type.hint"
+                },
+                "pid_type": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/pid_type.help",
+                    "label": "pid/pid_type.label",
+                    "hint": "pid/pid_type.hint"
+                },
+                "pk": {
+                    "detail": "integer",
+                    "input": "integer",
+                    "help": "pid/pk.help",
+                    "label": "pid/pk.label",
+                    "hint": "pid/pk.hint"
+                },
+                "status": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/status.help",
+                    "label": "pid/status.label",
+                    "hint": "pid/status.hint"
+                }
+            }
+        },
         "records": {
             "detail": "array",
             "input": "array",
@@ -181,6 +218,7 @@
         "run": {
             "detail": "relation",
             "input": "relation",
+            "required": true,
             "help": "run.help",
             "label": "run.label",
             "hint": "run.hint",
@@ -232,6 +270,7 @@
         "status": {
             "detail": "keyword",
             "input": "keyword",
+            "required": true,
             "help": "status.help",
             "label": "status.label",
             "hint": "status.hint",

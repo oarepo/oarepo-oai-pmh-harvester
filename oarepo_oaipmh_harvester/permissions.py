@@ -1,3 +1,4 @@
+from invenio_administration.generators import Administration
 from invenio_records_permissions import RecordPermissionPolicy
 from invenio_records_permissions.generators import AnyUser, SystemProcess
 
@@ -7,10 +8,10 @@ class OAIHarvesterPermissions(RecordPermissionPolicy):
 
     can_search = [SystemProcess(), AnyUser()]
     can_read = [SystemProcess(), AnyUser()]
-    can_create = [SystemProcess()]
-    can_update = [SystemProcess()]
-    can_delete = [SystemProcess()]
-    can_manage = [SystemProcess()]
+    can_create = [SystemProcess(), Administration()]
+    can_update = [SystemProcess(), Administration()]
+    can_delete = [SystemProcess(), Administration()]
+    can_manage = [SystemProcess(), Administration()]
 
     can_create_files = [SystemProcess()]
     can_set_content_files = [SystemProcess()]

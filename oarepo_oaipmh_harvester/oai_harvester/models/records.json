@@ -17,7 +17,7 @@
         "marshmallow": {
             "imports": [],
             "base-classes": [
-                "oarepo_runtime.services.schema.marshmallow.BaseRecordSchema"
+                "oarepo_oaipmh_harvester.common.services.records.oai_harvester.BaseOaiHarvesterSchema"
             ],
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema",
@@ -55,7 +55,7 @@
                 "oarepo_runtime.services.config.service.PermissionsPresetsConfigMixin",
                 "invenio_records_resources.services.RecordServiceConfig{InvenioRecordServiceConfig}"
             ],
-            "result-list-class": "oarepo_runtime.services.results.RecordList"
+            "additional-args": []
         },
         "resource-config": {
             "base-url": "/oai/harvest/harvesters/",
@@ -68,7 +68,8 @@
             "base-classes": [
                 "invenio_records_resources.resources.RecordResourceConfig"
             ],
-            "imports": []
+            "imports": [],
+            "additional-args": []
         },
         "search-options": {
             "base-classes": [
@@ -79,6 +80,7 @@
             "extra-code": "",
             "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.search.OaiHarvesterSearchOptions",
             "imports": [],
+            "fields": {},
             "sort-options-field": "sort_options"
         },
         "module": {
@@ -138,7 +140,8 @@
         "facets": {
             "generate": true,
             "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.facets",
-            "extra-code": ""
+            "extra-code": "",
+            "groups": true
         },
         "record": {
             "generate": true,
@@ -148,7 +151,8 @@
                 "invenio_records_resources.records.api.Record{InvenioRecord}"
             ],
             "imports": [],
-            "extra-code": ""
+            "extra-code": "",
+            "fields": {}
         },
         "resource": {
             "generate": true,
@@ -160,7 +164,8 @@
             "base-classes": [
                 "invenio_records_resources.resources.RecordResource"
             ],
-            "imports": []
+            "imports": [],
+            "additional-args": []
         },
         "saved-model": {
             "file": "oarepo_oaipmh_harvester/oai_harvester/models/records.json",
@@ -233,7 +238,8 @@
             "base-classes": [
                 "invenio_records_resources.services.RecordService{InvenioRecordService}"
             ],
-            "imports": []
+            "imports": [],
+            "additional-args": []
         },
         "json-serializer": {
             "module": "oarepo_oaipmh_harvester.oai_harvester.resources.records.ui",
@@ -245,7 +251,11 @@
             "extra-code": "",
             "generate": true,
             "list_schema_cls": "flask_resources.BaseListSchema",
-            "format_serializer_cls": "flask_resources.serializers.JSONSerializer"
+            "format_serializer_cls": "flask_resources.serializers.JSONSerializer",
+            "schema-context-args": {
+                "\"object_key\"": "\"ui\"",
+                "\"identity\"": "{{ flask.g{g.identity} }}"
+            }
         },
         "translations": {
             "module": "oarepo_oaipmh_harvester.oai_harvester.translations",
@@ -256,7 +266,8 @@
             "alias": "oarepo-oaipmh-harvester",
             "module": "oarepo_oaipmh_harvester.oai_harvester.records.mappings",
             "index": "oarepo-oaipmh-harvester-oai_harvester-1.0.0",
-            "file": "oarepo_oaipmh_harvester/oai_harvester/records/mappings/os-v2/oarepo-oaipmh-harvester/oai_harvester-1.0.0.json"
+            "file": "oarepo_oaipmh_harvester/oai_harvester/records/mappings/os-v2/oarepo-oaipmh-harvester/oai_harvester-1.0.0.json",
+            "index-field-args": []
         },
         "edtf-interval-dumper": {
             "generate": true,
@@ -267,6 +278,28 @@
             ],
             "extra-code": "",
             "extensions": [],
+            "imports": []
+        },
+        "record-list": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.results",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.results.OaiHarvesterRecordList",
+            "extra-code": "",
+            "base-classes": [
+                "oarepo_runtime.services.results.RecordList"
+            ],
+            "components": [],
+            "imports": []
+        },
+        "record-item": {
+            "generate": true,
+            "module": "oarepo_oaipmh_harvester.oai_harvester.services.records.results",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.results.OaiHarvesterRecordItem",
+            "extra-code": "",
+            "base-classes": [
+                "oarepo_runtime.services.results.RecordItem"
+            ],
+            "components": [],
             "imports": []
         },
         "sortable": [],
@@ -383,6 +416,62 @@
                 },
                 "label.cs": "Název harvestru",
                 "label.en": "Harvester name"
+            },
+            "pid": {
+                "type": "object",
+                "facets": {
+                    "searchable": true,
+                    "facet": false
+                },
+                "ui": {
+                    "marshmallow": {
+                        "generate": false,
+                        "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.ui_schema.FakeUIPIDSchema",
+                        "skip": true,
+                        "read": false,
+                        "write": false
+                    }
+                },
+                "marshmallow": {
+                    "generate": false,
+                    "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema.FakePIDSchema",
+                    "skip": true,
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
+                },
+                "properties": {
+                    "obj_type": {
+                        "type": "keyword",
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        }
+                    },
+                    "pid_type": {
+                        "type": "keyword",
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        }
+                    },
+                    "pk": {
+                        "type": "integer",
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        }
+                    },
+                    "status": {
+                        "type": "keyword",
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        }
+                    }
+                }
             },
             "setspecs": {
                 "type": "keyword",

@@ -1,11 +1,15 @@
 import marshmallow as ma
 from marshmallow import fields as ma_fields
 from marshmallow.fields import String
-from oarepo_runtime.services.schema.marshmallow import BaseRecordSchema, DictOnlySchema
+from oarepo_runtime.services.schema.marshmallow import DictOnlySchema
 from oarepo_runtime.services.schema.validation import validate_datetime
 
+from oarepo_oaipmh_harvester.common.services.records.oai_record import (
+    BaseOaiRecordSchema,
+)
 
-class OaiRecordSchema(BaseRecordSchema):
+
+class OaiRecordSchema(BaseOaiRecordSchema):
     class Meta:
         unknown = ma.RAISE
 

@@ -18,6 +18,8 @@ record:
 
   record:
     class: oarepo_oaipmh_harvester.oai_record.records.api.OaiRecord
+  marshmallow:
+    base-classes: ['oarepo_oaipmh_harvester.common.services.records.oai_record.BaseOaiRecordSchema']
 
   properties:
     run:

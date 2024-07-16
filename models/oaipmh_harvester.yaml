@@ -16,7 +16,8 @@ record:
   resource-config:
     base-url: /oai/harvest/harvesters/
     base-html-url: /oai/harvest/harvesters/
-
+  marshmallow:
+    base-classes: [ 'oarepo_oaipmh_harvester.common.services.records.oai_harvester.BaseOaiHarvesterSchema' ]
   properties:
     code: 
       label.cs: Interní kód

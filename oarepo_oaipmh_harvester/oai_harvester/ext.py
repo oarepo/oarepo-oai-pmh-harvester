@@ -5,7 +5,9 @@ from oarepo_oaipmh_harvester.oai_harvester import config
 
 
 class Oai_harvesterExt:
+
     def __init__(self, app=None):
+
         if app:
             self.init_app(app)
 
@@ -17,13 +19,19 @@ class Oai_harvesterExt:
             self.register_flask_extension(app)
 
     def register_flask_extension(self, app):
+
         app.extensions["oarepo_oaipmh_harvester.oai_harvester"] = self
 
     def init_config(self, app):
         """Initialize configuration."""
         for identifier in dir(config):
             if re.match("^[A-Z_0-9]*$", identifier) and not identifier.startswith("_"):
-                app.config.setdefault(identifier, getattr(config, identifier))
+                if isinstance(app.config.get(identifier), list):
+                    app.config[identifier] += getattr(config, identifier)
+                elif isinstance(app.config.get(identifier), dict):
+                    app.config[identifier].update(getattr(config, identifier))
+                else:
+                    app.config.setdefault(identifier, getattr(config, identifier))
 
     def is_inherited(self):
         from importlib_metadata import entry_points

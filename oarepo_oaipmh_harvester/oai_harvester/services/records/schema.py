@@ -1,9 +1,12 @@
 import marshmallow as ma
 from marshmallow import fields as ma_fields
-from oarepo_runtime.services.schema.marshmallow import BaseRecordSchema
+
+from oarepo_oaipmh_harvester.common.services.records.oai_harvester import (
+    BaseOaiHarvesterSchema,
+)
 
 
-class OaiHarvesterSchema(BaseRecordSchema):
+class OaiHarvesterSchema(BaseOaiHarvesterSchema):
     class Meta:
         unknown = ma.RAISE
 

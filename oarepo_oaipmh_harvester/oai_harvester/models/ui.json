@@ -18,6 +18,7 @@
         "baseurl": {
             "detail": "url",
             "input": "url",
+            "required": true,
             "help": "baseurl.help",
             "label": "baseurl.label",
             "hint": "baseurl.hint"
@@ -33,6 +34,7 @@
         "code": {
             "detail": "keyword",
             "input": "keyword",
+            "required": true,
             "help": "code.help",
             "label": "code.label",
             "hint": "code.hint"
@@ -77,6 +79,7 @@
         "metadataprefix": {
             "detail": "keyword",
             "input": "keyword",
+            "required": true,
             "help": "metadataprefix.help",
             "label": "metadataprefix.label",
             "hint": "metadataprefix.hint",
@@ -85,13 +88,52 @@
         "name": {
             "detail": "keyword",
             "input": "keyword",
+            "required": true,
             "help": "name.help",
             "label": "name.label",
             "hint": "name.hint"
         },
+        "pid": {
+            "detail": false,
+            "input": false,
+            "help": "pid.help",
+            "label": "pid.label",
+            "hint": "pid.hint",
+            "children": {
+                "obj_type": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/obj_type.help",
+                    "label": "pid/obj_type.label",
+                    "hint": "pid/obj_type.hint"
+                },
+                "pid_type": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/pid_type.help",
+                    "label": "pid/pid_type.label",
+                    "hint": "pid/pid_type.hint"
+                },
+                "pk": {
+                    "detail": "integer",
+                    "input": "integer",
+                    "help": "pid/pk.help",
+                    "label": "pid/pk.label",
+                    "hint": "pid/pk.hint"
+                },
+                "status": {
+                    "detail": "keyword",
+                    "input": "keyword",
+                    "help": "pid/status.help",
+                    "label": "pid/status.label",
+                    "hint": "pid/status.hint"
+                }
+            }
+        },
         "setspecs": {
             "detail": "keyword",
             "input": "keyword",
+            "required": true,
             "help": "setspecs.help",
             "label": "setspecs.label",
             "hint": "setspecs.hint",
@@ -100,6 +142,7 @@
         "transformers": {
             "detail": "array",
             "input": "array",
+            "required": true,
             "help": "transformers.help",
             "label": "transformers.label",
             "hint": "transformers.hint",

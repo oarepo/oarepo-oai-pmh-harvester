@@ -15,11 +15,14 @@ class OaiHarvesterIdProvider(RecordIdProviderV2):
 
 
 class OaiHarvesterRecord(InvenioRecord):
+
     model_cls = OaiHarvesterMetadata
 
     schema = ConstantField("$schema", "local://oai_harvester-1.0.0.json")
 
-    index = IndexField("oarepo-oaipmh-harvester-oai_harvester-1.0.0")
+    index = IndexField(
+        "oarepo-oaipmh-harvester-oai_harvester-1.0.0",
+    )
 
     pid = PIDField(
         provider=OaiHarvesterIdProvider, context_cls=PIDFieldContext, create=True

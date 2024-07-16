@@ -6,11 +6,14 @@ from invenio_records_resources.services import pagination_links
 from invenio_records_resources.services.records.components import DataComponent
 from oarepo_runtime.services.config.service import PermissionsPresetsConfigMixin
 from oarepo_runtime.services.relations.components import CachingRelationsComponent
-from oarepo_runtime.services.results import RecordList
 
 from oarepo_oaipmh_harvester.oai_batch.records.api import OaiBatchRecord
 from oarepo_oaipmh_harvester.oai_batch.services.records.permissions import (
     OaiBatchPermissionPolicy,
+)
+from oarepo_oaipmh_harvester.oai_batch.services.records.results import (
+    OaiBatchRecordItem,
+    OaiBatchRecordList,
 )
 from oarepo_oaipmh_harvester.oai_batch.services.records.schema import OaiBatchSchema
 from oarepo_oaipmh_harvester.oai_batch.services.records.search import (
@@ -21,7 +24,9 @@ from oarepo_oaipmh_harvester.oai_batch.services.records.search import (
 class OaiBatchServiceConfig(PermissionsPresetsConfigMixin, InvenioRecordServiceConfig):
     """OaiBatchRecord service config."""
 
-    result_list_cls = RecordList
+    result_item_cls = OaiBatchRecordItem
+
+    result_list_cls = OaiBatchRecordList
 
     PERMISSIONS_PRESETS = ["oai_harvester"]
 

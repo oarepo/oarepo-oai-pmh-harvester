@@ -17,11 +17,14 @@ class OaiRecordIdProvider(RecordIdProviderV2):
 
 
 class OaiRecord(InvenioRecord):
+
     model_cls = OaiRecordMetadata
 
     schema = ConstantField("$schema", "local://oai_record-1.0.0.json")
 
-    index = IndexField("oarepo-oaipmh-record-oai_record-1.0.0")
+    index = IndexField(
+        "oarepo-oaipmh-record-oai_record-1.0.0",
+    )
 
     pid = PIDField(
         provider=OaiRecordIdProvider, context_cls=PIDFieldContext, create=True

@@ -15,11 +15,14 @@ class OaiRunIdProvider(RecordIdProviderV2):
 
 
 class OaiRunRecord(InvenioRecord):
+
     model_cls = OaiRunMetadata
 
     schema = ConstantField("$schema", "local://oai_run-1.0.0.json")
 
-    index = IndexField("oarepo-oaipmh-run-oai_run-1.0.0")
+    index = IndexField(
+        "oarepo-oaipmh-run-oai_run-1.0.0",
+    )
 
     pid = PIDField(provider=OaiRunIdProvider, context_cls=PIDFieldContext, create=True)
 
