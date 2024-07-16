@@ -11,6 +11,9 @@ class OarepoAdminFormView(AdminFormView):
     display_read = False
     form_fields = None
     display_read_only = True
+    
+    def _schema_to_json(self, schema = None, form_fields = None):
+        return jsonify_schema(schema, form_fields)
 
     def get(self, pid_value=None):
         """GET view method."""
@@ -29,8 +32,6 @@ class OarepoAdminFormView(AdminFormView):
             }
         )
 
-    def _schema_to_json(self, schema = None, form_fields = None):
-        return jsonify_schema(schema, form_fields)
 
 
 def find_type_in_mapping(field_type, custom_mapping):
