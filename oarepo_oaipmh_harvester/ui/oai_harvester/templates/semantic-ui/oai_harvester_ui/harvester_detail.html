@@ -11,7 +11,31 @@
 {% block page_title %}
 
   {{ go_back() }}
+{% set current_url = request.url %}
+{% set base_url = current_url.split('/administration/harvesters/' + pid)[0] %}
+{% set harvest_url = base_url + '/api/harvest/' + pid + '/execute' %}
 
+
+<style>
+    .custom-button {
+        background-color: #a333c8;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-left: 3%;
+        margin-bottom: 50px;
+
+    }
+</style>
+
+
+
+<button id="harvest-button" class="custom-button">
+    <a href="{{ harvest_url }}" target="_blank" style="text-decoration: none; color: inherit;">Harvest</a>
+</button>
 {% endblock page_title %}
 {% block admin_page_content %}
 
