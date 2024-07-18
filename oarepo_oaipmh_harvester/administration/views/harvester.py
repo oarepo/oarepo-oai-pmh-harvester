@@ -52,6 +52,7 @@ class OaiPmhDetailView(AdminResourceDetailView):
     resource_config = "resource_records"
     title = "OAI-PMH Harvesters"
     extension_name = "oarepo_oaipmh_harvester.oai_harvester"
+    template = "oai_harvester_ui/harvester_detail.html"
 
     display_delete = True
     display_edit = True
