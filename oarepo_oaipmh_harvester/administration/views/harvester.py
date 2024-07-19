@@ -23,6 +23,10 @@ class OaiPmhListView(AdminResourceListView):
     order = 1
     menu_label = "OAI-PMH Harvesters"
 
+    actions = {
+        "harvest": {"text": "Run harvest", "order": 1, "payload_schema": None}
+    }
+
     display_search = True
     display_delete = True
     display_create = True
@@ -33,7 +37,8 @@ class OaiPmhListView(AdminResourceListView):
         "code": {"text": _("Code"), "order": 2},
         "baseurl": {"text": _("Base URL"), "order": 3},
         "metadataprefix": {"text": _("Metadata prefix"), "order": 4},
-        "created": {"text": _("Created"), "order": 5},
+        # commented to keep the results short
+        # "created": {"text": _("Created"), "order": 5},
     }
 
     search_config_name = "OAI_HARVESTER_SEARCH"
@@ -52,7 +57,6 @@ class OaiPmhDetailView(AdminResourceDetailView):
     resource_config = "resource_records"
     title = "OAI-PMH Harvesters"
     extension_name = "oarepo_oaipmh_harvester.oai_harvester"
-    template = "oai_harvester_ui/harvester_detail.html"
 
     display_delete = True
     display_edit = True

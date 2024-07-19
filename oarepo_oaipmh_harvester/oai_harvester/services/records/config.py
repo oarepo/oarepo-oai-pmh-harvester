@@ -60,6 +60,7 @@ class OaiHarvesterServiceConfig(
         return {
             "self": RecordLink("{+api}/oai/harvest/harvesters/{id}"),
             "self_html": RecordLink("{+ui}/oai/harvest/harvesters/{id}"),
+            "harvest": RecordLink("{+api}/oai/harvest/harvesters/{id}/harvest"),
         }
 
     @property

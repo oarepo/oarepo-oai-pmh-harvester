@@ -12,6 +12,12 @@ class OaiHarvesterResourceConfig(RecordResourceConfig):
 
     blueprint_name = "oarepo-oaipmh-harvester"
     url_prefix = "/oai/harvest/harvesters/"
+    api_service = "oarepo-oaipmh-harvesters"
+    routes = {
+        "list": "",
+        "item": "/<pid_value>",
+        "harvest": "/<pid_value>/harvest",
+    }
 
     @property
     def response_handlers(self):
