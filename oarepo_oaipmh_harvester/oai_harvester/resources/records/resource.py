@@ -25,7 +25,10 @@ class OaiHarvesterResource(RecordResource):
     @administration_permission.require(http_exception=403)
     @response_handler(many=True)
     def harvest(self, *args, **kwargs):
-        harvester = self.api_service.read(g.identity, resource_requestctx.view_args["pid_value"])
-        harvest_task.delay(harvester.to_dict())
+        if self.service.check_permission(g.identity, "create"):
+            harvester = self.api_service.read(g.identity, resource_requestctx.view_args["pid_value"])
+            harvest_task.delay(harvester.to_dict())
 
-        return "Harvesting started on the background", 200
+            return "Harvesting started on the background.", 200
+        else:
+            return "Permission denied.", 403
