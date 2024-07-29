@@ -1,5 +1,6 @@
 from flask_resources import resource_requestctx, response_handler, route
 from invenio_administration.permissions import administration_permission
+from invenio_records_resources.resources import RecordResource
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.resources.records.resource import request_view_args
 
