@@ -12,12 +12,12 @@ def extra_entry_points():
 def app_config(app_config):
     app_config["I18N_LANGUAGES"] = [("cs", "Czech")]
     app_config["BABEL_DEFAULT_LOCALE"] = "en"
-    app_config["RECORDS_REFRESOLVER_CLS"] = (
-        "invenio_records.resolver.InvenioRefResolver"
-    )
-    app_config["RECORDS_REFRESOLVER_STORE"] = (
-        "invenio_jsonschemas.proxies.current_refresolver_store"
-    )
+    app_config[
+        "RECORDS_REFRESOLVER_CLS"
+    ] = "invenio_records.resolver.InvenioRefResolver"
+    app_config[
+        "RECORDS_REFRESOLVER_STORE"
+    ] = "invenio_jsonschemas.proxies.current_refresolver_store"
 
     app_config["DATASTREAMS_READERS"] = {
         "file": "tests.datastreams:MockOAIReader",

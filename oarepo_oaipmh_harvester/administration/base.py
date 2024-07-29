@@ -12,7 +12,7 @@ class OarepoAdminFormView(AdminFormView):
     form_fields = None
     display_read_only = True
 
-    def _schema_to_json(self, schema = None, form_fields = None):
+    def _schema_to_json(self, schema=None, form_fields=None):
         return jsonify_schema(schema, form_fields)
 
     def get(self, pid_value=None):
@@ -31,7 +31,6 @@ class OarepoAdminFormView(AdminFormView):
                 "ui_config": self.form_fields,
             }
         )
-
 
 
 def find_type_in_mapping(field_type, custom_mapping):

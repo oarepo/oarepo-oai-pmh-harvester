@@ -5,9 +5,7 @@ from oarepo_oaipmh_harvester.oai_record import config
 
 
 class Oai_recordExt:
-
     def __init__(self, app=None):
-
         if app:
             self.init_app(app)
 
@@ -19,7 +17,6 @@ class Oai_recordExt:
             self.register_flask_extension(app)
 
     def register_flask_extension(self, app):
-
         app.extensions["oarepo_oaipmh_harvester.oai_record"] = self
 
     def init_config(self, app):

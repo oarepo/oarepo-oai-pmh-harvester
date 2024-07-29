@@ -16,7 +16,6 @@ class OaiBatchIdProvider(RecordIdProviderV2):
 
 
 class OaiBatchRecord(InvenioRecord):
-
     model_cls = OaiBatchMetadata
 
     schema = ConstantField("$schema", "local://oai_batch-1.0.0.json")

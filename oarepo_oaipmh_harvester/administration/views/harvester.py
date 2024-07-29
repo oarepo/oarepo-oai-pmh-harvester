@@ -23,9 +23,7 @@ class OaiPmhListView(AdminResourceListView):
     order = 1
     menu_label = "OAI-PMH Harvesters"
 
-    actions = {
-        "harvest": {"text": "Run harvest", "order": 1, "payload_schema": None}
-    }
+    actions = {"harvest": {"text": "Run harvest", "order": 1, "payload_schema": None}}
 
     display_search = True
     display_delete = True

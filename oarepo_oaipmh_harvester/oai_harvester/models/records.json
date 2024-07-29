@@ -57,17 +57,30 @@
             ],
             "additional-args": []
         },
+        "resource": {
+            "base-classes": [
+                "oarepo_oaipmh_harvester.common.resources.records.harvester_resource.OaiHarvesterBaseResource"
+            ],
+            "generate": true,
+            "config-key": "OAI_HARVESTER_RECORD_RESOURCE_CLASS",
+            "module": "oarepo_oaipmh_harvester.oai_harvester.resources.records.resource",
+            "class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.resource.OaiHarvesterResource",
+            "proxy": "current_resource",
+            "extra-code": "",
+            "imports": [],
+            "additional-args": []
+        },
         "resource-config": {
             "base-url": "/oai/harvest/harvesters/",
             "base-html-url": "/oai/harvest/harvesters/",
+            "base-classes": [
+                "oarepo_oaipmh_harvester.common.resources.records.harvester_config.OaiHarvesterBaseResourceConfig"
+            ],
             "generate": true,
             "config-key": "OAI_HARVESTER_RECORD_RESOURCE_CONFIG",
             "module": "oarepo_oaipmh_harvester.oai_harvester.resources.records.config",
             "class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.config.OaiHarvesterResourceConfig",
             "extra-code": "",
-            "base-classes": [
-                "invenio_records_resources.resources.RecordResourceConfig"
-            ],
             "imports": [],
             "additional-args": []
         },
@@ -153,19 +166,6 @@
             "imports": [],
             "extra-code": "",
             "fields": {}
-        },
-        "resource": {
-            "generate": true,
-            "config-key": "OAI_HARVESTER_RECORD_RESOURCE_CLASS",
-            "module": "oarepo_oaipmh_harvester.oai_harvester.resources.records.resource",
-            "class": "oarepo_oaipmh_harvester.oai_harvester.resources.records.resource.OaiHarvesterResource",
-            "proxy": "current_resource",
-            "extra-code": "",
-            "base-classes": [
-                "invenio_records_resources.resources.RecordResource"
-            ],
-            "imports": [],
-            "additional-args": []
         },
         "saved-model": {
             "file": "oarepo_oaipmh_harvester/oai_harvester/models/records.json",
