@@ -16,6 +16,9 @@ record:
   resource-config:
     base-url: /oai/harvest/harvesters/
     base-html-url: /oai/harvest/harvesters/
+    base-classes: ['oarepo_oaipmh_harvester.common.resources.records.harvester_config.OaiHarvesterBaseResourceConfig']
+  resource:
+    base-classes: ['oarepo_oaipmh_harvester.common.resources.records.harvester_resource.OaiHarvesterBaseResource']
   marshmallow:
     base-classes: [ 'oarepo_oaipmh_harvester.common.services.records.oai_harvester.BaseOaiHarvesterSchema' ]
   properties:

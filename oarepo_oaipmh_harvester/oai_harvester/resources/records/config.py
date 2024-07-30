@@ -1,23 +1,19 @@
 import importlib_metadata
 from flask_resources import ResponseHandler
-from invenio_records_resources.resources import RecordResourceConfig
 
+from oarepo_oaipmh_harvester.common.resources.records.harvester_config import (
+    OaiHarvesterBaseResourceConfig,
+)
 from oarepo_oaipmh_harvester.oai_harvester.resources.records.ui import (
     OaiHarvesterUIJSONSerializer,
 )
 
 
-class OaiHarvesterResourceConfig(RecordResourceConfig):
+class OaiHarvesterResourceConfig(OaiHarvesterBaseResourceConfig):
     """OaiHarvesterRecord resource config."""
 
     blueprint_name = "oarepo-oaipmh-harvester"
     url_prefix = "/oai/harvest/harvesters/"
-    api_service = "oarepo-oaipmh-harvesters"
-    routes = {
-        "list": "",
-        "item": "/<pid_value>",
-        "harvest": "/<pid_value>/harvest",
-    }
 
     @property
     def response_handlers(self):
