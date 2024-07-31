@@ -1,7 +1,9 @@
-from invenio_records_resources.resources import RecordResource
+from oarepo_oaipmh_harvester.common.resources.records.harvester_resource import (
+    OaiHarvesterBaseResource,
+)
 
 
-class OaiHarvesterResource(RecordResource):
+class OaiHarvesterResource(OaiHarvesterBaseResource):
     """OaiHarvesterRecord resource."""
 
     # here you can for example redefine
