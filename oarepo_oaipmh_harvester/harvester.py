@@ -124,7 +124,10 @@ def harvest(
         for transformer in harvester["transformers"]
     ]
 
-    writer_signature = current_harvester.get_writer_signature(harvester["writer"])
+    writers_signatures = [
+        current_harvester.get_writer_signature(writer)
+        for writer in harvester["writers"]
+    ]
 
     t: Signature
     for t in transformers_signatures:
@@ -139,10 +142,10 @@ def harvest(
             manual=run_manual,
         )
         transformers_signatures.append(t)
-    t.kwargs["harvested_record_service"] = writer_signature.kwargs["service"]
+    t.kwargs["harvested_record_service"] = writers_signatures[0].kwargs["service"]
 
     writers_config = [
-        writer_signature,
+        *writers_signatures,
         current_harvester.get_writer_signature(
             "oai",
             oai_config=dict(harvester),
