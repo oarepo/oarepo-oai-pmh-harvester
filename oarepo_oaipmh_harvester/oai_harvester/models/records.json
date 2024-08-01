@@ -508,13 +508,16 @@
                     "skip": true
                 }
             },
-            "writer": {
-                "type": "keyword",
+            "writers": {
+                "type": "array",
                 "facets": {
                     "facet": false
                 },
                 "label.cs": "Cíl zápisu",
-                "label.en": "Write target"
+                "label.en": "Write target",
+                "items": {
+                    "type": "keyword"
+                }
             }
         }
     }

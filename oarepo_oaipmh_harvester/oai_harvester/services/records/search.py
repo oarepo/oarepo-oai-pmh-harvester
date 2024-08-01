@@ -15,5 +15,6 @@ class OaiHarvesterSearchOptions(SearchOptions):
         "metadataprefix": facets.metadataprefix,
         "setspecs": facets.setspecs,
         "transformers": facets.transformers,
+        "writers": facets.writers,
         **getattr(SearchOptions, "facets", {}),
     }

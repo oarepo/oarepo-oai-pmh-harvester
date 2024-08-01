@@ -30,4 +30,4 @@ class OaiHarvesterSchema(BaseOaiHarvesterSchema):
 
     transformers = ma_fields.List(ma_fields.String(), required=True)
 
-    writer = ma_fields.String()
+    writers = ma_fields.List(ma_fields.String())

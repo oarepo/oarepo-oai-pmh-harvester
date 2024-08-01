@@ -396,8 +396,8 @@
             "context": {
                 "type": "flat_object",
                 "mapping": {
-                    "enabled": false,
-                    "type": "object"
+                    "type": "object",
+                    "enabled": false
                 },
                 "label.cs": "Kontext",
                 "label.en": "Context"
@@ -430,8 +430,8 @@
             "entry": {
                 "type": "flat_object",
                 "mapping": {
-                    "enabled": false,
-                    "type": "object"
+                    "type": "object",
+                    "enabled": false
                 },
                 "label.cs": "Položka",
                 "label.en": "Entry"

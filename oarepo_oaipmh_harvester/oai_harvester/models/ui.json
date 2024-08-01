@@ -162,12 +162,20 @@
             "label": "updated.label",
             "hint": "updated.hint"
         },
-        "writer": {
-            "detail": "keyword",
-            "input": "keyword",
-            "help": "writer.help",
-            "label": "writer.label",
-            "hint": "writer.hint"
+        "writers": {
+            "detail": "array",
+            "input": "array",
+            "help": "writers.help",
+            "label": "writers.label",
+            "hint": "writers.hint",
+            "child": {
+                "detail": "keyword",
+                "input": "keyword",
+                "help": "writers.help",
+                "label": "writers.label",
+                "hint": "writers.hint",
+                "facet": "writers"
+            }
         }
     }
 }
