@@ -8,7 +8,7 @@ from invenio_i18n import lazy_gettext as _
 class RunListView(AdminResourceListView):
     api_endpoint = "/oai/harvest/runs/"
     extension_name = "oarepo_oaipmh_harvester.oai_run"
-    name = "runs"
+    name = "oarepo_oaipmh_runs"
     menu_label = "OAI-PMH Runs"
     resource_config = "resource_records"
     search_request_headers = {"Accept": "application/json"}
@@ -34,7 +34,7 @@ class RunDetailView(AdminResourceDetailView):
     url = "/runs/<pid_value>"
     api_endpoint = "/oai/harvest/runs/"
     search_request_headers = {"Accept": "application/json"}
-    name = "OAI-PMH Runs detail"
+    name = "oarepo_oaipmh_run_detail"
     resource_config = "resource_records"
     title = "OAI-PMH Runs Detail"
     extension_name = "oarepo_oaipmh_harvester.oai_run"
@@ -42,7 +42,7 @@ class RunDetailView(AdminResourceDetailView):
     display_delete = False
     display_edit = False
 
-    list_view_name = "runs"
+    list_view_name = "oarepo_oaipmh_runs"
     pid_path = "id"
 
     item_field_list = {

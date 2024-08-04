@@ -8,7 +8,7 @@ from invenio_i18n import lazy_gettext as _
 class BatchListView(AdminResourceListView):
     api_endpoint = "/oai/harvest/batches/"
     extension_name = "oarepo_oaipmh_harvester.oai_batch"
-    name = "batches"
+    name = "oarepo_oaipmh_batches"
     menu_label = "OAI-PMH Batches"
     resource_config = "resource_records"
     search_request_headers = {"Accept": "application/json"}
@@ -36,7 +36,7 @@ class BatchDetailView(AdminResourceDetailView):
     url = "/batches/<pid_value>"
     api_endpoint = "/oai/harvest/batches/"
     search_request_headers = {"Accept": "application/json"}
-    name = "OAI-PMH Batch detail"
+    name = "oarepo_oaipmh_batch_detail"
     resource_config = "resource_records"
     title = "OAI-PMH Batch Detail"
     extension_name = "oarepo_oaipmh_harvester.oai_batch"
@@ -44,7 +44,7 @@ class BatchDetailView(AdminResourceDetailView):
     display_delete = False
     display_edit = False
 
-    list_view_name = "batches"
+    list_view_name = "oarepo_oaipmh_batches"
     pid_path = "id"
 
     item_field_list = {
