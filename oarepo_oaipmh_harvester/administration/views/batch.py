@@ -9,6 +9,7 @@ class BatchListView(AdminResourceListView):
     api_endpoint = "/oai/harvest/batches/"
     extension_name = "oarepo_oaipmh_harvester.oai_batch"
     name = "oarepo_oaipmh_batches"
+    url = "/oarepo/batches"
     menu_label = "OAI-PMH Batches"
     resource_config = "resource_records"
     search_request_headers = {"Accept": "application/json"}
@@ -33,7 +34,7 @@ class BatchListView(AdminResourceListView):
 
 
 class BatchDetailView(AdminResourceDetailView):
-    url = "/batches/<pid_value>"
+    url = "/oarepo/batches/<pid_value>"
     api_endpoint = "/oai/harvest/batches/"
     search_request_headers = {"Accept": "application/json"}
     name = "oarepo_oaipmh_batch_detail"
