@@ -78,8 +78,8 @@ record:
 
     # the writer is a string in format writer_name{optional_yaml_dict_of_parameters}
     writers[]:
-      ^label.cs: Cíl zápisu
-      ^label.en: Write target
+      ^label.cs: Cíle zápisu
+      ^label.en: Write targets
       type: keyword
       ^facets:
         facet: false
