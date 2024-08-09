@@ -145,7 +145,7 @@ def harvest(
 
     for writer_signature in writers_signatures:
         if writer_signature.name == "service":
-            t.kwargs["harvested_record_service"] = writers_signatures.kwargs["service"]
+            t.kwargs["harvested_record_service"] = writer_signature.kwargs["service"]
 
     writers_config = [
         *writers_signatures,
