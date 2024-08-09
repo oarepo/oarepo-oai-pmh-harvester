@@ -142,7 +142,10 @@ def harvest(
             manual=run_manual,
         )
         transformers_signatures.append(t)
-    t.kwargs["harvested_record_service"] = writers_signatures[0].kwargs["service"]
+
+    for writer_signature in writers_signatures:
+        if writer_signature.name == "service":
+            t.kwargs["harvested_record_service"] = writers_signatures.kwargs["service"]
 
     writers_config = [
         *writers_signatures,
