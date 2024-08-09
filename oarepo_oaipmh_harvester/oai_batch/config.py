@@ -1,3 +1,4 @@
+from oarepo_oaipmh_harvester.oai_batch.records.api import OaiBatchRecord
 from oarepo_oaipmh_harvester.oai_batch.resources.records.config import (
     OaiBatchResourceConfig,
 )
@@ -19,3 +20,6 @@ OAI_BATCH_RECORD_SERVICE_CONFIG = OaiBatchServiceConfig
 
 
 OAI_BATCH_RECORD_SERVICE_CLASS = OaiBatchService
+
+
+OAREPO_PRIMARY_RECORD_SERVICE = {OaiBatchRecord: "oarepo-oaipmh-batches"}

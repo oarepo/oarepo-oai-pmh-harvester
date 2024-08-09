@@ -176,6 +176,10 @@
             "module": "oarepo_oaipmh_harvester.oai_record.proxies",
             "generate": true
         },
+        "translations": {
+            "module": "oarepo_oaipmh_harvester.oai_record.translations",
+            "alias": "oarepo-oaipmh-record"
+        },
         "json-schema-settings": {
             "generate": true,
             "alias": "oarepo-oaipmh-record",
@@ -256,10 +260,6 @@
                 "\"object_key\"": "\"ui\"",
                 "\"identity\"": "{{ flask.g{g.identity} }}"
             }
-        },
-        "translations": {
-            "module": "oarepo_oaipmh_harvester.oai_record.translations",
-            "alias": "oarepo-oaipmh-record"
         },
         "mapping": {
             "generate": true,
@@ -396,8 +396,8 @@
             "context": {
                 "type": "flat_object",
                 "mapping": {
-                    "type": "object",
-                    "enabled": false
+                    "enabled": false,
+                    "type": "object"
                 },
                 "label.cs": "Kontext",
                 "label.en": "Context"
@@ -430,8 +430,8 @@
             "entry": {
                 "type": "flat_object",
                 "mapping": {
-                    "type": "object",
-                    "enabled": false
+                    "enabled": false,
+                    "type": "object"
                 },
                 "label.cs": "Položka",
                 "label.en": "Entry"

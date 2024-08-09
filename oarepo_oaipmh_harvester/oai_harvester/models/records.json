@@ -176,6 +176,10 @@
             "module": "oarepo_oaipmh_harvester.oai_harvester.proxies",
             "generate": true
         },
+        "translations": {
+            "module": "oarepo_oaipmh_harvester.oai_harvester.translations",
+            "alias": "oarepo-oaipmh-harvester"
+        },
         "json-schema-settings": {
             "generate": true,
             "alias": "oarepo-oaipmh-harvester",
@@ -256,10 +260,6 @@
                 "\"object_key\"": "\"ui\"",
                 "\"identity\"": "{{ flask.g{g.identity} }}"
             }
-        },
-        "translations": {
-            "module": "oarepo_oaipmh_harvester.oai_harvester.translations",
-            "alias": "oarepo-oaipmh-harvester"
         },
         "mapping": {
             "generate": true,
@@ -513,8 +513,8 @@
                 "facets": {
                     "facet": false
                 },
-                "label.cs": "Cíl zápisu",
-                "label.en": "Write target",
+                "label.cs": "Cíle zápisu",
+                "label.en": "Write targets",
                 "items": {
                     "type": "keyword"
                 }
