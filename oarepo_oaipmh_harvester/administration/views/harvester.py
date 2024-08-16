@@ -12,7 +12,8 @@ class OaiPmhListView(AdminResourceListView):
 
     api_endpoint = "/oai/harvest/harvesters/"
     extension_name = "oarepo_oaipmh_harvester.oai_harvester"
-    name = "harvesters"
+    name = "oarepo_oaipmh_harvesters"
+    url = "/oarepo/harvesters"
 
     resource_config = "resource_records"
     search_request_headers = {"Accept": "application/json"}
@@ -44,16 +45,16 @@ class OaiPmhListView(AdminResourceListView):
     search_config_name = "OAI_HARVESTER_SEARCH"
     search_sort_config_name = "OAI_HARVESTER_SORT_OPTIONS"
 
-    create_view_name = "oaipmh_create"
+    create_view_name = "oarepo_oaipmh_create"
 
 
 class OaiPmhDetailView(AdminResourceDetailView):
     """Configuration for OAI-PMH sets detail view."""
 
-    url = "/harvesters/<pid_value>"
+    url = "/oarepo/harvesters/<pid_value>"
     api_endpoint = "/oai/harvest/harvesters/"
     search_request_headers = {"Accept": "application/json"}
-    name = "oaipmh_detail"
+    name = "oarepo_oaipmh_harvesters_detail"
     resource_config = "resource_records"
     title = "OAI-PMH Harvesters"
     extension_name = "oarepo_oaipmh_harvester.oai_harvester"
@@ -61,7 +62,7 @@ class OaiPmhDetailView(AdminResourceDetailView):
     display_delete = True
     display_edit = True
 
-    list_view_name = "harvesters"
+    list_view_name = "oarepo_oaipmh_harvesters"
     pid_path = "id"
 
     item_field_list = {
@@ -84,15 +85,15 @@ class OaiPmhDetailView(AdminResourceDetailView):
 class OaiPmhEditView(OarepoAdminFormView):
     """Configuration for OAI-PMH sets edit view."""
 
-    name = "oaipmh_edit"
-    url = "/harvesters/<pid_value>/edit"
+    name = "oarepo_oaipmh_edit"
+    url = "/oarepo/harvesters/<pid_value>/edit"
     resource_config = "resource_records"
     pid_path = "id"
     api_endpoint = "/oai/harvest/harvesters/"
     title = "Edit OAI-PMH harvester"
     extension_name = "oarepo_oaipmh_harvester.oai_harvester"
     template = "invenio_administration/edit.html"
-    list_view_name = "harvesters"
+    list_view_name = "oarepo_oaipmh_harvesters"
 
     form_fields = {
         "name": {
@@ -147,14 +148,14 @@ class OaiPmhEditView(OarepoAdminFormView):
 class OaiPmhCreateView(OarepoAdminFormView):
     """Configuration for OAI-PMH sets create view."""
 
-    name = "oaipmh_create"
-    url = "/harvesters/create"
+    name = "oarepo_oaipmh_create"
+    url = "/oarepo/harvesters/create"
     resource_config = "resource_records"
     pid_path = "id"
     api_endpoint = "/oai/harvest/harvesters/"
     title = "Create OAI-PMH Harvester"
     extension_name = "oarepo_oaipmh_harvester.oai_harvester"
-    list_view_name = "harvesters"
+    list_view_name = "oarepo_oaipmh_harvesters"
     template = "invenio_administration/create.html"
 
     form_fields = {
