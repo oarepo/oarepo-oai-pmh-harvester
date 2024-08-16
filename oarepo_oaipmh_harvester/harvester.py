@@ -144,7 +144,7 @@ def harvest(
         transformers_signatures.append(t)
 
     for writer_signature in writers_signatures:
-        if writer_signature.name == "service":
+        if writer_signature.name == "service" or writer_signature.name == "published_service":
             t.kwargs["harvested_record_service"] = writer_signature.kwargs["service"]
 
     writers_config = [
