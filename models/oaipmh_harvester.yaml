@@ -77,11 +77,11 @@ record:
       ^required: true
 
     # the writer is a string in format writer_name{optional_yaml_dict_of_parameters}
-    writer:
-      label.cs: Cíl zápisu
-      label.en: Write target
+    writers[]:
+      ^label.cs: Cíle zápisu
+      ^label.en: Write targets
       type: keyword
-      facets:
+      ^facets:
         facet: false
 
     max_records:

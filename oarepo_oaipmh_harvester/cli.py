@@ -52,7 +52,12 @@ def harvester_parameters(in_creation=False):
             required=in_creation,
             multiple=True,
         )
-        @click.option("--writer", help="Writer name", required=in_creation)
+        @click.option(
+            "--writer",
+            help="Writer name",
+            required=in_creation,
+            multiple=True
+        )
         @click.option("--comment", help="Comment", default="" if in_creation else None)
         @click.option(
             "--max-records",
@@ -90,7 +95,7 @@ def harvester_parameters(in_creation=False):
                 "setspecs": set,
                 "loader": loader,
                 "transformers": transformer,
-                "writer": writer,
+                "writers": writer,
             }
             if max_records:
                 metadata["max_records"] = max_records

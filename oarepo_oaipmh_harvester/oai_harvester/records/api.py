@@ -15,6 +15,7 @@ class OaiHarvesterIdProvider(RecordIdProviderV2):
 
 
 class OaiHarvesterRecord(InvenioRecord):
+
     model_cls = OaiHarvesterMetadata
 
     schema = ConstantField("$schema", "local://oai_harvester-1.0.0.json")

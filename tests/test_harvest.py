@@ -27,7 +27,7 @@ def test_harvest_synchronous(app, db, client, search_clear):
         "setspecs": "test",
         "loader": "file",
         "transformers": ["error_transformer"],
-        "writer": "service{service=test_model}",
+        "writers": ["service{service=test_model}"],
         "batch_size": 6,
     }
     harvester = _add_harvester(harvester_metadata)
@@ -107,7 +107,7 @@ def test_harvest_synchronous(app, db, client, search_clear):
         "setspecs": "test",
         "loader": "file",
         "transformers": ["error_transformer"],
-        "writer": "service{service=test_model}",
+        "writers": ["service{service=test_model}"],
         "batch_size": 6,
     }
     harvester = _add_harvester(harvester_metadata)
@@ -180,7 +180,7 @@ def test_harvest_performance(app, db, search_clear):
         "setspecs": "test",
         "loader": f"test_data{{count={data_count}}}",
         "transformers": ["error_transformer"],
-        "writer": "service{service=test_model}",
+        "writers": ["service{service=test_model}"],
     }
     harvester = _add_harvester(harvester_metadata)
 

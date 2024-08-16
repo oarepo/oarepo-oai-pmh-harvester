@@ -15,3 +15,10 @@ class BaseOaiHarvesterSchema(BaseRecordSchema):
         if max_records == "":
             data.pop("max_records")
         return data
+
+    @pre_load
+    def process_writers(self, data, **kwargs):
+        writers = data.get("writers")
+        if isinstance(writers, str):
+            data["writers"] = [item.strip() for item in writers.split(",")]
+        return data

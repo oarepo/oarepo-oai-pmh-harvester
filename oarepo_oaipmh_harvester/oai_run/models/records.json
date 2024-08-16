@@ -176,6 +176,10 @@
             "module": "oarepo_oaipmh_harvester.oai_run.proxies",
             "generate": true
         },
+        "translations": {
+            "module": "oarepo_oaipmh_harvester.oai_run.translations",
+            "alias": "oarepo-oaipmh-run"
+        },
         "json-schema-settings": {
             "generate": true,
             "alias": "oarepo-oaipmh-run",
@@ -256,10 +260,6 @@
                 "\"object_key\"": "\"ui\"",
                 "\"identity\"": "{{ flask.g{g.identity} }}"
             }
-        },
-        "translations": {
-            "module": "oarepo_oaipmh_harvester.oai_run.translations",
-            "alias": "oarepo-oaipmh-run"
         },
         "mapping": {
             "generate": true,

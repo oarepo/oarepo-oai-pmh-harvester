@@ -5,7 +5,9 @@ from oarepo_oaipmh_harvester.oai_record import config
 
 
 class Oai_recordExt:
+
     def __init__(self, app=None):
+
         if app:
             self.init_app(app)
 
@@ -17,6 +19,7 @@ class Oai_recordExt:
             self.register_flask_extension(app)
 
     def register_flask_extension(self, app):
+
         app.extensions["oarepo_oaipmh_harvester.oai_record"] = self
 
     def init_config(self, app):
@@ -26,7 +29,9 @@ class Oai_recordExt:
                 if isinstance(app.config.get(identifier), list):
                     app.config[identifier] += getattr(config, identifier)
                 elif isinstance(app.config.get(identifier), dict):
-                    app.config[identifier].update(getattr(config, identifier))
+                    for k, v in getattr(config, identifier).items():
+                        if k not in app.config[identifier]:
+                            app.config[identifier][k] = v
                 else:
                     app.config.setdefault(identifier, getattr(config, identifier))
 

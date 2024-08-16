@@ -14,3 +14,5 @@ metadataprefix = TermsFacet(field="metadataprefix", label=_("metadataprefix.labe
 setspecs = TermsFacet(field="setspecs", label=_("setspecs.label"))
 
 transformers = TermsFacet(field="transformers", label=_("transformers.label"))
+
+writers = TermsFacet(field="writers", label=_("writers.label"))

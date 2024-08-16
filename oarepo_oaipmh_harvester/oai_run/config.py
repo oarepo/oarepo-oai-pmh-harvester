@@ -1,3 +1,4 @@
+from oarepo_oaipmh_harvester.oai_run.records.api import OaiRunRecord
 from oarepo_oaipmh_harvester.oai_run.resources.records.config import (
     OaiRunResourceConfig,
 )
@@ -15,3 +16,6 @@ OAI_RUN_RECORD_SERVICE_CONFIG = OaiRunServiceConfig
 
 
 OAI_RUN_RECORD_SERVICE_CLASS = OaiRunService
+
+
+OAREPO_PRIMARY_RECORD_SERVICE = {OaiRunRecord: "oarepo-oaipmh-runs"}
