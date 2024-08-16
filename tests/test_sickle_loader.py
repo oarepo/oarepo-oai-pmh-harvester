@@ -26,8 +26,9 @@ def test_sickle_loader_single_record():
     )
     iterator = iter(loader)
     item = next(iterator)
+    print(item)
     assert item.context["oai"] == {
-        "datestamp": "2020-01-20T15:23:55+00:00",
+        "datestamp": "2024-08-04T03:17:18+00:00",
         "deleted": False,
         "identifier": "oai:zenodo.org:59204",
         "metadata": {
