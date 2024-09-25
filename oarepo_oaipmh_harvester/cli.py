@@ -149,7 +149,7 @@ def delete(
 
 def _delete_harvester(code):
     harvesters = list(
-        harvester_service.scan(system_identity, params={"facets": {"code": [code]}})
+        harvester_service.scan(system_identity, params={"q": f"code:{code}"})
     )
 
     if len(harvesters) > 0:
@@ -225,7 +225,7 @@ def _run_harvester(metadata, on_background, all_records, identifier, log_level):
 
     code = metadata.pop("code")
     harvesters = list(
-        harvester_service.scan(system_identity, params={"facets": {"code": [code]}})
+        harvester_service.scan(system_identity, params={"q": f"code:{code}"})
     )
 
     if not harvesters:
