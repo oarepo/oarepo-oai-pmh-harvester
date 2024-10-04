@@ -122,6 +122,9 @@ class OAIWriter(BaseWriter):
         status = "O"
         records = []
         for e in batch.entries:
+            if e.filtered:
+                continue
+
             rec = {"oai_identifier": e.context["oai"]["identifier"]}
             title = self._get_entry_title(e)
             if title:

@@ -56,6 +56,7 @@ def harvest(
     callback=None,
     on_run_created=None,
     title=None,
+    overwrite_all_records=False,
 ):
     if isinstance(harvester_or_code, str):
         harvesters = list(
@@ -140,6 +141,7 @@ def harvest(
             oai_run=run_id,
             oai_harvester_id=harvester["id"],
             manual=run_manual,
+            overwrite_all_records=overwrite_all_records,
         )
         transformers_signatures.append(t)
 

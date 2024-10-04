@@ -38,6 +38,7 @@ class OAIRecordLookupTransformer(BaseTransformer):
         oai_identifier_facet=None,
         oai_datestamp_facet=None,
         harvested_record_service=None,
+        overwrite_all_records=False,
         **kwargs,
     ):
         super().__init__()
@@ -57,6 +58,7 @@ class OAIRecordLookupTransformer(BaseTransformer):
         self._harvested_record_service = current_service_registry.get(
             harvested_record_service
         )
+        self._overwrite_all_records = overwrite_all_records
 
     def apply(self, batch: StreamBatch, *args, **kwargs) -> StreamBatch:
         by_oai_identifier = {
@@ -137,6 +139,6 @@ class OAIRecordLookupTransformer(BaseTransformer):
                 dict_lookup_ignore_arrays(harvested_record, self._oai_datestamp_field)
             )[0]
 
-            if datestamp == entry.context["oai"]["datestamp"]:
+            if not self._overwrite_all_records and datestamp == entry.context["oai"]["datestamp"]:
                 # do not save the item as it has the same datestamp
                 entry.filtered = True

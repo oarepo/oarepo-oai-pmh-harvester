@@ -20,7 +20,7 @@ from oarepo_oaipmh_harvester.oai_harvester.proxies import (
 )
 from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
 from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
-
+from pprint import pprint
 
 @oarepo.group(name="oai")
 def oai():
@@ -131,17 +131,44 @@ def _add_harvester(metadata):
     return harvester.data
 
 
+def _modify_harvester(metadata):
+    """Add a new harvester"""
+    code = metadata["code"]
+
+    h = False
+    harvesters = list(
+        harvester_service.scan(system_identity, params={"q": f"code:{code}"})
+    )
+
+    if len(harvesters) > 0:
+        h = harvesters[0]
+
+    if not h:
+        print(f"Harvester with code {code} not found")
+
+    harvester_md = dict(h)
+    for k, v in metadata.items():
+        if v is not None:
+            harvester_md[k] = v
+
+    h = harvester_service.update(system_identity, h['id'], harvester_md)
+
+    harvester_service.indexer.refresh()
+    return h.data
+
+
 add = as_command(
     harvester, "add", harvester_parameters(True), with_appcontext, _add_harvester
 )
 
+modify = as_command(
+    harvester, "modify", harvester_parameters(False), with_appcontext, _modify_harvester
+)
 
 @harvester.command()
-@click.option("--code", help="OAI server code", required=True)
+@click.argument("code")
 @with_appcontext
-def delete(
-    code,
-):
+def delete(code):
     _delete_harvester(
         code,
     )
@@ -156,6 +183,21 @@ def _delete_harvester(code):
         harvester_service.delete(system_identity, harvesters[0]["id"])
 
     harvester_service.indexer.refresh()
+
+
+@harvester.command("get")
+@click.argument("code")
+@with_appcontext
+def get_harvester(code):
+    for harvester in harvester_service.scan(system_identity, params={"q": f"code:{code}"}):
+        pprint(harvester)
+
+
+@harvester.command("list")
+@with_appcontext
+def list_harvesters(**kwargs):
+    for h in harvester_service.scan(system_identity):
+        print(h['code'])
 
 
 class TQDMSynchronousCallback(StatsKeepingDataStreamCallback):
@@ -216,7 +258,7 @@ def asynchronous_reporting(app, progress_bar, run_id):
             time.sleep(30)
 
 
-def _run_harvester(metadata, on_background, all_records, identifier, log_level):
+def _run_harvester(metadata, on_background, all_records, identifier, log_level, overwrite_all_records):
     """Run/Start a harvester. Only the code is required, other arguments
     might be used to override harvester settings stored in the database"""
 
@@ -266,6 +308,7 @@ def _run_harvester(metadata, on_background, all_records, identifier, log_level):
             identifiers=identifier or None,
             callback=callback,
             on_run_created=on_run_created,
+            overwrite_all_records=overwrite_all_records
         )
 
     bar.close()
@@ -276,6 +319,7 @@ run = as_command(
     "run",
     click.option("--on-background/--on-foreground"),
     click.option("--all-records/--modified-records"),
+    click.option("--overwrite-all-records", is_flag=True, default=False),
     click.option("--identifier", multiple=True),
     click.option(
         "--log-level",
