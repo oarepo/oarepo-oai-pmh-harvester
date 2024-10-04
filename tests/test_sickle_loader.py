@@ -27,6 +27,7 @@ def test_sickle_loader_single_record():
     iterator = iter(loader)
     item = next(iterator)
     print(item)
+    item.context['oai']['setSpecs'].sort()
     assert item.context["oai"] == {
         "datestamp": "2024-08-04T03:17:18+00:00",
         "deleted": False,
@@ -77,7 +78,7 @@ def test_sickle_loader_single_record():
             ],
             "type": ["info:eu-repo/semantics/report"],
         },
-        "setSpecs": ["user-openaire", "user-eu"],
+        "setSpecs": ["user-eu", "user-openaire"],
     }
     with pytest.raises(StopIteration):
         next(iterator)
