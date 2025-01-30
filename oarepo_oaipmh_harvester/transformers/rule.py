@@ -87,7 +87,7 @@ def matches(*args, first_only=False, paired=False, unique=False):
                                 f(md, entry, vv)
                                 items.add(vv)
                     else:
-                        if val is None:
+                        if val is None or val == "":
                             continue 
 
                         if not unique or val not in items:
