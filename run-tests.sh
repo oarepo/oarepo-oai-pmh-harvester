@@ -36,7 +36,7 @@ fi
 . $VENV/bin/activate
 pip install -U setuptools pip wheel
 
-pip install "oarepo==${OAREPO_VERSION}.*"
+pip install "oarepo[s3,rdm]==${OAREPO_VERSION}.*"
 pip install -e ".[tests]"
 pip install langdetect
 pip install -e test-model
