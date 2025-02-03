@@ -79,10 +79,10 @@ def matches(*args, first_only=False, paired=False, unique=False):
                 if arg in untransformed_data:
                     val = untransformed_data[arg]
                     if isinstance(val, (list, tuple)):
-                        if len(val) < 1:
-                            continue
-
                         for vv in val:
+                            if vv is None or vv == "":
+                                continue
+
                             if not unique or vv not in items:
                                 f(md, entry, vv)
                                 items.add(vv)
