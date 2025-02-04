@@ -63,6 +63,9 @@ def matches(*args, first_only=False, paired=False, unique=False):
                         val = [val]
                     vals.append(val)
 
+                if all(len(x) == 0 for x in vals):
+                    return
+
                 # zip longest
                 items = set()
                 for v in itertools.zip_longest(*vals):
@@ -77,10 +80,16 @@ def matches(*args, first_only=False, paired=False, unique=False):
                     val = untransformed_data[arg]
                     if isinstance(val, (list, tuple)):
                         for vv in val:
+                            if vv is None or vv == "":
+                                continue
+
                             if not unique or vv not in items:
                                 f(md, entry, vv)
                                 items.add(vv)
                     else:
+                        if val is None or val == "":
+                            continue 
+
                         if not unique or val not in items:
                             f(md, entry, val)
                             items.add(val)
