@@ -5,5 +5,9 @@
     "conventionalCommits.scopes": [
         "search",
         "release"
-    ]
+    ],
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none",
+        "reportMissingTypeStubs": "none"
+    }
 }
