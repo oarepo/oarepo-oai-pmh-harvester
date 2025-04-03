@@ -41,10 +41,10 @@ class IfHarvested(ConditionalGenerator):
 
     def _condition(self, record: Record, **context: Any) -> bool:
         """Check if the record is in the state."""
-        oai_section = record.get("oai", {})
+        oai_section = record.get("oai", None)
         if not oai_section:
             return False
-        harvest = oai_section.get("harvest", {})
+        harvest = oai_section.get("harvest", None)
         if not harvest:
             return False
         identifier = harvest.get("identifier")
