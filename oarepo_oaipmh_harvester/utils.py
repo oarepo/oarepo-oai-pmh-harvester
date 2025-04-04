@@ -1,6 +1,9 @@
 import functools
 import threading
 import time
+from typing import cast
+
+from oarepo_runtime.datastreams import StreamEntry
 
 threadLocal = threading.local()
 
@@ -32,3 +35,8 @@ def timeit(f):
 
     # otherwise it is a context manager
     return TIM(f)
+
+
+def oai_context(entry: StreamEntry) -> dict[str, str]:
+    """Get the OAI context from the entry."""
+    return cast(dict[str, str], entry.context["oai"]) if "oai" in entry.context else {}

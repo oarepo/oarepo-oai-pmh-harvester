@@ -3,20 +3,19 @@ from functools import partial
 from typing import Dict, Union
 
 from invenio_access.permissions import system_identity
-from invenio_search import current_search_client
-from invenio_search.utils import build_alias_name
+from invenio_db import db
 from oarepo_runtime.datastreams import SynchronousDataStream
 from oarepo_runtime.datastreams.asynchronous import AsynchronousDataStream
 from oarepo_runtime.datastreams.datastreams import Signature
 from oarepo_runtime.datastreams.fixtures import fixtures_asynchronous_callback
 from oarepo_runtime.datastreams.types import StatsKeepingDataStreamCallback
+from sqlalchemy import func
 
+from oarepo_oaipmh_harvester.models import OAIHarvestedRecord, OAIHarvesterRun
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
-from oarepo_oaipmh_harvester.oai_record.records.api import OaiRecord
-from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.reader_callback import reader_callback
 
@@ -38,14 +37,14 @@ def _get_max_datestamp_query(harvester):
 
 
 def _get_latest_oai_datestamp(harvester_id):
-    index = build_alias_name(OaiRecord.index.search_alias)
-    result = current_search_client.search(
-        index=index,
-        body=_get_max_datestamp_query(harvester_id),
+    max_datestamp = (
+        db.session.query(func.max(OAIHarvestedRecord.datestamp))
+        .join(OAIHarvesterRun)
+        .filter(OAIHarvesterRun.harvester_id == harvester_id)
+        .filter(OAIHarvesterRun.manual.is_(False))
+        .scalar()
     )
-    result = result["aggregations"]["max_datestamp"]["value"]
-    ret = datetime.datetime.utcfromtimestamp(result / 1000).date() if result else None
-    return ret
+    return max_datestamp
 
 
 def harvest(
@@ -79,26 +78,22 @@ def harvest(
     harvester.pop("revision_id", None)
 
     run_manual = True if identifiers else False
-    run_metadata = {
-        "harvester": {"id": harvester["id"]},
-        "errors": 0,
-        "status": "R",
-        "created_batches": 0,
-        "total_batches": 0,
-        "finished_batches": 0,
-        "started": datetime.datetime.utcnow().isoformat() + "+00:00",
-        "manual": run_manual,
-    }
-    if title:
-        run_metadata["title"] = title
 
-    run = run_service.create(
-        system_identity,
-        run_metadata,
+    run = OAIHarvesterRun(
+        harvester_id=harvester["id"],
+        harvester_config=dict(harvester),
+        start_time=datetime.datetime.utcnow(),
+        status="running",
+        manual=run_manual,
+        title=title,
     )
-    run_id = run["id"]
+    db.session.add(run)
+    db.session.commit()
+
+    str_run_id = str(run.id)
+
     if on_run_created:
-        on_run_created(run_id)
+        on_run_created(str_run_id)
 
     start_from = _get_latest_oai_datestamp(harvester["id"]) if not run_manual else None
 
@@ -108,7 +103,7 @@ def harvest(
         all_records=all_records,
         identifiers=identifiers,
         oai_config=dict(harvester),
-        oai_run=run_id,
+        oai_run=str_run_id,
         start_from=start_from,
         oai_harvester_id=harvester["id"],
         manual=run_manual,
@@ -118,7 +113,7 @@ def harvest(
         current_harvester.get_transformer_signature(
             transformer,
             oai_config=dict(harvester),
-            oai_run=run_id,
+            oai_run=str_run_id,
             oai_harvester_id=harvester["id"],
             manual=run_manual,
         )
@@ -138,7 +133,7 @@ def harvest(
         t = current_harvester.get_transformer_signature(
             "oai_record_lookup",
             oai_config=dict(harvester),
-            oai_run=run_id,
+            oai_run=str_run_id,
             oai_harvester_id=harvester["id"],
             manual=run_manual,
             overwrite_all_records=overwrite_all_records,
@@ -146,7 +141,10 @@ def harvest(
         transformers_signatures.append(t)
 
     for writer_signature in writers_signatures:
-        if writer_signature.name == "service" or writer_signature.name == "published_service":
+        if (
+            writer_signature.name == "service"
+            or writer_signature.name == "published_service"
+        ):
             t.kwargs["harvested_record_service"] = writer_signature.kwargs["service"]
 
     writers_config = [
@@ -154,7 +152,7 @@ def harvest(
         current_harvester.get_writer_signature(
             "oai",
             oai_config=dict(harvester),
-            oai_run=run_id,
+            oai_run=str_run_id,
             oai_harvester_id=harvester["id"],
             manual=run_manual,
         ),
@@ -180,12 +178,12 @@ def harvest(
         reader_callback=partial(
             reader_callback,
             identity=system_identity,
-            oai_run=run_id,
+            oai_run=str_run_id,
             manual=run_manual,
             oai_harvester=harvester["id"],
         ),
     )
 
-    datastream.process(identity=system_identity, context={"run_id": run_id})
+    datastream.process(identity=system_identity, context={"run_id": str_run_id})
 
-    return run_id
+    return run.id

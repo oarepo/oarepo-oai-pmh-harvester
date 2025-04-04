@@ -77,8 +77,6 @@ class OARepoOAIHarvesterExt(object):
 
         app.config.setdefault("OAI_RUN_SEARCH", config.OAI_RUN_SEARCH)
         app.config.setdefault("OAI_RUN_SORT_OPTIONS", config.OAI_RUN_SORT_OPTIONS)
-        app.config.setdefault("OAI_BATCH_SEARCH", config.OAI_BATCH_SEARCH)
-        app.config.setdefault("OAI_BATCH_SORT_OPTIONS", config.OAI_BATCH_SORT_OPTIONS)
         app.config.setdefault(
             "OAI_HARVESTER_SORT_OPTIONS", config.OAI_HARVESTER_SORT_OPTIONS
         )

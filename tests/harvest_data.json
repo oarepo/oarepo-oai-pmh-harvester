@@ -8,6 +8,9 @@
     "entry": {
       "metadata": {
         "title": "corr"
+      },
+      "files": {
+        "enabled": false
       }
     }
   },
@@ -20,6 +23,9 @@
     "entry": {
       "metadata": {
         "title": "too long title"
+      },
+      "files": {
+        "enabled": false
       }
     }
   },
@@ -31,6 +37,9 @@
     },
     "entry": {
       "extra": "blah"
+    },
+    "files": {
+      "enabled": false
     }
   },
   {
@@ -41,6 +50,9 @@
     },
     "entry": {
       "transformer": "tells transformer to raise error on this record"
+    },
+    "files": {
+      "enabled": false
     }
   },
   {
@@ -52,6 +64,9 @@
     "entry": {
       "metadata": {
         "title": "delet"
+      },
+      "files": {
+        "enabled": false
       }
     }
   },
@@ -63,6 +78,9 @@
     "entry": {
       "metadata": {
         "title": "edelet"
+      },
+      "files": {
+        "enabled": false
       }
     }
   },
@@ -72,7 +90,6 @@
       "datestamp": "2000-01-04",
       "deleted": true
     },
-    "entry": {
-    }
+    "entry": {}
   }
 ]

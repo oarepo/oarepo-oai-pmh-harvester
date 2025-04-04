@@ -1,6 +1,21 @@
 [
   {
     "oai": {
+      "identifier": "1",
+      "datestamp": "2000-01-03",
+      "deleted": false
+    },
+    "entry": {
+      "metadata": {
+        "title": "corr2"
+      },
+      "files": {
+        "enabled": false
+      }
+    }
+  },
+  {
+    "oai": {
       "identifier": "2",
       "datestamp": "2000-01-30",
       "deleted": false
@@ -8,6 +23,9 @@
     "entry": {
       "metadata": {
         "title": "oktit"
+      },
+      "files": {
+        "enabled": false
       }
     }
   }

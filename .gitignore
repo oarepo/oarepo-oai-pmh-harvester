@@ -68,3 +68,5 @@ venv/
 test-model/
 
 node_modules
+
+/old

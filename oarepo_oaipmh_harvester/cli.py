@@ -3,6 +3,7 @@ import logging
 import sys
 import threading
 import time
+from pprint import pprint
 
 import click
 from flask import current_app
@@ -18,9 +19,7 @@ from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
-from oarepo_oaipmh_harvester.oai_record.proxies import current_service as record_service
-from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
-from pprint import pprint
+
 
 @oarepo.group(name="oai")
 def oai():
@@ -53,10 +52,7 @@ def harvester_parameters(in_creation=False):
             multiple=True,
         )
         @click.option(
-            "--writer",
-            help="Writer name",
-            required=in_creation,
-            multiple=True
+            "--writer", help="Writer name", required=in_creation, multiple=True
         )
         @click.option("--comment", help="Comment", default="" if in_creation else None)
         @click.option(
@@ -151,7 +147,7 @@ def _modify_harvester(metadata):
         if v is not None:
             harvester_md[k] = v
 
-    h = harvester_service.update(system_identity, h['id'], harvester_md)
+    h = harvester_service.update(system_identity, h["id"], harvester_md)
 
     harvester_service.indexer.refresh()
     return h.data
@@ -164,6 +160,7 @@ add = as_command(
 modify = as_command(
     harvester, "modify", harvester_parameters(False), with_appcontext, _modify_harvester
 )
+
 
 @harvester.command()
 @click.argument("code")
@@ -189,7 +186,9 @@ def _delete_harvester(code):
 @click.argument("code")
 @with_appcontext
 def get_harvester(code):
-    for harvester in harvester_service.scan(system_identity, params={"q": f"code:{code}"}):
+    for harvester in harvester_service.scan(
+        system_identity, params={"q": f"code:{code}"}
+    ):
         pprint(harvester)
 
 
@@ -197,7 +196,7 @@ def get_harvester(code):
 @with_appcontext
 def list_harvesters(**kwargs):
     for h in harvester_service.scan(system_identity):
-        print(h['code'])
+        print(h["code"])
 
 
 class TQDMSynchronousCallback(StatsKeepingDataStreamCallback):
@@ -258,7 +257,9 @@ def asynchronous_reporting(app, progress_bar, run_id):
             time.sleep(30)
 
 
-def _run_harvester(metadata, on_background, all_records, identifier, log_level, overwrite_all_records):
+def _run_harvester(
+    metadata, on_background, all_records, identifier, log_level, overwrite_all_records
+):
     """Run/Start a harvester. Only the code is required, other arguments
     might be used to override harvester settings stored in the database"""
 
@@ -308,7 +309,7 @@ def _run_harvester(metadata, on_background, all_records, identifier, log_level, 
             identifiers=identifier or None,
             callback=callback,
             on_run_created=on_run_created,
-            overwrite_all_records=overwrite_all_records
+            overwrite_all_records=overwrite_all_records,
         )
 
     bar.close()

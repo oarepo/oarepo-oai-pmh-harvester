@@ -1,10 +1,14 @@
 record:
-  use: invenio
+  use:
+    - invenio
+    - rdm
+
   module:
     qualified: test_model
   service-config:
     components:
-    - "{{invenio_records_resources.services.records.components.DataComponent}}"
+      - "{{oarepo_oaipmh_harvester.components.OaiSectionComponent}}"
+
   properties:
     metadata:
       properties:
@@ -18,3 +22,23 @@ record:
           properties:
             identifier: keyword
             datestamp: keyword
+
+  draft: {}
+  files:
+    use:
+      - invenio_files
+  draft-files: {}
+  permissions:
+    presets:
+      - community-workflow
+profiles:
+  - record
+  - draft
+  - files
+  - draft_files
+
+settings:
+  supported-langs:
+    en: {}
+  i18n-languages:
+    - en

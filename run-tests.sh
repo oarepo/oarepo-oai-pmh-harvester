@@ -17,7 +17,19 @@ fi
 "${PYTHON}" -m venv $BUILDER_VENV
 . $BUILDER_VENV/bin/activate
 pip install -U setuptools pip wheel
-pip install -U oarepo-model-builder
+pip install -U \
+    oarepo-model-builder-requests \
+    oarepo-model-builder-drafts \
+    oarepo-model-builder-relations \
+    oarepo-model-builder-vocabularies \
+    oarepo-model-builder-drafts-files \
+    oarepo-model-builder-ui \
+    oarepo-model-builder-files \
+    oarepo-model-builder-cf \
+    oarepo-model-builder-polymorphic \
+    oarepo-model-builder-communities>=5.0.0 \
+    oarepo-model-builder-rdm \
+    oarepo-model-builder-multilingual
 
 
 if test -d test-model ; then

@@ -44,20 +44,6 @@ OAI_RUN_SORT_OPTIONS: dict[str, Any] = {
     ),
 }
 
-OAI_BATCH_SEARCH: dict[str, Any] = {
-    "facets": [],
-    "sort": ["newest"],
-    "sort_default": "newest",
-    "sort_default_no_query": "newest",
-}
-
-OAI_BATCH_SORT_OPTIONS: dict[str, Any] = {
-    "newest": dict(
-        title=_("Newest"),
-        fields=["-created"],
-    ),
-}
-
 OAI_HARVESTER_SORT_OPTIONS: dict[str, Any] = {
     "newest": dict(
         title=_("Newest"),

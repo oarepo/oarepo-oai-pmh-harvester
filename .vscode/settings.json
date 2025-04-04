@@ -8,6 +8,7 @@
     ],
     "python.analysis.diagnosticSeverityOverrides": {
         "reportMissingImports": "none",
-        "reportMissingTypeStubs": "none"
+        "reportMissingTypeStubs": "none",
+        "reportUnknownMemberType": "none"
     }
 }
