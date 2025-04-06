@@ -9,6 +9,7 @@ from invenio_records_resources.records.systemfields import IndexField
 from invenio_users_resources.records.api import BaseAggregate
 
 from ..models import OAIHarvesterRun
+from .dumpers import AddHarvesterDumperExt
 from .models import OAIRunAggregateModel
 
 
@@ -21,9 +22,7 @@ class OAIRunAggregate(BaseAggregate):
     # NOTE: the "uuid" isn't a UUID but contains the same value as the "id"
     #       field, which is currently an integer for User objects!
     dumper = SearchDumper(
-        extensions=[
-            IndexedAtDumperExt(),
-        ],
+        extensions=[IndexedAtDumperExt(), AddHarvesterDumperExt()],
         model_fields={
             "id": ("uuid", UUID),
         },

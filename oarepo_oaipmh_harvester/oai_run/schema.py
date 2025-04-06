@@ -17,6 +17,7 @@ class OAIHarvesterRunSchema(BaseRecordSchema):
     finished_records = fields.Integer(default=0, required=True)
     ok_records = fields.Integer(default=0, required=True)
     failed_records = fields.Integer(default=0, required=True)
+    harvester_name = fields.String(allow_none=True)
 
     class Meta:
         strict = True

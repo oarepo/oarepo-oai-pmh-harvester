@@ -58,6 +58,12 @@
             "failed_records": {
                 "type": "integer"
             },
+            "harvester_name": {
+                "type": "keyword"
+            },
+            "harvest_managers": {
+                "type": "keyword"
+            },
             "indexed_at": {
                 "type": "date"
             }
