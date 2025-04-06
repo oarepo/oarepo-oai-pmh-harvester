@@ -130,6 +130,46 @@ class OARepoOAIHarvesterExt(object):
             ),
         )(self.oai_run_resource_config, self.oai_run_service)
 
+    @cached_property
+    def oai_record_service_config(self):
+        """Get the OAI record service config."""
+        return obj_or_import_string(
+            self.app.config.get(
+                "OAI_RECORD_SERVICE_CONFIG",
+                "oarepo_oaipmh_harvester.oai_record.service:OAIRecordServiceConfig",
+            ),
+        ).build(self.app)
+
+    @cached_property
+    def oai_record_service(self):
+        """Get the OAI record service."""
+        return obj_or_import_string(
+            self.app.config.get(
+                "OAI_RECORD_SERVICE",
+                "oarepo_oaipmh_harvester.oai_record.service:OAIRecordService",
+            ),
+        )(self.oai_record_service_config)
+
+    @cached_property
+    def oai_record_resource_config(self):
+        """Get the OAI record resource config."""
+        return obj_or_import_string(
+            self.app.config.get(
+                "OAI_RECORD_RESOURCE_CONFIG",
+                "oarepo_oaipmh_harvester.oai_record.resource:OAIRecordResourceConfig",
+            ),
+        ).build(self.app)
+
+    @cached_property
+    def oai_record_resource(self):
+        """Get the OAI record resource."""
+        return obj_or_import_string(
+            self.app.config.get(
+                "OAI_RECORD_RESOURCE",
+                "oarepo_oaipmh_harvester.oai_record.resource:OAIRecordResource",
+            ),
+        )(self.oai_record_resource_config, self.oai_record_service)
+
 
 def split_processor_name(processor):
     if "{" not in processor:
@@ -157,8 +197,16 @@ def init(app):
     sregistry.register(
         ext.oai_run_service, service_id=ext.oai_run_service_config.service_id
     )
+    sregistry.register(
+        ext.oai_record_service, resource_id=ext.oai_run_service_config.service_id
+    )
     # Register indexers
     iregistry = app.extensions["invenio-indexer"].registry
     iregistry.register(
-        ext.oai_run_service.indexer, indexer_id=ext.oai_run_service_config.service_id
+        ext.oai_run_service.indexer,
+        indexer_id=ext.oai_run_service_config.service_id,
+    )
+    iregistry.register(
+        ext.oai_record_service.indexer,
+        indexer_id=ext.oai_record_service_config.service_id,
     )

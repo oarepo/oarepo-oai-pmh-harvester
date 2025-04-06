@@ -8,7 +8,10 @@ from invenio_db import db
 from oarepo_runtime.datastreams import BaseWriter, StreamBatch, StreamEntry
 
 from oarepo_oaipmh_harvester.models import OAIHarvestedRecord, OAIHarvesterRun
-from oarepo_oaipmh_harvester.proxies import current_oai_run_service
+from oarepo_oaipmh_harvester.proxies import (
+    current_oai_record_service,
+    current_oai_run_service,
+)
 from oarepo_oaipmh_harvester.utils import oai_context
 
 
@@ -30,6 +33,14 @@ class OAIWriter(BaseWriter):
             traceback.print_exc()
             raise e
         db.session.commit()
+
+        current_oai_record_service.indexer.bulk_index(
+            [
+                entry.context["oai"]["identifier"]
+                for entry in batch.entries
+                if not entry.skipped
+            ]
+        )
 
         run = (
             OAIHarvesterRun.query.filter_by(id=batch.context["run_id"])
