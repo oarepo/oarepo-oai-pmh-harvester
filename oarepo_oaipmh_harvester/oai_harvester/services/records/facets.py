@@ -5,6 +5,14 @@ from oarepo_runtime.i18n import lazy_gettext as _
 
 batch_size = TermsFacet(field="batch_size", label=_("batch_size.label"))
 
+harvest_managers_id = TermsFacet(
+    field="harvest_managers.id", label=_("harvest_managers/id.label")
+)
+
+harvest_managers_email = TermsFacet(
+    field="harvest_managers.email", label=_("harvest_managers/email.label")
+)
+
 loader = TermsFacet(field="loader", label=_("loader.label"))
 
 max_records = TermsFacet(field="max_records", label=_("max_records.label"))

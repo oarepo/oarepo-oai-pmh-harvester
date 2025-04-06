@@ -27,7 +27,7 @@ pip install -U \
     oarepo-model-builder-files \
     oarepo-model-builder-cf \
     oarepo-model-builder-polymorphic \
-    oarepo-model-builder-communities>=5.0.0 \
+    'oarepo-model-builder-communities>=5.0.0' \
     oarepo-model-builder-rdm \
     oarepo-model-builder-multilingual
 

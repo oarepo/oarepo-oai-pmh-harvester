@@ -19,6 +19,7 @@ from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
+from oarepo_oaipmh_harvester.proxies import current_oai_run_service
 
 
 @oarepo.group(name="oai")
@@ -120,7 +121,6 @@ def _add_harvester(metadata):
     if harvester:
         print(f"Harvester with code {code} already exists")
         return harvester
-
     harvester = harvester_service.create(system_identity, metadata)
 
     harvester_service.indexer.refresh()
@@ -197,6 +197,13 @@ def get_harvester(code):
 def list_harvesters(**kwargs):
     for h in harvester_service.scan(system_identity):
         print(h["code"])
+
+
+@oai.command("reindex")
+@with_appcontext
+def reindex_oai():
+    current_oai_run_service.reindex(system_identity)
+    # current_oai_record_service.reindex(system_identity)
 
 
 class TQDMSynchronousCallback(StatsKeepingDataStreamCallback):

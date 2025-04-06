@@ -10,5 +10,8 @@
         "reportMissingImports": "none",
         "reportMissingTypeStubs": "none",
         "reportUnknownMemberType": "none"
-    }
+    },
+    "python.testing.pytestArgs": [
+        "--pythonwarnings=ignore"
+    ]
 }

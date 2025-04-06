@@ -44,6 +44,9 @@ OAI_RUN_SORT_OPTIONS: dict[str, Any] = {
     ),
 }
 
+OAI_RUN_REINDEX_THRESHOLD = 100
+"""Reindex OAI run after this many records from the previous reindex."""
+
 OAI_HARVESTER_SORT_OPTIONS: dict[str, Any] = {
     "newest": dict(
         title=_("Newest"),

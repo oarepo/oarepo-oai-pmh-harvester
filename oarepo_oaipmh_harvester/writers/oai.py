@@ -2,11 +2,13 @@ import datetime
 import traceback
 from typing import Any, cast
 
+from flask import current_app
 from flask_principal import Identity
 from invenio_db import db
 from oarepo_runtime.datastreams import BaseWriter, StreamBatch, StreamEntry
 
 from oarepo_oaipmh_harvester.models import OAIHarvestedRecord, OAIHarvesterRun
+from oarepo_oaipmh_harvester.proxies import current_oai_run_service
 from oarepo_oaipmh_harvester.utils import oai_context
 
 
@@ -34,6 +36,8 @@ class OAIWriter(BaseWriter):
             .with_for_update()
             .one()
         )
+        previously_finished_records = run.finished_records
+
         run.finished_records += len(batch.entries)
         run.failed_records += len(batch.failed_entries)
         run.ok_records += len(batch.ok_entries)
@@ -50,6 +54,15 @@ class OAIWriter(BaseWriter):
 
         db.session.add(run)
         db.session.commit()
+
+        reindex_threshold = current_app.config["OAI_RUN_REINDEX_THRESHOLD"]
+        if (
+            previously_finished_records // reindex_threshold
+            != run.finished_records // reindex_threshold
+            or run.status != "running"
+        ):
+            # Reindex the run
+            current_oai_run_service.indexer.bulk_index([run.id])
 
         return batch
 

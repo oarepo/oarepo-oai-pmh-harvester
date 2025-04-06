@@ -2,10 +2,14 @@ from pathlib import Path
 from pprint import pprint
 
 from invenio_access.permissions import system_identity
+from invenio_records_resources.tasks import manage_indexer_queues
 
 from oarepo_oaipmh_harvester.cli import _add_harvester
 from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.models import OAIHarvestedRecord, OAIHarvesterRun
+from oarepo_oaipmh_harvester.proxies import (
+    current_oai_run_service,
+)
 
 
 def test_harvest_synchronous(
@@ -144,14 +148,22 @@ def test_harvest_synchronous(
     oai_records = get_oai_records(run_id)
     assert len(oai_records) == 0
 
-    all_oai_records = {
+    failed_oai_records = {
         r["oai_identifier"]: r
         for r in OAIHarvestedRecord.query.filter(
             OAIHarvestedRecord.run_id == run_id,
             OAIHarvestedRecord.has_errors.is_(True),
         ).all()
     }
-    assert "2" not in all_oai_records
+    assert "2" not in failed_oai_records
+
+    manage_indexer_queues()
+    current_oai_run_service.indexer.refresh()
+    hits = list(
+        current_oai_run_service.search(system_identity, params=dict(run_id=run_id))
+    )
+    print(hits)
+    assert len(hits) == 2
 
 
 def get_oai_records(run_id: str) -> dict[str, OAIHarvestedRecord]:

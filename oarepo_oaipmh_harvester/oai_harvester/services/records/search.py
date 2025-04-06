@@ -10,6 +10,8 @@ class OaiHarvesterSearchOptions(SearchOptions):
 
     facets = {
         "batch_size": facets.batch_size,
+        "harvest_managers_id": facets.harvest_managers_id,
+        "harvest_managers_email": facets.harvest_managers_email,
         "loader": facets.loader,
         "max_records": facets.max_records,
         "metadataprefix": facets.metadataprefix,

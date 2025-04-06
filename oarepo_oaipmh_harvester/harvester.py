@@ -77,6 +77,8 @@ def harvest(
     harvester.pop("updated", None)
     harvester.pop("revision_id", None)
 
+    print("Will harvest using harvester", harvester)
+
     run_manual = True if identifiers else False
 
     run = OAIHarvesterRun(

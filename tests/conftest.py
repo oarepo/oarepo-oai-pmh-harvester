@@ -1,15 +1,10 @@
 import pytest
 from invenio_app.factory import create_app as _create_app
-from invenio_records_permissions.generators import (
-    AnyUser,
-)
+from invenio_records_permissions.generators import AnyUser
 from oarepo_communities.services.permissions.policy import (
     CommunityDefaultWorkflowPermissions,
 )
-from oarepo_workflows import (
-    Workflow,
-    WorkflowRequestPolicy,
-)
+from oarepo_workflows import Workflow, WorkflowRequestPolicy
 
 
 @pytest.fixture(scope="module")

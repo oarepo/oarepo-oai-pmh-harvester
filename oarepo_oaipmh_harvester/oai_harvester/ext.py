@@ -13,10 +13,15 @@ class Oai_harvesterExt:
 
     def init_app(self, app):
         """Flask application initialization."""
+        self.app = app
 
         self.init_config(app)
         if not self.is_inherited():
             self.register_flask_extension(app)
+
+        for method in dir(self):
+            if method.startswith("init_app_callback_"):
+                getattr(self, method)(app)
 
     def register_flask_extension(self, app):
 
@@ -51,8 +56,15 @@ class Oai_harvesterExt:
 
     @cached_property
     def service_records(self):
+        service_config = config.OAI_HARVESTER_RECORD_SERVICE_CONFIG
+        if hasattr(service_config, "build"):
+            config_class = service_config.build(self.app)
+        else:
+            config_class = service_config()
+
+        service_kwargs = {"config": config_class}
         return config.OAI_HARVESTER_RECORD_SERVICE_CLASS(
-            config=config.OAI_HARVESTER_RECORD_SERVICE_CONFIG(),
+            **service_kwargs,
         )
 
     @cached_property

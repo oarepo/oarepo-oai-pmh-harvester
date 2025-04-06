@@ -44,7 +44,8 @@
             "service-id": "oarepo-oaipmh-harvesters",
             "components": [
                 "{{oarepo_runtime.services.relations.components.CachingRelationsComponent}}",
-                "{{invenio_records_resources.services.records.components.DataComponent}}"
+                "{{invenio_records_resources.services.records.components.DataComponent}}",
+                "{{oarepo_runtime.services.components.CustomFieldsComponent}}"
             ],
             "generate": true,
             "config-key": "OAI_HARVESTER_RECORD_SERVICE_CONFIG",
@@ -55,7 +56,8 @@
                 "oarepo_runtime.services.config.service.PermissionsPresetsConfigMixin",
                 "invenio_records_resources.services.RecordServiceConfig{InvenioRecordServiceConfig}"
             ],
-            "additional-args": []
+            "additional-args": [],
+            "search-item-links-template-cls": "invenio_records_resources.services.LinksTemplate"
         },
         "resource": {
             "base-classes": [
@@ -115,6 +117,7 @@
             "file": "data/sample_data.yaml"
         },
         "ext-resource": {
+            "service-kwargs": {},
             "generate": true,
             "skip": false
         },
@@ -372,6 +375,83 @@
                     "skip": true
                 }
             },
+            "deletion_status": {
+                "type": "keyword",
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "facets": {
+                    "searchable": true,
+                    "facet": false
+                },
+                "sample": {
+                    "skip": true
+                }
+            },
+            "harvest_managers": {
+                "type": "array",
+                "label.cs": "Správci sklizně",
+                "label.en": "Harvest managers",
+                "items": {
+                    "type": "relation",
+                    "keys": [
+                        {
+                            "key": "id",
+                            "model": {
+                                "type": "keyword"
+                            },
+                            "target": "id"
+                        },
+                        {
+                            "key": "email",
+                            "model": {
+                                "type": "keyword"
+                            },
+                            "target": "email"
+                        }
+                    ],
+                    "class": "oarepo_oaipmh_harvester.records.relations.UserRelation",
+                    "model-class": "invenio_users_resources.records.api.UserAggregate",
+                    "pid-field": "None",
+                    "marshmallow": {
+                        "unknown": "INCLUDE",
+                        "generate": true,
+                        "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema.HarvestManagersItemSchema"
+                    },
+                    "ui": {
+                        "marshmallow": {
+                            "unknown": "INCLUDE",
+                            "generate": true,
+                            "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.ui_schema.HarvestManagersItemUISchema"
+                        }
+                    },
+                    "properties": {
+                        "id": {
+                            "type": "keyword"
+                        },
+                        "email": {
+                            "type": "keyword"
+                        },
+                        "@v": {
+                            "type": "keyword",
+                            "marshmallow": {
+                                "field-name": "_version",
+                                "field-class": "marshmallow.fields.String"
+                            },
+                            "ui": {
+                                "marshmallow": {
+                                    "field-name": "_version",
+                                    "field-class": "marshmallow.fields.String"
+                                }
+                            },
+                            "facets": {
+                                "facet": false
+                            }
+                        }
+                    }
+                }
+            },
             "id": {
                 "type": "keyword",
                 "marshmallow": {
@@ -387,6 +467,34 @@
                         "read": false,
                         "write": false
                     }
+                },
+                "sample": {
+                    "skip": true
+                }
+            },
+            "is_deleted": {
+                "type": "boolean",
+                "facets": {
+                    "searchable": true,
+                    "facet": false
+                },
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
+                }
+            },
+            "is_published": {
+                "type": "boolean",
+                "facets": {
+                    "searchable": true,
+                    "facet": false
+                },
+                "marshmallow": {
+                    "read": false,
+                    "write": false
                 },
                 "sample": {
                     "skip": true
@@ -506,6 +614,132 @@
                 },
                 "sample": {
                     "skip": true
+                }
+            },
+            "version_id": {
+                "type": "integer",
+                "marshmallow": {
+                    "read": false,
+                    "write": false
+                },
+                "facets": {
+                    "searchable": true,
+                    "facet": false
+                },
+                "sample": {
+                    "skip": true
+                }
+            },
+            "versions": {
+                "type": "object",
+                "facets": {
+                    "searchable": true,
+                    "facet": false
+                },
+                "ui": {
+                    "marshmallow": {
+                        "generate": false,
+                        "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.ui_schema.FakeVersionsUISchema",
+                        "skip": true,
+                        "read": false,
+                        "write": false
+                    }
+                },
+                "marshmallow": {
+                    "generate": false,
+                    "class": "oarepo_oaipmh_harvester.oai_harvester.services.records.schema.FakeVersionsSchema",
+                    "skip": true,
+                    "read": false,
+                    "write": false
+                },
+                "sample": {
+                    "skip": true
+                },
+                "properties": {
+                    "index": {
+                        "type": "integer",
+                        "marshmallow": {
+                            "read": false,
+                            "write": false
+                        },
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        },
+                        "sample": {
+                            "skip": true
+                        }
+                    },
+                    "is_latest": {
+                        "type": "boolean",
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        },
+                        "marshmallow": {
+                            "read": false,
+                            "write": false
+                        },
+                        "sample": {
+                            "skip": true
+                        }
+                    },
+                    "is_latest_draft": {
+                        "type": "boolean",
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        },
+                        "marshmallow": {
+                            "read": false,
+                            "write": false
+                        },
+                        "sample": {
+                            "skip": true
+                        }
+                    },
+                    "latest_id": {
+                        "type": "keyword",
+                        "marshmallow": {
+                            "read": false,
+                            "write": false
+                        },
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        },
+                        "sample": {
+                            "skip": true
+                        }
+                    },
+                    "latest_index": {
+                        "type": "integer",
+                        "marshmallow": {
+                            "read": false,
+                            "write": false
+                        },
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        },
+                        "sample": {
+                            "skip": true
+                        }
+                    },
+                    "next_draft_id": {
+                        "type": "keyword",
+                        "marshmallow": {
+                            "read": false,
+                            "write": false
+                        },
+                        "facets": {
+                            "searchable": true,
+                            "facet": false
+                        },
+                        "sample": {
+                            "skip": true
+                        }
+                    }
                 }
             },
             "writers": {
