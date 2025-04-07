@@ -8,6 +8,7 @@ from oarepo_oaipmh_harvester.cli import _add_harvester
 from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.models import OAIHarvestedRecord, OAIHarvesterRun
 from oarepo_oaipmh_harvester.proxies import (
+    current_oai_record_service,
     current_oai_run_service,
 )
 
@@ -159,10 +160,19 @@ def test_harvest_synchronous(
 
     manage_indexer_queues()
     current_oai_run_service.indexer.refresh()
-    hits = list(
-        current_oai_run_service.search(system_identity, params=dict(run_id=run_id))
-    )
+    current_oai_record_service.indexer.refresh()
+    hits = list(current_oai_run_service.search(system_identity))
     print(hits)
+    assert len(hits) == 2
+
+    hits = list(
+        current_oai_record_service.search(
+            system_identity, facets=dict(harvester=[harvester["id"]])
+        )
+    )
+    for hit in hits:
+        print("OAI Record", hit)
+        assert "original_data" in hit
     assert len(hits) == 2
 
 

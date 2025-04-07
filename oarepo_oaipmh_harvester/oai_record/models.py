@@ -49,3 +49,8 @@ class OAIRecordAggregateModel(AggregateMetadata):
     def updated(self):
         """Return the last update date of the record."""
         return self.datestamp
+
+    @property
+    def id(self):
+        """Return the ID of the record."""
+        return self.oai_identifier

@@ -84,7 +84,7 @@ class OAIRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
 
     service_id = "oai-harvest-record"
     record_cls = OAIRecordAggregate
-    schema = FromConfig("USERS_RESOURCES_SERVICE_SCHEMA", OAIHarvestedRecordSchema)
+    schema = FromConfig("OAI_RECORD_SERVICE_SCHEMA", OAIHarvestedRecordSchema)
     indexer_queue_name = "oai-harvest-record"
     index_dumper = None
 

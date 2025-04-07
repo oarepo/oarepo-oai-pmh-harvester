@@ -24,7 +24,7 @@ class OAIRecordAggregate(BaseAggregate):
             AddHarvesterDumperExt(),
         ],
         model_fields={
-            "id": ("oai_identifier", str),
+            "id": ("uuid", str),
         },
     )
     """Search dumper with configured extensions."""
@@ -47,7 +47,7 @@ class OAIRecordAggregate(BaseAggregate):
     """True if the record has errors during the harvest."""
     has_warnings = ModelField("has_warnings", dump_type=bool)
     """True if the record has warnings during the harvest."""
-    errors = ModelField("errors", dump_type=dict)
+    errors = ModelField("errors", dump_type=list[dict])
     """Errors."""
     original_data = ModelField("original_data", dump_type=dict)
     """Original data."""

@@ -62,7 +62,8 @@
                 "enabled": false
             },
             "transformed_data": {
-                "type": "object"
+                "type": "object",
+                "enabled": false
             },
             "run_id": {
                 "type": "keyword"

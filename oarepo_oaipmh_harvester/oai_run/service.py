@@ -85,7 +85,7 @@ class OAIRunServiceConfig(RecordServiceConfig, ConfiguratorMixin):
 
     service_id = "oai-harvest-run"
     record_cls = OAIRunAggregate
-    schema = FromConfig("USERS_RESOURCES_SERVICE_SCHEMA", OAIHarvesterRunSchema)
+    schema = FromConfig("OAI_RUN_SERVICE_SCHEMA", OAIHarvesterRunSchema)
     indexer_queue_name = "oai-harvest-run"
     index_dumper = None
 

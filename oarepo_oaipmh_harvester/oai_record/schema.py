@@ -18,7 +18,7 @@ class OAIHarvestedRecordSchema(BaseRecordSchema):
     """True if the record has errors during the harvest."""
     has_warnings = fields.Boolean(default=False, required=True)
     """True if the record has warnings during the harvest."""
-    errors = fields.Dict(default=dict, load_default=dict)
+    errors = fields.List(fields.Dict(default=dict, load_default=dict))
     """Errors."""
     original_data = fields.Dict(default=dict, load_default=dict)
     """Original data."""
