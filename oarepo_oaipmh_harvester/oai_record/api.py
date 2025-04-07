@@ -8,7 +8,7 @@ from invenio_records_resources.records.systemfields import IndexField
 from invenio_users_resources.records.api import BaseAggregate
 
 from ..models import OAIHarvestedRecord
-from .dumper import AddHarvesterDumperExt
+from .dumpers import AddHarvesterDumperExt
 from .models import OAIRecordAggregateModel
 
 

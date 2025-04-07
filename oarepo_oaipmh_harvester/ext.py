@@ -198,7 +198,7 @@ def init(app):
         ext.oai_run_service, service_id=ext.oai_run_service_config.service_id
     )
     sregistry.register(
-        ext.oai_record_service, resource_id=ext.oai_run_service_config.service_id
+        ext.oai_record_service, service_id=ext.oai_record_service_config.service_id
     )
     # Register indexers
     iregistry = app.extensions["invenio-indexer"].registry

@@ -38,7 +38,7 @@ class OAIWriter(BaseWriter):
             [
                 entry.context["oai"]["identifier"]
                 for entry in batch.entries
-                if not entry.skipped
+                if not entry.filtered
             ]
         )
 
