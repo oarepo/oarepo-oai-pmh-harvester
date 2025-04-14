@@ -15,7 +15,7 @@ class AddHarvesterDumperExt(SearchDumperExt):
         harvester = oai_harvester_service.read(system_identity, id_=record.harvester_id)
         data["harvester_name"] = harvester.data["name"]
         data["harvest_managers"] = [
-            x["id"] for x in harvester.data.get("harvest_managers", [])
+            x["id"] for x in harvester._record.get("harvest_managers", [])
         ]
         return data
 
@@ -25,4 +25,5 @@ class AddHarvesterDumperExt(SearchDumperExt):
         Reverse the changes made by the dump method.
         """
         data.pop("harvest_managers", None)
+        data.pop("harvester_name", None)
         return data

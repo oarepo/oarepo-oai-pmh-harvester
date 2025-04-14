@@ -1,13 +1,11 @@
 from invenio_db import db
-
-from oarepo_runtime.services.relations.errors import InvalidRelationError
-from sqlalchemy.exc import NoResultFound
-
+from invenio_users_resources.records.api import UserAggregate
 from oarepo_runtime.records.relations.base import (
     Relation,
     RelationResult,
 )
 from oarepo_runtime.records.relations.lookup import LookupResult
+from oarepo_runtime.services.relations.errors import InvalidRelationError
 
 
 class UserRelationResult(RelationResult):
@@ -23,7 +21,7 @@ class UserRelationResult(RelationResult):
 
         try:
             obj = UserAggregate.get_record(id_)
-            db.session.expunge(obj.model)
+            db.session.expunge(obj.model.model_obj)
             self.cache[cache_key] = obj
             return obj
         except Exception as e:

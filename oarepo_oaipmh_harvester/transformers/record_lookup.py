@@ -1,5 +1,4 @@
 import copy
-import datetime
 from typing import Any, Generator, cast
 
 from flask_principal import Identity
@@ -8,7 +7,7 @@ from oarepo_runtime.datastreams import StreamBatch, StreamEntry
 from oarepo_runtime.datastreams.transformers import BaseTransformer
 
 from oarepo_oaipmh_harvester.models import OAIHarvestedRecord
-from oarepo_oaipmh_harvester.utils import oai_context
+from oarepo_oaipmh_harvester.utils import oai_context, parse_iso_to_utc
 
 
 def dict_lookup_ignore_arrays(
@@ -115,10 +114,8 @@ class OAIRecordLookupTransformer(BaseTransformer):
 
             datestamp = harvested_record.datestamp
 
-            if (
-                not self._overwrite_all_records
-                and datestamp
-                >= datetime.datetime.fromisoformat(oai_context(entry)["datestamp"])
+            if not self._overwrite_all_records and datestamp >= parse_iso_to_utc(
+                oai_context(entry)["datestamp"]
             ):
                 # do not save the item as it has the same datestamp
                 entry.filtered = True

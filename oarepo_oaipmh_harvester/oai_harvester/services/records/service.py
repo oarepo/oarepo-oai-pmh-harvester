@@ -1,5 +1,7 @@
-from invenio_records_resources.services import RecordService as InvenioRecordService
+from oarepo_oaipmh_harvester.common.services.oai_harvester import (
+    BaseOaiHarvesterService,
+)
 
 
-class OaiHarvesterService(InvenioRecordService):
+class OaiHarvesterService(BaseOaiHarvesterService):
     """OaiHarvesterRecord service."""

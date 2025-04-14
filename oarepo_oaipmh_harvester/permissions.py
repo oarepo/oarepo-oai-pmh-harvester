@@ -1,25 +1,102 @@
-from invenio_administration.generators import Administration
-from invenio_records_permissions import RecordPermissionPolicy
-from invenio_records_permissions.generators import AnyUser, SystemProcess
+from flask_principal import UserNeed
+from invenio_access.permissions import system_identity
+from invenio_administration.generators import (
+    Administration,
+    administration_access_action,
+)
+from invenio_records_permissions import BasePermissionPolicy, RecordPermissionPolicy
+from invenio_records_permissions.generators import (
+    AnyUser,
+    AuthenticatedUser,
+    Generator,
+    SystemProcess,
+)
+from opensearch_dsl.query import MatchAll, MatchNone, Term
+
+from oarepo_oaipmh_harvester.oai_harvester.proxies import (
+    current_service as harvester_service,
+)
+
+
+class HarvestManager(Generator):
+    def __init__(self):
+        """Constructor."""
+        super(Generator, self).__init__()
+
+    def needs(self, **kwargs):
+        """Enabling Needs."""
+        if "record" not in kwargs:
+            return []
+        record = kwargs["record"]
+        return [
+            UserNeed(manager["id"]) for manager in record.get("harvest_managers", [])
+        ]
+
+    def query_filter(self, **kwargs):
+        """Search filters."""
+        identity = kwargs["identity"]
+        if not identity or not identity.id:
+            return MatchNone()
+        return Term(**{"harvest_managers.id": identity.id})
+
+
+class HarvestRunManager(Generator):
+    def __init__(self):
+        """Constructor."""
+        super(Generator, self).__init__()
+
+    def needs(self, **kwargs):
+        """Enabling Needs."""
+        if "record" not in kwargs:
+            return []
+        record = kwargs["record"]
+        harvester_id = record.harvester_id
+        harvester = harvester_service.read(system_identity, id_=harvester_id)
+
+        return [
+            UserNeed(manager["id"])
+            for manager in harvester._record.get("harvest_managers", [])
+        ]
+
+    def query_filter(self, **kwargs):
+        """Search filters."""
+        identity = kwargs["identity"]
+        if not identity or not identity.id:
+            return MatchNone()
+        return Term(**{"harvest_managers.id": identity.id})
+
+
+class AdministrationWithQueryFilter(Administration):
+    def query_filter(self, **kwargs):
+        identity = kwargs["identity"]
+        if administration_access_action in identity.provides:
+            return MatchAll()
+        else:
+            return MatchNone()
 
 
 class OAIHarvesterPermissions(RecordPermissionPolicy):
     """record policy for read only repository"""
 
     can_search = [SystemProcess(), AnyUser()]
-    can_read = [SystemProcess(), AnyUser()]
-    can_create = [SystemProcess(), Administration()]
-    can_update = [SystemProcess(), Administration()]
-    can_delete = [SystemProcess(), Administration()]
-    can_manage = [SystemProcess(), Administration()]
+    can_read = [SystemProcess(), AdministrationWithQueryFilter(), HarvestManager()]
+    can_create = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_update = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_delete = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_manage = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_run_harvest = [
+        SystemProcess(),
+        AdministrationWithQueryFilter(),
+        HarvestManager(),
+    ]
 
-    can_create_files = [SystemProcess()]
-    can_set_content_files = [SystemProcess()]
-    can_get_content_files = [SystemProcess()]
-    can_commit_files = [SystemProcess()]
-    can_read_files = [SystemProcess()]
-    can_update_files = [SystemProcess()]
-    can_delete_files = [SystemProcess()]
+    can_create_files = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_set_content_files = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_get_content_files = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_commit_files = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_read_files = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_update_files = [SystemProcess(), AdministrationWithQueryFilter()]
+    can_delete_files = [SystemProcess(), AdministrationWithQueryFilter()]
 
     can_edit = [SystemProcess()]
     can_new_version = [SystemProcess()]
@@ -34,3 +111,18 @@ class OAIHarvesterPermissions(RecordPermissionPolicy):
     can_draft_commit_files = [SystemProcess()]
     can_draft_read_files = [SystemProcess()]
     can_draft_update_files = [SystemProcess()]
+
+
+class OAIRunPermissionPolicy(BasePermissionPolicy):
+    """Permission policy for users and user groups."""
+
+    can_create = [SystemProcess()]
+    can_read = [SystemProcess(), AdministrationWithQueryFilter(), HarvestRunManager()]
+    can_stop_harvest = [
+        SystemProcess(),
+        AdministrationWithQueryFilter(),
+        HarvestRunManager(),
+    ]
+    can_search = [AuthenticatedUser(), SystemProcess()]
+    can_update = [SystemProcess()]
+    can_delete = [SystemProcess()]

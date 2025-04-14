@@ -87,3 +87,18 @@ class OAIRunAggregate(BaseAggregate):
         with db.session.no_autoflush:
             run = OAIHarvesterRun.query.get(id_)
             return cls.from_model(run)
+
+
+def oai_harvest_run_generator(model_class):
+    import sys
+
+    import click
+
+    from oarepo_oaipmh_harvester.oai_run.models import OAIHarvesterRun
+
+    try:
+        for x in db.session.query(OAIHarvesterRun.id):
+            rec_id = x[0]
+            yield OAIRunAggregate.get_record(rec_id)
+    except Exception as e:
+        click.secho(f"Could not index {model_class}: {e}", fg="red", file=sys.stderr)

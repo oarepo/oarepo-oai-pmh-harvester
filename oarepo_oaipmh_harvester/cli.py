@@ -19,7 +19,8 @@ from oarepo_oaipmh_harvester.harvester import harvest
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
-from oarepo_oaipmh_harvester.proxies import current_oai_run_service
+from oarepo_oaipmh_harvester.oai_run.models import OAIHarvesterRun
+from oarepo_oaipmh_harvester.oai_run.tasks import index_oai_runs
 
 
 @oarepo.group(name="oai")
@@ -199,11 +200,52 @@ def list_harvesters(**kwargs):
         print(h["code"])
 
 
+@harvester.command("list-runs")
+@click.argument("code")
+@with_appcontext
+def list_runs(code):
+    for harvester in harvester_service.scan(
+        system_identity, params={"q": f"code:{code}"}
+    ):
+        break
+    else:
+        print(f"Harvester with code {code} not found")
+        return
+
+    runs = (
+        OAIHarvesterRun.query.filter(OAIHarvesterRun.harvester_id == harvester["id"])
+        .order_by(OAIHarvesterRun.start_time.desc())
+        .all()
+    )
+    for run in runs:
+        print(f"Run {run.id} :")
+        print(f"  Status: {run.status}")
+        print(f"  Start time: {run.start_time}")
+        print(f"  End time: {run.end_time}")
+        print(f"  Loaded records: {run.records}")
+        print(f"  Finished records: {run.finished_records}")
+        print(f"  Failed records: {run.failed_records}")
+        print(f"  OK records: {run.ok_records}")
+
+
+@harvester.command("cancel-run")
+@click.argument("code")
+@with_appcontext
+def cancel_run(code):
+    run = OAIHarvesterRun.query.filter(OAIHarvesterRun.id == code).one_or_none()
+    if not run:
+        print(f"Run with id {code} not found")
+        return
+    if run.status == "running":
+        run.status = "cancelled"
+        db.session.add(run)
+        db.session.commit()
+
+
 @oai.command("reindex")
 @with_appcontext
 def reindex_oai():
-    current_oai_run_service.reindex(system_identity)
-    # current_oai_record_service.reindex(system_identity)
+    index_oai_runs()
 
 
 class TQDMSynchronousCallback(StatsKeepingDataStreamCallback):

@@ -12,7 +12,7 @@ from oarepo_oaipmh_harvester.proxies import (
     current_oai_record_service,
     current_oai_run_service,
 )
-from oarepo_oaipmh_harvester.utils import oai_context
+from oarepo_oaipmh_harvester.utils import make_safe_json, oai_context, parse_iso_to_utc
 
 
 class OAIWriter(BaseWriter):
@@ -91,17 +91,15 @@ class OAIWriter(BaseWriter):
 
             if entry.errors:
                 oai_record.has_errors = True
-                oai_record.errors = [err.json for err in entry.errors]
+                oai_record.errors = [make_safe_json(err.json) for err in entry.errors]
             else:
                 oai_record.has_errors = False
                 oai_record.errors = []
             oai_record.deleted = entry.deleted
             oai_record.record_id = entry.id
-            oai_record.datestamp = datetime.datetime.fromisoformat(
-                oai_context(entry)["datestamp"]
-            )
-            oai_record.original_data = entry.context["original_data"]
-            oai_record.transformed_data = entry.entry
+            oai_record.datestamp = parse_iso_to_utc(oai_context(entry)["datestamp"])
+            oai_record.original_data = make_safe_json(entry.context["original_data"])
+            oai_record.transformed_data = make_safe_json(entry.entry)
             oai_record.run_id = batch.context["run_id"]
             oai_record.title = self._get_entry_title(entry) or oai_record_id
 

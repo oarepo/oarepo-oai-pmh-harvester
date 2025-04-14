@@ -3,7 +3,7 @@ from marshmallow import fields as ma_fields
 from marshmallow.fields import String
 from oarepo_runtime.services.schema.marshmallow import DictOnlySchema
 
-from oarepo_oaipmh_harvester.common.services.records.oai_harvester import (
+from oarepo_oaipmh_harvester.common.services.oai_harvester import (
     BaseOaiHarvesterSchema,
 )
 
@@ -43,7 +43,7 @@ class HarvestManagersItemSchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 
-    _id = ma_fields.String(data_key="id", attribute="id")
+    _id = ma_fields.Integer(data_key="id", attribute="id")
 
     _version = String(data_key="@v", attribute="@v")
 

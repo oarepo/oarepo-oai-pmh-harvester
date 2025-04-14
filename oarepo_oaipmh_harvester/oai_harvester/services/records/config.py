@@ -1,8 +1,8 @@
-from invenio_records_resources.services import LinksTemplate, RecordLink
 from invenio_records_resources.services import (
-    RecordServiceConfig as InvenioRecordServiceConfig,
+    LinksTemplate,
+    RecordLink,
+    pagination_links,
 )
-from invenio_records_resources.services import pagination_links
 from invenio_records_resources.services.records.components import DataComponent
 from oarepo_runtime.services.components import (
     CustomFieldsComponent,
@@ -13,6 +13,9 @@ from oarepo_runtime.services.config.service import PermissionsPresetsConfigMixin
 from oarepo_runtime.services.records import pagination_links_html
 from oarepo_runtime.services.relations.components import CachingRelationsComponent
 
+from oarepo_oaipmh_harvester.common.services.oai_harvester import (
+    BaseOaiHarvesterServiceConfig,
+)
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
 from oarepo_oaipmh_harvester.oai_harvester.services.records.permissions import (
     OaiHarvesterPermissionPolicy,
@@ -30,7 +33,7 @@ from oarepo_oaipmh_harvester.oai_harvester.services.records.search import (
 
 
 class OaiHarvesterServiceConfig(
-    PermissionsPresetsConfigMixin, InvenioRecordServiceConfig
+    PermissionsPresetsConfigMixin, BaseOaiHarvesterServiceConfig
 ):
     """OaiHarvesterRecord service config."""
 
@@ -51,6 +54,7 @@ class OaiHarvesterServiceConfig(
     record_cls = OaiHarvesterRecord
 
     service_id = "oarepo-oaipmh-harvesters"
+    indexer_queue_name = "oarepo-oaipmh-harvesters"
 
     search_item_links_template = LinksTemplate
 
@@ -64,8 +68,12 @@ class OaiHarvesterServiceConfig(
 
     @property
     def links_item(self):
+        try:
+            supercls_links = super().links_item
+        except AttributeError:  # if they aren't defined in the superclass
+            supercls_links = {}
         links = {
-            **super().links_item,
+            **supercls_links,
             "self": RecordLink(
                 "{+api}/oai/harvest/harvesters/{id}", when=has_permission("read")
             ),
@@ -77,21 +85,33 @@ class OaiHarvesterServiceConfig(
 
     @property
     def links_search_item(self):
+        try:
+            supercls_links = super().links_search_item
+        except AttributeError:  # if they aren't defined in the superclass
+            supercls_links = {}
         links = {
-            **super().links_search_item,
+            **supercls_links,
             "self": RecordLink(
                 "{+api}/oai/harvest/harvesters/{id}", when=has_permission("read")
             ),
             "self_html": RecordLink(
                 "{+ui}/oai/harvest/harvesters/{id}", when=has_permission("read")
             ),
+            "harvest": RecordLink(
+                "{+api}/oai/harvest/harvesters/{id}/actions/harvest",
+                when=has_permission("run_harvest"),
+            ),
         }
         return {k: v for k, v in links.items() if v is not None}
 
     @property
     def links_search(self):
+        try:
+            supercls_links = super().links_search
+        except AttributeError:  # if they aren't defined in the superclass
+            supercls_links = {}
         links = {
-            **super().links_search,
+            **supercls_links,
             **pagination_links("{+api}/oai/harvest/harvesters/{?args*}"),
             **pagination_links_html("{+ui}/oai/harvest/harvesters/{?args*}"),
         }

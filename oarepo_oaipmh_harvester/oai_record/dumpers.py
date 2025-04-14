@@ -20,7 +20,7 @@ class AddHarvesterDumperExt(SearchDumperExt):
         harvester = oai_harvester_service.read(system_identity, id_=run.harvester_id)
         data["harvester_name"] = harvester.data["name"]
         data["harvest_managers"] = [
-            x["id"] for x in harvester.data.get("harvest_managers", [])
+            x["id"] for x in harvester._record.get("harvest_managers", [])
         ]
         return data
 

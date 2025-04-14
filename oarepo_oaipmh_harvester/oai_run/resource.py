@@ -14,6 +14,8 @@ from invenio_records_resources.resources.records.resource import (
 )
 from invenio_records_resources.resources.records.utils import search_preference
 
+from oarepo_oaipmh_harvester.administration.run.api import response_handlers
+
 
 #
 # Resource config
@@ -26,6 +28,7 @@ class OAIRunResourceConfig(RecordResourceConfig):
     routes = {
         "list": "",
         "item": "/<id>",
+        "stop": "/<id>/stop",
     }
 
     request_view_args = {
@@ -37,6 +40,7 @@ class OAIRunResourceConfig(RecordResourceConfig):
     }
 
     response_handlers = {
+        **response_handlers,
         "application/vnd.inveniordm.v1+json": RecordResourceConfig.response_handlers[
             "application/json"
         ],
@@ -56,6 +60,7 @@ class OAIRunResource(RecordResource):
         return [
             route("GET", routes["list"], self.search),
             route("GET", routes["item"], self.read),
+            route("POST", routes["stop"], self.stop),
         ]
 
     @request_search_args
@@ -75,6 +80,16 @@ class OAIRunResource(RecordResource):
     def read(self):
         """Read a user."""
         item = self.service.read(
+            id_=resource_requestctx.view_args["id"],
+            identity=g.identity,
+        )
+        return item.to_dict(), 200
+
+    @request_view_args
+    @response_handler()
+    def stop(self):
+        """Stop running harvest."""
+        item = self.service.stop(
             id_=resource_requestctx.view_args["id"],
             identity=g.identity,
         )

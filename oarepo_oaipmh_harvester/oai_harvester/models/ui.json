@@ -74,8 +74,8 @@
                 "hint": "harvest_managers.hint",
                 "children": {
                     "id": {
-                        "detail": "keyword",
-                        "input": "keyword",
+                        "detail": "integer",
+                        "input": "integer",
                         "help": "harvest_managers/id.help",
                         "label": "harvest_managers/id.label",
                         "hint": "harvest_managers/id.hint",

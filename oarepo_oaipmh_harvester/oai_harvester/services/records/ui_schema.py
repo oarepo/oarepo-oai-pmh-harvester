@@ -48,7 +48,7 @@ class HarvestManagersItemUISchema(DictOnlySchema):
     class Meta:
         unknown = ma.INCLUDE
 
-    _id = ma_fields.String(data_key="id", attribute="id")
+    _id = ma_fields.Integer(data_key="id", attribute="id")
 
     _version = String(data_key="@v", attribute="@v")
 

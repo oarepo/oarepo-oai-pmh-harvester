@@ -1,7 +1,10 @@
+import logging
+
 from invenio_db import db
 from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.resources.errors import PermissionDeniedError
 from invenio_records_resources.services import (
+    Link,
     RecordService,
     RecordServiceConfig,
     pagination_links,
@@ -10,6 +13,9 @@ from invenio_records_resources.services.base.config import (
     ConfiguratorMixin,
     FromConfig,
     SearchOptionsMixin,
+)
+from invenio_records_resources.services.errors import (
+    PermissionDeniedError,
 )
 from invenio_records_resources.services.records.config import SearchOptions
 from invenio_records_resources.services.records.facets.facets import TermsFacet
@@ -23,12 +29,22 @@ from invenio_records_resources.services.records.queryparser import (
     SuggestQueryParser,
 )
 from invenio_users_resources.services.common import Link
+from oarepo_runtime.services.config.link_conditions import Condition
+
+from oarepo_oaipmh_harvester.oai_run.models import OAIHarvesterRun
+from oarepo_oaipmh_harvester.services.links import ActionLinks
 
 from ..models import OAIHarvesterRun
+from ..permissions import OAIRunPermissionPolicy
 from .api import OAIRunAggregate
-from .permissions import OAIRunPermissionPolicy
 from .results import OAIRunItem, OAIRunList
 from .schema import OAIHarvesterRunSchema
+
+log = logging.getLogger(__name__)
+
+from marshmallow import ValidationError
+
+from oarepo_oaipmh_harvester.proxies import current_oai_run_service
 
 
 class OAIRunSearchOptions(SearchOptions, SearchOptionsMixin):
@@ -68,9 +84,33 @@ class OAIRunSearchOptions(SearchOptions, SearchOptionsMixin):
                 "finished": _("Harvest finished"),
                 "failed": _("Harvest failed"),
                 "stopped": _("Harvest stopped"),
+                "cancelled": _("Harvest cancelled"),
             },
         ),
     }
+
+
+class has_permission_on_run(Condition):
+    def __init__(self, action_name):
+        self.action_name = action_name
+
+    def __call__(self, obj, ctx: dict):
+        try:
+            return current_oai_run_service.check_permission(
+                action_name=self.action_name, record=obj, **ctx
+            )
+        except Exception as e:
+            log.exception(f"Unexpected exception {e}.")
+
+
+class RunLink(Link):
+    """Short cut for writing record links."""
+
+    @staticmethod
+    def vars(record, vars):
+        """Variables for the URI template."""
+        # Some records don't have record.pid.pid_value yet (e.g. drafts)
+        vars.update({"id": record.id})
 
 
 class OAIRunServiceConfig(RecordServiceConfig, ConfiguratorMixin):
@@ -91,9 +131,28 @@ class OAIRunServiceConfig(RecordServiceConfig, ConfiguratorMixin):
 
     # links configuration
     links_item = {
-        "self": Link("{+api}/oai/harvest/run/{id}"),
+        "self": Link("{+api}/oai/harvest/runs/{id}"),
+        "actions": ActionLinks(
+            {
+                "stop": RunLink(
+                    "{+api}/oai/harvest/runs/{id}/stop",
+                    when=has_permission_on_run("stop_harvest"),
+                ),
+            }
+        ),
     }
-    links_search = pagination_links("{+api}/oai/harvest/run{?args*}")
+    links_search_item = {
+        "self": Link("{+api}/oai/harvest/runs/{id}"),
+        "actions": ActionLinks(
+            {
+                "stop": RunLink(
+                    "{+api}/oai/harvest/runs/{id}/stop",
+                    when=has_permission_on_run("stop_harvest"),
+                ),
+            }
+        ),
+    }
+    links_search = pagination_links("{+api}/oai/harvest/runs{?args*}")
 
     components = []
 
@@ -148,3 +207,18 @@ class OAIRunService(RecordService):
         oai_runs = db.session.query(OAIHarvesterRun.id).yield_per(1000)
         self.indexer.bulk_index([u.id for u in oai_runs])
         return True
+
+    def stop(self, identity, id_):
+        """Stop a running oai_run."""
+        # resolve and require permission
+        oai_run = OAIRunAggregate.get_record(id_)
+        if oai_run is None:
+            raise PermissionDeniedError()
+
+        self.require_permission(identity, "stop_harvest", record=oai_run)
+        if oai_run.status != "running":
+            raise ValidationError(_("Cannot stop already stopped harvest run."))
+        oai_run.status = "stopped"
+        oai_run.commit()
+        db.session.commit()
+        return self.result_item(self, identity, oai_run, links_tpl=self.links_item_tpl)

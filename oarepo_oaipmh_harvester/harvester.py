@@ -20,22 +20,6 @@ from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.reader_callback import reader_callback
 
 
-def _get_max_datestamp_query(harvester):
-    max_datestamp_query = {
-        "query": {
-            "bool": {
-                "filter": [
-                    {"term": {"harvester.id": harvester}},
-                    {"term": {"manual": False}},
-                ]
-            }
-        },
-        "size": 0,
-        "aggs": {"max_datestamp": {"max": {"field": "datestamp"}}},
-    }
-    return max_datestamp_query
-
-
 def _get_latest_oai_datestamp(harvester_id):
     max_datestamp = (
         db.session.query(func.max(OAIHarvestedRecord.datestamp))
@@ -56,6 +40,7 @@ def harvest(
     on_run_created=None,
     title=None,
     overwrite_all_records=False,
+    manual=False,
 ):
     if isinstance(harvester_or_code, str):
         harvesters = list(
@@ -77,9 +62,18 @@ def harvest(
     harvester.pop("updated", None)
     harvester.pop("revision_id", None)
 
-    print("Will harvest using harvester", harvester)
+    run_manual = manual or (True if identifiers else False)
 
-    run_manual = True if identifiers else False
+    # try to find a running harvester
+    running = (
+        db.session.query(OAIHarvesterRun)
+        .filter(OAIHarvesterRun.harvester_id == harvester["id"])
+        .filter(OAIHarvesterRun.status == "running")
+        .first()
+    )
+
+    if running:
+        raise Exception("A harvester is already running for this ID.")
 
     run = OAIHarvesterRun(
         harvester_id=harvester["id"],
@@ -92,12 +86,15 @@ def harvest(
     db.session.add(run)
     db.session.commit()
 
+    run_id = run.id
     str_run_id = str(run.id)
 
     if on_run_created:
         on_run_created(str_run_id)
 
-    start_from = _get_latest_oai_datestamp(harvester["id"]) if not run_manual else None
+    datestamp_from = (
+        _get_latest_oai_datestamp(harvester["id"]) if not run_manual else None
+    )
 
     reader_signature: Signature = current_harvester.get_parser_signature(
         harvester["loader"],
@@ -106,7 +103,7 @@ def harvest(
         identifiers=identifiers,
         oai_config=dict(harvester),
         oai_run=str_run_id,
-        start_from=start_from,
+        datestamp_from=datestamp_from,
         oai_harvester_id=harvester["id"],
         manual=run_manual,
     )
@@ -186,6 +183,31 @@ def harvest(
         ),
     )
 
-    datastream.process(identity=system_identity, context={"run_id": str_run_id})
+    try:
+        datastream.process(identity=system_identity, context={"run_id": str_run_id})
+        status = "finished"
+    except Exception:
+        status = "failed"
+        pass
 
-    return run.id
+    if not on_background:
+        # commit whatever was left uncommitted
+        try:
+            db.session.commit()
+        except Exception:
+            # rollback if commit fails
+            # this is needed to avoid the session being in a bad state
+            status = "failed"
+            try:
+                db.session.rollback()
+            except Exception:
+                pass
+
+        run = OAIHarvesterRun.query.get(run_id)
+        if run.status == "running":
+            run.status = status
+            run.end_time = datetime.datetime.utcnow()
+            db.session.add(run)
+            db.session.commit()
+
+    return run_id

@@ -118,7 +118,7 @@ class OARepoOAIHarvesterExt(object):
                 "OAI_RUN_RESOURCE_CONFIG",
                 "oarepo_oaipmh_harvester.oai_run.resource:OAIRunResourceConfig",
             ),
-        ).build(self.app)
+        )()
 
     @cached_property
     def oai_run_resource(self):
@@ -184,10 +184,22 @@ def split_processor_name(processor):
 
 def finalize_app(app):
     init(app)
+    register_record_generators()
 
 
 def api_finalize_app(app):
     init(app)
+    register_record_generators()
+
+
+def register_record_generators():
+    from oarepo_runtime.cli.index import RECORD_GENERATORS
+
+    from oarepo_oaipmh_harvester.oai_record.api import oai_harvest_record_generator
+    from oarepo_oaipmh_harvester.oai_run.api import oai_harvest_run_generator
+
+    RECORD_GENERATORS["oai-harvest-run"] = oai_harvest_run_generator
+    RECORD_GENERATORS["oai-harvest-record"] = oai_harvest_record_generator
 
 
 def init(app):

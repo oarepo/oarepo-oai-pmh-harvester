@@ -179,10 +179,6 @@
             "module": "oarepo_oaipmh_harvester.oai_harvester.proxies",
             "generate": true
         },
-        "translations": {
-            "module": "oarepo_oaipmh_harvester.oai_harvester.translations",
-            "alias": "oarepo-oaipmh-harvester"
-        },
         "json-schema-settings": {
             "generate": true,
             "alias": "oarepo-oaipmh-harvester",
@@ -263,6 +259,10 @@
                 "\"object_key\"": "\"ui\"",
                 "\"identity\"": "{{ flask.g{g.identity} }}"
             }
+        },
+        "translations": {
+            "module": "oarepo_oaipmh_harvester.oai_harvester.translations",
+            "alias": "oarepo-oaipmh-harvester"
         },
         "mapping": {
             "generate": true,
@@ -399,7 +399,7 @@
                         {
                             "key": "id",
                             "model": {
-                                "type": "keyword"
+                                "type": "integer"
                             },
                             "target": "id"
                         },
@@ -428,7 +428,7 @@
                     },
                     "properties": {
                         "id": {
-                            "type": "keyword"
+                            "type": "integer"
                         },
                         "email": {
                             "type": "keyword"
