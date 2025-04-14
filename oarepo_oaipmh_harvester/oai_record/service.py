@@ -1,5 +1,4 @@
 from invenio_db import db
-from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.resources.errors import PermissionDeniedError
 from invenio_records_resources.services import (
     RecordService,
@@ -12,7 +11,6 @@ from invenio_records_resources.services.base.config import (
     SearchOptionsMixin,
 )
 from invenio_records_resources.services.records.config import SearchOptions
-from invenio_records_resources.services.records.facets.facets import TermsFacet
 from invenio_records_resources.services.records.params import (
     FacetsParam,
     PaginationParam,
@@ -25,8 +23,9 @@ from invenio_records_resources.services.records.queryparser import (
 from invenio_users_resources.services.common import Link
 
 from ..models import OAIHarvestedRecord
+from ..permissions import OAIRecordPermissionPolicy
+from . import facets
 from .api import OAIRecordAggregate
-from .permissions import OAIRecordPermissionPolicy
 from .results import OAIRecordItem, OAIRecordList
 from .schema import OAIHarvestedRecordSchema
 
@@ -53,22 +52,9 @@ class OAIRecordSearchOptions(SearchOptions, SearchOptionsMixin):
     ]
 
     facets = {
-        "harvester": TermsFacet(field="harvester_id", label=_("Harvester ID")),
-        "deleted": TermsFacet(
-            field="deleted",
-            label=_("Deleted"),
-            value_labels={True: _("Yes"), False: _("No")},
-        ),
-        "has_errors": TermsFacet(
-            field="has_errors",
-            label=_("Errors"),
-            value_labels={True: _("Yes"), False: _("No")},
-        ),
-        "has_warnings": TermsFacet(
-            field="has_warnings",
-            label=_("Warnings"),
-            value_labels={True: _("Yes"), False: _("No")},
-        ),
+        "harvester": facets.harvester,
+        "deleted": facets.deleted,
+        "has_errors": facets.has_errors,
     }
 
 
@@ -90,9 +76,9 @@ class OAIRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
 
     # links configuration
     links_item = {
-        "self": Link("{+api}/oai/harvest/record/{id}"),
+        "self": Link("{+api}/oai/harvest/records/{id}"),
     }
-    links_search = pagination_links("{+api}/oai/harvest/record{?args*}")
+    links_search = pagination_links("{+api}/oai/harvest/records{?args*}")
 
     components = []
 

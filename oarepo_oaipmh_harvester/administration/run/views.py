@@ -11,6 +11,8 @@ from invenio_administration.views.base import (
 )
 from invenio_i18n import lazy_gettext as _
 
+from oarepo_oaipmh_harvester.oai_harvester.records.models import OaiHarvesterMetadata
+
 
 def oai_run_permissions_decorator(view):
     @functools.wraps(view)
@@ -28,7 +30,7 @@ def oai_run_permissions_decorator(view):
 
 
 class OAIHarvesterPermissionsMixin:
-    decorators = []  # [oai_run_permissions_decorator]
+    decorators = [oai_run_permissions_decorator]
 
 
 class RunListView(OAIHarvesterPermissionsMixin, AdminResourceListView):
@@ -74,6 +76,7 @@ class RunListView(OAIHarvesterPermissionsMixin, AdminResourceListView):
     }
 
     search_config_name = "OAI_RUN_SEARCH"
+    search_facets_config_name = "OAI_RUN_FACETS"
     search_sort_config_name = "OAI_RUN_SORT_OPTIONS"
 
     create_view_name = "oarepo_oaipmh_create"

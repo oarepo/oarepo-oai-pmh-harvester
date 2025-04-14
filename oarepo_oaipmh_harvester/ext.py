@@ -78,13 +78,16 @@ class OARepoOAIHarvesterExt(object):
         )
 
         app.config.setdefault("OAI_RUN_SEARCH", config.OAI_RUN_SEARCH)
+        app.config.setdefault("OAI_RUN_FACETS", config.OAI_RUN_FACETS)
         app.config.setdefault("OAI_RUN_SORT_OPTIONS", config.OAI_RUN_SORT_OPTIONS)
         app.config.setdefault(
             "OAI_HARVESTER_SORT_OPTIONS", config.OAI_HARVESTER_SORT_OPTIONS
         )
         app.config.setdefault("OAI_HARVESTER_SEARCH", config.OAI_HARVESTER_SEARCH)
+        app.config.setdefault("OAI_HARVESTER_FACETS", config.OAI_HARVESTER_FACETS)
         app.config.setdefault("OAI_RECORD_SEARCH", config.OAI_RECORD_SEARCH)
         app.config.setdefault("OAI_RECORD_SORT_OPTIONS", config.OAI_RECORD_SORT_OPTIONS)
+        app.config.setdefault("OAI_RECORD_FACETS", config.OAI_RECORD_FACETS)
 
         app.config.setdefault(
             "OAI_RUN_REINDEX_THRESHOLD", config.OAI_RUN_REINDEX_THRESHOLD
@@ -158,7 +161,7 @@ class OARepoOAIHarvesterExt(object):
                 "OAI_RECORD_RESOURCE_CONFIG",
                 "oarepo_oaipmh_harvester.oai_record.resource:OAIRecordResourceConfig",
             ),
-        ).build(self.app)
+        )()
 
     @cached_property
     def oai_record_resource(self):

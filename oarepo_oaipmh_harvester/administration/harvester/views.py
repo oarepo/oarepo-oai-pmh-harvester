@@ -87,6 +87,7 @@ class OaiPmhListView(OAIHarvesterPermissionsMixin, AdminResourceListView):
     }
 
     search_config_name = "OAI_HARVESTER_SEARCH"
+    search_facets_config_name = "OAI_HARVESTER_FACETS"
     search_sort_config_name = "OAI_HARVESTER_SORT_OPTIONS"
 
     create_view_name = "oarepo_oaipmh_create"
@@ -112,20 +113,21 @@ class OaiPmhDetailView(OAIHarvesterPermissionsMixin, AdminResourceDetailView):
     item_field_list = {
         "name": {"text": _("Name"), "order": 1},
         "code": {"text": _("Code"), "order": 2},
-        "setspecs": {"text": _("Set specification"), "order": 3},
-        "metadataprefix": {"text": _("Metadata prefix"), "order": 4},
-        "baseurl": {"text": _("Base URL"), "order": 5},
-        "loader": {"text": _("Loader"), "order": 6},
-        "writers": {"text": _("Writer"), "order": 7, "escape": True},
-        "batch_size": {"text": _("Batch size"), "order": 8},
-        "max_records": {"text": _("Maximum number of records"), "order": 9},
-        "transformers": {"text": _("Transformers"), "escape": True, "order": 10},
-        "created": {"text": _("Created"), "order": 11},
-        "updated": {"text": _("Updated"), "order": 12},
-        "comment": {"text": _("Comment"), "order": 13},
+        "runs": {"text": _("Runs"), "order": 3, "escape": True},
+        "setspecs": {"text": _("Set specification"), "order": 4},
+        "metadataprefix": {"text": _("Metadata prefix"), "order": 5},
+        "baseurl": {"text": _("Base URL"), "order": 6},
+        "loader": {"text": _("Loader"), "order": 7},
+        "writers": {"text": _("Writer"), "order": 8, "escape": True},
+        "batch_size": {"text": _("Batch size"), "order": 9},
+        "max_records": {"text": _("Maximum number of records"), "order": 10},
+        "transformers": {"text": _("Transformers"), "escape": True, "order": 11},
+        "created": {"text": _("Created"), "order": 12},
+        "updated": {"text": _("Updated"), "order": 13},
+        "comment": {"text": _("Comment"), "order": 14},
         "harvest_managers": {
             "text": _("Harvest managers"),
-            "order": 14,
+            "order": 15,
             "escape": True,
         },
     }

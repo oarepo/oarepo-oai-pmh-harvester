@@ -16,6 +16,7 @@ from opensearch_dsl.query import MatchAll, MatchNone, Term
 from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
+from oarepo_oaipmh_harvester.oai_run.models import OAIHarvesterRun
 
 
 class HarvestManager(Generator):
@@ -64,6 +65,35 @@ class HarvestRunManager(Generator):
         if not identity or not identity.id:
             return MatchNone()
         return Term(**{"harvest_managers.id": identity.id})
+
+
+class HarvestRecordManager(Generator):
+    def __init__(self):
+        """Constructor."""
+        super(Generator, self).__init__()
+
+    def needs(self, **kwargs):
+        """Enabling Needs."""
+        if "record" not in kwargs:
+            return []
+        record = kwargs["record"]
+        run_id = record.run_id
+        run = OAIHarvesterRun.query.get(run_id)
+
+        harvester_id = run.harvester_id
+        harvester = harvester_service.read(system_identity, id_=harvester_id)
+
+        return [
+            UserNeed(manager["id"])
+            for manager in harvester._record.get("harvest_managers", [])
+        ]
+
+    def query_filter(self, **kwargs):
+        """Search filters."""
+        identity = kwargs["identity"]
+        if not identity or not identity.id:
+            return MatchNone()
+        return Term(**{"harvest_managers": identity.id})
 
 
 class AdministrationWithQueryFilter(Administration):
@@ -122,6 +152,20 @@ class OAIRunPermissionPolicy(BasePermissionPolicy):
         SystemProcess(),
         AdministrationWithQueryFilter(),
         HarvestRunManager(),
+    ]
+    can_search = [AuthenticatedUser(), SystemProcess()]
+    can_update = [SystemProcess()]
+    can_delete = [SystemProcess()]
+
+
+class OAIRecordPermissionPolicy(BasePermissionPolicy):
+    """Permission policy for users and user groups."""
+
+    can_create = [SystemProcess()]
+    can_read = [
+        SystemProcess(),
+        AdministrationWithQueryFilter(),
+        HarvestRecordManager(),
     ]
     can_search = [AuthenticatedUser(), SystemProcess()]
     can_update = [SystemProcess()]

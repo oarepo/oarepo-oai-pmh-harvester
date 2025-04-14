@@ -14,6 +14,8 @@ from invenio_records_resources.resources.records.resource import (
 )
 from invenio_records_resources.resources.records.utils import search_preference
 
+from oarepo_oaipmh_harvester.administration.record.api import response_handlers
+
 
 #
 # Resource config
@@ -37,6 +39,7 @@ class OAIRecordResourceConfig(RecordResourceConfig):
     }
 
     response_handlers = {
+        **response_handlers,
         "application/vnd.inveniordm.v1+json": RecordResourceConfig.response_handlers[
             "application/json"
         ],

@@ -18,7 +18,6 @@ from invenio_records_resources.services.errors import (
     PermissionDeniedError,
 )
 from invenio_records_resources.services.records.config import SearchOptions
-from invenio_records_resources.services.records.facets.facets import TermsFacet
 from invenio_records_resources.services.records.params import (
     FacetsParam,
     PaginationParam,
@@ -36,6 +35,7 @@ from oarepo_oaipmh_harvester.services.links import ActionLinks
 
 from ..models import OAIHarvesterRun
 from ..permissions import OAIRunPermissionPolicy
+from . import facets
 from .api import OAIRunAggregate
 from .results import OAIRunItem, OAIRunList
 from .schema import OAIHarvesterRunSchema
@@ -69,24 +69,10 @@ class OAIRunSearchOptions(SearchOptions, SearchOptionsMixin):
     ]
 
     facets = {
-        "harvester": TermsFacet(field="harvester_id", label=_("Harvester ID")),
-        "manual": TermsFacet(
-            field="manual",
-            label=_("Run type"),
-            value_labels={True: _("Manual"), False: _("Automatic")},
-        ),
-        "status": TermsFacet(
-            field="status",
-            label=_("Status"),
-            value_labels={
-                "running": _("Harvest running"),
-                "finishing": _("Harvest finishing"),
-                "finished": _("Harvest finished"),
-                "failed": _("Harvest failed"),
-                "stopped": _("Harvest stopped"),
-                "cancelled": _("Harvest cancelled"),
-            },
-        ),
+        "harvester": facets.harvester,
+        "manual": facets.manual,
+        "status": facets.status,
+        "harvester_name": facets.harvester_name,
     }
 
 

@@ -8,7 +8,9 @@ from pygments.lexers import YamlLexer
 
 
 def data_to_html_yaml(data):
-    yaml_str = yaml.dump(data, default_flow_style=False, sort_keys=False)
+    yaml_str = yaml.dump(
+        data, default_flow_style=False, sort_keys=False, allow_unicode=True
+    )
     html = highlight(yaml_str, YamlLexer(), HtmlFormatter(full=False))
     return html
 
@@ -26,11 +28,13 @@ class AdministrationDetailJSONSerializer(JSONSerializer):
 
     def _convert_to_administration_detail(self, ret):
         ret = {**ret}
-        ret["transformers"] = data_to_html_yaml(ret["transformers"])
-        ret["writers"] = data_to_html_yaml(ret["writers"])
-        run_url = f"/administration/oarepo/harvest/runs?q=harvester_id:{ret['id']}"
-        print(run_url)
-        ret["runs"] = '<a href="{}">Click to see runs ...</a>'.format(run_url)
+        ret["errors"] = data_to_html_yaml(ret.get("errors"))
+        ret["original_data"] = data_to_html_yaml(ret.get("original_data"))
+        ret["transformed_data"] = data_to_html_yaml(ret.get("transformed_data"))
+        ret["has_errors"] = "Yes" if ret.get("has_errors") else "No"
+        ret["deleted"] = "Yes" if ret.get("deleted") else "No"
+        run_link = f"/administration/oarepo/harvest/runs/{ret["run_id"]}"
+        ret["run"] = '<a href="{}">Click to see the run ...</a>'.format(run_link)
         return ret
 
 
