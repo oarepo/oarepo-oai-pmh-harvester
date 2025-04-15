@@ -107,6 +107,15 @@ class OaiPmhDetailView(OAIHarvesterPermissionsMixin, AdminResourceDetailView):
     display_delete = True
     display_edit = True
 
+    actions = {
+        "harvest": {
+            "text": "Run",
+            "order": 1,
+            "payload_schema": None,
+            # "payload_schema": RunHarvestSchema,
+        }
+    }
+
     list_view_name = "oarepo_oaipmh_harvesters"
     pid_path = "id"
 

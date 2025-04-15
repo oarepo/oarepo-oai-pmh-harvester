@@ -42,7 +42,9 @@ class RunListView(OAIHarvesterPermissionsMixin, AdminResourceListView):
     url = "/oarepo/harvest/runs"
 
     resource_config = "resource_records"
-    search_request_headers = {"Accept": "application/json"}
+    search_request_headers = {
+        "Accept": "application/invenio-administration-detail+json"
+    }
     title = "OAI-PMH Harvester Runs"
     category = "Site management"
     pid_path = "id"
@@ -99,14 +101,28 @@ class RunDetailView(OAIHarvesterPermissionsMixin, AdminResourceDetailView):
     list_view_name = "oarepo_oaipmh_harvest_runs"
     pid_path = "id"
 
+    actions = {
+        "stop": {
+            "text": "Stop",
+            "order": 1,
+            "payload_schema": None,
+        }
+    }
+
     item_field_list = {
         "start_time": {"text": _("Start time"), "order": 1, "width": 4},
         "end_time": {"text": _("End time"), "order": 2},
         "harvester_name": {"text": _("Harvester Name"), "order": 3},
         "title": {"text": _("Title"), "order": 4},
         "status": {"text": _("Status"), "order": 5, "width": 2},
-        "records": {"text": _("Records"), "order": 6, "width": 1},
-        "finished_records": {"text": _("Finished records"), "order": 7, "width": 1},
-        "ok_records": {"text": _("OK records"), "order": 8, "width": 1},
-        "failed_records": {"text": _("Failed records"), "order": 9, "width": 1},
+        "manual": {"text": _("Manual"), "order": 6, "width": 1},
+        "records": {"text": _("Records"), "order": 7, "width": 1},
+        "finished_records": {"text": _("Finished records"), "order": 8, "width": 1},
+        "ok_records": {"text": _("OK records"), "order": 9, "width": 1},
+        "failed_records": {"text": _("Failed records"), "order": 10, "width": 1},
+        "records_url": {
+            "text": _("Records"),
+            "order": 11,
+            "escape": True,
+        },
     }

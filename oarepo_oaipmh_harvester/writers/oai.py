@@ -79,6 +79,9 @@ class OAIWriter(BaseWriter):
 
     def update_oai_records(self, batch: StreamBatch):
         for entry in batch.entries:
+            if entry.filtered:
+                continue
+
             oai_record_id = oai_context(entry).get("identifier")
             oai_record = OAIHarvestedRecord.query.filter_by(
                 oai_identifier=oai_record_id
@@ -95,6 +98,8 @@ class OAIWriter(BaseWriter):
             else:
                 oai_record.has_errors = False
                 oai_record.errors = []
+
+            oai_record.harvested_at = datetime.datetime.utcnow()
             oai_record.deleted = entry.deleted
             oai_record.record_id = entry.id
             oai_record.datestamp = parse_iso_to_utc(oai_context(entry)["datestamp"])

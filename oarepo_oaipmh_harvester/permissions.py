@@ -167,6 +167,11 @@ class OAIRecordPermissionPolicy(BasePermissionPolicy):
         AdministrationWithQueryFilter(),
         HarvestRecordManager(),
     ]
+    can_run_harvest = [
+        SystemProcess(),
+        AdministrationWithQueryFilter(),
+        HarvestRecordManager(),
+    ]
     can_search = [AuthenticatedUser(), SystemProcess()]
     can_update = [SystemProcess()]
     can_delete = [SystemProcess()]

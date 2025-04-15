@@ -30,6 +30,9 @@
             "datestamp": {
                 "type": "date"
             },
+            "harvested_at": {
+                "type": "date"
+            },
             "deleted": {
                 "type": "boolean"
             },

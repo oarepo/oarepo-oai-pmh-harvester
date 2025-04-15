@@ -9,6 +9,9 @@ from oarepo_oaipmh_harvester.permissions import OAIHarvesterPermissions
 from oarepo_oaipmh_harvester.readers.oai_dir import OAIDirReader
 from oarepo_oaipmh_harvester.readers.sickle import SickleReader
 from oarepo_oaipmh_harvester.transformers.marcxml import MarcXMLTransformer
+from oarepo_oaipmh_harvester.transformers.original_data import (
+    OriginalDataTransformer,
+)
 from oarepo_oaipmh_harvester.transformers.record_lookup import (
     OAIRecordLookupTransformer,
 )
@@ -23,6 +26,7 @@ DATASTREAMS_READERS: dict[str, type[BaseReader]] = {
 DATASTREAMS_TRANSFORMERS: dict[str, type[BaseTransformer]] = {
     "marcxml": MarcXMLTransformer,
     "oai_record_lookup": OAIRecordLookupTransformer,
+    "set_original_data": OriginalDataTransformer,
 }
 
 DATASTREAMS_WRITERS: dict[str, type[BaseWriter]] = {
@@ -170,6 +174,9 @@ OAI_RECORD_SEARCH: dict[str, Any] = {
         "harvester",
         "deleted",
         "has_errors",
+        "error_code",
+        "error_message",
+        "error_location",
     ],
     "sort": ["newest"],
     "sort_default": "newest",
@@ -193,6 +200,24 @@ OAI_RECORD_FACETS = {
         "facet": record_facets.has_errors,
         "ui": {
             "field": "has_errors",
+        },
+    },
+    "error_code": {
+        "facet": record_facets.error_code,
+        "ui": {
+            "field": "error_code",
+        },
+    },
+    "error_message": {
+        "facet": record_facets.error_message,
+        "ui": {
+            "field": "error_message",
+        },
+    },
+    "error_location": {
+        "facet": record_facets.error_location,
+        "ui": {
+            "field": "error_location",
         },
     },
 }

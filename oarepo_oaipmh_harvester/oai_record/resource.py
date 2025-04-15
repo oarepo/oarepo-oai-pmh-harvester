@@ -28,6 +28,7 @@ class OAIRecordResourceConfig(RecordResourceConfig):
     routes = {
         "list": "",
         "item": "/<id>",
+        "harvest": "/<id>/harvest",
     }
 
     request_view_args = {
@@ -59,6 +60,7 @@ class OAIRecordResource(RecordResource):
         return [
             route("GET", routes["list"], self.search),
             route("GET", routes["item"], self.read),
+            route("POST", routes["harvest"], self.harvest),
         ]
 
     @request_search_args
@@ -78,6 +80,16 @@ class OAIRecordResource(RecordResource):
     def read(self):
         """Read a user."""
         item = self.service.read(
+            id_=resource_requestctx.view_args["id"],
+            identity=g.identity,
+        )
+        return item.to_dict(), 200
+
+    @request_view_args
+    @response_handler()
+    def harvest(self):
+        """Re-harvest the OAI record."""
+        item = self.service.harvest(
             id_=resource_requestctx.view_args["id"],
             identity=g.identity,
         )

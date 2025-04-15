@@ -1,6 +1,9 @@
+import logging
+
 from invenio_db import db
 from invenio_records_resources.resources.errors import PermissionDeniedError
 from invenio_records_resources.services import (
+    Link,
     RecordService,
     RecordServiceConfig,
     pagination_links,
@@ -9,6 +12,9 @@ from invenio_records_resources.services.base.config import (
     ConfiguratorMixin,
     FromConfig,
     SearchOptionsMixin,
+)
+from invenio_records_resources.services.errors import (
+    PermissionDeniedError,
 )
 from invenio_records_resources.services.records.config import SearchOptions
 from invenio_records_resources.services.records.params import (
@@ -21,13 +27,22 @@ from invenio_records_resources.services.records.queryparser import (
     SuggestQueryParser,
 )
 from invenio_users_resources.services.common import Link
+from oarepo_runtime.datastreams.types import StatsKeepingDataStreamCallback
+from oarepo_runtime.services.config.link_conditions import Condition
 
-from ..models import OAIHarvestedRecord
+from oarepo_oaipmh_harvester.oai_run.models import OAIHarvesterRun
+from oarepo_oaipmh_harvester.proxies import current_oai_record_service
+from oarepo_oaipmh_harvester.services.links import ActionLinks
+
+from ..harvester import harvest
+from ..models import OAIHarvestedRecord, OAIHarvesterRun
 from ..permissions import OAIRecordPermissionPolicy
 from . import facets
 from .api import OAIRecordAggregate
 from .results import OAIRecordItem, OAIRecordList
 from .schema import OAIHarvestedRecordSchema
+
+log = logging.getLogger(__name__)
 
 
 class OAIRecordSearchOptions(SearchOptions, SearchOptionsMixin):
@@ -55,7 +70,33 @@ class OAIRecordSearchOptions(SearchOptions, SearchOptionsMixin):
         "harvester": facets.harvester,
         "deleted": facets.deleted,
         "has_errors": facets.has_errors,
+        "error_code": facets.error_code,
+        "error_message": facets.error_message,
+        "error_location": facets.error_location,
     }
+
+
+class RecordLink(Link):
+    """Short cut for writing record links."""
+
+    @staticmethod
+    def vars(record, vars):
+        """Variables for the URI template."""
+        # Some records don't have record.pid.pid_value yet (e.g. drafts)
+        vars.update({"id": record.id})
+
+
+class has_permission_on_record(Condition):
+    def __init__(self, action_name):
+        self.action_name = action_name
+
+    def __call__(self, obj, ctx: dict):
+        try:
+            return current_oai_record_service.check_permission(
+                action_name=self.action_name, record=obj, **ctx
+            )
+        except Exception as e:
+            log.exception(f"Unexpected exception {e}.")
 
 
 class OAIRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
@@ -77,6 +118,25 @@ class OAIRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     # links configuration
     links_item = {
         "self": Link("{+api}/oai/harvest/records/{id}"),
+        "actions": ActionLinks(
+            {
+                "harvest": RecordLink(
+                    "{+api}/oai/harvest/records/{id}/harvest",
+                    when=has_permission_on_record("run_harvest"),
+                ),
+            }
+        ),
+    }
+    links_search_item = {
+        "self": Link("{+api}/oai/harvest/records/{id}"),
+        "actions": ActionLinks(
+            {
+                "harvest": RecordLink(
+                    "{+api}/oai/harvest/records/{id}/harvest",
+                    when=has_permission_on_record("run_harvest"),
+                ),
+            }
+        ),
     }
     links_search = pagination_links("{+api}/oai/harvest/records{?args*}")
 
@@ -135,3 +195,33 @@ class OAIRecordService(RecordService):
         oai_records = db.session.query(OAIHarvestedRecord.id).yield_per(1000)
         self.indexer.bulk_index([u.id for u in oai_records])
         return True
+
+    def harvest(self, identity, id_):
+        """Re-harvest a oai_record."""
+        # resolve and require permission
+        oai_record = OAIRecordAggregate.get_record(id_)
+        if oai_record is None:
+            raise PermissionDeniedError()
+
+        self.require_permission(identity, "run_harvest", record=oai_record)
+
+        # run harvest with the oai identifier and correct harvester
+        oai_run = OAIHarvesterRun.query.get(oai_record.run_id)
+
+        callback = StatsKeepingDataStreamCallback(log_error_entry=True)
+
+        harvest(
+            harvester_or_code=oai_run.harvester_id,
+            identifiers=[oai_record.oai_identifier],
+            overwrite_all_records=True,
+            manual=True,
+            callback=callback,
+        )
+
+        # re-get the record
+        db.session.expunge_all()
+        oai_record = OAIRecordAggregate.get_record(id_)
+
+        return self.result_item(
+            self, identity, oai_record, links_tpl=self.links_item_tpl
+        )

@@ -53,6 +53,7 @@ def upgrade():
         sa.Column("oai_identifier", sa.String(length=255), nullable=False),
         sa.Column("record_id", sa.String(length=255), nullable=True),
         sa.Column("datestamp", sa.DateTime(), nullable=False),
+        sa.Column("harvested_at", sa.DateTime(), nullable=False),
         sa.Column("deleted", sa.Boolean(), nullable=False),
         sa.Column("has_errors", sa.Boolean(), nullable=False),
         sa.Column("has_warnings", sa.Boolean(), nullable=False),

@@ -13,6 +13,7 @@ class OAIRecordAggregateModel(AggregateMetadata):
         "oai_identifier",
         "record_id",
         "datestamp",
+        "harvested_at",
         "deleted",
         "has_errors",
         "has_warnings",

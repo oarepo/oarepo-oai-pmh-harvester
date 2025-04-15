@@ -21,11 +21,19 @@ class AdministrationDetailJSONSerializer(JSONSerializer):
         return super().serialize_object(obj)
 
     def serialize_object_list(self, obj_list):
-        obj_list = [self._convert_to_administration_detail(obj) for obj in obj_list]
+        obj_list["hits"]["hits"] = [
+            self._convert_to_administration_detail(obj)
+            for obj in obj_list["hits"]["hits"]
+        ]
         return super().serialize_object_list(obj_list)
 
     def _convert_to_administration_detail(self, ret):
         ret = {**ret}
+        records_url = f"/administration/oarepo/harvest/records?q=run_id:{ret['id']}"
+        ret["records_url"] = '<a href="{}">Click to see records ...</a>'.format(
+            records_url
+        )
+        ret["manual"] = "Yes" if ret.get("manual") else "No"
         return ret
 
 

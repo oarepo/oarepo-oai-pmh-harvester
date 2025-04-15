@@ -1,4 +1,6 @@
 import datetime
+import logging
+import traceback
 from functools import partial
 from typing import Dict, Union
 
@@ -18,6 +20,8 @@ from oarepo_oaipmh_harvester.oai_harvester.proxies import (
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
 from oarepo_oaipmh_harvester.proxies import current_harvester
 from oarepo_oaipmh_harvester.reader_callback import reader_callback
+
+logger = logging.getLogger("oaipmh.harvest")
 
 
 def _get_latest_oai_datestamp(harvester_id):
@@ -93,8 +97,12 @@ def harvest(
         on_run_created(str_run_id)
 
     datestamp_from = (
-        _get_latest_oai_datestamp(harvester["id"]) if not run_manual else None
+        _get_latest_oai_datestamp(harvester["id"])
+        if not run_manual and not all_records
+        else None
     )
+
+    logger.info("Starting harvest run %s from datestamp %s", str_run_id, datestamp_from)
 
     reader_signature: Signature = current_harvester.get_parser_signature(
         harvester["loader"],
@@ -125,6 +133,21 @@ def harvest(
     ]
 
     t: Signature
+
+    for t in transformers_signatures:
+        if t.name == "set_original_data":
+            break
+    else:
+        t = current_harvester.get_transformer_signature(
+            "set_original_data",
+            oai_config=dict(harvester),
+            oai_run=str_run_id,
+            oai_harvester_id=harvester["id"],
+            manual=run_manual,
+            overwrite_all_records=overwrite_all_records,
+        )
+        transformers_signatures.insert(0, t)
+
     for t in transformers_signatures:
         if t.name == "oai_record_lookup":
             break
@@ -188,6 +211,7 @@ def harvest(
         status = "finished"
     except Exception:
         status = "failed"
+        traceback.print_exc()
         pass
 
     if not on_background:

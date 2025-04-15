@@ -6,6 +6,8 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import YamlLexer
 
+from oarepo_oaipmh_harvester.models import OAIHarvesterRun
+
 
 def data_to_html_yaml(data):
     yaml_str = yaml.dump(
@@ -23,11 +25,30 @@ class AdministrationDetailJSONSerializer(JSONSerializer):
         return super().serialize_object(obj)
 
     def serialize_object_list(self, obj_list):
-        obj_list = [self._convert_to_administration_detail(obj) for obj in obj_list]
+        obj_list["hits"]["hits"] = [
+            self._convert_to_administration_detail(obj)
+            for obj in obj_list["hits"]["hits"]
+        ]
         return super().serialize_object_list(obj_list)
 
     def _convert_to_administration_detail(self, ret):
         ret = {**ret}
+        tr = ret.get("transformed_data", {})
+        if tr:
+            ret["title"] = tr.get("metadata", {}).get("title", "") or tr.get(
+                "title", ""
+            )
+            if ret["title"]:
+                ret["title"] = str(ret["title"])
+            record_link = tr.get("links", {}).get("self_html")
+            if record_link:
+                ret["record_id_with_link"] = '<a href="{}">{}</a>'.format(
+                    record_link, ret["id"]
+                )
+            else:
+                ret["record_id_with_link"] = ret["id"]
+        run = OAIHarvesterRun.query.get(ret["run_id"])
+        ret["manual"] = "Yes" if run.manual else "No"
         ret["errors"] = data_to_html_yaml(ret.get("errors"))
         ret["original_data"] = data_to_html_yaml(ret.get("original_data"))
         ret["transformed_data"] = data_to_html_yaml(ret.get("transformed_data"))

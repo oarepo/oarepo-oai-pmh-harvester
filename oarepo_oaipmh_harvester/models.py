@@ -113,6 +113,9 @@ class OAIHarvestedRecord(db.Model):
     datestamp = db.Column(db.DateTime, nullable=False)
     """Datestamp of the record."""
 
+    harvested_at = db.Column(db.DateTime, nullable=False)
+    """Time when the record was harvested."""
+
     deleted = db.Column(db.Boolean, default=False, nullable=False)
     """True if the record was deleted during the harvest."""
 

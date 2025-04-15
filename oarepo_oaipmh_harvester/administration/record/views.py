@@ -42,7 +42,9 @@ class RecordListView(OAIHarvesterPermissionsMixin, AdminResourceListView):
     url = "/oarepo/harvest/records"
 
     resource_config = "resource_records"
-    search_request_headers = {"Accept": "application/vnd.inveniordm.v1+json"}
+    search_request_headers = {
+        "Accept": "application/invenio-administration-detail+json"
+    }
     title = "OAI-PMH Harvester Records"
     category = "Site management"
     pid_path = "id"
@@ -51,8 +53,8 @@ class RecordListView(OAIHarvesterPermissionsMixin, AdminResourceListView):
     menu_label = "OAI-PMH Harvester Records"
 
     actions = {
-        "stop": {
-            "text": "Stop",
+        "harvest": {
+            "text": "Re-harvest",
             "order": 1,
             "payload_schema": None,
         }
@@ -64,11 +66,19 @@ class RecordListView(OAIHarvesterPermissionsMixin, AdminResourceListView):
     display_create = False
 
     item_field_list = {
-        "oai_identifier": {"text": _("OAI Identifier"), "order": 1, "width": 4},
-        "record_id": {"text": _("Record ID"), "order": 2},
-        "datestamp": {"text": _("Datestamp"), "order": 3},
-        "deleted": {"text": _("Deleted"), "order": 4},
-        "has_errors": {"text": _("Has errors"), "order": 5},
+        "oai_identifier": {"text": _("OAI Identifier"), "order": 1, "width": 2},
+        "record_id": {
+            "text": _("Record ID"),
+            "order": 2,
+            "width": 2,
+            "escape": True,
+        },
+        "title": {"text": _("Record Title"), "order": 3, "width": 6},
+        "datestamp": {"text": _("Datestamp"), "order": 4},
+        "harvested_at": {"text": _("Harvested at"), "order": 5},
+        "deleted": {"text": _("Deleted"), "order": 6, "width": 1},
+        "has_errors": {"text": _("Has errors"), "order": 7, "width": 1},
+        "manual": {"text": _("Manual"), "order": 8, "width": 1},
     }
 
     search_config_name = "OAI_RECORD_SEARCH"
@@ -93,10 +103,25 @@ class RecordDetailView(OAIHarvesterPermissionsMixin, AdminResourceDetailView):
     list_view_name = "oarepo_oaipmh_harvest_records"
     pid_path = "id"
 
+    actions = {
+        "harvest": {
+            "text": "Re-harvest",
+            "order": 1,
+            "payload_schema": None,
+        }
+    }
+
     item_field_list = {
-        "oai_identifier": {"text": _("OAI Identifier"), "order": 1, "width": 4},
-        "record_id": {"text": _("Record ID"), "order": 2},
+        "title": {"text": _("Record Title"), "order": -1},
+        "oai_identifier": {"text": _("OAI Identifier"), "order": 1, "width": 3},
+        "record_id_with_link": {
+            "text": _("Record ID"),
+            "order": 2,
+            "width": 3,
+            "escape": True,
+        },
         "datestamp": {"text": _("Datestamp"), "order": 3},
+        "harvested_at": {"text": _("Harvested at"), "order": 3, "width": 1},
         "run": {"text": _("Run"), "order": 4, "escape": True},
         "deleted": {"text": _("Deleted"), "order": 5},
         "has_errors": {"text": _("Has errors"), "order": 6},

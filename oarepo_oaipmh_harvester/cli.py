@@ -22,6 +22,11 @@ from oarepo_oaipmh_harvester.oai_harvester.proxies import (
 from oarepo_oaipmh_harvester.oai_run.models import OAIHarvesterRun
 from oarepo_oaipmh_harvester.oai_run.tasks import index_oai_runs
 
+logging.basicConfig(
+    level=logging.ERROR,
+)
+logging.getLogger("oaipmh.harvest").setLevel(logging.INFO)
+
 
 @oarepo.group(name="oai")
 def oai():

@@ -41,6 +41,8 @@ class OAIRecordAggregate(BaseAggregate):
     """The record ID of the record."""
     datestamp = ModelField("datestamp", dump_type=datetime)
     """The datestamp of the record."""
+    harvested_at = ModelField("harvested_at", dump_type=datetime)
+    """The time when the record was harvested."""
     deleted = ModelField("deleted", dump_type=bool)
     """True if the record was deleted during the harvest."""
     has_errors = ModelField("has_errors", dump_type=bool)

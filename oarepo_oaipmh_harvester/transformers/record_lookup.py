@@ -1,4 +1,3 @@
-import copy
 from typing import Any, Generator, cast
 
 from flask_principal import Identity
@@ -69,15 +68,10 @@ class OAIRecordLookupTransformer(BaseTransformer):
         if not by_oai_identifier:
             return batch
 
-        self.set_original_metadata(batch)
         self.copy_harvest_metadata_to_entries(batch)
         self.filter_successfully_harvested_records(by_oai_identifier)
 
         return batch
-
-    def set_original_metadata(self, batch: StreamBatch):
-        for entry in batch.entries:
-            entry.context["original_data"] = copy.deepcopy(entry.entry)
 
     def copy_harvest_metadata_to_entries(self, batch: StreamBatch):
         for entry in batch.entries:

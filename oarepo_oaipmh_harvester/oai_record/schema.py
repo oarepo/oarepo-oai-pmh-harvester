@@ -12,6 +12,8 @@ class OAIHarvestedRecordSchema(BaseRecordSchema):
     """The record ID of the record."""
     datestamp = fields.DateTime(required=True)
     """The datestamp of the record."""
+    harvested_at = fields.DateTime(required=True)
+    """The time when the record was harvested."""
     deleted = fields.Boolean(default=False, required=True)
     """True if the record was deleted during the harvest."""
     has_errors = fields.Boolean(default=False, required=True)
