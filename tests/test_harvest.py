@@ -72,7 +72,6 @@ def test_harvest_synchronous(
 
     assert oai_records["2"].original_data == {
         "metadata": {"title": "too long title"},
-        "parent": {"communities": {"default": "default"}},
         "files": {"enabled": False},
     }
 
@@ -86,7 +85,6 @@ def test_harvest_synchronous(
 
     assert oai_records["3"].original_data == {
         "extra": "blah",
-        "parent": {"communities": {"default": "default"}},
     }
 
     assert oai_records["4"].errors == [

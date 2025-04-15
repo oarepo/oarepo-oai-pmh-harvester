@@ -50,6 +50,7 @@ def test_oai_record_indexing(app, db, search_clear, default_community, mappings)
         run_id=run.id,
         oai_identifier="oai:test:1",
         datestamp=datetime.datetime.utcnow(),
+        harvested_at=datetime.datetime.utcnow(),
         deleted=False,
         has_errors=False,
         has_warnings=False,
