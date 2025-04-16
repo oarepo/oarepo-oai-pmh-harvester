@@ -1,20 +1,22 @@
-from typing import Any, Dict, List
+from typing import Any, Generator, cast
 
-from invenio_records_resources.proxies import current_service_registry
+from flask_principal import Identity
+from invenio_records_resources.proxies import current_service_registry  # type: ignore
 from oarepo_runtime.datastreams import StreamBatch, StreamEntry
 from oarepo_runtime.datastreams.transformers import BaseTransformer
 
-from oarepo_oaipmh_harvester.oai_record.proxies import (
-    current_service as oai_record_service,
-)
+from oarepo_oaipmh_harvester.models import OAIHarvestedRecord
+from oarepo_oaipmh_harvester.utils import oai_context, parse_iso_to_utc
 
 
-def dict_lookup_ignore_arrays(source: Any, lookup_key: List[str]):
+def dict_lookup_ignore_arrays(
+    source: Any, lookup_key: list[str]
+) -> Generator[Any, None, None]:
     if not lookup_key:
         yield source
     else:
         if isinstance(source, list):
-            for item in source:
+            for item in cast(list[Any], source):
                 yield from dict_lookup_ignore_arrays(item, lookup_key)
         elif isinstance(source, dict) and lookup_key[0] in source:
             yield from dict_lookup_ignore_arrays(source[lookup_key[0]], lookup_key[1:])
@@ -32,17 +34,16 @@ class OAIRecordLookupTransformer(BaseTransformer):
 
     def __init__(
         self,
-        identity=None,
-        oai_identifier_field="oai.harvest.identifier",
-        oai_datestamp_field="oai.harvest.datestamp",
-        oai_identifier_facet=None,
-        oai_datestamp_facet=None,
-        harvested_record_service=None,
-        overwrite_all_records=False,
-        **kwargs,
+        identity: Identity,
+        oai_identifier_field: str = "oai.harvest.identifier",
+        oai_datestamp_field: str = "oai.harvest.datestamp",
+        oai_identifier_facet: str | None = None,
+        oai_datestamp_facet: str | None = None,
+        harvested_record_service: str | None = None,
+        overwrite_all_records: bool = False,
+        **kwargs: Any,
     ):
         super().__init__()
-        assert identity is not None, "Identity must be set"
         assert (
             harvested_record_service is not None
         ), "Harvested record service must be set for record lookup transformer"
@@ -60,43 +61,30 @@ class OAIRecordLookupTransformer(BaseTransformer):
         )
         self._overwrite_all_records = overwrite_all_records
 
-    def apply(self, batch: StreamBatch, *args, **kwargs) -> StreamBatch:
-        by_oai_identifier = {
-            entry.context["oai"]["identifier"]: entry for entry in batch.entries
+    def apply(self, batch: StreamBatch, *args: Any, **kwargs: Any) -> StreamBatch:
+        by_oai_identifier: dict[str, StreamEntry] = {
+            oai_context(entry)["identifier"]: entry for entry in batch.entries
         }
         if not by_oai_identifier:
             return batch
 
         self.copy_harvest_metadata_to_entries(batch)
         self.filter_successfully_harvested_records(by_oai_identifier)
-        self.mark_previously_failed_records(by_oai_identifier)
 
         return batch
 
-    def copy_harvest_metadata_to_entries(self, batch):
+    def copy_harvest_metadata_to_entries(self, batch: StreamBatch):
         for entry in batch.entries:
-            harvest_metadata = entry.entry.setdefault("oai", {}).setdefault(
-                "harvest", {}
+            entry_oai: dict[str, Any] = cast(
+                dict[str, Any], entry.entry.setdefault("oai", {})
             )
-            harvest_metadata["datestamp"] = entry.context["oai"]["datestamp"]
-            harvest_metadata["identifier"] = entry.context["oai"]["identifier"]
+            harvest_metadata: dict[str, str] = entry_oai.setdefault("harvest", {})
 
-    def mark_previously_failed_records(self, by_oai_identifier: Dict[str, StreamEntry]):
-        # the oai records are those that have had errors during the previous harvest
-        oai_records = list(
-            oai_record_service.scan(
-                self._identity,
-                params={"facets": {"oai_identifier": list(by_oai_identifier.keys())}},
-            )
-        )
-        for oai_record in oai_records:
-            entry = by_oai_identifier[oai_record["oai_identifier"]]
-            # just tie the oai record id to the batch entry so that if it was harvested
-            # successfully during the previous harvest, we can delete it
-            entry.context["oai"]["oai_record_id"] = oai_record["id"]
+            harvest_metadata["datestamp"] = oai_context(entry)["datestamp"]
+            harvest_metadata["identifier"] = oai_context(entry)["identifier"]
 
     def filter_successfully_harvested_records(
-        self, by_oai_identifier: Dict[str, StreamEntry]
+        self, by_oai_identifier: dict[str, StreamEntry]
     ):
         """
         Filters out the records that have been harvested successfully during the previous harvest
@@ -105,40 +93,23 @@ class OAIRecordLookupTransformer(BaseTransformer):
         :param by_oai_identifier: the batch entries indexed by oai identifier
         """
         # these are the records that have been harvested successfully during the previous harvest
-        harvested_records = list(
-            self._harvested_record_service.scan(
-                self._identity,
-                params={
-                    "facets": {
-                        self._oai_identifier_facet: list(by_oai_identifier.keys())
-                    }
-                },
-                fields=["id", self._oai_identifier_field, self._oai_datestamp_field],
-            )
-        )
+        previously_harvested = OAIHarvestedRecord.query.filter(
+            OAIHarvestedRecord.oai_identifier.in_(list(by_oai_identifier.keys())),
+            OAIHarvestedRecord.deleted.is_(False),
+            OAIHarvestedRecord.record_id.isnot(None),
+        ).all()
 
-        for harvested_record in harvested_records:
-            # TODO: handle multiple harvested sources for a single record
-            try:
-                oai_identifier = list(
-                    dict_lookup_ignore_arrays(
-                        harvested_record, self._oai_identifier_field
-                    )
-                )[0]
-            except:
-                raise KeyError(
-                    f"Could not get {self._oai_identifier_field} in {harvested_record}."
-                    f"This should never happen, please make sure that the oai record"
-                    f"lookup has the correct configuration of oai_identifier_field,"
-                    f" oai_datestamp_field, oai_identifier_facet and oai_datestamp_facet."
-                )
+        for harvested_record in previously_harvested:
+            oai_identifier = harvested_record.oai_identifier
+
             entry = by_oai_identifier[oai_identifier]
-            entry.entry["id"] = harvested_record["id"]
-            entry.id = harvested_record["id"]
-            datestamp = list(
-                dict_lookup_ignore_arrays(harvested_record, self._oai_datestamp_field)
-            )[0]
+            entry.entry["id"] = harvested_record.record_id
+            entry.id = harvested_record.record_id
 
-            if not self._overwrite_all_records and datestamp == entry.context["oai"]["datestamp"]:
+            datestamp = harvested_record.datestamp
+
+            if not self._overwrite_all_records and datestamp >= parse_iso_to_utc(
+                oai_context(entry)["datestamp"]
+            ):
                 # do not save the item as it has the same datestamp
                 entry.filtered = True

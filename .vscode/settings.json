@@ -5,5 +5,13 @@
     "conventionalCommits.scopes": [
         "search",
         "release"
+    ],
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none",
+        "reportMissingTypeStubs": "none",
+        "reportUnknownMemberType": "none"
+    },
+    "python.testing.pytestArgs": [
+        "--pythonwarnings=ignore"
     ]
 }

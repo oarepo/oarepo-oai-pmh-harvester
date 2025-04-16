@@ -48,6 +48,7 @@ def jsonify_schema(schema, form_fields):
     schema_dict = {}
 
     for field, field_type in schema.fields.items():
+
         if field == "_schema":
             continue
         is_links = isinstance(field_type, invenio_fields.links.Links)

@@ -6,6 +6,8 @@ from oarepo_runtime.datastreams import BaseReader, StreamEntry
 from sickle import Sickle
 from sickle.oaiexceptions import NoRecordsMatch
 
+from ..utils import get_oai_datestamp
+
 
 class SickleReader(BaseReader):
     def __init__(
@@ -27,6 +29,10 @@ class SickleReader(BaseReader):
         self.all_records = all_records
         self.identifiers = identifiers
         self.config = oai_config
+        if datestamp_from and not isinstance(datestamp_from, str):
+            datestamp_from = get_oai_datestamp(datestamp_from)
+        if datestamp_until and not isinstance(datestamp_until, str):
+            datestamp_until = get_oai_datestamp(datestamp_until)
         self.datestamp_from = datestamp_from
         self.datestamp_until = datestamp_until
         self.oai_run = oai_run

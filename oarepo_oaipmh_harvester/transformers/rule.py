@@ -1,26 +1,34 @@
+import dataclasses
 import functools
 import itertools
 import json
 from abc import abstractmethod
-from collections import defaultdict
-from typing import List
+from typing import Any, Callable, List, Protocol
 
+from flask_principal import Identity
 from oarepo_runtime.datastreams.transformers import BaseTransformer
 from oarepo_runtime.datastreams.types import StreamBatch, StreamEntry, StreamEntryError
 
 
+@dataclasses.dataclass
+class LateAction:
+    method_name: str
+    entry: StreamEntry
+    params: dict[str, Any]
+
+
 class OAIRuleTransformer(BaseTransformer):
-    def __init__(self, identity, **kwargs) -> None:
-        super().__init__()
-        self.late_actions = defaultdict(list)
+    def __init__(self, identity: Identity, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.late_actions: list[LateAction] = []
         self.identity = identity
 
-    def apply(self, batch: StreamBatch, *args, **kwargs) -> StreamBatch:
+    def apply(self, batch: StreamBatch, *args: Any, **kwargs: Any) -> StreamBatch:
         if not len(batch.entries):
             return batch
         for entry in batch.entries:
-            entry.transformed = {}
-            entry.processed = set()
+            entry.transformed = {}  # type: ignore # extending the instance temporarily
+            entry.processed = set()  # type: ignore # extending the instance temporarily
             try:
                 self.transform(entry)
             except Exception as e:
@@ -32,29 +40,45 @@ class OAIRuleTransformer(BaseTransformer):
         return batch
 
     @abstractmethod
-    def transform(self, entry: StreamEntry):
+    def transform(self, entry: StreamEntry) -> None:
         """Please add your code here"""
+        raise NotImplementedError("Please implement the transform method")
 
-    def register_late_action(self, action_name, entry, **action_params):
-        self.late_actions[action_name].append((entry, action_params))
+    def register_late_action(
+        self, method_name: str, entry: StreamEntry, **action_params: Any
+    ):
+        self.late_actions.append(LateAction(method_name, entry, action_params))
 
     def finish_transformation(self, entries: List[StreamEntry]):
-        for k, v in self.late_actions:
-            getattr(self, k)(v)
+        for action in self.late_actions:
+            getattr(self, action.method_name)(action.entry, **action.params)
+
         for entry in entries:
-            entry.entry = entry.transformed
+            entry.entry = entry.transformed  # type: ignore # extending the instance temporarily
             delattr(entry, "transformed")
             delattr(entry, "processed")
 
 
-def matches(*args, first_only=False, paired=False, unique=False):
-    def wrapper(f):
+class RuleMethod[T](Protocol):
+    def __call__(self, md: dict[str, Any], entry: StreamEntry, value: T) -> None: ...
+
+
+class RuleWrapperMethod[T](Protocol):
+    def __call__(self, md: dict[str, Any], entry: StreamEntry) -> None: ...
+
+
+def matches[T](
+    *args: Any, first_only: bool = False, paired: bool = False, unique: bool = False
+) -> Callable[[RuleMethod[T]], RuleWrapperMethod[T]]:
+
+    def wrapper(f: RuleMethod[T]) -> RuleWrapperMethod[T]:
+
         @functools.wraps(f)
-        def wrapped(md, entry):
-            entry.processed.update(args)
+        def wrapped(md: dict[str, Any], entry: StreamEntry):
+            entry.processed.update(args)  # type: ignore # extending the instance temporarily
             untransformed_data = entry.entry
             if paired:
-                vals = []
+                vals: list[list[Any] | tuple[Any, ...]] = []
                 for arg in args:
                     val = untransformed_data.get(arg)
                     if val is None:
@@ -67,14 +91,14 @@ def matches(*args, first_only=False, paired=False, unique=False):
                     return
 
                 # zip longest
-                items = set()
+                items: set[Any] = set()
                 for v in itertools.zip_longest(*vals):
                     if not unique or tuple(v) not in items:
                         f(md, entry, v)
                         items.add(tuple(v))
                 return
 
-            items = set()
+            items: set[Any] = set()
             for arg in args:
                 if arg in untransformed_data:
                     val = untransformed_data[arg]
@@ -88,7 +112,7 @@ def matches(*args, first_only=False, paired=False, unique=False):
                                 items.add(vv)
                     else:
                         if val is None or val == "":
-                            continue 
+                            continue
 
                         if not unique or val not in items:
                             f(md, entry, val)
@@ -101,7 +125,7 @@ def matches(*args, first_only=False, paired=False, unique=False):
     return wrapper
 
 
-def deduplicate(md, what):
+def deduplicate(md: dict[str, Any], what: str):
     contribs = [json.dumps(x, sort_keys=True) for x in md.get(what, [])]
     for idx in range(len(contribs) - 1, -1, -1):
         for pidx in range(0, idx):
@@ -111,17 +135,17 @@ def deduplicate(md, what):
                 break
 
 
-def ignore(entry, *args):
-    entry.processed.update(args)
+def ignore(entry: StreamEntry, *args: str):
+    entry.processed.update(args)  # type: ignore # extending the instance temporarily
 
 
-def make_array(*vals_and_conditions):
+def make_array(*vals_and_conditions: Any) -> list[Any]:
     """
     make array from list of [condition, value, condition, value, ...]
     If condition is true, add value to the resulting list, otherwise silently drop
     condition and value might be callables
     """
-    ret = []
+    ret: list[Any] = []
     for i in range(0, len(vals_and_conditions), 2):
         cond = vals_and_conditions[i]
         if callable(cond):
@@ -135,8 +159,8 @@ def make_array(*vals_and_conditions):
     return ret
 
 
-def make_dict(*pairs):
-    ret = {}
+def make_dict(*pairs: Any) -> dict[str, Any]:
+    ret: dict[str, Any] = {}
     for i in range(0, len(pairs), 2):
         k = pairs[i]
         v = pairs[i + 1]

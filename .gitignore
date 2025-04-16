@@ -68,3 +68,7 @@ venv/
 test-model/
 
 node_modules
+
+/old
+
+.venv-builder-models/

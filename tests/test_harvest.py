@@ -2,17 +2,20 @@ from pathlib import Path
 from pprint import pprint
 
 from invenio_access.permissions import system_identity
+from invenio_records_resources.tasks import manage_indexer_queues
 
 from oarepo_oaipmh_harvester.cli import _add_harvester
 from oarepo_oaipmh_harvester.harvester import harvest
-from oarepo_oaipmh_harvester.oai_batch.proxies import current_service as batch_service
-from oarepo_oaipmh_harvester.oai_record.proxies import (
-    current_service as oai_record_service,
+from oarepo_oaipmh_harvester.models import OAIHarvestedRecord, OAIHarvesterRun
+from oarepo_oaipmh_harvester.proxies import (
+    current_oai_record_service,
+    current_oai_run_service,
 )
-from oarepo_oaipmh_harvester.oai_run.proxies import current_service as run_service
 
 
-def test_harvest_synchronous(app, db, client, search_clear):
+def test_harvest_synchronous(
+    app, db, client, search_clear, default_community, mappings
+):
     import logging
 
     logging.basicConfig(level=logging.ERROR)
@@ -26,8 +29,14 @@ def test_harvest_synchronous(app, db, client, search_clear):
         "name": "Test harvester",
         "setspecs": "test",
         "loader": "file",
-        "transformers": ["error_transformer"],
-        "writers": ["service{service=test_model}"],
+        "transformers": [
+            "error_transformer",
+            "set_community{community=default}",
+        ],
+        "writers": [
+            "service{service=test_model,update=true}",
+            "publish{service=test_model,direct_call=true}",
+        ],
         "batch_size": 6,
     }
     harvester = _add_harvester(harvester_metadata)
@@ -43,15 +52,8 @@ def test_harvest_synchronous(app, db, client, search_clear):
 
     # check the harvested data
     print(f"{run_id=}")
-    oai_run = run_service.read(system_identity, run_id).data
+    oai_run = OAIHarvesterRun.query.get(run_id)
     print(f"{oai_run=}")
-
-    batches = list(
-        batch_service.scan(
-            system_identity,
-            params={"q": f'run.id:"{run_id}"'},
-        ).hits
-    )
 
     oai_records = get_oai_records(run_id)
 
@@ -59,35 +61,42 @@ def test_harvest_synchronous(app, db, client, search_clear):
 
     assert oai_records.keys() == {"2", "3", "4"}
 
-    assert "errors" in oai_records["2"]
-    assert (
-        "metadata.title: Length must be between 1 and 6" in oai_records["2"]["errors"]
-    )
+    assert oai_records["2"].errors
+    assert oai_records["2"].errors == [
+        {
+            "code": "validation",
+            "message": "Length must be between 1 and 6.",
+            "location": "metadata.title",
+        }
+    ]
 
-    assert oai_records["2"]["entry"] == {
+    assert oai_records["2"].original_data == {
         "metadata": {"title": "too long title"},
-        "oai": {"harvest": {"datestamp": "2000-01-02", "identifier": "2"}},
+        "files": {"enabled": False},
     }
 
-    assert "errors" in oai_records["3"]
-    assert "extra: Unknown field" in oai_records["3"]["errors"]
+    assert oai_records["3"].errors == [
+        {
+            "code": "validation",
+            "message": "Unknown field.",
+            "location": "extra",
+        }
+    ]
 
-    assert oai_records["3"]["entry"] == {
+    assert oai_records["3"].original_data == {
         "extra": "blah",
-        "oai": {"harvest": {"datestamp": "2000-01-03", "identifier": "3"}},
     }
 
-    pprint(oai_records["3"])
-
-    assert "errors" in oai_records["4"]
-    assert (
-        "transformer: Error in transformer - {'transformer-specific-message': 'tells transformer to raise error on this record'}"
-        in oai_records["4"]["errors"]
-    )
-    assert oai_records["4"]["entry"] == {
-        "oai": {"harvest": {"datestamp": "2000-01-03", "identifier": "4"}},
-        "transformer": "tells transformer to raise error on this record",
-    }
+    assert oai_records["4"].errors == [
+        {
+            "code": "TE",
+            "message": "Error in transformer",
+            "location": "transformer",
+            "info": {
+                "transformer-specific-message": "tells transformer to raise error on this record"
+            },
+        }
+    ]
 
     ok_records = get_ok_records()
 
@@ -106,8 +115,14 @@ def test_harvest_synchronous(app, db, client, search_clear):
         "name": "Test harvester",
         "setspecs": "test",
         "loader": "file",
-        "transformers": ["error_transformer"],
-        "writers": ["service{service=test_model}"],
+        "transformers": [
+            "error_transformer",
+            "set_community{community=default}",
+        ],
+        "writers": [
+            "service{service=test_model,update=true}",
+            "publish{service=test_model,direct_call=true}",
+        ],
         "batch_size": 6,
     }
     harvester = _add_harvester(harvester_metadata)
@@ -127,46 +142,58 @@ def test_harvest_synchronous(app, db, client, search_clear):
         "harvest": {"datestamp": "2000-01-30", "identifier": "2"}
     }
     assert ok_records["2"]["metadata"]["title"] == "oktit"
+    assert ok_records["1"]["metadata"]["title"] == "corr2"
 
     oai_records = get_oai_records(run_id)
     assert len(oai_records) == 0
 
-    all_oai_records = {
+    failed_oai_records = {
         r["oai_identifier"]: r
-        for r in oai_record_service.scan(
-            system_identity,
-        ).hits
+        for r in OAIHarvestedRecord.query.filter(
+            OAIHarvestedRecord.run_id == run_id,
+            OAIHarvestedRecord.has_errors.is_(True),
+        ).all()
     }
-    assert "2" not in all_oai_records
+    assert "2" not in failed_oai_records
 
+    manage_indexer_queues()
+    current_oai_run_service.indexer.refresh()
+    current_oai_record_service.indexer.refresh()
+    hits = list(current_oai_run_service.search(system_identity))
+    print(hits)
+    assert len(hits) == 2
 
-def get_oai_records(run_id):
-    batches = list(
-        batch_service.scan(
-            system_identity,
-            params={"q": f'run.id:"{run_id}"'},
-        ).hits
+    hits = list(
+        current_oai_record_service.search(
+            system_identity, facets=dict(harvester=[harvester["id"]])
+        )
     )
-    oai_records = {}
-    for batch in batches:
-        batch_id = batch["id"]
-        for r in oai_record_service.scan(
-            system_identity,
-            params={"q": f'batch.id:"{batch_id}"'},
-        ).hits:
-            oai_records[r["oai_identifier"]] = r
-    return oai_records
+    for hit in hits:
+        print("OAI Record", hit)
+        assert "original_data" in hit
+    assert len(hits) == 2
+
+
+def get_oai_records(run_id: str) -> dict[str, OAIHarvestedRecord]:
+    return {
+        x.oai_identifier: x
+        for x in OAIHarvestedRecord.query.filter_by(
+            run_id=run_id, has_errors=True
+        ).all()
+    }
 
 
 def get_ok_records():
     from test_model.proxies import current_service as test_model_service
+
+    test_model_service.indexer.refresh()
 
     ok_records = list(test_model_service.scan(system_identity).hits)
     ok_records = {x["oai"]["harvest"]["identifier"]: x for x in ok_records}
     return ok_records
 
 
-def test_harvest_performance(app, db, search_clear):
+def test_harvest_performance(app, db, search_clear, default_community):
     # create oai harvester with a test reader
     data_count = 200
     batch_size = 50
@@ -179,8 +206,14 @@ def test_harvest_performance(app, db, search_clear):
         "batch_size": batch_size,
         "setspecs": "test",
         "loader": f"test_data{{count={data_count}}}",
-        "transformers": ["error_transformer"],
-        "writers": ["service{service=test_model}"],
+        "transformers": [
+            "error_transformer",
+            "set_community{community=default}",
+        ],
+        "writers": [
+            "service{service=test_model,update=true}",
+            "publish{service=test_model,direct_call=true}",
+        ],
     }
     harvester = _add_harvester(harvester_metadata)
 
@@ -193,15 +226,13 @@ def test_harvest_performance(app, db, search_clear):
         title="Test harvest",
     )
     pprint(get_oai_records(run_id))
-    run = run_service.read(system_identity, run_id).data
-    assert run["status"] == "O"
-    assert run["total_batches"] == 4
-    assert run["finished_batches"] == 4
-    assert run["created_batches"] == 4
-    assert run["manual"] is False
-    assert run["errors"] == 0
-    assert run["started"] is not None
-    assert run["finished"] is not None
-    assert run["created"] is not None
-    assert run["updated"] is not None
-    assert run["title"] == "Test harvest"
+    run = OAIHarvesterRun.query.get(run_id)
+    assert run.status == "ok"
+    assert run.records == 200
+    assert run.finished_records == 200
+    assert run.ok_records == 200
+    assert run.failed_records == 0
+    assert run.start_time is not None
+    assert run.end_time is not None
+    assert run.last_update_time == run.end_time
+    assert run.title == "Test harvest"
