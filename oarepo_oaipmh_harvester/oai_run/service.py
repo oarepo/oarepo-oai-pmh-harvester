@@ -51,8 +51,8 @@ class OAIRunSearchOptions(SearchOptions, SearchOptionsMixin):
     """Search options."""
 
     pagination_options = {
-        "default_results_per_page": 10,
-        "default_max_results": 10,
+        "default_results_per_page": 25,
+        "default_max_results": 10000,
     }
 
     suggest_parser_cls = SuggestQueryParser.factory(
