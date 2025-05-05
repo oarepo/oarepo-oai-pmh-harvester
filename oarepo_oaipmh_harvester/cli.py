@@ -21,6 +21,9 @@ from oarepo_oaipmh_harvester.oai_harvester.proxies import (
 )
 from oarepo_oaipmh_harvester.oai_run.models import OAIHarvesterRun
 from oarepo_oaipmh_harvester.oai_run.tasks import index_oai_runs
+from oarepo_oaipmh_harvester.proxies import (
+    current_oai_run_service,
+)
 
 logging.basicConfig(
     level=logging.ERROR,
@@ -260,6 +263,7 @@ def cancel_run(code):
         run.status = "cancelled"
         db.session.add(run)
         db.session.commit()
+    current_oai_run_service.indexer.bulk_index([run.id])
 
 
 @oai.command("reindex")

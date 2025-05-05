@@ -18,7 +18,10 @@ from oarepo_oaipmh_harvester.oai_harvester.proxies import (
     current_service as harvester_service,
 )
 from oarepo_oaipmh_harvester.oai_harvester.records.api import OaiHarvesterRecord
-from oarepo_oaipmh_harvester.proxies import current_harvester
+from oarepo_oaipmh_harvester.proxies import (
+    current_harvester,
+    current_oai_run_service,
+)
 from oarepo_oaipmh_harvester.reader_callback import reader_callback
 
 logger = logging.getLogger("oaipmh.harvest")
@@ -92,6 +95,7 @@ def harvest(
 
     run_id = run.id
     str_run_id = str(run.id)
+    current_oai_run_service.indexer.bulk_index([run.id])
 
     if on_run_created:
         on_run_created(str_run_id)
