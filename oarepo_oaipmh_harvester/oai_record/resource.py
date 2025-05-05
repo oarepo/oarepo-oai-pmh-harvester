@@ -27,8 +27,8 @@ class OAIRecordResourceConfig(RecordResourceConfig):
     url_prefix = "/oai/harvest/records"
     routes = {
         "list": "",
-        "item": "/<id>",
-        "harvest": "/<id>/harvest",
+        "item": "/<path:id>",
+        "harvest": "/<path:id>/harvest",
     }
 
     request_view_args = {

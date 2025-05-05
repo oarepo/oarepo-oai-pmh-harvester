@@ -1,4 +1,5 @@
 from flask_principal import UserNeed
+from invenio_access.models import ActionUsers
 from invenio_access.permissions import system_identity
 from invenio_administration.generators import (
     Administration,
@@ -99,7 +100,15 @@ class HarvestRecordManager(Generator):
 class AdministrationWithQueryFilter(Administration):
     def query_filter(self, **kwargs):
         identity = kwargs["identity"]
-        if administration_access_action in identity.provides:
+
+        if (
+            identity.id
+            and ActionUsers.query.filter(
+                ActionUsers.user_id == identity.id,
+                ActionUsers.action == administration_access_action.value,
+                ActionUsers.exclude.is_(False),
+            ).count()
+        ):
             return MatchAll()
         else:
             return MatchNone()
