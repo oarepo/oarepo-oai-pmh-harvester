@@ -98,6 +98,7 @@ class SickleReader(BaseReader):
                                 "deleted": record.header.deleted,
                                 "identifier": record.header.identifier,
                                 "setSpecs": record.header.setSpecs,
+                                "oai_url": self.source,
                             },
                             "oai_run": self.oai_run,
                             "oai_harvester_id": self.oai_harvester_id,

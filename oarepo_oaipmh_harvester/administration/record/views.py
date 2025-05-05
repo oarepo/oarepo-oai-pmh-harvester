@@ -89,7 +89,7 @@ class RecordListView(OAIHarvesterPermissionsMixin, AdminResourceListView):
 class RecordDetailView(OAIHarvesterPermissionsMixin, AdminResourceDetailView):
     """Configuration for OAI-PMH sets detail view."""
 
-    url = "/oarepo/harvest/records/<pid_value>"
+    url = "/oarepo/harvest/records/<path:pid_value>"
     api_endpoint = "/oai/harvest/records/"
     request_headers = {"Accept": "application/invenio-administration-detail+json"}
     name = "oarepo_oaipmh_records_detail"

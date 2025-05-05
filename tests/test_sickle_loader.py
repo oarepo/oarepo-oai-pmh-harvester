@@ -27,11 +27,12 @@ def test_sickle_loader_single_record():
     iterator = iter(loader)
     item = next(iterator)
     print(item)
-    item.context['oai']['setSpecs'].sort()
+    item.context["oai"]["setSpecs"].sort()
     assert item.context["oai"] == {
         "datestamp": "2024-08-04T03:17:18+00:00",
         "deleted": False,
         "identifier": "oai:zenodo.org:59204",
+        "oai_url": "https://zenodo.org/oai2d",
         "metadata": {
             "creator": ["van Berchum, Marnix", "Rodrigues, Eloy"],
             "date": ["2010-07-29"],

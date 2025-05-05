@@ -207,8 +207,12 @@ def list_harvesters(**kwargs):
 
 @harvester.command("list-runs")
 @click.argument("code")
+@click.option(
+    "--all/--running", "show_all_runs", is_flag=True, help="List all or running runs"
+)
+@click.option("--limit", default=10, help="Limit number of runs")
 @with_appcontext
-def list_runs(code):
+def list_runs(code, show_all_runs, limit):
     for harvester in harvester_service.scan(
         system_identity, params={"q": f"code:{code}"}
     ):
@@ -217,12 +221,17 @@ def list_runs(code):
         print(f"Harvester with code {code} not found")
         return
 
-    runs = (
-        OAIHarvesterRun.query.filter(OAIHarvesterRun.harvester_id == harvester["id"])
-        .order_by(OAIHarvesterRun.start_time.desc())
-        .all()
-    )
-    for run in runs:
+    runs = OAIHarvesterRun.query.filter(
+        OAIHarvesterRun.harvester_id == harvester["id"]
+    ).order_by(OAIHarvesterRun.start_time.desc())
+    if not show_all_runs:
+        runs = runs.filter(OAIHarvesterRun.status == "running")
+    if limit:
+        runs = runs.limit(limit)
+
+    found = False
+    for run in runs.all():
+        found = True
         print(f"Run {run.id} :")
         print(f"  Status: {run.status}")
         print(f"  Start time: {run.start_time}")
@@ -231,6 +240,12 @@ def list_runs(code):
         print(f"  Finished records: {run.finished_records}")
         print(f"  Failed records: {run.failed_records}")
         print(f"  OK records: {run.ok_records}")
+
+    if not found:
+        if show_all_runs:
+            print(f"No runs found for harvester {code}")
+        else:
+            print(f"No running runs found for harvester {code}")
 
 
 @harvester.command("cancel-run")
