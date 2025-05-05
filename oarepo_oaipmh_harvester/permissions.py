@@ -100,11 +100,11 @@ class HarvestRecordManager(Generator):
 class AdministrationWithQueryFilter(Administration):
     def query_filter(self, **kwargs):
         identity = kwargs["identity"]
-
+        user_ids = [need.value for need in identity.provides if need.method == "id"]
         if (
-            identity.id
+            user_ids
             and ActionUsers.query.filter(
-                ActionUsers.user_id == identity.id,
+                ActionUsers.user_id == user_ids[0],
                 ActionUsers.action == administration_access_action.value,
                 ActionUsers.exclude.is_(False),
             ).count()
