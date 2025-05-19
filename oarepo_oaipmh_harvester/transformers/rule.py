@@ -91,13 +91,13 @@ def matches[T](
                     return
 
                 if group:
-                    flattened_vals = []
+                    grouped_vals = []
                     for val_list in vals:
                         if len(val_list) > 0:
-                            flattened_vals.append([val_list])  # Wrap in another list to preserve structure
+                            grouped_vals.append([val_list])
                         else:
-                            flattened_vals.append([None])
-                    vals = flattened_vals
+                            grouped_vals.append([None])
+                    vals = grouped_vals
 
                 # zip longest
                 items: set[Any] = set()
