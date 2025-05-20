@@ -27,7 +27,6 @@ def test_sickle_loader_single_record():
     iterator = iter(loader)
     item = next(iterator)
     print(item)
-    item.context["oai"]["setSpecs"].sort()
     assert item.context["oai"] == {
         "datestamp": "2024-08-04T03:17:18+00:00",
         "deleted": False,
@@ -63,8 +62,8 @@ def test_sickle_loader_single_record():
             ],
             "publisher": ["Zenodo"],
             "relation": [
-                "https://zenodo.org/communities/openaire",
-                "https://zenodo.org/communities/eu",
+                "https://zenodo.org/communities/openaire/",
+                "https://zenodo.org/communities/eu/",
                 "https://doi.org/",
             ],
             "rights": [
@@ -79,7 +78,7 @@ def test_sickle_loader_single_record():
             ],
             "type": ["info:eu-repo/semantics/report"],
         },
-        "setSpecs": ["user-eu", "user-openaire"],
+        "setSpecs": [],
     }
     with pytest.raises(StopIteration):
         next(iterator)

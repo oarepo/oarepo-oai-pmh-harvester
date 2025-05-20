@@ -68,7 +68,7 @@ class RuleWrapperMethod[T](Protocol):
 
 
 def matches[T](
-    *args: Any, first_only: bool = False, paired: bool = False, unique: bool = False
+    *args: Any, first_only: bool = False, paired: bool = False, unique: bool = False, group: bool = False
 ) -> Callable[[RuleMethod[T]], RuleWrapperMethod[T]]:
 
     def wrapper(f: RuleMethod[T]) -> RuleWrapperMethod[T]:
@@ -90,9 +90,20 @@ def matches[T](
                 if all(len(x) == 0 for x in vals):
                     return
 
+                if group:
+                    grouped_vals = []
+                    for val_list in vals:
+                        if len(val_list) > 0:
+                            grouped_vals.append([val_list])
+                        else:
+                            grouped_vals.append([None])
+                    vals = grouped_vals
+
                 # zip longest
                 items: set[Any] = set()
                 for v in itertools.zip_longest(*vals):
+                    if group:
+                        v = tuple(item[0] if isinstance(item, list) else item for item in v)
                     if not unique or tuple(v) not in items:
                         f(md, entry, v)
                         items.add(tuple(v))
