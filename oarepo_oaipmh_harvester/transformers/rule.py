@@ -3,7 +3,7 @@ import functools
 import itertools
 import json
 from abc import abstractmethod
-from typing import Any, Callable, List, Protocol
+from typing import Any, Callable, List, Optional, Protocol
 
 from flask_principal import Identity
 from oarepo_runtime.datastreams.transformers import BaseTransformer
@@ -68,7 +68,7 @@ class RuleWrapperMethod[T](Protocol):
 
 
 def matches[T](
-    *args: Any, first_only: bool = False, paired: bool = False, unique: bool = False, group: bool = False
+    *args: Any, first_only: bool = False, paired: bool = False, unique: bool = False, group: Optional[List[str]] = None
 ) -> Callable[[RuleMethod[T]], RuleWrapperMethod[T]]:
 
     def wrapper(f: RuleMethod[T]) -> RuleWrapperMethod[T]:
@@ -83,7 +83,7 @@ def matches[T](
                     val = untransformed_data.get(arg)
                     if val is None:
                         val = []
-                    elif isinstance(val, tuple) and group:
+                    elif group and arg in group and isinstance(val, tuple):
                         val = [val]
                     elif not isinstance(val, (list, tuple)):
                         val = [val]
