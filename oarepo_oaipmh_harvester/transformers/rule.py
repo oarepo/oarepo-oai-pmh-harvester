@@ -83,6 +83,8 @@ def matches[T](
                     val = untransformed_data.get(arg)
                     if val is None:
                         val = []
+                    elif isinstance(val, tuple) and group:
+                        val = [val]
                     elif not isinstance(val, (list, tuple)):
                         val = [val]
                     vals.append(val)
@@ -90,20 +92,9 @@ def matches[T](
                 if all(len(x) == 0 for x in vals):
                     return
 
-                if group:
-                    grouped_vals = []
-                    for val_list in vals:
-                        if len(val_list) > 0:
-                            grouped_vals.append([val_list])
-                        else:
-                            grouped_vals.append([None])
-                    vals = grouped_vals
-
                 # zip longest
                 items: set[Any] = set()
                 for v in itertools.zip_longest(*vals):
-                    if group:
-                        v = tuple(item[0] if isinstance(item, list) else item for item in v)
                     if not unique or tuple(v) not in items:
                         f(md, entry, v)
                         items.add(tuple(v))
