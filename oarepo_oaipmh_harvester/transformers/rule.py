@@ -79,20 +79,36 @@ def matches[T](
             untransformed_data = entry.entry
             if paired:
                 vals: list[list[Any] | tuple[Any, ...]] = []
+                
+                # First, determine the expected length (number of records)
+                # by looking at non-grouped fields
+                expected_length = None
+                for arg in args:
+                    if group is None or arg not in group:
+                        val = untransformed_data.get(arg)
+                        if isinstance(val, (list, tuple)):
+                            expected_length = len(val)
+                            break
+                        elif val is not None:
+                            expected_length = 1
+                            break
+                
                 for arg in args:
                     val = untransformed_data.get(arg)
                     if val is None:
                         val = []
-                    elif group and arg in group and isinstance(val, (list, tuple)):
-                        # This field is grouped - keep multiple values together
-                        val = [val]  # Wrap the tuple/list as a single element
+                    elif group and arg in group and isinstance(val, tuple):
+                        # Only keep as single unit if it's truly a single record with multiple values
+                        if expected_length is not None and len(val) != expected_length:
+                            # This is a single record with multiple values - keep together
+                            val = [val]
+                        else:
+                            # This is multiple records - treat normally
+                            val = list(val)
                     elif isinstance(val, (list, tuple)):
-                        # Not grouped - expand the values
                         val = list(val)
                     else:
-                        # Single value
                         val = [val]
-                    
                     vals.append(val)
 
                 if all(len(x) == 0 for x in vals):
