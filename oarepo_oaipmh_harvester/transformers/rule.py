@@ -83,10 +83,16 @@ def matches[T](
                     val = untransformed_data.get(arg)
                     if val is None:
                         val = []
-                    elif group and arg in group and isinstance(val, tuple):
+                    elif group and arg in group and isinstance(val, (list, tuple)):
+                        # This field is grouped - keep multiple values together
+                        val = [val]  # Wrap the tuple/list as a single element
+                    elif isinstance(val, (list, tuple)):
+                        # Not grouped - expand the values
+                        val = list(val)
+                    else:
+                        # Single value
                         val = [val]
-                    elif not isinstance(val, (list, tuple)):
-                        val = [val]
+                    
                     vals.append(val)
 
                 if all(len(x) == 0 for x in vals):
