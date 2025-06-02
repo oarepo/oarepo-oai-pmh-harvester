@@ -80,8 +80,7 @@ def matches[T](
             if paired:
                 vals: list[list[Any] | tuple[Any, ...]] = []
                 
-                # First, determine the expected length (number of records)
-                # by looking at non-grouped fields
+                # determine the expected length
                 expected_length = None
                 for arg in args:
                     if group is None or arg not in group:
@@ -98,12 +97,11 @@ def matches[T](
                     if val is None:
                         val = []
                     elif group and arg in group and isinstance(val, tuple):
-                        # Only keep as single unit if it's truly a single record with multiple values
                         if expected_length is not None and len(val) != expected_length:
-                            # This is a single record with multiple values - keep together
+                            # single record with multiple values - keep together
                             val = [val]
                         else:
-                            # This is multiple records - treat normally
+                            # multiple records - treat normally
                             val = list(val)
                     elif isinstance(val, (list, tuple)):
                         val = list(val)
