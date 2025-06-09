@@ -3,7 +3,7 @@ import functools
 import itertools
 import json
 from abc import abstractmethod
-from typing import Any, Callable, List, Optional, Protocol
+from typing import Any, Callable, List, Protocol
 
 from flask_principal import Identity
 from oarepo_runtime.datastreams.transformers import BaseTransformer
