@@ -68,50 +68,33 @@ class RuleWrapperMethod[T](Protocol):
 
 
 def matches[T](
-    *args: Any, first_only: bool = False, paired: bool = False, unique: bool = False, group: Optional[List[str]] = None
+    *args: Any, 
+    first_only: bool = False, 
+    paired: bool = False, 
+    unique: bool = False
 ) -> Callable[[RuleMethod[T]], RuleWrapperMethod[T]]:
-
+    """Basic matches decorator without group functionality."""
     def wrapper(f: RuleMethod[T]) -> RuleWrapperMethod[T]:
-
         @functools.wraps(f)
         def wrapped(md: dict[str, Any], entry: StreamEntry):
-            entry.processed.update(args)  # type: ignore # extending the instance temporarily
+            entry.processed.update(args)  # type: ignore
             untransformed_data = entry.entry
+            
             if paired:
-                vals: list[list[Any] | tuple[Any, ...]] = []
-                
-                # determine the expected length
-                expected_length = None
-                for arg in args:
-                    if group is None or arg not in group:
-                        val = untransformed_data.get(arg)
-                        if isinstance(val, (list, tuple)):
-                            expected_length = len(val)
-                            break
-                        elif val is not None:
-                            expected_length = 1
-                            break
-                
+                vals: list[list[Any]] = []
                 for arg in args:
                     val = untransformed_data.get(arg)
                     if val is None:
                         val = []
-                    elif group and arg in group and isinstance(val, tuple):
-                        if expected_length is not None and len(val) != expected_length:
-                            # single record with multiple values - keep together
-                            val = [val]
-                        else:
-                            # multiple records - treat normally
-                            val = list(val)
                     elif isinstance(val, (list, tuple)):
                         val = list(val)
                     else:
                         val = [val]
                     vals.append(val)
-
+                
                 if all(len(x) == 0 for x in vals):
                     return
-
+                
                 # zip longest
                 items: set[Any] = set()
                 for v in itertools.zip_longest(*vals):
@@ -119,7 +102,8 @@ def matches[T](
                         f(md, entry, v)
                         items.add(tuple(v))
                 return
-
+            
+            # Non-paired processing
             items: set[Any] = set()
             for arg in args:
                 if arg in untransformed_data:
@@ -128,22 +112,76 @@ def matches[T](
                         for vv in val:
                             if vv is None or vv == "":
                                 continue
-
                             if not unique or vv not in items:
                                 f(md, entry, vv)
                                 items.add(vv)
                     else:
                         if val is None or val == "":
                             continue
-
                         if not unique or val not in items:
                             f(md, entry, val)
                             items.add(val)
                     if first_only:
                         break
-
         return wrapped
+    return wrapper
 
+
+def matches_grouped[T](
+    *args: Any,
+    group: List[str],
+    unique: bool = False
+) -> Callable[[RuleMethod[T]], RuleWrapperMethod[T]]:
+    """Matches decorator with group functionality - only supports paired=True."""
+    def wrapper(f: RuleMethod[T]) -> RuleWrapperMethod[T]:
+        @functools.wraps(f)
+        def wrapped(md: dict[str, Any], entry: StreamEntry):
+            entry.processed.update(args)  # type: ignore
+            untransformed_data = entry.entry
+            
+            vals: list[list[Any] | tuple[Any, ...]] = []
+            
+            # Determine the expected length from non-grouped arguments
+            expected_length = None
+            for arg in args:
+                if arg not in group:
+                    val = untransformed_data.get(arg)
+                    if isinstance(val, (list, tuple)):
+                        expected_length = len(val)
+                        break
+                    elif val is not None:
+                        expected_length = 1
+                        break
+            
+            # Process each argument with group-aware logic
+            for arg in args:
+                val = untransformed_data.get(arg)
+                if val is None:
+                    val = []
+                elif arg in group and isinstance(val, tuple):
+                    if expected_length is not None and len(val) != expected_length:
+                        # single record with multiple values - keep together
+                        val = [val]
+                    else:
+                        # multiple records - treat normally
+                        val = list(val)
+                elif isinstance(val, (list, tuple)):
+                    val = list(val)
+                else:
+                    val = [val]
+                vals.append(val)
+            
+            if all(len(x) == 0 for x in vals):
+                return
+            
+            # zip longest
+            items: set[Any] = set()
+            for v in itertools.zip_longest(*vals):
+                if not unique or tuple(v) not in items:
+                    f(md, entry, v)
+                    items.add(tuple(v))
+                    
+        return wrapped
     return wrapper
 
 
