@@ -73,7 +73,6 @@ def matches[T](
     paired: bool = False, 
     unique: bool = False
 ) -> Callable[[RuleMethod[T]], RuleWrapperMethod[T]]:
-    """Basic matches decorator without group functionality."""
     def wrapper(f: RuleMethod[T]) -> RuleWrapperMethod[T]:
         @functools.wraps(f)
         def wrapped(md: dict[str, Any], entry: StreamEntry):
@@ -103,7 +102,6 @@ def matches[T](
                         items.add(tuple(v))
                 return
             
-            # Non-paired processing
             items: set[Any] = set()
             for arg in args:
                 if arg in untransformed_data:
@@ -132,7 +130,6 @@ def matches_grouped[T](
     group: List[str],
     unique: bool = False
 ) -> Callable[[RuleMethod[T]], RuleWrapperMethod[T]]:
-    """Matches decorator with group functionality - only supports paired=True."""
     def wrapper(f: RuleMethod[T]) -> RuleWrapperMethod[T]:
         @functools.wraps(f)
         def wrapped(md: dict[str, Any], entry: StreamEntry):
@@ -141,7 +138,6 @@ def matches_grouped[T](
             
             vals: list[list[Any] | tuple[Any, ...]] = []
             
-            # Determine the expected length from non-grouped arguments
             expected_length = None
             for arg in args:
                 if arg not in group:
@@ -153,7 +149,6 @@ def matches_grouped[T](
                         expected_length = 1
                         break
             
-            # Process each argument with group-aware logic
             for arg in args:
                 val = untransformed_data.get(arg)
                 if val is None:
