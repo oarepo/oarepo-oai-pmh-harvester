@@ -68,40 +68,47 @@ class RuleWrapperMethod[T](Protocol):
 
 
 def matches[T](
-    *args: Any, 
-    first_only: bool = False, 
-    paired: bool = False, 
-    unique: bool = False
+    *args: Any, first_only: bool = False, paired: bool = False, unique: bool = False, group: bool = False
 ) -> Callable[[RuleMethod[T]], RuleWrapperMethod[T]]:
+
     def wrapper(f: RuleMethod[T]) -> RuleWrapperMethod[T]:
+
         @functools.wraps(f)
         def wrapped(md: dict[str, Any], entry: StreamEntry):
-            entry.processed.update(args)  # type: ignore
+            entry.processed.update(args)  # type: ignore # extending the instance temporarily
             untransformed_data = entry.entry
-            
             if paired:
-                vals: list[list[Any]] = []
+                vals: list[list[Any] | tuple[Any, ...]] = []
                 for arg in args:
                     val = untransformed_data.get(arg)
                     if val is None:
                         val = []
-                    elif isinstance(val, (list, tuple)):
-                        val = list(val)
-                    else:
+                    elif not isinstance(val, (list, tuple)):
                         val = [val]
                     vals.append(val)
-                
+
                 if all(len(x) == 0 for x in vals):
                     return
-                
+
+                if group:
+                    grouped_vals = []
+                    for val_list in vals:
+                        if len(val_list) > 0:
+                            grouped_vals.append([val_list])
+                        else:
+                            grouped_vals.append([None])
+                    vals = grouped_vals
+
                 # zip longest
                 items: set[Any] = set()
                 for v in itertools.zip_longest(*vals):
+                    if group:
+                        v = tuple(item[0] if isinstance(item, list) else item for item in v)
                     if not unique or tuple(v) not in items:
                         f(md, entry, v)
                         items.add(tuple(v))
                 return
-            
+
             items: set[Any] = set()
             for arg in args:
                 if arg in untransformed_data:
@@ -110,18 +117,22 @@ def matches[T](
                         for vv in val:
                             if vv is None or vv == "":
                                 continue
+
                             if not unique or vv not in items:
                                 f(md, entry, vv)
                                 items.add(vv)
                     else:
                         if val is None or val == "":
                             continue
+
                         if not unique or val not in items:
                             f(md, entry, val)
                             items.add(val)
                     if first_only:
                         break
+
         return wrapped
+
     return wrapper
 
 
@@ -136,8 +147,6 @@ def matches_grouped[T](
             entry.processed.update(args)  # type: ignore
             untransformed_data = entry.entry
             
-            vals: list[list[Any] | tuple[Any, ...]] = []
-            
             expected_length = None
             for arg in args:
                 if arg not in group:
@@ -149,6 +158,7 @@ def matches_grouped[T](
                         expected_length = 1
                         break
             
+            vals: list[list[Any] | tuple[Any, ...]] = []
             for arg in args:
                 val = untransformed_data.get(arg)
                 if val is None:
