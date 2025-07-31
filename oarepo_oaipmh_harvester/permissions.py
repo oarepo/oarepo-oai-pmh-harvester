@@ -1,5 +1,5 @@
 from flask_principal import UserNeed
-from invenio_access.models import ActionUsers
+from invenio_access.models import ActionRoles, ActionUsers
 from invenio_access.permissions import system_identity
 from invenio_administration.generators import (
     Administration,
@@ -101,17 +101,28 @@ class AdministrationWithQueryFilter(Administration):
     def query_filter(self, **kwargs):
         identity = kwargs["identity"]
         user_ids = [need.value for need in identity.provides if need.method == "id"]
-        if (
-            user_ids
-            and ActionUsers.query.filter(
+
+        if user_ids:
+            has_direct_administration_access = ActionUsers.query.filter(
                 ActionUsers.user_id == user_ids[0],
                 ActionUsers.action == administration_access_action.value,
                 ActionUsers.exclude.is_(False),
             ).count()
-        ):
-            return MatchAll()
-        else:
-            return MatchNone()
+            if has_direct_administration_access:
+                return MatchAll()
+
+        user_roles = [need.value for need in identity.provides if need.method == "role"]
+        if user_roles:
+            has_access_through_roles = ActionRoles.query.filter(
+                ActionRoles.role_id.in_(user_roles),
+                ActionRoles.action == administration_access_action.value,
+                ActionRoles.exclude.is_(False),
+            ).count()
+            if has_access_through_roles:
+                return MatchAll()
+
+        # If no direct access or roles, return no match
+        return MatchNone()
 
 
 class OAIHarvesterPermissions(RecordPermissionPolicy):
