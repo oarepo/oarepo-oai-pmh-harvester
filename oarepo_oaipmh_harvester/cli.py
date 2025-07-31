@@ -252,12 +252,27 @@ def list_runs(code, show_all_runs, limit):
 
 
 @harvester.command("cancel-run")
-@click.argument("code")
+@click.argument("harvester_or_run_id")
 @with_appcontext
-def cancel_run(code):
-    run = OAIHarvesterRun.query.filter(OAIHarvesterRun.id == code).one_or_none()
+def cancel_run(harvester_or_run_id):
+    harvesters = list(
+        harvester_service.scan(
+            system_identity,
+            params={"facets": {"code": [harvester_or_run_id]}},
+        )
+    )
+    if harvesters:
+        harvester_id = harvesters[0]["id"]
+        run = OAIHarvesterRun.query.filter(
+            OAIHarvesterRun.harvester_id == harvester_id,
+            OAIHarvesterRun.status == "running",
+        ).one_or_none()
+    else:
+        run = OAIHarvesterRun.query.filter(
+            OAIHarvesterRun.id == harvester_or_run_id
+        ).one_or_none()
     if not run:
-        print(f"Run with id {code} not found")
+        print(f"Run with id/harvester {harvester_or_run_id} not found")
         return
     if run.status == "running":
         run.status = "cancelled"

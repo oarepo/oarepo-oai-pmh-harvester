@@ -1,4 +1,5 @@
 from flask_principal import UserNeed
+from invenio_access import action_factory
 from invenio_access.models import ActionRoles, ActionUsers
 from invenio_access.permissions import system_identity
 from invenio_administration.generators import (
@@ -97,25 +98,27 @@ class HarvestRecordManager(Generator):
         return Term(**{"harvest_managers": identity.id})
 
 
-class AdministrationWithQueryFilter(Administration):
+class ActionQueryFilterMixin:
+    access_action = None
+
     def query_filter(self, **kwargs):
         identity = kwargs["identity"]
         user_ids = [need.value for need in identity.provides if need.method == "id"]
 
         if user_ids:
-            has_direct_administration_access = ActionUsers.query.filter(
+            has_direct_access = ActionUsers.query.filter(
                 ActionUsers.user_id == user_ids[0],
-                ActionUsers.action == administration_access_action.value,
+                ActionUsers.action == self.access_action.value,
                 ActionUsers.exclude.is_(False),
             ).count()
-            if has_direct_administration_access:
+            if has_direct_access:
                 return MatchAll()
 
         user_roles = [need.value for need in identity.provides if need.method == "role"]
         if user_roles:
             has_access_through_roles = ActionRoles.query.filter(
                 ActionRoles.role_id.in_(user_roles),
-                ActionRoles.action == administration_access_action.value,
+                ActionRoles.action == self.access_action.value,
                 ActionRoles.exclude.is_(False),
             ).count()
             if has_access_through_roles:
@@ -123,6 +126,20 @@ class AdministrationWithQueryFilter(Administration):
 
         # If no direct access or roles, return no match
         return MatchNone()
+
+
+class AdministrationWithQueryFilter(ActionQueryFilterMixin, Administration):
+    access_action = administration_access_action
+
+
+harvest_action = action_factory("oai-harvest-access")
+
+
+class HarvestAction(ActionQueryFilterMixin, Generator):
+    access_action = harvest_action
+
+    def needs(self, **kwargs):
+        return [harvest_action]
 
 
 class OAIHarvesterPermissions(RecordPermissionPolicy):
