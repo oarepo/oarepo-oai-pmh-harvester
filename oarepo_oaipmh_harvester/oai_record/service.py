@@ -219,7 +219,6 @@ class OAIRecordService(RecordService):
         )
 
         # re-get the record
-        db.session.expunge_all()
         oai_record = OAIRecordAggregate.get_record(id_)
 
         return self.result_item(
